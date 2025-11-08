@@ -1,12 +1,7 @@
 import * as Phaser from 'phaser';
-import { BaseLevel, GAME_HEIGHT } from './BaseLevel';
-import { Tower } from '../entities/Tower';
-import { Targeting } from '../components/Targeting';
-import { LaserAttack } from '../components/LaserAttack';
+import { BaseTowerDefenseLevel, GAME_HEIGHT, TOWER1_COST, TOWER2_COST } from './BaseTowerDefenseLevel';
 
-const TOWER1_COST = 100;
-
-export class Level2 extends BaseLevel {
+export class Level2 extends BaseTowerDefenseLevel {
   constructor() {
     super('Level2'); // Unique key for this scene
   }
@@ -51,17 +46,10 @@ export class Level2 extends BaseLevel {
     switch (towerType) {
       case 'tower1':
         return TOWER1_COST;
+      case 'tower2':
+        return TOWER2_COST;
       default:
         return 0;
-    }
-  }
-
-  protected placeSpecificTower(x: number, y: number, towerType: string): void {
-    if (towerType === 'tower1') {
-      const tower = new Tower({ scene: this, x, y, texture: 'tower1' });
-      this.towers.add(tower, true);
-      tower.addComponent(new Targeting(150, this.enemies));
-      tower.addComponent(new LaserAttack(75, 25, 300, this.bullets));
     }
   }
 

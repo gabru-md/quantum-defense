@@ -1,17 +1,10 @@
 import * as Phaser from 'phaser';
-import { BaseLevel, GAME_HEIGHT } from './BaseLevel';
-import { Tower } from '../entities/Tower';
-import { Targeting } from '../components/Targeting';
-import { LaserAttack } from '../components/LaserAttack';
+import { BaseTowerDefenseLevel, GAME_HEIGHT, TOWER1_COST, TOWER2_COST } from './BaseTowerDefenseLevel';
 
-const TOWER1_COST = 100;
-
-export class Level1 extends BaseLevel {
+export class Level1 extends BaseTowerDefenseLevel {
   constructor() {
     super('Level1'); // Unique key for this scene
   }
-
-  // --- Implement Abstract Methods from BaseLevel ---
 
   protected definePath(): void {
     this.path = new Phaser.Curves.Path(50, -50); // Start off-screen top
@@ -46,23 +39,14 @@ export class Level1 extends BaseLevel {
     switch (towerType) {
       case 'tower1':
         return TOWER1_COST;
+      case 'tower2':
+        return TOWER2_COST;
       default:
         return 0;
     }
   }
 
-  protected placeSpecificTower(x: number, y: number, towerType: string): void {
-    if (towerType === 'tower1') {
-      const tower = new Tower({ scene: this, x, y, texture: 'tower1' });
-      this.towers.add(tower, true);
-      tower.addComponent(new Targeting(150, this.enemies));
-      tower.addComponent(new LaserAttack(100, 25, 300, this.bullets));
-    }
-    // Other tower types will go here for future levels
-  }
-
   protected nextScene(): string {
       return "Level2";
   }
-
 }

@@ -2,41 +2,50 @@ import * as Phaser from 'phaser';
 import { Enemy } from '../entities/Enemy';
 import { Tower } from '../entities/Tower';
 import { Bullet } from '../entities/Bullet';
+import { Bomb } from '../entities/Bomb'; // Import Bomb
 import { GameObject } from '../core/GameObject';
+import {Targeting} from "../components/Targeting.ts";
+import {LaserAttack} from "../components/LaserAttack.ts";
+import {BombAttack} from "../components/BombAttack.ts";
 
 // Define game area and HUD area dimensions
 export const GAME_AREA_WIDTH = 800;
 export const GAME_HEIGHT = 768; // Full height of the game
 export const HUD_AREA_WIDTH = 1027 - GAME_AREA_WIDTH; // 227
-export const TILE_SIZE = 64;
+export const TILE_SIZE = 32;
 
-export abstract class BaseLevel extends Phaser.Scene {
+// Tower Costs
+export const TOWER1_COST = 100;
+export const TOWER2_COST = 250; // Cost for Tower 2
+
+export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
   protected path!: Phaser.Curves.Path;
   protected pathGraphics!: Phaser.GameObjects.Graphics;
   protected enemies!: Phaser.GameObjects.Group;
   protected towers!: Phaser.GameObjects.Group;
   protected bullets!: Phaser.GameObjects.Group;
+  protected bombs!: Phaser.GameObjects.Group; // New group for bombs
 
   // Game State
   protected baseHealth: number = 100;
-  protected money: number = 200;
+  protected money: number = 250;
   protected currentWave: number = 1;
-  protected enemiesRemaining: number = 0; // Enemies currently active or to be spawned
+  protected enemiesRemaining: number = 0;
   protected enemiesSpawnedInWave: number = 0;
-  protected maxEnemiesInWave: number = 20; // Default, will be overridden by specific levels
+  protected maxEnemiesInWave: number = 20;
 
   // UI Elements
+    protected levelText!: Phaser.GameObjects.Text;
   protected baseHealthText!: Phaser.GameObjects.Text;
   protected moneyText!: Phaser.GameObjects.Text;
   protected waveProgressText!: Phaser.GameObjects.Text;
-  protected messageText!: Phaser.GameObjects.Text; // For Game Over/Win messages
+  protected messageText!: Phaser.GameObjects.Text;
 
   // Abstract methods to be implemented by concrete level classes
   protected abstract definePath(): void;
   protected abstract getTowerSlots(): { x: number; y: number }[];
   protected abstract getWaveConfig(wave: number): { enemyType: string; count: number; delay: number; health: number; speed: number; moneyValue: number }[];
   protected abstract getTowerCost(towerType: string): number;
-  protected abstract placeSpecificTower(x: number, y: number, towerType: string): void;
   protected abstract nextScene(): string;
 
   constructor(key: string) {
@@ -69,6 +78,7 @@ export abstract class BaseLevel extends Phaser.Scene {
     this.enemies = this.add.group({ classType: Enemy, runChildUpdate: false });
     this.towers = this.add.group({ classType: Tower, runChildUpdate: false });
     this.bullets = this.add.group({ classType: Bullet, runChildUpdate: false });
+    this.bombs = this.add.group({ classType: Bomb, runChildUpdate: false }); // Initialize bombs group
 
     // --- Tower Placement Slots ---
     this.createTowerSlots();
@@ -76,13 +86,17 @@ export abstract class BaseLevel extends Phaser.Scene {
     // --- Collision Setup ---
     // @ts-ignore
     this.physics.add.overlap(this.bullets, this.enemies, this.handleBulletEnemyCollision, undefined, this);
+    // @ts-ignore
+    this.physics.add.overlap(this.bombs, this.enemies, this.handleBombEnemyCollision, undefined, this); // New bomb collision
 
     // --- UI Setup (positioned in HUD area) ---
     const hudX = GAME_AREA_WIDTH + 10;
 
-    this.baseHealthText = this.add.text(hudX, 10, '', { font: '20px Arial', color: '#ffffff' }).setScrollFactor(0);
-    this.moneyText = this.add.text(hudX, 40, '', { font: '20px Arial', color: '#ffffff' }).setScrollFactor(0);
-    this.waveProgressText = this.add.text(hudX, 70, '', { font: '20px Arial', color: '#ffffff' }).setScrollFactor(0);
+
+    this.levelText = this.add.text(hudX, 0, '', { font: '20px Arial', color: '#ffffff' }).setScrollFactor(0);
+    this.baseHealthText = this.add.text(hudX, 30, '', { font: '20px Arial', color: '#ffffff' }).setScrollFactor(0);
+    this.moneyText = this.add.text(hudX, 60, '', { font: '20px Arial', color: '#ffffff' }).setScrollFactor(0);
+    this.waveProgressText = this.add.text(hudX, 90, '', { font: '20px Arial', color: '#ffffff' }).setScrollFactor(0);
 
     this.messageText = this.add.text(GAME_AREA_WIDTH / 2, GAME_HEIGHT / 2, '', {
       font: '48px Arial',
@@ -111,27 +125,34 @@ export abstract class BaseLevel extends Phaser.Scene {
   }
 
   public update(time: number, delta: number): void {
-    // @ts-ignore
     this.enemies.children.each((enemy: Phaser.GameObjects.GameObject) => {
       if (enemy instanceof GameObject) {
         enemy.update(time, delta);
       }
+      return null;
     });
-    // @ts-ignore
     this.towers.children.each((tower: Phaser.GameObjects.GameObject) => {
       if (tower instanceof GameObject) {
         tower.update(time, delta);
       }
+      return null;
     });
-    // @ts-ignore
     this.bullets.children.each((bullet: Phaser.GameObjects.GameObject) => {
       if (bullet instanceof GameObject) {
         bullet.update(time, delta);
       }
+      return null;
+    });
+    this.bombs.children.each((bomb: Phaser.GameObjects.GameObject) => {
+      if (bomb instanceof GameObject) {
+        bomb.update(time, delta);
+      }
+      return null;
     });
   }
 
   protected updateUI(): void {
+    this.levelText.setText(this.scene.key)
     this.baseHealthText.setText(`Base Health: ${this.baseHealth}`);
     this.moneyText.setText(`Money: $${this.money}`);
     this.waveProgressText.setText(`Wave ${this.currentWave}: ${this.enemiesSpawnedInWave}/${this.maxEnemiesInWave} Spawned`);
@@ -140,13 +161,12 @@ export abstract class BaseLevel extends Phaser.Scene {
   protected handleEnemyDied(moneyValue: number): void {
     this.money += moneyValue;
     this.enemiesRemaining--;
-    console.log(`${this.enemiesRemaining} Enemies remain`)
     this.updateUI();
     this.checkWaveCompletion();
   }
 
   protected handleEnemyReachedEnd(): void {
-    this.baseHealth -= 10; // Each enemy reaching end reduces health by 10
+    this.baseHealth -= 10;
     this.enemiesRemaining--;
     this.updateUI();
     this.checkGameOver();
@@ -168,9 +188,7 @@ export abstract class BaseLevel extends Phaser.Scene {
       this.messageText.setText('WAVE COMPLETE!').setColor('#00ff00').setVisible(true);
       this.physics.pause();
       this.time.delayedCall(3000, () => {
-        // This is where we'd transition to the next level
-        // For now, we'll just restart or go to a specific next level
-        this.scene.start(this.nextScene()); // Attempt to start Level2
+        this.scene.start(this.nextScene());
       });
     }
   }
@@ -184,28 +202,44 @@ export abstract class BaseLevel extends Phaser.Scene {
     }
   }
 
+  protected handleBombEnemyCollision(bombObject: Phaser.GameObjects.GameObject): void {
+    if (bombObject instanceof Bomb) {
+      const bomb = bombObject as Bomb;
+      // When a bomb hits ANY enemy, it explodes.
+      bomb.explode();
+    }
+  }
+
   protected createTowerSlots(): void {
     const slots = this.getTowerSlots();
     for (const slot of slots) {
       const towerSlot = this.add.sprite(slot.x, slot.y, 'towerSlot').setInteractive();
       towerSlot.on('pointerdown', () => {
-        // For now, only allow placing Tower1
-        const towerType = 'tower1'; // This will be dynamic later
-        const cost = this.getTowerCost(towerType);
-
-        if (towerSlot.texture.key === 'towerSlot') { // Check if slot is empty
-          if (this.money >= cost) {
-            this.placeSpecificTower(slot.x, slot.y, towerType);
-            this.money -= cost;
-            towerSlot.setTexture(towerType); // Set texture to placed tower
-            towerSlot.disableInteractive();
-            this.updateUI();
-          } else {
-            this.messageText.setText('Not enough money!').setColor('#ffff00').setVisible(true);
-            this.time.delayedCall(1500, () => this.messageText.setVisible(false));
-          }
+        // Simple tower selection for now: right-click for Tower2, left-click for Tower1
+        // This will be replaced by a proper UI later
+        let towerType = 'tower1'; // Default to Tower1
+        if (this.input.activePointer.rightButtonDown()) {
+          towerType = 'tower2';
         }
+        this.tryPlaceTower(slot.x, slot.y, towerType, towerSlot);
       });
+    }
+  }
+
+  protected tryPlaceTower(x: number, y: number, towerType: string, towerSlotSprite: Phaser.GameObjects.Sprite): void {
+    const cost = this.getTowerCost(towerType);
+
+    if (towerSlotSprite.texture.key === 'towerSlot') { // Check if slot is empty
+      if (this.money >= cost) {
+        this.placeSpecificTower(x, y, towerType);
+        this.money -= cost;
+        towerSlotSprite.setTexture(towerType); // Set texture to placed tower
+        towerSlotSprite.disableInteractive();
+        this.updateUI();
+      } else {
+        this.messageText.setText('Not enough money!').setColor('#ffff00').setVisible(true);
+        this.time.delayedCall(1500, () => this.messageText.setVisible(false));
+      }
     }
   }
 
@@ -247,11 +281,25 @@ export abstract class BaseLevel extends Phaser.Scene {
   }
 
   protected createPlaceholderTexture(key: string, width: number, height: number, color: string): void {
-    //@ts-ignore
-    const graphics = this.make.graphics({ width, height });
+    const graphics = this.make.graphics({ x: width, y: height });
     graphics.fillStyle(Phaser.Display.Color.ValueToColor(color).color);
     graphics.fillRect(0, 0, width, height);
     graphics.generateTexture(key, width, height);
     graphics.destroy();
   }
+
+
+    protected placeSpecificTower(x: number, y: number, towerType: string): void {
+        if (towerType === 'tower1') {
+            const tower = new Tower({scene: this, x, y, texture: 'tower1'});
+            this.towers.add(tower, true);
+            tower.addComponent(new Targeting(150, this.enemies));
+            tower.addComponent(new LaserAttack(200, 25, 300, this.bullets));
+        } else if (towerType === 'tower2') {
+            const tower = new Tower({scene: this, x, y, texture: 'tower2'});
+            this.towers.add(tower, true);
+            tower.addComponent(new Targeting(180, this.enemies)); // Slightly larger range for bomb tower
+            tower.addComponent(new BombAttack(1500, 100, 200, 150, this.bombs, this.enemies)); // Slower fire rate, more damage, AoE
+        }
+    }
 }
