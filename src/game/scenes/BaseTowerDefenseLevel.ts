@@ -86,8 +86,8 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
         // --- Define Path (implemented by concrete level) ---
         this.definePaths();
         this.pathGraphics = this.add.graphics();
-        this.pathGraphics.lineStyle(3, 0xcccccc, 0.60);
         for (let pathsKey in this.paths) {
+            this.pathGraphics.lineStyle(3, 0xcccccc, 0.30);
             this.paths[pathsKey].draw(this.pathGraphics);
         }
 
