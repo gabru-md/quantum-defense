@@ -72,8 +72,8 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
         this.createPlaceholderTexture('enemy1', 32, 32, '#7777ff'); // Blue for normal enemy
         this.createPlaceholderTexture('enemy2', 24, 24, '#ff7777'); // Red for fast enemy
         this.createPlaceholderTexture('enemy3', 40, 40, '#77ff77'); // Green for tanky enemy
-        this.createPlaceholderCircleTexture('tower1', 54, 54, '#00ff00'); // Green for laser tower
-        this.createPlaceholderCircleTexture('tower2', 54, 54, '#ff00ff'); // Purple for bomb tower
+        this.createPlaceholderCircleTexture('tower1', 32, 32, '#00ff00'); // Green for laser tower
+        this.createPlaceholderCircleTexture('tower2', 32, 32, '#ff00ff'); // Purple for bomb tower
         this.createPlaceholderCircleTexture('bullet', 10, 10, '#ffff00'); // Yellow for laser bullet
         this.createPlaceholderTriangleTexture('bomb', 20, 20, '#ff8800'); // Orange for bomb projectile
         this.createPlaceholderTexture('towerSlot', TILE_SIZE, TILE_SIZE, '#555555'); // Grey for tower slot

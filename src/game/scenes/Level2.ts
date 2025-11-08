@@ -54,8 +54,8 @@ export class Level2 extends BaseTowerDefenseLevel {
     }[] {
         if (wave === 1) {
             return [
-                {enemyType: 'enemy1', count: 4, delay: 1000, health: 100, speed: 50, moneyValue: 10, path: 'first'},
-                {enemyType: 'enemy2', count: 5, delay: 1000, health: 50, speed: 100, moneyValue: 15, path: 'second'}
+                {enemyType: 'enemy1', count: 4, delay: 500, health: 100, speed: 40, moneyValue: 10, path: 'first'},
+                {enemyType: 'enemy2', count: 5, delay: 750, health: 50, speed: 80, moneyValue: 15, path: 'second'}
             ]
         }
         if (wave === 2) {
