@@ -1,14 +1,17 @@
 import * as Phaser from 'phaser';
-import { TowerDefenseScene } from './game/scenes/TowerDefenseScene';
+import {Level1} from "./game/scenes/Level1.ts";
+import {Level2} from "./game/scenes/Level2.ts";
+
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   width: 1027, // New width
   height: 768, // New height
-  scene: [TowerDefenseScene],
+  scene: [Level1, Level2],
   physics: {
     default: 'arcade',
     arcade: {
+      // @ts-ignore
       gravity: { y: 0 },
       debug: false // Set to true to see physics bodies
     }

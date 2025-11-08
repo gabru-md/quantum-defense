@@ -1,5 +1,6 @@
 import { AUTO, Game } from 'phaser';
-import {TowerDefenseScene} from "./scenes/TowerDefenseScene.ts";
+import {Level1} from "./scenes/Level1.ts";
+import {Level2} from "./scenes/Level2.ts";
 
 //  Find out more information about the Game Config at:
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
@@ -10,7 +11,8 @@ const config: Phaser.Types.Core.GameConfig = {
     parent: 'game-container',
     backgroundColor: '#028af8',
     scene: [
-        TowerDefenseScene
+        Level1,
+        Level2
     ]
 };
 
