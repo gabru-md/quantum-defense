@@ -206,11 +206,10 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
         if (this.enemiesSpawnedInWave >= this.maxEnemiesInWave && this.enemiesRemaining === 0) {
             if (this.noMoreWavesLeft()) {
                 this.physics.pause();
-                this.time.delayedCall(3000, () => {
-                    this.messageText.setText('LEVEL COMPLETE!').setColor('#00ff00').setVisible(true);
-                    this.time.delayedCall(1500, () => this.messageText.setVisible(false));
-                    this.scene.start(this.nextScene());
-                });
+                this.messageText.setText('LEVEL COMPLETE!').setColor('#00ff00').setVisible(true);
+                this.time.delayedCall(1500, () => this.messageText.setVisible(false));
+                this.scene.start(this.nextScene());
+
             } else {
                 this.messageText.setText('NEXT WAVE INCOMING!').setColor('#00ff00').setVisible(true);
                 this.time.delayedCall(1500, () => {

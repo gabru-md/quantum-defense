@@ -58,10 +58,10 @@ export class Level3 extends BaseTowerDefenseLevel {
                 {enemyType: 'enemy2', count: 1, delay: 1000, health: 50, speed: 100, moneyValue: 15, path: 'first'},
                 {enemyType: 'enemy1', count: 5, delay: 1000, health: 100, speed: 50, moneyValue: 10, path: 'first'},
                 {enemyType: 'enemy3', count: 1, delay: 2000, health: 500, speed: 25, moneyValue: 50, path: 'first'}, // Tanky enemy
-                {enemyType: 'enemy1', count: 5, delay: 1000, health: 100, speed: 50, moneyValue: 10, path: 'first'},
-                {enemyType: 'enemy2', count: 1, delay: 1000, health: 50, speed: 100, moneyValue: 15, path: 'first'},
-                {enemyType: 'enemy1', count: 5, delay: 1000, health: 100, speed: 50, moneyValue: 10, path: 'first'},
-                {enemyType: 'enemy3', count: 1, delay: 2000, health: 500, speed: 25, moneyValue: 50, path: 'first'}
+                {enemyType: 'enemy1', count: 5, delay: 1000, health: 100, speed: 50, moneyValue: 10, path: 'second'},
+                {enemyType: 'enemy2', count: 1, delay: 1000, health: 50, speed: 100, moneyValue: 15, path: 'second'},
+                {enemyType: 'enemy1', count: 5, delay: 1000, health: 100, speed: 50, moneyValue: 10, path: 'second'},
+                {enemyType: 'enemy3', count: 1, delay: 2000, health: 500, speed: 25, moneyValue: 50, path: 'second'}
             ]
         }
         return [];

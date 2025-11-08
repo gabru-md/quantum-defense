@@ -10,7 +10,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
     width: 1027,
     height: 768,
     scene: [Level1, Level2, Level3, Level4, Level5],
-    // scene: [Level5],
+    // scene: [Level3],
     physics: {
         default: 'arcade',
         arcade: {
