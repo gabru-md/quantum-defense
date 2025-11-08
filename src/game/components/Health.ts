@@ -1,5 +1,4 @@
 import { Component } from '../core/Component';
-
 /**
  * A component that gives a GameObject health and the ability to take damage.
  */
@@ -36,6 +35,7 @@ export class Health extends Component {
     }
 
     this._currentHealth -= amount;
+    this.gameObject.emit('healthChanged', this._currentHealth);
 
     if (this.isDead()) {
       this._currentHealth = 0;

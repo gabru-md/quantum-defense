@@ -14,6 +14,7 @@ export interface EnemyConfig {
 
 export class Enemy extends GameObject {
   public moneyValue: number;
+  private healthComponent!: Health; // Reference to the health component
 
   constructor(config: EnemyConfig) {
     const startPoint = config.path.getStartPoint();
@@ -23,12 +24,24 @@ export class Enemy extends GameObject {
 
     this.moneyValue = config.moneyValue;
 
-    this.addComponent(new Health(config.health));
+    // Add the Health component and store a reference
+    this.healthComponent = new Health(config.health);
+    this.addComponent(this.healthComponent);
     this.addComponent(new PathFollower(config.path, config.speed));
+
+    // Listen for health changes to update transparency
+    this.on('healthChanged', this.handleHealthChanged, this);
 
     this.on('died', () => {
       this.scene.events.emit('enemyDied', this.moneyValue);
       this.destroy();
     });
+  }
+
+  private handleHealthChanged(currentHealth: number): void {
+    // Calculate alpha based on health percentage
+    // Max health is available from the healthComponent
+    const healthPercentage = currentHealth / this.healthComponent.maxHealth;
+    this.setAlpha(0.2 + (0.8 * healthPercentage)); // Alpha ranges from 0.2 (almost dead) to 1.0 (full health)
   }
 }

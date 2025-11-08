@@ -1,52 +1,89 @@
 import * as Phaser from 'phaser';
-import { BaseTowerDefenseLevel, GAME_HEIGHT, TOWER1_COST, TOWER2_COST } from './BaseTowerDefenseLevel';
+import {BaseTowerDefenseLevel, GAME_HEIGHT, TOWER1_COST, TOWER2_COST} from './BaseTowerDefenseLevel';
 
 export class Level1 extends BaseTowerDefenseLevel {
-  constructor() {
-    super('Level1'); // Unique key for this scene
-  }
-
-  protected definePath(): void {
-    this.path = new Phaser.Curves.Path(50, -50); // Start off-screen top
-    this.path.lineTo(50, 150);
-    this.path.lineTo(450, 150);
-    this.path.lineTo(450, 350);
-    this.path.lineTo(250, 350);
-    this.path.lineTo(250, 550);
-    this.path.lineTo(750, 550);
-    this.path.lineTo(750, GAME_HEIGHT + 50); // End off-screen bottom
-  }
-
-  protected getTowerSlots(): { x: number; y: number }[] {
-    return [
-      { x: 150, y: 250 },
-      { x: 350, y: 250 },
-      { x: 350, y: 450 },
-      { x: 550, y: 450 },
-    ];
-  }
-
-  protected getWaveConfig(wave: number): { enemyType: string; count: number; delay: number; health: number; speed: number; moneyValue: number }[] {
-    if (wave === 1) {
-      return [
-        { enemyType: 'enemy1', count: 20, delay: 1000, health: 100, speed: 50, moneyValue: 10 }
-      ];
+    constructor() {
+        super('Level 1'); // Unique key for this scene
     }
-    return []; // No more waves for this level yet
-  }
 
-  protected getTowerCost(towerType: string): number {
-    switch (towerType) {
-      case 'tower1':
-        return TOWER1_COST;
-      case 'tower2':
-        return TOWER2_COST;
-      default:
-        return 0;
+    private firstPath(): Phaser.Curves.Path {
+        const path = new Phaser.Curves.Path(50, -50); // Start off-screen top
+        path.lineTo(50, 150);
+        path.lineTo(450, 150);
+        path.lineTo(450, 350);
+        path.lineTo(250, 350);
+        path.lineTo(250, 550);
+        path.lineTo(750, 550);
+        path.lineTo(750, GAME_HEIGHT + 50);
+        return path;
     }
-  }
 
-  protected nextScene(): string {
-      return "Level2";
-  }
+    private secondPath(): Phaser.Curves.Path {
+        const path = new Phaser.Curves.Path(750, -50); // Start off-screen top
+        path.lineTo(750, 350);
+        path.lineTo(450, 350);
+        path.lineTo(450, 550);
+        path.lineTo(50, 550);
+        path.lineTo(50, GAME_HEIGHT + 50);
+        return path;
+    }
+
+    protected definePaths() {
+        this.paths = {
+            'first': this.firstPath(),
+            'second': this.secondPath()
+        }
+    }
+
+    protected getTowerSlots(): { x: number; y: number }[] {
+        return [
+            {x: 150, y: 250},
+            {x: 350, y: 250},
+            {x: 350, y: 450},
+            {x: 550, y: 450},
+        ];
+    }
+
+    protected getWaveConfig(wave: number): {
+        enemyType: string;
+        count: number;
+        delay: number;
+        health: number;
+        speed: number;
+        moneyValue: number;
+        path: string;
+    }[] {
+        if (wave === 1) {
+            return [
+                {enemyType: 'enemy1', count: 15, delay: 1000, health: 100, speed: 50, moneyValue: 10, path: 'second'}
+            ];
+        }
+        if (wave === 2) {
+            return [
+                {enemyType: 'enemy1', count: 10, delay: 1500, health: 100, speed: 50, moneyValue: 10, path: 'first'}
+            ]
+        }
+        if (wave === 3) {
+            return [
+                {enemyType: 'enemy1', count: 15, delay: 1000, health: 100, speed: 40, moneyValue: 10, path: 'second'},
+                {enemyType: 'enemy1', count: 10, delay: 1500, health: 100, speed: 60, moneyValue: 10, path: 'first'}
+            ]
+        }
+        return []; // No more waves for this level yet
+    }
+
+    protected getTowerCost(towerType: string): number {
+        switch (towerType) {
+            case 'tower1':
+                return TOWER1_COST;
+            case 'tower2':
+                return TOWER2_COST;
+            default:
+                return 0;
+        }
+    }
+
+    protected nextScene(): string {
+        return "Level 2";
+    }
 }
