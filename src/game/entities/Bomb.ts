@@ -3,6 +3,7 @@ import {Health} from '../components/Health';
 import {Enemy} from './Enemy'; // Import Enemy to check instance type
 import * as Phaser from 'phaser';
 import {Healer} from "./Healer.ts";
+import {VisualPulse} from "../components/VisualPulse.ts";
 
 /**
  * Represents a bomb projectile that deals Area of Effect (AoE) damage.
@@ -17,6 +18,7 @@ export class Bomb extends GameObject {
         this.scene.physics.world.enable(this);
         this.setActive(false); // Start inactive
         this.setVisible(false); // Start invisible
+        this.addComponent(new VisualPulse(Phaser.Display.Color.ValueToColor('0xff8800').color, 500, 2500))
     }
 
     /**
@@ -69,7 +71,6 @@ export class Bomb extends GameObject {
                 if (targetableObject instanceof Healer) {
                     // Ensure it's our custom Enemy type
                     const healer = targetableObject as Healer;
-                    console.log(healer);
                     const distance = Phaser.Math.Distance.Between(this.x, this.y, healer.x, healer.y);
                     if (distance <= this.explosionRadius) {
                         const healthComponent = healer.getComponent(Health);
@@ -83,5 +84,39 @@ export class Bomb extends GameObject {
         }
 
         this.destroy();
+    }
+
+    public destroy() {
+        let visualPulseComponent = this.getComponent(VisualPulse);
+        if (visualPulseComponent) {
+            visualPulseComponent.destroy();
+        }
+        super.destroy();
+    }
+
+    public update(_time: number, _delta: number): void {
+        super.update(_time, _delta);
+        if (this.outOfBounds()) {
+            this.destroy();
+        }
+
+    }
+
+    private outOfBounds(): boolean {
+        if (!this.scene) {
+            return true;
+        }
+
+        const gameWidth = this.scene.game.config.width as number;
+        const gameHeight = this.scene.game.config.height as number;
+
+        if (this.x < 0 ||
+            this.x > gameWidth ||
+            this.y < 0 ||
+            this.y > gameHeight) {
+            return true;
+        }
+
+        return false;
     }
 }

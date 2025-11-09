@@ -11,6 +11,7 @@ import {BombAttack} from '../components/BombAttack';
 import {Healer} from "../entities/Healer.ts";
 import {FindNearestTower} from "../components/FindNearestTower.ts";
 import {WaveAmplifier} from "../components/WaveAmplifier.ts";
+import {VisualPulse} from "../components/VisualPulse.ts"; // Import VisualPulse
 
 // Define game area and HUD area dimensions
 export const GAME_WIDTH = 1920;
@@ -113,7 +114,10 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
             font: '20px Roboto',
             color: '#ffffff'
         }).setScrollFactor(0);
-        this.moneyText = this.add.text(hudX + 400, hudY, '', {font: '20px Roboto', color: '#ffffff'}).setScrollFactor(0);
+        this.moneyText = this.add.text(hudX + 400, hudY, '', {
+            font: '20px Roboto',
+            color: '#ffffff'
+        }).setScrollFactor(0);
         this.waveProgressText = this.add.text(hudX + 600, hudY, '', {
             font: '20px Roboto',
             color: '#ffffff'
@@ -132,17 +136,22 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
         // --- Player ---
         this.player = new Player({scene: this, x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2, texture: 'player'});
         this.player.addComponent(new FindNearestTower());
-        this.player.addComponent(new WaveAmplifier(this.healers, this.messageText))
+        this.player.addComponent(new WaveAmplifier(this.healers))
         this.add.existing(this.player);
 
         // --- Tower Placement Slots ---
         this.createTowerSlots();
 
         // --- Collision Setup ---
+        // @ts-ignore
         this.physics.add.overlap(this.bullets, this.enemies, this.handleBulletEnemyCollision, undefined, this);
+        // @ts-ignore
         this.physics.add.overlap(this.bullets, this.healers, this.handleBulletHealerCollision, undefined, this);
+        // @ts-ignore
         this.physics.add.overlap(this.bombs, this.enemies, this.handleBombEnemyCollision, undefined, this);
+        // @ts-ignore
         this.physics.add.overlap(this.bombs, this.healers, this.handleBombHealerCollision, undefined, this);
+        // @ts-ignore
         this.physics.add.overlap(this.bullets, this.player, this.handleBulletPlayerCollision, undefined, this); // Player absorbs bullets
 
         // --- Visual Separator ---
@@ -441,11 +450,13 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
             this.towers.add(tower, true);
             tower.addComponent(new Targeting(150, [this.enemies, this.healers]));
             tower.addComponent(new LaserAttack(200, 25, 300, this.bullets));
+            tower.addComponent(new VisualPulse(Phaser.Display.Color.ValueToColor('rgba(255,0,132,0.84)').color, 150, 1000));
         } else if (towerType === 'tower2') {
             const tower = new Tower({scene: this, x, y, texture: 'tower2'});
             this.towers.add(tower, true);
             tower.addComponent(new Targeting(180, [this.enemies, this.healers]));
             tower.addComponent(new BombAttack(1500, 100, 133, 75, this.bombs, [this.enemies, this.healers]));
+            tower.addComponent(new VisualPulse(Phaser.Display.Color.ValueToColor('0xff00ff').color, 250, 2000));
         }
     }
 

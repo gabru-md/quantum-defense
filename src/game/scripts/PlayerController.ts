@@ -6,7 +6,7 @@ import { GAME_WIDTH, GAME_HEIGHT } from '../scenes/BaseTowerDefenseLevel'; // Im
  * A script that moves a GameObject based on WASD keyboard input.
  */
 export class PlayerController extends Component {
-  public speed: number = 125; // pixels per second
+  public speed: number = 175; // pixels per second
   private keys!: {
     w: Phaser.Input.Keyboard.Key;
     a: Phaser.Input.Keyboard.Key;
