@@ -2,16 +2,17 @@ import * as Phaser from 'phaser';
 import {Enemy} from '../entities/Enemy';
 import {Tower} from '../entities/Tower';
 import {Bullet} from '../entities/Bullet';
-import {Bomb} from '../entities/Bomb'; // Import Bomb
+import {Bomb} from '../entities/Bomb';
+import {Player} from '../entities/Player'; // Import Player
 import {GameObject} from '../core/GameObject';
-import {Targeting} from "../components/Targeting.ts";
-import {LaserAttack} from "../components/LaserAttack.ts";
-import {BombAttack} from "../components/BombAttack.ts";
+import {Targeting} from '../components/Targeting';
+import {LaserAttack} from '../components/LaserAttack';
+import {BombAttack} from '../components/BombAttack';
+import {Healer} from "../entities/Healer.ts";
 
 // Define game area and HUD area dimensions
-export const GAME_AREA_WIDTH = 800;
-export const GAME_HEIGHT = 768; // Full height of the game
-export const HUD_AREA_WIDTH = 1027 - GAME_AREA_WIDTH; // 227
+export const GAME_WIDTH = 1920;
+export const GAME_HEIGHT = 1000; // Full height of the game
 export const TILE_SIZE = 32;
 
 // Tower Costs
@@ -22,9 +23,11 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
     protected paths!: { [key: string]: Phaser.Curves.Path };
     protected pathGraphics!: Phaser.GameObjects.Graphics;
     protected enemies!: Phaser.GameObjects.Group;
+    protected healers!: Phaser.GameObjects.Group;
     protected towers!: Phaser.GameObjects.Group;
     protected bullets!: Phaser.GameObjects.Group;
-    protected bombs!: Phaser.GameObjects.Group; // New group for bombs
+    protected bombs!: Phaser.GameObjects.Group;
+    protected player!: Player; // Declare player property
 
     // Game State
     protected baseHealth: number = 100;
@@ -33,6 +36,8 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
     protected enemiesRemaining: number = 0;
     protected enemiesSpawnedInWave: number = 0;
     protected maxEnemiesInWave: number = 20;
+    protected healersSpawnedInWave: number = 0;
+    protected gameOver: boolean = false;
 
     // UI Elements
     protected levelText!: Phaser.GameObjects.Text;
@@ -40,14 +45,13 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
     protected moneyText!: Phaser.GameObjects.Text;
     protected waveProgressText!: Phaser.GameObjects.Text;
     protected messageText!: Phaser.GameObjects.Text;
-    private helpText!: Phaser.GameObjects.Text;
 
     // Abstract methods to be implemented by concrete level classes
-
     protected abstract getTowerSlots(): { x: number; y: number }[];
 
     protected abstract getWaveConfig(wave: number): {
-        enemyType: string;
+        type: string;
+        texture: string;
         count: number;
         delay: number;
         health: number;
@@ -60,28 +64,28 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
 
     protected abstract nextScene(): string;
 
-    protected definePaths() {
-    }
+    protected abstract definePaths(): void;
 
     constructor(key: string) {
         super({key});
     }
 
     public preload(): void {
-        // Placeholder textures - specific levels can add more
-        this.createPlaceholderTexture('enemy1', 32, 32, '#7777ff'); // Blue for normal enemy
-        this.createPlaceholderTexture('enemy2', 24, 24, '#ff7777'); // Red for fast enemy
-        this.createPlaceholderTexture('enemy3', 40, 40, '#77ff77'); // Green for tanky enemy
-        this.createPlaceholderCircleTexture('tower1', 32, 32, '#00ff00'); // Green for laser tower
-        this.createPlaceholderCircleTexture('tower2', 32, 32, '#ff00ff'); // Purple for bomb tower
-        this.createPlaceholderCircleTexture('bullet', 10, 10, '#ffff00'); // Yellow for laser bullet
-        this.createPlaceholderTriangleTexture('bomb', 20, 20, '#ff8800'); // Orange for bomb projectile
-        this.createPlaceholderTexture('towerSlot', TILE_SIZE, TILE_SIZE, '#555555'); // Grey for tower slot
+        this.createPlaceholderTexture('enemy1', 32, 32, '#7777ff');
+        this.createPlaceholderTexture('enemy2', 24, 24, '#ff7777');
+        this.createPlaceholderTexture('enemy3', 40, 40, '#f4d753');
+        this.createPlaceholderCircleTexture('tower1', 32, 32, 'rgba(255,0,132,0.84)');
+        this.createPlaceholderCircleTexture('tower2', 32, 32, '#ff00ff');
+        this.createPlaceholderCircleTexture('bullet', 10, 10, '#cf0d0d');
+        this.createPlaceholderTriangleTexture('bomb', 20, 20, '#ff8800');
+        this.createPlaceholderTexture('healer', 24, 24, '#048a49');
+        this.createPlaceholderTexture('towerSlot', TILE_SIZE, TILE_SIZE, '#555555');
+        this.createPlaceholderCircleTexture('player', 24, 24, '#ffa500'); // Orange player circle
     }
 
     public create(): void {
         // --- Physics World Bounds ---
-        this.physics.world.setBounds(0, 0, GAME_AREA_WIDTH, GAME_HEIGHT);
+        this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
         // --- Define Path (implemented by concrete level) ---
         this.definePaths();
@@ -93,33 +97,45 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
 
         // --- Groups ---
         this.enemies = this.add.group({classType: Enemy, runChildUpdate: false});
+        this.healers = this.add.group({classType: Healer, runChildUpdate: false});
         this.towers = this.add.group({classType: Tower, runChildUpdate: false});
         this.bullets = this.add.group({classType: Bullet, runChildUpdate: false});
-        this.bombs = this.add.group({classType: Bomb, runChildUpdate: false}); // Initialize bombs group
+        this.bombs = this.add.group({classType: Bomb, runChildUpdate: false});
+
+        // --- Player ---
+        this.player = new Player({scene: this, x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2, texture: 'player'});
+        this.add.existing(this.player);
 
         // --- Tower Placement Slots ---
         this.createTowerSlots();
 
         // --- Collision Setup ---
-        // @ts-ignore
         this.physics.add.overlap(this.bullets, this.enemies, this.handleBulletEnemyCollision, undefined, this);
-        // @ts-ignore
-        this.physics.add.overlap(this.bombs, this.enemies, this.handleBombEnemyCollision, undefined, this); // New bomb collision
+        this.physics.add.overlap(this.bullets, this.healers, this.handleBulletHealerCollision, undefined, this);
+        this.physics.add.overlap(this.bombs, this.enemies, this.handleBombEnemyCollision, undefined, this);
+        this.physics.add.overlap(this.bombs, this.healers, this.handleBombHealerCollision, undefined, this);
+        this.physics.add.overlap(this.bullets, this.player, this.handleBulletPlayerCollision, undefined, this); // Player absorbs bullets
 
         // --- UI Setup (positioned in HUD area) ---
-        const hudX = GAME_AREA_WIDTH + 10;
+        const hudY = GAME_HEIGHT + 20;
+        const hudX: number = GAME_WIDTH / 4;
 
+        this.levelText = this.add.text(hudX, hudY, '', {font: '20px Roboto', color: '#ffffff'}).setScrollFactor(0);
+        this.baseHealthText = this.add.text(hudX + 200, hudY, '', {
+            font: '20px Roboto',
+            color: '#ffffff'
+        }).setScrollFactor(0);
+        this.moneyText = this.add.text(hudX + 400, hudY, '', {font: '20px Roboto', color: '#ffffff'}).setScrollFactor(0);
+        this.waveProgressText = this.add.text(hudX + 600, hudY, '', {
+            font: '20px Roboto',
+            color: '#ffffff'
+        }).setScrollFactor(0);
+        // this.helpText = this.add.text(400, hudY, '', {font: '20px Roboto', color: '#ffffff'}).setScrollFactor(0);
 
-        this.levelText = this.add.text(hudX, 0, '', {font: '20px Arial', color: '#ffffff'}).setScrollFactor(0);
-        this.baseHealthText = this.add.text(hudX, 30, '', {font: '20px Arial', color: '#ffffff'}).setScrollFactor(0);
-        this.moneyText = this.add.text(hudX, 60, '', {font: '20px Arial', color: '#ffffff'}).setScrollFactor(0);
-        this.waveProgressText = this.add.text(hudX, 90, '', {font: '20px Arial', color: '#ffffff'}).setScrollFactor(0);
-        this.helpText = this.add.text(hudX, 120, '', {font: '20px Arial', color: '#ffffff'}).setScrollFactor(0);
-
-        this.messageText = this.add.text(GAME_AREA_WIDTH / 2, GAME_HEIGHT / 2, '', {
-            font: '48px Arial',
+        this.messageText = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2, '', {
+            font: '48px Roboto',
             color: '#ff0000',
-            backgroundColor: '#000000',
+            backgroundColor: 'rgba(0,0,0,0.40)',
             padding: {x: 20, y: 10}
         }).setOrigin(0.5).setScrollFactor(0).setVisible(false);
 
@@ -127,10 +143,37 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
 
         // --- Visual Separator ---
         this.add.graphics()
-            .lineStyle(2, 0xffffff, 1)
+            .lineStyle(1, 0xffffff, 1)
             .beginPath()
-            .moveTo(GAME_AREA_WIDTH, 0)
-            .lineTo(GAME_AREA_WIDTH, GAME_HEIGHT)
+            .moveTo(GAME_WIDTH, 0)
+            .lineTo(GAME_WIDTH, GAME_HEIGHT)
+            .closePath()
+            .stroke()
+            .setScrollFactor(0);
+
+        this.add.graphics()
+            .lineStyle(1, 0xffffff, 1)
+            .beginPath()
+            .moveTo(0, 0)
+            .lineTo(0, GAME_HEIGHT)
+            .closePath()
+            .stroke()
+            .setScrollFactor(0);
+
+        this.add.graphics()
+            .lineStyle(1, 0xffffff, 1)
+            .beginPath()
+            .moveTo(0, 0)
+            .lineTo(GAME_WIDTH, 0)
+            .closePath()
+            .stroke()
+            .setScrollFactor(0);
+
+        this.add.graphics()
+            .lineStyle(1, 0xffffff, 1)
+            .beginPath()
+            .moveTo(0, GAME_HEIGHT)
+            .lineTo(GAME_WIDTH, GAME_HEIGHT)
             .closePath()
             .stroke()
             .setScrollFactor(0);
@@ -167,14 +210,15 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
             }
             return null;
         });
+        this.player.update(time, delta); // Update the player
     }
 
     protected updateUI(): void {
         this.levelText.setText(this.scene.key)
         this.baseHealthText.setText(`Base Health: ${this.baseHealth}`);
         this.moneyText.setText(`Money: $${this.money}`);
-        this.waveProgressText.setText(`Wave ${this.currentWave}: ${this.enemiesSpawnedInWave}/${this.maxEnemiesInWave} Spawned`);
-        this.helpText.setText(`Help:\n------------------\nLeft-Click to Place\nTower 1 with Bullets,\nRight-Click to place\nTower 2 with Bomb\n------------------`);
+        this.waveProgressText.setText(`Wave ${this.currentWave}: ${this.enemiesSpawnedInWave}/${this.maxEnemiesInWave}`);
+        // this.helpText.setText(`Help:\n------------------\nLeft-Click to Place\nTower 1 with Bullets,\nRight-Click to place\nTower 2 with Bomb\n------------------`);
     }
 
     protected handleEnemyDied(moneyValue: number): void {
@@ -192,24 +236,35 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
         this.checkWaveCompletion();
     }
 
+    protected handleHealerReachedEnd(moneyValue: number): void {
+        this.baseHealth += 5;
+        this.money += moneyValue;
+        this.updateUI();
+        this.checkGameOver();
+        this.checkWaveCompletion();
+    }
+
     protected checkGameOver(): void {
         if (this.baseHealth <= 0) {
             this.baseHealth = 0;
             this.updateUI();
             this.messageText.setText('GAME OVER!').setVisible(true);
+            this.gameOver = true;
             this.physics.pause();
             this.time.delayedCall(3000, () => this.scene.restart());
         }
     }
 
     protected checkWaveCompletion(): void {
+        if (this.gameOver) {
+            return;
+        }
         if (this.enemiesSpawnedInWave >= this.maxEnemiesInWave && this.enemiesRemaining === 0) {
             if (this.noMoreWavesLeft()) {
                 this.physics.pause();
                 this.messageText.setText('LEVEL COMPLETE!').setColor('#00ff00').setVisible(true);
                 this.time.delayedCall(1500, () => this.messageText.setVisible(false));
                 this.scene.start(this.nextScene());
-
             } else {
                 this.messageText.setText('NEXT WAVE INCOMING!').setColor('#00ff00').setVisible(true);
                 this.time.delayedCall(1500, () => {
@@ -233,9 +288,30 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
     protected handleBombEnemyCollision(bombObject: Phaser.GameObjects.GameObject): void {
         if (bombObject instanceof Bomb) {
             const bomb = bombObject as Bomb;
-            // When a bomb hits ANY enemy, it explodes.
             bomb.explode();
         }
+    }
+
+    protected handleBombHealerCollision(bombObject: Phaser.GameObjects.GameObject): void {
+        if (bombObject instanceof Bomb) {
+            const bomb = bombObject as Bomb;
+            bomb.explode();
+        }
+    }
+
+    protected handleBulletHealerCollision(bullet: Bullet, healerObject: Phaser.GameObjects.GameObject): void {
+        if (healerObject instanceof GameObject) {
+            const healer = healerObject as Healer;
+            bullet.applyDamage(healer);
+        } else {
+            console.warn("Collision detected with an object not recognized as a custom GameObject:", healerObject);
+        }
+    }
+
+    protected handleBulletPlayerCollision(bullet: Bullet, _player: Player): void {
+        // Player absorbs the bullet, so destroy the bullet
+        bullet.destroy();
+        // Optionally, you could add a score or a visual effect here
     }
 
     protected createTowerSlots(): void {
@@ -243,9 +319,7 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
         for (const slot of slots) {
             const towerSlot = this.add.sprite(slot.x, slot.y, 'towerSlot').setInteractive();
             towerSlot.on('pointerdown', () => {
-                // Simple tower selection for now: right-click for Tower2, left-click for Tower1
-                // This will be replaced by a proper UI later
-                let towerType = 'tower1'; // Default to Tower1
+                let towerType = 'tower1';
                 if (this.input.activePointer.rightButtonDown()) {
                     towerType = 'tower2';
                 }
@@ -257,11 +331,11 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
     protected tryPlaceTower(x: number, y: number, towerType: string, towerSlotSprite: Phaser.GameObjects.Sprite): void {
         const cost = this.getTowerCost(towerType);
 
-        if (towerSlotSprite.texture.key === 'towerSlot') { // Check if slot is empty
+        if (towerSlotSprite.texture.key === 'towerSlot') {
             if (this.money >= cost) {
                 this.placeSpecificTower(x, y, towerType);
                 this.money -= cost;
-                towerSlotSprite.setTexture(towerType); // Set texture to placed tower
+                towerSlotSprite.setTexture(towerType);
                 towerSlotSprite.disableInteractive();
                 this.updateUI();
             } else {
@@ -278,29 +352,49 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
             return;
         }
 
-        this.maxEnemiesInWave = waveConfig.reduce((sum, config) => sum + config.count, 0);
+        this.maxEnemiesInWave = waveConfig.reduce((sum, config) => sum + (config.type === 'enemy' ? config.count : 0), 0);
         this.enemiesRemaining = this.maxEnemiesInWave;
         this.enemiesSpawnedInWave = 0;
 
-        waveConfig.forEach(enemyBatch => {
-            for (let i = 0; i < enemyBatch.count; i++) {
+
+        waveConfig.forEach(waveConfig => {
+            let spawnDelay = 0;
+            for (let i = 0; i < waveConfig.count; i++) {
                 this.time.addEvent({
-                    delay: i * enemyBatch.delay, // Delay each enemy within the batch
+                    delay: spawnDelay,
                     callback: () => {
-                        const enemy = new Enemy({
-                            scene: this,
-                            path: this.paths[enemyBatch.path],
-                            texture: enemyBatch.enemyType,
-                            health: enemyBatch.health,
-                            speed: enemyBatch.speed, // Use enemyBatch.speed
-                            moneyValue: enemyBatch.moneyValue
-                        });
-                        this.enemies.add(enemy, true);
-                        enemy.on('reachedEnd', this.handleEnemyReachedEnd, this);
-                        this.enemiesSpawnedInWave++;
-                        this.updateUI();
-                    }, callbackScope: this,
+                        if (waveConfig.type === 'enemy') {
+                            const enemy = new Enemy({
+                                scene: this,
+                                path: this.paths[waveConfig.path],
+                                texture: waveConfig.texture,
+                                health: waveConfig.health,
+                                speed: waveConfig.speed,
+                                moneyValue: waveConfig.moneyValue
+                            });
+                            this.enemies.add(enemy, true);
+                            enemy.on('reachedEnd', this.handleEnemyReachedEnd, this);
+                            this.enemiesSpawnedInWave++;
+                            this.updateUI();
+                        }
+                        if (waveConfig.type === 'healer') {
+                            const healer = new Healer({
+                                scene: this,
+                                path: this.paths[waveConfig.path],
+                                texture: waveConfig.texture,
+                                health: waveConfig.health,
+                                speed: waveConfig.speed,
+                                moneyValue: waveConfig.moneyValue
+                            });
+                            this.healers.add(healer, true);
+                            healer.on('healerReachedEnd', this.handleHealerReachedEnd, this);
+                            this.healersSpawnedInWave++;
+                            this.updateUI();
+                        }
+                    },
+                    callbackScope: this,
                 });
+                spawnDelay += waveConfig.delay;
             }
         });
     }
@@ -317,25 +411,20 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
         const graphics = this.make.graphics({x: 0, y: 0});
         graphics.fillStyle(Phaser.Display.Color.ValueToColor(color).color);
 
-        // Define the three points of the triangle
-        // For a simple upright triangle:
-        const p1x = width / 2; // Top center
+        const p1x = width / 2;
         const p1y = 0;
-
-        const p2x = 0;         // Bottom left
+        const p2x = 0;
         const p2y = height;
-
-        const p3x = width;     // Bottom right
+        const p3x = width;
         const p3y = height;
 
         graphics.fillTriangle(p1x, p1y, p2x, p2y, p3x, p3y);
-
         graphics.generateTexture(key, width, height);
         graphics.destroy();
     }
 
     protected createPlaceholderCircleTexture(key: string, width: number, height: number, color: string): void {
-        const graphics = this.make.graphics({x: 0, y: 0}); // Start graphics at 0,0 for drawing
+        const graphics = this.make.graphics({x: 0, y: 0});
         graphics.fillStyle(Phaser.Display.Color.ValueToColor(color).color);
         graphics.fillCircle(width / 2, height / 2, Math.min(width, height) / 2);
         graphics.generateTexture(key, width, height);
@@ -346,13 +435,13 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
         if (towerType === 'tower1') {
             const tower = new Tower({scene: this, x, y, texture: 'tower1'});
             this.towers.add(tower, true);
-            tower.addComponent(new Targeting(150, this.enemies));
+            tower.addComponent(new Targeting(150, [this.enemies, this.healers]));
             tower.addComponent(new LaserAttack(200, 25, 300, this.bullets));
         } else if (towerType === 'tower2') {
             const tower = new Tower({scene: this, x, y, texture: 'tower2'});
             this.towers.add(tower, true);
-            tower.addComponent(new Targeting(180, this.enemies)); // Slightly larger range for bomb tower
-            tower.addComponent(new BombAttack(1500, 100, 133, 75, this.bombs, this.enemies)); // Slower fire rate, more damage, AoE
+            tower.addComponent(new Targeting(180, [this.enemies, this.healers]));
+            tower.addComponent(new BombAttack(1500, 100, 133, 75, this.bombs, [this.enemies, this.healers]));
         }
     }
 

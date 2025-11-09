@@ -44,7 +44,8 @@ export class Level5 extends BaseTowerDefenseLevel {
     }
 
     protected getWaveConfig(wave: number): {
-        enemyType: string;
+        type: string;
+        texture: string;
         count: number;
         delay: number;
         health: number;
@@ -54,9 +55,9 @@ export class Level5 extends BaseTowerDefenseLevel {
     }[] {
         if (wave === 1) {
             return [
-                {enemyType: 'enemy1', count: 5, delay: 500, health: 100, speed: 50, moneyValue: 10, path: 'first'},
-                {enemyType: 'enemy2', count: 2, delay: 500, health: 50, speed: 100, moneyValue: 15, path: 'first'},
-                {enemyType: 'enemy3', count: 5, delay: 1000, health: 500, speed: 25, moneyValue: 50, path: 'first'}
+                {type: 'enemy', texture: 'enemy1', count: 5, delay: 500, health: 100, speed: 50, moneyValue: 10, path: 'first'},
+                {type: 'enemy', texture: 'enemy2', count: 2, delay: 500, health: 50, speed: 100, moneyValue: 15, path: 'first'},
+                {type: 'enemy', texture: 'enemy3', count: 5, delay: 1000, health: 500, speed: 25, moneyValue: 50, path: 'first'}
             ]
         }
         return [];

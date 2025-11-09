@@ -7,8 +7,8 @@ import {Level5} from './game/scenes/Level5';
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
-    width: 1027,
-    height: 768,
+    width: 1920,
+    height: 1080,
     scene: [Level1, Level2, Level3, Level4, Level5],
     // scene: [Level3],
     physics: {

@@ -1,43 +1,60 @@
 import { Component } from '../core/Component';
 import * as Phaser from 'phaser';
+import { GAME_WIDTH, GAME_HEIGHT } from '../scenes/BaseTowerDefenseLevel'; // Import game area dimensions
 
 /**
- * A simple script that moves a GameObject based on keyboard input, using Phaser's input system.
- * Attach this to a GameObject to make it controllable by the player.
+ * A script that moves a GameObject based on WASD keyboard input.
  */
 export class PlayerController extends Component {
-  public speed: number = 200; // pixels per second
-  private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+  public speed: number = 125; // pixels per second
+  private keys!: {
+    w: Phaser.Input.Keyboard.Key;
+    a: Phaser.Input.Keyboard.Key;
+    s: Phaser.Input.Keyboard.Key;
+    d: Phaser.Input.Keyboard.Key;
+  };
 
   public start(): void {
-    // Use the scene's input system to create cursor keys
     if (this.gameObject.scene.input.keyboard) {
-        this.cursors = this.gameObject.scene.input.keyboard.createCursorKeys();
+      this.keys = this.gameObject.scene.input.keyboard.addKeys({
+        w: Phaser.Input.Keyboard.KeyCodes.W,
+        a: Phaser.Input.Keyboard.KeyCodes.A,
+        s: Phaser.Input.Keyboard.KeyCodes.S,
+        d: Phaser.Input.Keyboard.KeyCodes.D,
+      }) as {
+        w: Phaser.Input.Keyboard.Key;
+        a: Phaser.Input.Keyboard.Key;
+        s: Phaser.Input.Keyboard.Key;
+        d: Phaser.Input.Keyboard.Key;
+      };
     }
   }
 
   public update(_deltaTime: number): void {
-    // It's often easier to work with a normalized velocity vector
     const body = this.gameObject.body as Phaser.Physics.Arcade.Body;
-    if (!this.cursors || !body) {
+    if (!this.keys || !body) {
       return;
     }
 
     body.setVelocity(0);
 
-    if (this.cursors.left.isDown) {
+    if (this.keys.a.isDown) {
       body.setVelocityX(-this.speed);
-    } else if (this.cursors.right.isDown) {
+    } else if (this.keys.d.isDown) {
       body.setVelocityX(this.speed);
     }
 
-    if (this.cursors.up.isDown) {
+    if (this.keys.w.isDown) {
       body.setVelocityY(-this.speed);
-    } else if (this.cursors.down.isDown) {
+    } else if (this.keys.s.isDown) {
       body.setVelocityY(this.speed);
     }
     
     // Normalize the velocity to prevent faster diagonal movement
     body.velocity.normalize().scale(this.speed);
+
+    // Keep player within game bounds (GAME_AREA_WIDTH)
+    this.gameObject.x = Phaser.Math.Clamp(this.gameObject.x, this.gameObject.width / 2, GAME_WIDTH - this.gameObject.width / 2);
+    this.gameObject.y = Phaser.Math.Clamp(this.gameObject.y, this.gameObject.height / 2, GAME_HEIGHT - this.gameObject.height / 2);
   }
 }

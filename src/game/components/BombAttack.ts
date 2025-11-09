@@ -14,16 +14,16 @@ export class BombAttack extends Component {
   private readonly damage: number;
   private readonly bombSpeed: number;
   private readonly explosionRadius: number;
-  private readonly enemiesGroup: Phaser.GameObjects.Group; // Need this for AoE damage
+  private readonly targetableGroups: Phaser.GameObjects.Group[]; // Need this for AoE damage
 
-  constructor(fireRate: number, damage: number, bombSpeed: number, explosionRadius: number, bombs: Phaser.GameObjects.Group, enemiesGroup: Phaser.GameObjects.Group) {
+  constructor(fireRate: number, damage: number, bombSpeed: number, explosionRadius: number, bombs: Phaser.GameObjects.Group, targetableGroups: Phaser.GameObjects.Group[]) {
     super();
     this.fireRate = fireRate;
     this.damage = damage;
     this.bombSpeed = bombSpeed;
     this.explosionRadius = explosionRadius;
     this.bombs = bombs;
-    this.enemiesGroup = enemiesGroup;
+    this.targetableGroups = targetableGroups;
   }
 
   public start(): void {
@@ -50,7 +50,7 @@ export class BombAttack extends Component {
     this.bombs.add(bomb, true);
 
     if (bomb) {
-      bomb.fire(this.gameObject.x, this.gameObject.y, target.x, target.y, this.bombSpeed, this.damage, this.explosionRadius, this.enemiesGroup);
+      bomb.fire(this.gameObject.x, this.gameObject.y, target.x, target.y, this.bombSpeed, this.damage, this.explosionRadius, this.targetableGroups);
     }
   }
 }

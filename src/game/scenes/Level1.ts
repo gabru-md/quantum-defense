@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import {BaseTowerDefenseLevel, GAME_HEIGHT, TOWER1_COST, TOWER2_COST} from './BaseTowerDefenseLevel';
+import {BaseTowerDefenseLevel, GAME_HEIGHT, GAME_WIDTH, TOWER1_COST, TOWER2_COST} from './BaseTowerDefenseLevel';
 
 export class Level1 extends BaseTowerDefenseLevel {
     constructor() {
@@ -10,21 +10,25 @@ export class Level1 extends BaseTowerDefenseLevel {
         const path = new Phaser.Curves.Path(50, -50); // Start off-screen top
         path.lineTo(50, 150);
         path.lineTo(450, 150);
-        path.lineTo(450, 350);
-        path.lineTo(250, 350);
-        path.lineTo(250, 550);
-        path.lineTo(750, 550);
-        path.lineTo(750, GAME_HEIGHT + 50);
+        path.lineTo(450, 875);
+        path.lineTo(950, 875);
+        path.lineTo(950, 600);
+        path.lineTo(1400, 600);
+        path.lineTo(1400, 275);
+        path.lineTo(GAME_WIDTH - 100, 275);
+        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT);
         return path;
     }
 
     private secondPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(750, -50); // Start off-screen top
-        path.lineTo(750, 350);
-        path.lineTo(450, 350);
+        const path = new Phaser.Curves.Path(1150, -50); // Start off-screen top
+        path.lineTo(1150, 475);
+        path.lineTo(750, 475);
+        path.lineTo(750, 300);
+        path.lineTo(450, 300);
         path.lineTo(450, 550);
-        path.lineTo(50, 550);
-        path.lineTo(50, GAME_HEIGHT + 50);
+        path.lineTo(200, 550);
+        path.lineTo(200, GAME_HEIGHT);
         return path;
     }
 
@@ -45,7 +49,8 @@ export class Level1 extends BaseTowerDefenseLevel {
     }
 
     protected getWaveConfig(wave: number): {
-        enemyType: string;
+        type: string;
+        texture: string;
         count: number;
         delay: number;
         health: number;
@@ -55,18 +60,20 @@ export class Level1 extends BaseTowerDefenseLevel {
     }[] {
         if (wave === 1) {
             return [
-                {enemyType: 'enemy1', count: 15, delay: 1000, health: 100, speed: 50, moneyValue: 10, path: 'second'}
+                {type: 'enemy', texture: 'enemy1', count: 15, delay: 1000, health: 100, speed: 50, moneyValue: 10, path: 'second'},
+                {type: 'healer', texture: 'healer', count: 3, delay: 500, health: 50, speed: 100, moneyValue: 50, path: 'first'},
+                {type: 'enemy', texture: 'enemy2', count: 10, delay: 1200, health: 50, speed: 100, moneyValue: 50, path: 'first'}
             ];
         }
         if (wave === 2) {
             return [
-                {enemyType: 'enemy1', count: 10, delay: 1500, health: 100, speed: 50, moneyValue: 10, path: 'first'}
+                {type: 'enemy', texture: 'enemy1', count: 10, delay: 1500, health: 100, speed: 50, moneyValue: 10, path: 'first'}
             ]
         }
         if (wave === 3) {
             return [
-                {enemyType: 'enemy1', count: 15, delay: 1000, health: 100, speed: 40, moneyValue: 10, path: 'second'},
-                {enemyType: 'enemy1', count: 10, delay: 1500, health: 100, speed: 60, moneyValue: 10, path: 'first'}
+                {type: 'enemy', texture: 'enemy1', count: 15, delay: 1000, health: 100, speed: 40, moneyValue: 10, path: 'second'},
+                {type: 'enemy', texture: 'enemy1', count: 10, delay: 1500, health: 100, speed: 60, moneyValue: 10, path: 'first'}
             ]
         }
         return []; // No more waves for this level yet
