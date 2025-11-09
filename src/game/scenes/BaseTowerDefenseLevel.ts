@@ -9,6 +9,8 @@ import {Targeting} from '../components/Targeting';
 import {LaserAttack} from '../components/LaserAttack';
 import {BombAttack} from '../components/BombAttack';
 import {Healer} from "../entities/Healer.ts";
+import {FindNearestTower} from "../components/FindNearestTower.ts";
+import {WaveAmplifier} from "../components/WaveAmplifier.ts";
 
 // Define game area and HUD area dimensions
 export const GAME_WIDTH = 1920;
@@ -102,20 +104,6 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
         this.bullets = this.add.group({classType: Bullet, runChildUpdate: false});
         this.bombs = this.add.group({classType: Bomb, runChildUpdate: false});
 
-        // --- Player ---
-        this.player = new Player({scene: this, x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2, texture: 'player'});
-        this.add.existing(this.player);
-
-        // --- Tower Placement Slots ---
-        this.createTowerSlots();
-
-        // --- Collision Setup ---
-        this.physics.add.overlap(this.bullets, this.enemies, this.handleBulletEnemyCollision, undefined, this);
-        this.physics.add.overlap(this.bullets, this.healers, this.handleBulletHealerCollision, undefined, this);
-        this.physics.add.overlap(this.bombs, this.enemies, this.handleBombEnemyCollision, undefined, this);
-        this.physics.add.overlap(this.bombs, this.healers, this.handleBombHealerCollision, undefined, this);
-        this.physics.add.overlap(this.bullets, this.player, this.handleBulletPlayerCollision, undefined, this); // Player absorbs bullets
-
         // --- UI Setup (positioned in HUD area) ---
         const hudY = GAME_HEIGHT + 20;
         const hudX: number = GAME_WIDTH / 4;
@@ -140,6 +128,22 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
         }).setOrigin(0.5).setScrollFactor(0).setVisible(false);
 
         this.updateUI();
+
+        // --- Player ---
+        this.player = new Player({scene: this, x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2, texture: 'player'});
+        this.player.addComponent(new FindNearestTower());
+        this.player.addComponent(new WaveAmplifier(this.healers, this.messageText))
+        this.add.existing(this.player);
+
+        // --- Tower Placement Slots ---
+        this.createTowerSlots();
+
+        // --- Collision Setup ---
+        this.physics.add.overlap(this.bullets, this.enemies, this.handleBulletEnemyCollision, undefined, this);
+        this.physics.add.overlap(this.bullets, this.healers, this.handleBulletHealerCollision, undefined, this);
+        this.physics.add.overlap(this.bombs, this.enemies, this.handleBombEnemyCollision, undefined, this);
+        this.physics.add.overlap(this.bombs, this.healers, this.handleBombHealerCollision, undefined, this);
+        this.physics.add.overlap(this.bullets, this.player, this.handleBulletPlayerCollision, undefined, this); // Player absorbs bullets
 
         // --- Visual Separator ---
         this.add.graphics()
