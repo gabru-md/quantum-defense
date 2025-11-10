@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import {BaseTowerDefenseLevel, GAME_HEIGHT, TOWER1_COST, TOWER2_COST} from './BaseTowerDefenseLevel';
+import {BaseTowerDefenseLevel, GAME_HEIGHT} from './BaseTowerDefenseLevel';
 
 export class Level5 extends BaseTowerDefenseLevel {
     constructor() {
@@ -61,17 +61,6 @@ export class Level5 extends BaseTowerDefenseLevel {
             ]
         }
         return [];
-    }
-
-    protected getTowerCost(towerType: string): number {
-        switch (towerType) {
-            case 'tower1':
-                return TOWER1_COST;
-            case 'tower2':
-                return TOWER2_COST;
-            default:
-                return 0;
-        }
     }
 
     protected nextScene(): string {

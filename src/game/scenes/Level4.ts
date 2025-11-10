@@ -1,40 +1,62 @@
-import * as Phaser from 'phaser';
-import {BaseTowerDefenseLevel, GAME_HEIGHT, TOWER1_COST, TOWER2_COST} from './BaseTowerDefenseLevel';
+import {BaseTowerDefenseLevel, GAME_WIDTH, GAME_HEIGHT} from './BaseTowerDefenseLevel';
 
 export class Level4 extends BaseTowerDefenseLevel {
     constructor() {
-        super('Level 4');
+        super('Level4');
     }
 
-    private firstPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(50, -50);
-        path.lineTo(50, 100);
-        path.lineTo(700, 100);
-        path.lineTo(700, 250);
-        path.lineTo(100, 250);
-        path.lineTo(100, 400);
-        path.lineTo(700, 400);
-        path.lineTo(700, 550);
-        path.lineTo(50, 550);
-        path.lineTo(50, GAME_HEIGHT + 50);
-        return path;
-    }
+    protected definePaths(): void {
+        const p = 100; // Padding from edges
+        const s = 100; // Spacing between path rings
 
-    protected definePaths() {
-        this.paths = {
-            'first': this.firstPath()
-        }
+        const path = this.add.path(GAME_WIDTH - p, -50); // Start off-screen top-right
+
+        // --- Define the 4 rings of the spiral ---
+        // Ring 1 (Outer)
+        path.lineTo(GAME_WIDTH - p, p);
+        path.lineTo(p, p);
+        path.lineTo(p, GAME_HEIGHT - p);
+        path.lineTo(GAME_WIDTH - p, GAME_HEIGHT - p);
+        path.lineTo(GAME_WIDTH - p, p + s);
+
+        // Ring 2
+        path.lineTo(p + s, p + s);
+        path.lineTo(p + s, GAME_HEIGHT - p - s);
+        path.lineTo(GAME_WIDTH - p - s, GAME_HEIGHT - p - s);
+        path.lineTo(GAME_WIDTH - p - s, p + 2 * s);
+
+        // Ring 3
+        path.lineTo(p + 2 * s, p + 2 * s);
+        path.lineTo(p + 2 * s, GAME_HEIGHT - p - 2 * s);
+        path.lineTo(GAME_WIDTH - p - 2 * s, GAME_HEIGHT - p - 2 * s);
+        path.lineTo(GAME_WIDTH - p - 2 * s, p + 3 * s);
+
+        // Ring 4 (Inner)
+        path.lineTo(p + 3 * s, p + 3 * s);
+        path.lineTo(p + 3 * s, GAME_HEIGHT - p - 3 * s);
+
+
+        // --- End in the center ---
+        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT - p - 3 * s);
+        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT / 2);
+
+        this.paths = {'first': path};
     }
 
     protected getTowerSlots(): { x: number; y: number }[] {
+        // Place tower slots in the empty spaces between the spiral rings
         return [
-            {x: 350, y: 175},
-            {x: 550, y: 175},
-            {x: 200, y: 325},
-            {x: 400, y: 325},
-            {x: 600, y: 325},
-            {x: 350, y: 475},
-            {x: 550, y: 475},
+            // Center area
+            {x: 400, y: 200},
+            {x: 400, y: 580},
+            // Mid-ring gaps
+            {x: 170, y: 170},
+            {x: 630, y: 170},
+            {x: 170, y: 600},
+            {x: 630, y: 600},
+            // Outer corners
+            {x: 50, y: 400},
+            {x: 750, y: 400},
         ];
     }
 
@@ -62,18 +84,7 @@ export class Level4 extends BaseTowerDefenseLevel {
         return [];
     }
 
-    protected getTowerCost(towerType: string): number {
-        switch (towerType) {
-            case 'tower1':
-                return TOWER1_COST;
-            case 'tower2':
-                return TOWER2_COST;
-            default:
-                return 0;
-        }
-    }
-
     protected nextScene(): string {
-        return "Level 5";
+        return "Level5";
     }
 }

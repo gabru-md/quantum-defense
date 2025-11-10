@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import {BaseTowerDefenseLevel, GAME_HEIGHT, GAME_WIDTH, TOWER1_COST, TOWER2_COST} from './BaseTowerDefenseLevel';
+import {BaseTowerDefenseLevel, GAME_HEIGHT, GAME_WIDTH} from './BaseTowerDefenseLevel';
 
 export class Level1 extends BaseTowerDefenseLevel {
     constructor() {
@@ -12,23 +12,19 @@ export class Level1 extends BaseTowerDefenseLevel {
         path.lineTo(450, 150);
         path.lineTo(450, 875);
         path.lineTo(950, 875);
-        path.lineTo(950, 600);
-        path.lineTo(1400, 600);
-        path.lineTo(1400, 275);
+        path.lineTo(950, 275);
         path.lineTo(GAME_WIDTH - 100, 275);
-        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT);
+        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT+50);
         return path;
     }
 
     private secondPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(1150, -50); // Start off-screen top
-        path.lineTo(1150, 475);
-        path.lineTo(750, 475);
-        path.lineTo(750, 300);
-        path.lineTo(450, 300);
-        path.lineTo(450, 550);
-        path.lineTo(200, 550);
-        path.lineTo(200, GAME_HEIGHT);
+        const path = new Phaser.Curves.Path(GAME_WIDTH - 400, -50); // Start off-screen top
+        path.lineTo(GAME_WIDTH - 400, 675);
+        path.lineTo(750, 675);
+        path.lineTo(450, 675);
+        path.lineTo(200, 675);
+        path.lineTo(200, GAME_HEIGHT+50);
         return path;
     }
 
@@ -77,17 +73,6 @@ export class Level1 extends BaseTowerDefenseLevel {
             ]
         }
         return []; // No more waves for this level yet
-    }
-
-    protected getTowerCost(towerType: string): number {
-        switch (towerType) {
-            case 'tower1':
-                return TOWER1_COST;
-            case 'tower2':
-                return TOWER2_COST;
-            default:
-                return 0;
-        }
     }
 
     protected nextScene(): string {

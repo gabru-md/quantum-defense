@@ -6,7 +6,7 @@ import {Healer} from "../entities/Healer.ts";
 /**
  * A component that allows the player to activate a wave of damage around them.
  */
-export class WaveAmplifier extends Component {
+export class PlayerWaveAmplifier extends Component {
     private keys!: { e: Phaser.Input.Keyboard.Key };
     private cooldownTime: number = 3000; // 3 seconds cooldown
     private lastActivated: number = 0;
@@ -64,8 +64,8 @@ export class WaveAmplifier extends Component {
                     onUpdate: (_tween, target) => {
                         // Draw expanding circle
                         graphics.clear();
-                        graphics.lineStyle(1, 0xffa500, target.alpha * 0.8);
-                        graphics.fillStyle(0xffa500, target.alpha * 0.3);
+                        graphics.lineStyle(1, 0x048a49, target.alpha * 0.8);
+                        graphics.fillStyle(0x048a49, target.alpha * 0.3);
                         const radius = (this.gameObject.width / 2) * target.scale;
                         graphics.fillCircle(0, 0, radius);
                         graphics.strokeCircle(0, 0, radius);

@@ -8,29 +8,29 @@ export class VisualPulse extends Component {
     private pulseGraphicsList!: Phaser.GameObjects.Graphics[];
     private pulseTweenList!: Phaser.Tweens.Tween[];
 
-    constructor(private color: number, private pulseDelay: number, private duration: number, private scale: number = 2.75) {
+    constructor(private color: number, private pulseDelay: number, private duration: number, private scale: number = 2.75, private totalPulses: number = 10, private lineWidth: number = 1) {
         super();
         this.pulseTweenList = [];
         this.pulseGraphicsList = [];
     }
 
     public start(): void {
-        let totalPulses = 10;
-        for (let i = 0; i < totalPulses; i++) {
+        for (let i = 0; i < this.totalPulses; i++) {
             this.gameObject.scene.time.delayedCall(i * this.pulseDelay, () => {
-                if(!this.gameObject.active) {
+                if (!this.gameObject.active) {
+                    console.log('woops')
                     return;
                 }
                 const pulseGraphics = this.gameObject.scene.add.graphics({
                     fillStyle: {color: this.color, alpha: 0.1},
-                    lineStyle: {width: 1, color: this.color, alpha: 0.8}
+                    lineStyle: {width: this.lineWidth, color: this.color, alpha: 0.8}
                 });
                 pulseGraphics.setDepth(this.gameObject.depth - 1); // Draw pulse behind the game object
                 pulseGraphics.x = this.gameObject.x;
                 pulseGraphics.y = this.gameObject.y;
 
                 // Create a tween that animates the pulse
-                this.pulseTweenList.push( this.gameObject.scene.tweens.add({
+                this.pulseTweenList.push(this.gameObject.scene.tweens.add({
                     targets: pulseGraphics,
                     scale: this.scale, // Scale to reach desired radius
                     alpha: 0,
@@ -40,7 +40,7 @@ export class VisualPulse extends Component {
                     onUpdate: (_tween, target) => {
                         // Draw expanding circle
                         pulseGraphics.clear();
-                        pulseGraphics.lineStyle(1, this.color, target.alpha * 0.8);
+                        pulseGraphics.lineStyle(this.lineWidth, this.color, target.alpha * 0.8);
                         pulseGraphics.fillStyle(this.color, target.alpha * 0.3);
                         const radius = (this.gameObject.width / 2) * target.scale;
                         pulseGraphics.fillCircle(0, 0, radius);
@@ -58,6 +58,10 @@ export class VisualPulse extends Component {
 
     public update(_deltatime: number): void {
         // empty
+        for (let i = 0; i < this.pulseGraphicsList.length; i++) {
+            this.pulseGraphicsList[i].x = this.gameObject.x;
+            this.pulseGraphicsList[i].y = this.gameObject.y;
+        }
     }
 
     public destroy(): void {

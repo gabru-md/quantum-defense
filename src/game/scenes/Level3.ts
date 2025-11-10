@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import {BaseTowerDefenseLevel, GAME_HEIGHT, TOWER1_COST, TOWER2_COST} from './BaseTowerDefenseLevel';
+import {BaseTowerDefenseLevel, GAME_HEIGHT, GAME_WIDTH} from './BaseTowerDefenseLevel';
 
 export class Level3 extends BaseTowerDefenseLevel {
     constructor() {
@@ -7,22 +7,24 @@ export class Level3 extends BaseTowerDefenseLevel {
     }
 
     private firstPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(50, -50);
-        path.lineTo(50, 150);
-        path.lineTo(700, 150);
-        path.lineTo(700, 350);
-        path.lineTo(400, 350);
-        path.circleTo(10);
+        const path = new Phaser.Curves.Path(100, -50);
+        path.lineTo(100, 150);
+        path.lineTo(GAME_WIDTH - 100, 150);
+        path.lineTo(GAME_WIDTH - 100, 350);
+        path.lineTo(GAME_WIDTH / 2, 350);
         return path;
     }
 
     private secondPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(750, GAME_HEIGHT + 50);
-        path.lineTo(750, 550);
-        path.lineTo(100, 550);
+        const path = new Phaser.Curves.Path(GAME_WIDTH - 100, GAME_HEIGHT + 50);
+        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT - 150);
+        path.lineTo(100, GAME_HEIGHT - 150);
+        path.lineTo(100, GAME_HEIGHT - 350);
+        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT - 350);
+        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT - 500);
+        path.lineTo(100, GAME_HEIGHT - 500);
         path.lineTo(100, 350);
-        path.lineTo(400, 350);
-        path.circleTo(10);
+        path.lineTo(GAME_WIDTH / 2, 350);
         return path;
     }
 
@@ -55,28 +57,89 @@ export class Level3 extends BaseTowerDefenseLevel {
     }[] {
         if (wave === 1) {
             return [
-                {type: 'enemy', texture: 'enemy1', count: 5, delay: 1000, health: 100, speed: 50, moneyValue: 10, path: 'first'},
-                {type: 'enemy', texture: 'enemy2', count: 1, delay: 1000, health: 50, speed: 100, moneyValue: 15, path: 'first'},
-                {type: 'enemy', texture: 'enemy1', count: 5, delay: 1000, health: 100, speed: 50, moneyValue: 10, path: 'first'},
-                {type: 'enemy', texture: 'enemy3', count: 1, delay: 2000, health: 500, speed: 25, moneyValue: 50, path: 'first'}, // Tanky enemy
-                {type: 'enemy', texture: 'enemy1', count: 5, delay: 1000, health: 100, speed: 50, moneyValue: 10, path: 'second'},
-                {type: 'enemy', texture: 'enemy2', count: 1, delay: 1000, health: 50, speed: 100, moneyValue: 15, path: 'second'},
-                {type: 'enemy', texture: 'enemy1', count: 5, delay: 1000, health: 100, speed: 50, moneyValue: 10, path: 'second'},
-                {type: 'enemy', texture: 'enemy3', count: 1, delay: 2000, health: 500, speed: 25, moneyValue: 50, path: 'second'}
+                {
+                    type: 'enemy',
+                    texture: 'enemy1',
+                    count: 5,
+                    delay: 1000,
+                    health: 100,
+                    speed: 50,
+                    moneyValue: 10,
+                    path: 'first'
+                },
+                {
+                    type: 'enemy',
+                    texture: 'enemy2',
+                    count: 1,
+                    delay: 1000,
+                    health: 50,
+                    speed: 100,
+                    moneyValue: 15,
+                    path: 'first'
+                },
+                {
+                    type: 'enemy',
+                    texture: 'enemy1',
+                    count: 5,
+                    delay: 1000,
+                    health: 100,
+                    speed: 50,
+                    moneyValue: 10,
+                    path: 'first'
+                },
+                {
+                    type: 'enemy',
+                    texture: 'enemy3',
+                    count: 1,
+                    delay: 2000,
+                    health: 500,
+                    speed: 25,
+                    moneyValue: 50,
+                    path: 'first'
+                }, // Tanky enemy
+                {
+                    type: 'enemy',
+                    texture: 'enemy1',
+                    count: 5,
+                    delay: 1000,
+                    health: 100,
+                    speed: 50,
+                    moneyValue: 10,
+                    path: 'second'
+                },
+                {
+                    type: 'enemy',
+                    texture: 'enemy2',
+                    count: 1,
+                    delay: 1000,
+                    health: 50,
+                    speed: 100,
+                    moneyValue: 15,
+                    path: 'second'
+                },
+                {
+                    type: 'enemy',
+                    texture: 'enemy1',
+                    count: 5,
+                    delay: 1000,
+                    health: 100,
+                    speed: 50,
+                    moneyValue: 10,
+                    path: 'second'
+                },
+                {
+                    type: 'enemy',
+                    texture: 'enemy3',
+                    count: 1,
+                    delay: 2000,
+                    health: 500,
+                    speed: 25,
+                    moneyValue: 50,
+                    path: 'second'
+                }
             ]
         }
         return [];
-    }
-
-    protected getTowerCost(towerType: string): number {
-        switch (towerType) {
-            case 'tower1':
-                return TOWER1_COST;
-            case 'tower2':
-                return TOWER2_COST;
-            default:
-                return 0;
-        }
     }
 
     protected nextScene(): string {

@@ -10,12 +10,14 @@ import {LaserAttack} from '../components/LaserAttack';
 import {BombAttack} from '../components/BombAttack';
 import {Healer} from "../entities/Healer.ts";
 import {FindNearestTower} from "../components/FindNearestTower.ts";
-import {WaveAmplifier} from "../components/WaveAmplifier.ts";
+import {PlayerWaveAmplifier} from "../components/PlayerWaveAmplifier.ts";
 import {VisualPulse} from "../components/VisualPulse.ts"; // Import VisualPulse
 
 // Define game area and HUD area dimensions
-export const GAME_WIDTH = 1920;
-export const GAME_HEIGHT = 1000; // Full height of the game
+export const WIDTH = 1920;
+export const HEIGHT = 1080;
+export const GAME_WIDTH = WIDTH - 400;
+export const GAME_HEIGHT = HEIGHT; // Full height of the game
 export const TILE_SIZE = 32;
 
 // Tower Costs
@@ -63,7 +65,16 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
         path: string;
     }[];
 
-    protected abstract getTowerCost(towerType: string): number;
+    protected getTowerCost(towerType: string): number {
+        switch (towerType) {
+            case 'tower1':
+                return TOWER1_COST;
+            case 'tower2':
+                return TOWER2_COST;
+            default:
+                return 0;
+        }
+    }
 
     protected abstract nextScene(): string;
 
@@ -80,10 +91,10 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
         this.createPlaceholderCircleTexture('tower1', 32, 32, 'rgba(255,0,132,0.84)');
         this.createPlaceholderCircleTexture('tower2', 32, 32, '#ff00ff');
         this.createPlaceholderCircleTexture('bullet', 10, 10, '#cf0d0d');
-        this.createPlaceholderTriangleTexture('bomb', 20, 20, '#ff8800');
+        this.createPlaceholderCircleTexture('bomb', 16, 16, '#ff8800');
         this.createPlaceholderTexture('healer', 24, 24, '#048a49');
         this.createPlaceholderTexture('towerSlot', TILE_SIZE, TILE_SIZE, '#555555');
-        this.createPlaceholderCircleTexture('player', 24, 24, '#ffa500'); // Orange player circle
+        this.createPlaceholderCircleTexture('player', 24, 24, '#048a49'); // Green
     }
 
     public create(): void {
@@ -91,12 +102,7 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
         this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
         // --- Define Path (implemented by concrete level) ---
-        this.definePaths();
-        this.pathGraphics = this.add.graphics();
-        for (let pathsKey in this.paths) {
-            this.pathGraphics.lineStyle(3, 0xcccccc, 0.30);
-            this.paths[pathsKey].draw(this.pathGraphics);
-        }
+        this.setupPaths();
 
         // --- Groups ---
         this.enemies = this.add.group({classType: Enemy, runChildUpdate: false});
@@ -106,43 +112,46 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
         this.bombs = this.add.group({classType: Bomb, runChildUpdate: false});
 
         // --- UI Setup (positioned in HUD area) ---
-        const hudY = GAME_HEIGHT + 20;
-        const hudX: number = GAME_WIDTH / 4;
-
-        this.levelText = this.add.text(hudX, hudY, '', {font: '20px Roboto', color: '#ffffff'}).setScrollFactor(0);
-        this.baseHealthText = this.add.text(hudX + 200, hudY, '', {
-            font: '20px Roboto',
-            color: '#ffffff'
-        }).setScrollFactor(0);
-        this.moneyText = this.add.text(hudX + 400, hudY, '', {
-            font: '20px Roboto',
-            color: '#ffffff'
-        }).setScrollFactor(0);
-        this.waveProgressText = this.add.text(hudX + 600, hudY, '', {
-            font: '20px Roboto',
-            color: '#ffffff'
-        }).setScrollFactor(0);
-        // this.helpText = this.add.text(400, hudY, '', {font: '20px Roboto', color: '#ffffff'}).setScrollFactor(0);
-
-        this.messageText = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2, '', {
-            font: '48px Roboto',
-            color: '#ff0000',
-            backgroundColor: 'rgba(0,0,0,0.40)',
-            padding: {x: 20, y: 10}
-        }).setOrigin(0.5).setScrollFactor(0).setVisible(false);
-
-        this.updateUI();
+        this.renderHud();
 
         // --- Player ---
-        this.player = new Player({scene: this, x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2, texture: 'player'});
-        this.player.addComponent(new FindNearestTower());
-        this.player.addComponent(new WaveAmplifier(this.healers))
-        this.add.existing(this.player);
+        this.setupPlayer();
 
         // --- Tower Placement Slots ---
         this.createTowerSlots();
 
         // --- Collision Setup ---
+        this.setupCollisions();
+
+        // --- Visual Separator ---
+        this.setupGameVisualSeparators();
+        this.setupHudVisualSeparators()
+
+        // --- Event Listeners ---
+        this.events.on('enemyDied', this.handleEnemyDied, this);
+
+        // --- Wave Management ---
+        this.startWave(this.currentWave);
+    }
+
+    private setupPaths() {
+        this.definePaths();
+        this.pathGraphics = this.add.graphics();
+        for (let pathsKey in this.paths) {
+            this.pathGraphics.lineStyle(0.5, 0xcccccc, 0.30);
+            this.paths[pathsKey].draw(this.pathGraphics);
+        }
+    }
+
+    private setupPlayer() {
+        this.player = new Player({scene: this, x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2, texture: 'player'});
+        this.player.addComponent(new FindNearestTower());
+        this.player.addComponent(new PlayerWaveAmplifier(this.healers))
+        this.player.addComponent(new VisualPulse(Phaser.Display.Color.ValueToColor('rgba(4,138,73,0.8)').color, 300, 1500, 1.75, 5))
+        this.add.existing(this.player);
+    }
+
+    private setupCollisions() {
         // @ts-ignore
         this.physics.add.overlap(this.bullets, this.enemies, this.handleBulletEnemyCollision, undefined, this);
         // @ts-ignore
@@ -153,8 +162,9 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
         this.physics.add.overlap(this.bombs, this.healers, this.handleBombHealerCollision, undefined, this);
         // @ts-ignore
         this.physics.add.overlap(this.bullets, this.player, this.handleBulletPlayerCollision, undefined, this); // Player absorbs bullets
+    }
 
-        // --- Visual Separator ---
+    private setupGameVisualSeparators() {
         this.add.graphics()
             .lineStyle(1, 0xffffff, 1)
             .beginPath()
@@ -190,12 +200,73 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
             .closePath()
             .stroke()
             .setScrollFactor(0);
+    }
 
-        // --- Event Listeners ---
-        this.events.on('enemyDied', this.handleEnemyDied, this);
+    private setupHudVisualSeparators() {
+        this.add.graphics()
+            .lineStyle(1, 0xffffff, 1)
+            .beginPath()
+            .moveTo(GAME_WIDTH, 0)
+            .lineTo(GAME_WIDTH, GAME_HEIGHT)
+            .closePath()
+            .stroke()
+            .setScrollFactor(0);
 
-        // --- Wave Management ---
-        this.startWave(this.currentWave);
+        this.add.graphics()
+            .lineStyle(1, 0xffffff, 1)
+            .beginPath()
+            .moveTo(WIDTH, 0)
+            .lineTo(WIDTH, GAME_HEIGHT)
+            .closePath()
+            .stroke()
+            .setScrollFactor(0);
+
+        this.add.graphics()
+            .lineStyle(1, 0xffffff, 1)
+            .beginPath()
+            .moveTo(GAME_WIDTH, 0)
+            .lineTo(WIDTH, 0)
+            .closePath()
+            .stroke()
+            .setScrollFactor(0);
+
+        this.add.graphics()
+            .lineStyle(1, 0xffffff, 1)
+            .beginPath()
+            .moveTo(GAME_WIDTH, GAME_HEIGHT)
+            .lineTo(WIDTH, GAME_HEIGHT)
+            .closePath()
+            .stroke()
+            .setScrollFactor(0);
+    }
+
+    private renderHud() {
+        const hudY = 10
+        const hudX: number = GAME_WIDTH + 10
+        const spacing: number = 25;
+
+        this.levelText = this.add.text(hudX, hudY, '', {font: '20px Roboto', color: '#ffffff'}).setScrollFactor(0);
+        this.baseHealthText = this.add.text(hudX, hudY + spacing, '', {
+            font: '20px Roboto',
+            color: '#ffffff'
+        }).setScrollFactor(0);
+        this.moneyText = this.add.text(hudX, hudY + 2 * spacing, '', {
+            font: '20px Roboto',
+            color: '#ffffff'
+        }).setScrollFactor(0);
+        this.waveProgressText = this.add.text(hudX, hudY + 3 * spacing, '', {
+            font: '20px Roboto',
+            color: '#ffffff'
+        }).setScrollFactor(0);
+
+        this.messageText = this.add.text(hudX, hudY + 4 * spacing, '', {
+            font: '48px Roboto',
+            color: '#ff0000',
+            backgroundColor: 'rgba(0,0,0,0.40)',
+            padding: {x: 20, y: 10}
+        }).setOrigin(0.5).setScrollFactor(0).setVisible(false);
+
+        this.updateUI();
     }
 
     public update(time: number, delta: number): void {
@@ -450,13 +521,13 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
             this.towers.add(tower, true);
             tower.addComponent(new Targeting(150, [this.enemies, this.healers]));
             tower.addComponent(new LaserAttack(200, 25, 300, this.bullets));
-            tower.addComponent(new VisualPulse(Phaser.Display.Color.ValueToColor('rgba(255,0,132,0.84)').color, 150, 1000));
+            tower.addComponent(new VisualPulse(Phaser.Display.Color.ValueToColor('rgba(255,0,132,0.84)').color, 250, 1000));
         } else if (towerType === 'tower2') {
             const tower = new Tower({scene: this, x, y, texture: 'tower2'});
             this.towers.add(tower, true);
             tower.addComponent(new Targeting(180, [this.enemies, this.healers]));
             tower.addComponent(new BombAttack(1500, 100, 133, 75, this.bombs, [this.enemies, this.healers]));
-            tower.addComponent(new VisualPulse(Phaser.Display.Color.ValueToColor('0xff00ff').color, 250, 2000));
+            tower.addComponent(new VisualPulse(Phaser.Display.Color.ValueToColor('0xff00ff').color, 400, 2000));
         }
     }
 
