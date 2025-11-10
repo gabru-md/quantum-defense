@@ -1,62 +1,51 @@
-import {BaseTowerDefenseLevel, GAME_WIDTH, GAME_HEIGHT} from './BaseTowerDefenseLevel';
+import {BaseLevel, GAME_WIDTH, GAME_HEIGHT} from './BaseLevel.ts';
 
-export class Level4 extends BaseTowerDefenseLevel {
+export class Level4 extends BaseLevel {
     constructor() {
-        super('Level4');
+        super('Level 4');
     }
 
     protected definePaths(): void {
-        const p = 100; // Padding from edges
-        const s = 100; // Spacing between path rings
+        // @ts-ignore
+        const path = this.add.path();
 
-        const path = this.add.path(GAME_WIDTH - p, -50); // Start off-screen top-right
+        const centerX = GAME_WIDTH / 2;
+        const centerY = GAME_HEIGHT / 2;
+        
+        const totalRotations = 5; // More rotations to start from further out
+        const pointsPerRotation = 60;
+        const totalPoints = totalRotations * pointsPerRotation;
 
-        // --- Define the 4 rings of the spiral ---
-        // Ring 1 (Outer)
-        path.lineTo(GAME_WIDTH - p, p);
-        path.lineTo(p, p);
-        path.lineTo(p, GAME_HEIGHT - p);
-        path.lineTo(GAME_WIDTH - p, GAME_HEIGHT - p);
-        path.lineTo(GAME_WIDTH - p, p + s);
+        // The angle offset will make the spiral start from the top (-PI/2)
+        const angleOffset = -Math.PI / 2;
 
-        // Ring 2
-        path.lineTo(p + s, p + s);
-        path.lineTo(p + s, GAME_HEIGHT - p - s);
-        path.lineTo(GAME_WIDTH - p - s, GAME_HEIGHT - p - s);
-        path.lineTo(GAME_WIDTH - p - s, p + 2 * s);
+        // The starting radius needs to be large enough to be off-screen
+        const startRadius = Math.max(GAME_WIDTH / 2, GAME_HEIGHT / 2) - 50;
+        const endRadius = 0; // End at the center
 
-        // Ring 3
-        path.lineTo(p + 2 * s, p + 2 * s);
-        path.lineTo(p + 2 * s, GAME_HEIGHT - p - 2 * s);
-        path.lineTo(GAME_WIDTH - p - 2 * s, GAME_HEIGHT - p - 2 * s);
-        path.lineTo(GAME_WIDTH - p - 2 * s, p + 3 * s);
+        // Generate the spiral points
+        for (let i = 0; i <= totalPoints; i++) {
+            const progress = i / totalPoints;
+            const angle = angleOffset + (progress * totalRotations * 2 * Math.PI);
+            
+            // Radius decreases as progress increases
+            const radius = startRadius - (progress * (startRadius - endRadius));
 
-        // Ring 4 (Inner)
-        path.lineTo(p + 3 * s, p + 3 * s);
-        path.lineTo(p + 3 * s, GAME_HEIGHT - p - 3 * s);
+            const x = centerX + radius * Math.cos(angle);
+            const y = centerY + radius * Math.sin(angle);
 
-
-        // --- End in the center ---
-        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT - p - 3 * s);
-        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT / 2);
+            if (i === 0) {
+                path.moveTo(x, y); // Start the path at the first point
+            } else {
+                path.lineTo(x, y);
+            }
+        }
 
         this.paths = {'first': path};
     }
 
     protected getTowerSlots(): { x: number; y: number }[] {
-        // Place tower slots in the empty spaces between the spiral rings
         return [
-            // Center area
-            {x: 400, y: 200},
-            {x: 400, y: 580},
-            // Mid-ring gaps
-            {x: 170, y: 170},
-            {x: 630, y: 170},
-            {x: 170, y: 600},
-            {x: 630, y: 600},
-            // Outer corners
-            {x: 50, y: 400},
-            {x: 750, y: 400},
         ];
     }
 
@@ -72,19 +61,19 @@ export class Level4 extends BaseTowerDefenseLevel {
     }[] {
         if (wave === 1) {
             return [
-                {type: 'enemy', texture: 'enemy1', count: 5, delay: 800, health: 100, speed: 50, moneyValue: 10, path: 'first'},
-                {type: 'enemy', texture: 'enemy2', count: 2, delay: 800, health: 50, speed: 100, moneyValue: 15, path: 'first'},
-                {type: 'enemy', texture: 'enemy3', count: 1, delay: 2000, health: 500, speed: 25, moneyValue: 50, path: 'first'},
-                {type: 'enemy', texture: 'enemy1', count: 5, delay: 800, health: 100, speed: 50, moneyValue: 10, path: 'first'},
-                {type: 'enemy', texture: 'enemy3', count: 1, delay: 2000, health: 500, speed: 25, moneyValue: 50, path: 'first'},
-                {type: 'enemy', texture: 'enemy2', count: 5, delay: 800, health: 50, speed: 100, moneyValue: 15, path: 'first'},
-                {type: 'enemy', texture: 'enemy3', count: 1, delay: 2000, health: 500, speed: 25, moneyValue: 50, path: 'first'}
+                {type: 'enemy', texture: 'enemy1', count: 10, delay: 800, health: 120, speed: 60, moneyValue: 10, path: 'first'},
+                {type: 'enemy', texture: 'enemy2', count: 5, delay: 800, health: 60, speed: 120, moneyValue: 15, path: 'first'},
+                {type: 'enemy', texture: 'enemy3', count: 2, delay: 2000, health: 600, speed: 30, moneyValue: 50, path: 'first'},
+                {type: 'enemy', texture: 'enemy1', count: 10, delay: 800, health: 120, speed: 60, moneyValue: 10, path: 'first'},
+                {type: 'enemy', texture: 'enemy3', count: 2, delay: 2000, health: 600, speed: 30, moneyValue: 50, path: 'first'},
+                {type: 'enemy', texture: 'enemy2', count: 10, delay: 800, health: 60, speed: 120, moneyValue: 15, path: 'first'},
+                {type: 'enemy', texture: 'enemy3', count: 2, delay: 2000, health: 600, speed: 30, moneyValue: 50, path: 'first'}
             ]
         }
         return [];
     }
 
     protected nextScene(): string {
-        return "Level5";
+        return "Level 5";
     }
 }

@@ -1,35 +1,22 @@
 import * as Phaser from 'phaser';
-import {BaseTowerDefenseLevel, GAME_HEIGHT} from './BaseTowerDefenseLevel';
+import {BaseLevel, GAME_HEIGHT, GAME_WIDTH} from './BaseLevel.ts';
 
-export class Level2 extends BaseTowerDefenseLevel {
+export class Level2 extends BaseLevel {
     constructor() {
         super('Level 2'); // Unique key for this scene
     }
 
     private firstPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(150, -50);
-        path.lineTo(150, 200);
-        path.lineTo(600, 200);
-        path.lineTo(600, 400);
-        path.lineTo(150, 400);
-        path.lineTo(150, 800);
-        path.lineTo(1050, 800);
-        path.lineTo(1050, GAME_HEIGHT);
+        const path = new Phaser.Curves.Path(100, -10); // Start top-left
+        path.lineTo(100, GAME_HEIGHT / 2);
+        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT / 2);
+        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT + 10); // End bottom-right
         return path;
     }
 
     private secondPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(375, GAME_HEIGHT);
-        path.lineTo(375, -50);
-        // round-a-bout-curve
-        path.lineTo(1050, -50);
-        path.lineTo(1050, 150);
-        path.lineTo(600, 150);
-        path.lineTo(600, -50);
-        path.lineTo(825, -50);
-        path.lineTo(825, GAME_HEIGHT+50);
-        path.lineTo(1275, GAME_HEIGHT+50);
-        path.lineTo(1275, -50);
+        const path = new Phaser.Curves.Path(GAME_WIDTH / 2, -10); // Start top-center
+        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT + 10); // End bottom-center
         return path;
     }
 
@@ -37,16 +24,11 @@ export class Level2 extends BaseTowerDefenseLevel {
         this.paths = {
             'first': this.firstPath(),
             'second': this.secondPath(),
-            // 'third': this.thirdPath()
         }
     }
 
     protected getTowerSlots(): { x: number; y: number }[] {
         return [
-            {x: 300, y: 100},
-            {x: 450, y: 300},
-            {x: 250, y: 500},
-            {x: 650, y: 500},
         ];
     }
 

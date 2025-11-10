@@ -24,7 +24,11 @@ export const TILE_SIZE = 32;
 export const TOWER1_COST = 100;
 export const TOWER2_COST = 250; // Cost for Tower 2
 
-export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
+function phaserColor(color: string): number {
+    return Phaser.Display.Color.ValueToColor(color).color;
+}
+
+export abstract class BaseLevel extends Phaser.Scene {
     protected paths!: { [key: string]: Phaser.Curves.Path };
     protected pathGraphics!: Phaser.GameObjects.Graphics;
     protected enemies!: Phaser.GameObjects.Group;
@@ -140,6 +144,14 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
         for (let pathsKey in this.paths) {
             this.pathGraphics.lineStyle(0.5, 0xcccccc, 0.30);
             this.paths[pathsKey].draw(this.pathGraphics);
+
+            // Draw start and end points
+            const startPoint = this.paths[pathsKey].getStartPoint();
+            this.pathGraphics.fillStyle(0x0000ff, 1); // Blue for start
+            this.pathGraphics.fillCircle(startPoint.x, startPoint.y, 30);
+            const endPoint = this.paths[pathsKey].getEndPoint();
+            this.pathGraphics.fillStyle(0x00ff00, 1); // Green for end
+            this.pathGraphics.fillCircle(endPoint.x, endPoint.y, 30);
         }
     }
 
@@ -147,7 +159,7 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
         this.player = new Player({scene: this, x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2, texture: 'player'});
         this.player.addComponent(new FindNearestTower());
         this.player.addComponent(new PlayerWaveAmplifier(this.healers))
-        this.player.addComponent(new VisualPulse(Phaser.Display.Color.ValueToColor('rgba(4,138,73,0.8)').color, 300, 1500, 1.75, 5))
+        this.player.addComponent(new VisualPulse(phaserColor('rgba(4,138,73,0.8)'), 300, 1500, 1.75, 5))
         this.add.existing(this.player);
     }
 
@@ -485,7 +497,7 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
 
     protected createPlaceholderTexture(key: string, width: number, height: number, color: string): void {
         const graphics = this.make.graphics({x: width, y: height});
-        graphics.fillStyle(Phaser.Display.Color.ValueToColor(color).color);
+        graphics.fillStyle(phaserColor(color));
         graphics.fillRect(0, 0, width, height);
         graphics.generateTexture(key, width, height);
         graphics.destroy();
@@ -493,7 +505,7 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
 
     protected createPlaceholderTriangleTexture(key: string, width: number, height: number, color: string): void {
         const graphics = this.make.graphics({x: 0, y: 0});
-        graphics.fillStyle(Phaser.Display.Color.ValueToColor(color).color);
+        graphics.fillStyle(phaserColor(color));
 
         const p1x = width / 2;
         const p1y = 0;
@@ -509,7 +521,7 @@ export abstract class BaseTowerDefenseLevel extends Phaser.Scene {
 
     protected createPlaceholderCircleTexture(key: string, width: number, height: number, color: string): void {
         const graphics = this.make.graphics({x: 0, y: 0});
-        graphics.fillStyle(Phaser.Display.Color.ValueToColor(color).color);
+        graphics.fillStyle(phaserColor(color));
         graphics.fillCircle(width / 2, height / 2, Math.min(width, height) / 2);
         graphics.generateTexture(key, width, height);
         graphics.destroy();

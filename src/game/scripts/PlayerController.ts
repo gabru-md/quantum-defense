@@ -1,6 +1,6 @@
 import { Component } from '../core/Component';
 import * as Phaser from 'phaser';
-import { GAME_WIDTH, GAME_HEIGHT } from '../scenes/BaseTowerDefenseLevel'; // Import game area dimensions
+import { GAME_WIDTH, GAME_HEIGHT } from '../scenes/BaseLevel.ts'; // Import game area dimensions
 
 /**
  * A script that moves a GameObject based on WASD keyboard input.

@@ -1,13 +1,13 @@
 import * as Phaser from 'phaser';
-import {BaseTowerDefenseLevel, GAME_HEIGHT, GAME_WIDTH} from './BaseTowerDefenseLevel';
+import {BaseLevel, GAME_HEIGHT, GAME_WIDTH} from './BaseLevel.ts';
 
-export class Level3 extends BaseTowerDefenseLevel {
+export class Level3 extends BaseLevel {
     constructor() {
         super('Level 3');
     }
 
     private firstPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(100, -50);
+        const path = new Phaser.Curves.Path(100, -10);
         path.lineTo(100, 150);
         path.lineTo(GAME_WIDTH - 100, 150);
         path.lineTo(GAME_WIDTH - 100, 350);
@@ -16,7 +16,7 @@ export class Level3 extends BaseTowerDefenseLevel {
     }
 
     private secondPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(GAME_WIDTH - 100, GAME_HEIGHT + 50);
+        const path = new Phaser.Curves.Path(GAME_WIDTH - 100, GAME_HEIGHT + 10);
         path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT - 150);
         path.lineTo(100, GAME_HEIGHT - 150);
         path.lineTo(100, GAME_HEIGHT - 350);
@@ -37,11 +37,6 @@ export class Level3 extends BaseTowerDefenseLevel {
 
     protected getTowerSlots(): { x: number; y: number }[] {
         return [
-            {x: 350, y: 100},
-            {x: 550, y: 250},
-            {x: 200, y: 450},
-            {x: 600, y: 450},
-            {x: 400, y: 650},
         ];
     }
 

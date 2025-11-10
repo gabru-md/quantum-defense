@@ -1,46 +1,44 @@
 import * as Phaser from 'phaser';
-import {BaseTowerDefenseLevel, GAME_HEIGHT} from './BaseTowerDefenseLevel';
+import {BaseLevel, GAME_HEIGHT, GAME_WIDTH} from './BaseLevel.ts';
 
-export class Level5 extends BaseTowerDefenseLevel {
+export class Level5 extends BaseLevel {
     constructor() {
         super('Level 5');
     }
 
     private firstPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(50, -50);
-        path.lineTo(50, 100);
-        path.lineTo(200, 100);
-        path.lineTo(200, 250);
-        path.lineTo(50, 250);
-        path.lineTo(50, 400);
-        path.lineTo(200, 400);
-        path.lineTo(200, 550);
-        path.lineTo(50, 550);
-        path.lineTo(50, 700);
-        path.lineTo(750, 700);
-        path.lineTo(750, GAME_HEIGHT + 50);
+        const path = new Phaser.Curves.Path(100, -10); // Start top-left
+        path.lineTo(100, 200);
+        path.lineTo(GAME_WIDTH - 300, 200);
+        path.lineTo(GAME_WIDTH - 300, 400);
+        path.lineTo(100, 400);
+        path.lineTo(100, 600);
+        path.lineTo(GAME_WIDTH - 600, 600);
+        path.lineTo(GAME_WIDTH - 600, GAME_HEIGHT + 10); // End bottom-right
+        return path;
+    }
+
+    private secondPath(): Phaser.Curves.Path {
+        const path = new Phaser.Curves.Path(GAME_WIDTH - 100, -10); // Start top-right
+        path.lineTo(GAME_WIDTH - 100, 200);
+        path.lineTo(300, 200);
+        path.lineTo(300, 400);
+        path.lineTo(GAME_WIDTH - 100, 400);
+        path.lineTo(GAME_WIDTH - 100, 600);
+        path.lineTo(600, 600);
+        path.lineTo(600, GAME_HEIGHT + 10); // End bottom-left
         return path;
     }
 
     protected definePaths() {
         this.paths = {
-            'first': this.firstPath()
+            'first': this.firstPath(),
+            'second': this.secondPath()
         }
     }
 
     protected getTowerSlots(): { x: number; y: number }[] {
-        return [
-            {x: 350, y: 50},
-            {x: 550, y: 50},
-            {x: 350, y: 200},
-            {x: 550, y: 200},
-            {x: 350, y: 350},
-            {x: 550, y: 350},
-            {x: 350, y: 500},
-            {x: 550, y: 500},
-            {x: 350, y: 650},
-            {x: 550, y: 650},
-        ];
+        return [];
     }
 
     protected getWaveConfig(wave: number): {
@@ -55,9 +53,70 @@ export class Level5 extends BaseTowerDefenseLevel {
     }[] {
         if (wave === 1) {
             return [
-                {type: 'enemy', texture: 'enemy1', count: 5, delay: 500, health: 100, speed: 50, moneyValue: 10, path: 'first'},
-                {type: 'enemy', texture: 'enemy2', count: 2, delay: 500, health: 50, speed: 100, moneyValue: 15, path: 'first'},
-                {type: 'enemy', texture: 'enemy3', count: 5, delay: 1000, health: 500, speed: 25, moneyValue: 50, path: 'first'}
+                {
+                    type: 'enemy',
+                    texture: 'enemy1',
+                    count: 10,
+                    delay: 500,
+                    health: 100,
+                    speed: 50,
+                    moneyValue: 10,
+                    path: 'first'
+                },
+                {
+                    type: 'enemy',
+                    texture: 'enemy2',
+                    count: 5,
+                    delay: 500,
+                    health: 50,
+                    speed: 100,
+                    moneyValue: 15,
+                    path: 'second'
+                },
+                {
+                    type: 'enemy',
+                    texture: 'enemy3',
+                    count: 2,
+                    delay: 1000,
+                    health: 500,
+                    speed: 25,
+                    moneyValue: 50,
+                    path: 'first'
+                }
+            ]
+        }
+        if (wave === 2) {
+            return [
+                {
+                    type: 'enemy',
+                    texture: 'enemy1',
+                    count: 10,
+                    delay: 500,
+                    health: 100,
+                    speed: 50,
+                    moneyValue: 10,
+                    path: 'second'
+                },
+                {
+                    type: 'enemy',
+                    texture: 'enemy2',
+                    count: 5,
+                    delay: 500,
+                    health: 50,
+                    speed: 100,
+                    moneyValue: 15,
+                    path: 'first'
+                },
+                {
+                    type: 'enemy',
+                    texture: 'enemy3',
+                    count: 2,
+                    delay: 1000,
+                    health: 500,
+                    speed: 25,
+                    moneyValue: 50,
+                    path: 'second'
+                }
             ]
         }
         return [];
