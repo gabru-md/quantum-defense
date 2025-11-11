@@ -37,7 +37,7 @@ export class FindNearestTower extends Component {
             }
             this.nearestTower = closestTower;
         } catch (e) {
-            console.error(e);
+            // console.error(e);
         }
     }
 

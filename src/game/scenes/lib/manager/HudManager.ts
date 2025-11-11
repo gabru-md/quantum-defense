@@ -1,7 +1,15 @@
 import Phaser from "phaser";
 import {Level} from "../Level.ts";
 import {Manager} from "../Manager.ts";
-import {GAME_HEIGHT, GAME_WIDTH, TOWER1_COST, TOWER2_COST, WIDTH} from "../../../scripts/util.ts";
+import {
+    GAME_HEIGHT,
+    GAME_WIDTH,
+    TOWER1_COST,
+    TOWER1_RANGE,
+    TOWER2_COST,
+    TOWER2_RANGE,
+    WIDTH
+} from "../../../scripts/Util.ts";
 
 export class HudManager extends Manager {
 
@@ -113,7 +121,7 @@ export class HudManager extends Manager {
         this.selectionIndicator.setPosition(tower1Button.x - 32, tower1Button.y - 32);
 
         // Range Preview
-        this.rangePreview = this.scene.add.sprite(0, 0, 'rangePreview').setAlpha(0.10).setVisible(false);
+        this.rangePreview = this.scene.add.sprite(0, 0, 'rangePreview').setAlpha(0.0625).setVisible(false);
     }
 
     private updateRangePreview() {
@@ -122,7 +130,7 @@ export class HudManager extends Manager {
             if (pointer.x < GAME_WIDTH) {
                 this.rangePreview.setVisible(true);
                 this.rangePreview.setPosition(pointer.x, pointer.y);
-                const range = this.scene.state.selectedTowerType === 'tower1' ? 150 : 180;
+                const range = this.scene.state.selectedTowerType === 'tower1' ? TOWER1_RANGE : TOWER2_RANGE;
                 this.rangePreview.setScale(range * 2 / 300);
             } else {
                 this.rangePreview.setVisible(false);

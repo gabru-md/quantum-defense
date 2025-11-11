@@ -60,7 +60,11 @@ export class GameObject extends Phaser.GameObjects.Sprite {
     public update(_time: number, delta: number): void {
         for (const component of this.components) {
             if (component.enabled) {
-                component.update?.(delta);
+                try {
+                    component.update?.(delta);
+                } catch (e) {
+                    // console.error(e);
+                }
             }
         }
     }

@@ -7,10 +7,19 @@ import {GameObject} from "../../../core/GameObject.ts";
 import {Targeting} from "../../../components/Targeting.ts";
 import {LaserAttack} from "../../../components/LaserAttack.ts";
 import {VisualPulse} from "../../../components/VisualPulse.ts";
-import {GAME_HEIGHT, GAME_WIDTH, phaserColor, TOWER1_COST, TOWER2_COST} from "../../../scripts/util.ts";
+import {
+    GAME_HEIGHT,
+    GAME_WIDTH,
+    phaserColor,
+    TOWER1_COST,
+    TOWER1_RANGE,
+    TOWER2_COST,
+    TOWER2_RANGE
+} from "../../../scripts/Util.ts";
 import {BombAttack} from "../../../components/BombAttack.ts";
 import {Manager} from "../Manager.ts";
 import {Health} from "../../../components/Health.ts";
+import {AppColors} from "../../../scripts/Colors.ts";
 
 export class TowerManager extends Manager {
     towers!: Phaser.GameObjects.Group;
@@ -62,7 +71,7 @@ export class TowerManager extends Manager {
     protected tryPlaceTower(x: number, y: number, towerType: string): void {
         const cost = this.getTowerCost(towerType);
         if (cost == -1) {
-            this.level.hud.info('Something went very wrong!', '#ffff00')
+            this.level.hud.info('Something went very wrong!', AppColors.UI_MESSAGE_ERROR)
             return;
         }
         if (this.level.state.money >= cost) {
@@ -70,7 +79,7 @@ export class TowerManager extends Manager {
             this.level.state.money -= cost;
             this.level.hud.update();
         } else {
-            this.level.hud.info('Not enough money!', '#ffff00')
+            this.level.hud.info('Not enough money!', AppColors.UI_MESSAGE_ERROR)
         }
     }
 
@@ -79,29 +88,18 @@ export class TowerManager extends Manager {
             const tower = new Tower({scene: this.level, x, y, texture: 'tower1'});
             this.towers.add(tower, true);
             tower.addComponent(new Health(100));
-            tower.addComponent(new Targeting(150, [this.level.waveManager.enemies, this.level.waveManager.healers]));
+            tower.addComponent(new Targeting(TOWER1_RANGE, [this.level.waveManager.enemies, this.level.waveManager.healers]));
             tower.addComponent(new LaserAttack(200, 25, 300, this.bullets));
-            tower.addComponent(new VisualPulse(phaserColor('rgba(255,0,132,0.84)'), 250, 1000));
+            tower.addComponent(new VisualPulse(phaserColor(AppColors.PULSE_LASER_TOWER), 250, 1000));
             tower.on('died', () => this.deactivateTower(tower));
         } else if (towerType === 'tower2') {
             const tower = new Tower({scene: this.level, x, y, texture: 'tower2'});
             this.towers.add(tower, true);
             tower.addComponent(new Health(150));
-            tower.addComponent(new Targeting(180, [this.level.waveManager.enemies, this.level.waveManager.healers]));
+            tower.addComponent(new Targeting(TOWER2_RANGE, [this.level.waveManager.enemies, this.level.waveManager.healers]));
             tower.addComponent(new BombAttack(1500, 100, 133, 75, this.bombs, [this.level.waveManager.enemies, this.level.waveManager.healers]));
-            tower.addComponent(new VisualPulse(phaserColor('0xff00ff'), 400, 2000));
+            tower.addComponent(new VisualPulse(phaserColor(AppColors.PULSE_BOMB_TOWER), 400, 2000));
             tower.on('died', () => this.deactivateTower(tower));
-        }
-    }
-
-    public getTowerRange(towerType: string): number {
-        switch (towerType) {
-            case 'tower1':
-                return 150;
-            case 'tower2':
-                return 180;
-            default:
-                return 0;
         }
     }
 

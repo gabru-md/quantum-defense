@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser';
 import {Level} from './lib/Level.ts';
-import {GAME_HEIGHT, GAME_WIDTH} from "../scripts/util.ts";
+import {GAME_HEIGHT, GAME_WIDTH} from "../scripts/Util.ts";
 
 export class Level1 extends Level {
     constructor() {

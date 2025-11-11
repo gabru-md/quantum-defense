@@ -1,5 +1,6 @@
 import {Component} from '../core/Component';
 import * as Phaser from 'phaser';
+import {phaserColor} from '../scripts/Colors.ts'
 
 /**
  * A component that adds a continuous, non-damaging visual pulse to a GameObject.
@@ -22,8 +23,8 @@ export class VisualPulse extends Component {
                     return;
                 }
                 const pulseGraphics = this.gameObject.scene.add.graphics({
-                    fillStyle: {color: this.color, alpha: 0.1},
-                    lineStyle: {width: this.lineWidth, color: this.color, alpha: 0.8}
+                    fillStyle: {color: phaserColor(this.color), alpha: 0.1}, // Use phaserColor
+                    lineStyle: {width: this.lineWidth, color: phaserColor(this.color), alpha: 0.8} // Use phaserColor
                 });
                 pulseGraphics.setDepth(this.gameObject.depth - 1); // Draw pulse behind the game object
                 pulseGraphics.x = this.gameObject.x;
@@ -43,8 +44,8 @@ export class VisualPulse extends Component {
                         }
                         // Draw expanding circle
                         pulseGraphics.clear();
-                        pulseGraphics.lineStyle(this.lineWidth, this.color, target.alpha * 0.8);
-                        pulseGraphics.fillStyle(this.color, target.alpha * 0.3);
+                        pulseGraphics.lineStyle(this.lineWidth, phaserColor(this.color), target.alpha * 0.8); // Use phaserColor
+                        pulseGraphics.fillStyle(phaserColor(this.color), target.alpha * 0.3); // Use phaserColor
                         const radius = (this.gameObject.width / 2) * target.scale;
                         pulseGraphics.fillCircle(0, 0, radius);
                         pulseGraphics.strokeCircle(0, 0, radius);

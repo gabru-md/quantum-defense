@@ -3,7 +3,6 @@ import {Health} from '../components/Health';
 import {Enemy} from './Enemy'; // Import Enemy to check instance type
 import * as Phaser from 'phaser';
 import {Healer} from "./Healer.ts";
-import {VisualPulse} from "../components/VisualPulse.ts";
 
 /**
  * Represents a bomb projectile that deals Area of Effect (AoE) damage.
@@ -18,7 +17,6 @@ export class Bomb extends GameObject {
         this.scene.physics.world.enable(this);
         this.setActive(false); // Start inactive
         this.setVisible(false); // Start invisible
-        this.addComponent(new VisualPulse(Phaser.Display.Color.ValueToColor('0xff8800').color, 500, 2500))
     }
 
     /**
@@ -87,10 +85,6 @@ export class Bomb extends GameObject {
     }
 
     public destroy() {
-        let visualPulseComponent = this.getComponent(VisualPulse);
-        if (visualPulseComponent) {
-            visualPulseComponent.destroy();
-        }
         super.destroy();
     }
 

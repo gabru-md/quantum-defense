@@ -6,6 +6,7 @@ import {Health} from "./Health.ts";
 import {LaserAttack} from "./LaserAttack.ts";
 import {BombAttack} from "./BombAttack.ts";
 import {VisualPulse} from "./VisualPulse.ts";
+import {AppColors, phaserColor} from "../scripts/Colors.ts";
 
 /**
  * A component that allows the player to activate a wave to revive deactivated towers.
@@ -43,7 +44,7 @@ export class PlayerWaveAmplifier extends Component {
                     this.lastActivated = time;
                 }
             } else {
-                this.activateWave();
+                this.activateWave(); // Activate wave even if no tower is nearby, but it won't revive anything
                 this.lastActivated = time;
             }
         }
@@ -58,14 +59,14 @@ export class PlayerWaveAmplifier extends Component {
         const totalPulses = 4;
         const pulseDelay = 150;
         const pulseDuration = 1000;
-        const towerColor = tower ? tower.tintTopLeft : 0x048a49; // Use the tower's tint color
+        const pulseColor = tower ? tower.tintTopLeft : phaserColor(AppColors.PLAYER_WAVE_PULSE); // Use tower color or default player wave color
 
         // --- VISUAL EFFECT: CREATING THE RIPPLE ---
         for (let i = 0; i < totalPulses; i++) {
             this.gameObject.scene.time.delayedCall(i * pulseDelay, () => {
                 const graphics = this.gameObject.scene.add.graphics({
-                    fillStyle: {color: towerColor, alpha: 0.3},
-                    lineStyle: {width: 1, color: towerColor, alpha: 0.8}
+                    fillStyle: {color: pulseColor, alpha: 0.3},
+                    lineStyle: {width: 1, color: pulseColor, alpha: 0.8}
                 });
 
                 graphics.setDepth(10);
@@ -80,8 +81,8 @@ export class PlayerWaveAmplifier extends Component {
                     ease: 'Sine.easeOut',
                     onUpdate: (_tween, target) => {
                         graphics.clear();
-                        graphics.lineStyle(1, towerColor, target.alpha * 0.8);
-                        graphics.fillStyle(towerColor, target.alpha * 0.3);
+                        graphics.lineStyle(1, pulseColor, target.alpha * 0.8);
+                        graphics.fillStyle(pulseColor, target.alpha * 0.3);
                         const radius = (this.gameObject.width / 2) * target.scale;
                         graphics.fillCircle(0, 0, radius);
                         graphics.strokeCircle(0, 0, radius);

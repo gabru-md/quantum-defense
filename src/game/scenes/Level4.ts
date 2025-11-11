@@ -1,5 +1,5 @@
 import {Level} from './lib/Level.ts';
-import {GAME_HEIGHT, GAME_WIDTH} from "../scripts/util.ts";
+import {GAME_HEIGHT, GAME_WIDTH} from "../scripts/Util.ts";
 
 export class Level4 extends Level {
     constructor() {

@@ -1,4 +1,4 @@
-import {phaserColor} from "../../../scripts/util.ts";
+import {phaserColor, AppColors} from "../../../scripts/Colors.ts"; // Import AppColors
 import {Manager} from "../Manager.ts";
 
 export class TextureManager extends Manager {
@@ -8,24 +8,24 @@ export class TextureManager extends Manager {
 
     setup() {
         // --- Enemies ---
-        this.createEnemyTexture('enemy1', 32, '#3498db'); // Blue Square
-        this.createEnemyTexture('enemy2', 24, '#e74c3c'); // Red Triangle
-        this.createEnemyTexture('enemy3', 40, '#f1c40f'); // Yellow Hexagon
+        this.createEnemyTexture('enemy1', 32, AppColors.ENEMY_NORMAL); // Blue Square
+        this.createEnemyTexture('enemy2', 24, AppColors.ENEMY_FAST); // Red Triangle
+        this.createEnemyTexture('enemy3', 40, AppColors.ENEMY_TANK); // Yellow Hexagon
 
         // --- Towers ---
-        this.createTowerTexture('tower1', 32, '#2ecc71'); // Green Laser Tower
-        this.createTowerTexture('tower2', 32, '#9b59b6'); // Purple Bomb Tower
+        this.createTowerTexture('tower1', 32, AppColors.TOWER_LASER); // Green Laser Tower
+        this.createTowerTexture('tower2', 32, AppColors.TOWER_BOMB); // Purple Bomb Tower
 
         // --- Projectiles ---
-        this.createBulletTexture('bullet', 10, '#2ecc71'); // Green Laser Bullet
-        this.createBombTexture('bomb', 16, '#e67e22'); // Orange Bomb
+        this.createBulletTexture('bullet', 10, AppColors.BULLET_LASER); // Green Laser Bullet
+        this.createBombTexture('bomb', 16, AppColors.BULLET_BOMB); // Orange Bomb
 
         // --- Player & Healer ---
-        this.createPlayerTexture('player', 24, '#1abc9c'); // Teal Player
-        this.createHealerTexture('healer', 24, '#27ae60'); // Dark Green Healer
+        this.createPlayerTexture('player', 24, AppColors.PLAYER); // Teal Player
+        this.createHealerTexture('healer', 24, AppColors.ENEMY_HEALER); // Dark Green Healer
 
         // --- UI & Effects ---
-        this.createPlaceholderTexture('towerSlot', 32, 32, '#555555');
+        this.createPlaceholderTexture('towerSlot', 32, 32, AppColors.UI_DISABLED);
         this.createRangePreviewTexture('rangePreview', 300, 'rgba(255, 255, 255, 0.05)');
     }
 
@@ -47,7 +47,7 @@ export class TextureManager extends Manager {
         const graphics = this.scene.make.graphics({x: 0, y: 0});
         graphics.fillStyle(phaserColor(color));
         graphics.fillCircle(size / 2, size / 2, size / 2);
-        graphics.fillStyle(0x000000, 0.5);
+        graphics.fillStyle(phaserColor('0x000000'), 0.5); // Inner circle black
         graphics.fillCircle(size / 2, size / 2, size / 4);
         graphics.generateTexture(key, size, size);
         graphics.destroy();

@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import {HudManager} from "./manager/HudManager.ts"; // Import VisualPulse
+import {HudManager} from "./manager/HudManager.ts";
 import {WaveManager} from "./manager/WaveManager.ts";
 import {State} from "./State.ts";
 import {CollisionManager} from "./manager/CollisionManager.ts";
@@ -8,7 +8,7 @@ import {TextureManager} from "./manager/TextureManager.ts";
 import {PathsManager} from "./manager/PathsManager.ts";
 import {PlayerManager} from "./manager/PlayerManager.ts";
 import {GAME_HEIGHT, GAME_WIDTH} from "../../scripts/util.ts";
-
+import {AppColors} from "../../scripts/Colors.ts"; // Import AppColors
 
 export abstract class Level extends Phaser.Scene {
     hud: HudManager;
@@ -52,19 +52,15 @@ export abstract class Level extends Phaser.Scene {
     }
 
     public create(): void {
-        // --- Physics World Bounds ---
         this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
-        // --- UI Setup (positioned in HUD area) ---
-        this.hud.setup(); // This now includes createTowerSelectionUI()
+        this.hud.setup();
         this.pathsManager.setup();
         this.waveManager.setup();
         this.towerManager.setup();
         this.playerManager.setup();
-        // --- Collision Setup ---
-        this.collisionManager.setup()
+        this.collisionManager.setup();
 
-        // --- Wave Management ---
-        this.hud.info('Incoming First Wave', '#cf0d0d', () => {
+        this.hud.info('Incoming First Wave', AppColors.UI_MESSAGE_ERROR, () => {
             this.waveManager.startWave(1);
         });
     }
@@ -72,7 +68,7 @@ export abstract class Level extends Phaser.Scene {
     public update(time: number, delta: number): void {
         this.waveManager.update(time, delta);
         this.towerManager.update(time, delta);
-        this.playerManager.update(time, delta); // Update the player
+        this.playerManager.update(time, delta);
         this.hud.update();
     }
 }

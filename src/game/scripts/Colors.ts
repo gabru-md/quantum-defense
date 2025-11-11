@@ -1,0 +1,52 @@
+import Phaser from "phaser";
+
+// Utility function to convert string colors to Phaser's internal number format
+export function phaserColor(color: string | number): number {
+    if (typeof color === 'string') {
+        return Phaser.Display.Color.ValueToColor(color).color;
+    }
+    return color;
+}
+
+export const AppColors = {
+    // UI Theme
+    UI_PRIMARY_BG: '0x1a2a3a', // Dark blue-grey
+    UI_SECONDARY_BG: '0x2a3a4a', // Slightly lighter blue-grey
+    UI_ACCENT: '0x00ff99', // Bright green
+    UI_TEXT: '#ffffff', // White
+    UI_DISABLED: '0x555555', // Grey for disabled elements
+    UI_MESSAGE_ERROR: '#ff0000', // Red for error messages
+    UI_MESSAGE_SUCCESS: '#00ff00', // Green for success messages
+    UI_MESSAGE_BACKGROUND: 'rgba(0,0,0,0.40)', // Semi-transparent black
+    UI_SEPARATOR: '0xffffff', // White separator lines
+
+    // Game Background
+    GAME_BACKGROUND: '0x2d2d2d', // Dark grey
+
+    // Path Colors
+    PATH_LINE: '0x888888', // Medium grey
+    PATH_START: '0x3498db', // Blue (matching ENEMY_NORMAL for consistency)
+    PATH_END: '0x2ecc71', // Green (matching TOWER_LASER for consistency)
+
+    // Enemy Colors
+    ENEMY_NORMAL: '#3498db', // Blue (Square)
+    ENEMY_FAST: '#e74c3c', // Red (Triangle)
+    ENEMY_TANK: '#f1c40f', // Yellow (Hexagon)
+    ENEMY_HEALER: '#27ae60', // Dark Green (Healer)
+
+    // Tower Colors
+    TOWER_LASER: '#2ecc71', // Green (Laser Tower)
+    TOWER_BOMB: '#9b59b6', // Purple (Bomb Tower)
+
+    // Projectile Colors
+    BULLET_LASER: '#2ecc71', // Green (Laser Bullet)
+    BULLET_BOMB: '#e67e22', // Orange (Bomb)
+
+    // Player Colors
+    PLAYER: '#1abc9c', // Teal (Player)
+    PLAYER_WAVE_PULSE: 'rgba(4,138,73,0.8)', // Greenish pulse
+
+    // Visual Pulse Colors (for towers)
+    PULSE_LASER_TOWER: 'rgba(46,204,113,0.7)', // Pinkish-red
+    PULSE_BOMB_TOWER: 'rgba(155,89,182,0.7)', // Magenta
+};

@@ -1,6 +1,6 @@
 import {Component} from '../core/Component';
 import * as Phaser from 'phaser';
-import {GAME_HEIGHT, GAME_WIDTH} from "./util.ts";
+import {GAME_HEIGHT, GAME_WIDTH} from "./Util.ts";
 
 /**
  * A script that moves a GameObject based on WASD keyboard input.
