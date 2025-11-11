@@ -21,7 +21,6 @@ export class VisualPulse extends Component {
         for (let i = 0; i < this.totalPulses; i++) {
             this.gameObject.scene.time.delayedCall(i * this.pulseDelay, () => {
                 if (!this.gameObject.active) {
-                    console.log('woops')
                     return;
                 }
                 const pulseGraphics = this.gameObject.scene.add.graphics({

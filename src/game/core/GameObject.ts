@@ -6,13 +6,15 @@ import {Component} from './Component';
  * All game entities (enemies, towers, bullets) should extend this class.
  */
 export class GameObject extends Phaser.GameObjects.Sprite {
+    private static nextId: number = 0; // Static counter for unique IDs
+    public readonly id: number; // Unique identifier for this GameObject instance
     private components: Component[] = [];
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
         super(scene, x, y, texture, frame);
+        this.id = GameObject.nextId++; // Assign and increment the unique ID
 
         // Automatically call the update method of this GameObject from the scene's update loop.
-        // This ensures components attached to this GameObject also get updated.
         this.scene.events.on('update', (time: number, delta: number) => {
             this.update(time, delta);
         });

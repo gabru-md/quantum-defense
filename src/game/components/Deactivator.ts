@@ -35,7 +35,6 @@ export class Deactivator extends Component {
 
                 if (distance <= this.deactivationRadius) {
                     // Emit an event from the tower to be deactivated
-                    console.log('tower deactivated')
                     tower.deactivateTower();
                     this.gameObject.scene.events.emit('towerDeactivated');
                 }

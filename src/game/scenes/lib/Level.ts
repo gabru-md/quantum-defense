@@ -75,7 +75,6 @@ export abstract class Level extends Phaser.Scene {
             this.scene.start('MenuScene');
         });
 
-        // Listen for the global game over event from SpecialEnemy
         this.events.on('gameOver', this.handleGameOver, this);
 
         if (this.scene.key !== 'Tutorial') {
@@ -83,6 +82,9 @@ export abstract class Level extends Phaser.Scene {
                 this.waveManager.startWave(1);
             });
         }
+
+        // Listen for scene shutdown event to clean up managers
+        this.events.on('shutdown', this.shutdown, this);
     }
 
     public update(time: number, delta: number): void {
@@ -95,10 +97,17 @@ export abstract class Level extends Phaser.Scene {
     }
 
     private handleGameOver(): void {
-        this.waveManager.gameOver = true; // Stop wave spawning and updates
+        this.waveManager.gameOver = true;
         this.physics.pause();
         this.hud.info('GAME OVER!', AppColors.UI_MESSAGE_ERROR, () => {
             this.scene.restart();
         });
+    }
+
+    private shutdown(): void {
+        this.waveManager.destroy();
+        this.towerManager.destroy();
+        this.hud.destroy();
+        // Other managers can be destroyed here if they hold resources
     }
 }

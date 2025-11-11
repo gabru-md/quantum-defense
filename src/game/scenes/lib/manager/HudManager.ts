@@ -5,9 +5,8 @@ import {
     GAME_HEIGHT,
     GAME_WIDTH,
     TOWER1_COST,
-    TOWER1_RANGE,
     TOWER2_COST,
-    TOWER2_RANGE,
+    TOWER3_COST,
     WIDTH
 } from "../../../scripts/Util.ts";
 import {AppColors} from "../../../scripts/Colors.ts";
@@ -42,6 +41,17 @@ export class HudManager extends Manager {
         this.setupGameVisualSeparators();
         this.setupHudVisualSeparators();
         this.update();
+    }
+
+    destroy(): void {
+        this.gameName.destroy();
+        this.levelText.destroy();
+        this.baseHealthText.destroy();
+        this.moneyText.destroy();
+        this.waveProgressText.destroy();
+        this.messageText.destroy();
+        this.rangePreview.destroy();
+        this.selectionIndicator.destroy();
     }
 
     public update(_time: number = 0, _delta: number = 0): void {
@@ -191,6 +201,17 @@ export class HudManager extends Manager {
             this.selectionIndicator.setPosition(tower2Button.x - 32, tower2Button.y - 32);
         });
 
+        // Tower 3 Button
+        const tower3Button = this.scene.add.sprite(hudX + 50, yOffset + spacing * 2, 'tower3').setInteractive();
+        this.scene.add.text(hudX + 100, yOffset + spacing * 2, `Tower 3\nCost: ${TOWER3_COST}`, {
+            font: '16px',
+            color: '#ffffff'
+        }).setOrigin(0, 0.5);
+        tower3Button.on('pointerdown', () => {
+            this.scene.state.selectedTowerType = 'tower3';
+            this.selectionIndicator.setPosition(tower3Button.x - 32, tower3Button.y - 32);
+        });
+
         // Set initial selection
         this.selectionIndicator.setPosition(tower1Button.x - 32, tower1Button.y - 32);
 
@@ -204,7 +225,7 @@ export class HudManager extends Manager {
             if (pointer.x < GAME_WIDTH) {
                 this.rangePreview.setVisible(true);
                 this.rangePreview.setPosition(pointer.x, pointer.y);
-                const range = this.scene.state.selectedTowerType === 'tower1' ? TOWER1_RANGE : TOWER2_RANGE;
+                const range = this.scene.towerManager.getTowerRange(this.scene.state.selectedTowerType);
                 this.rangePreview.setScale(range * 2 / 300);
             } else {
                 this.rangePreview.setVisible(false);

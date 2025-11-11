@@ -13,12 +13,13 @@ import {
     TOWER1_COST,
     TOWER1_RANGE,
     TOWER2_COST,
-    TOWER2_RANGE
+    TOWER2_RANGE, TOWER3_COST, TOWER3_RANGE
 } from "../../../scripts/Util.ts";
 import {BombAttack} from "../../../components/BombAttack.ts";
 import {Manager} from "../Manager.ts";
 import {Health} from "../../../components/Health.ts";
 import {AppColors, phaserColor} from "../../../scripts/Colors.ts";
+import {SlowingAura} from "../../../components/SlowingAura.ts";
 
 export class TowerManager extends Manager {
     towers!: Phaser.GameObjects.Group;
@@ -36,11 +37,18 @@ export class TowerManager extends Manager {
         this.setupInputEventListeners();
     }
 
+    destroy(): void {
+        this.towers.destroy(true);
+        this.bullets.destroy(true);
+        this.bombs.destroy(true);
+        this.level.input.off('pointerdown');
+    }
 
     private setupInputEventListeners() {
         this.level.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+            if (this.level.state.isTutorialActive) return;
+
             if (pointer.x <= GAME_WIDTH && pointer.y <= GAME_HEIGHT) {
-                // place tower only if witin game bounds else interact with hud
                 this.tryPlaceTower(pointer.x, pointer.y, this.level.state.selectedTowerType);
             }
         });
@@ -86,27 +94,34 @@ export class TowerManager extends Manager {
     }
 
     protected placeSpecificTower(x: number, y: number, towerType: string): void {
+        let tower: Tower;
         if (towerType === 'tower1') {
-            const tower = new Tower({scene: this.level, x, y, texture: 'tower1'});
+            tower = new Tower({scene: this.level, x, y, texture: 'tower1'});
             this.towers.add(tower, true);
             tower.addComponent(new Health(300));
-            tower.addComponent(new Targeting(TOWER1_RANGE, [this.level.waveManager.enemies]));
+            tower.addComponent(new Targeting(TOWER1_RANGE, [this.level.waveManager.enemies, this.level.waveManager.specialEnemies]));
             tower.addComponent(new LaserAttack(200, 25, 300, this.bullets));
             tower.addComponent(new VisualPulse(phaserColor(AppColors.PULSE_LASER_TOWER), 250, 1000, 2.75, 10, 0.5));
-            tower.on('died', () => tower.deactivateTower());
-            tower.on('deactivate', () => tower.deactivateTower()); // Listen for deactivate event
-            this.scene.events.emit('towerPlaced');
         } else if (towerType === 'tower2') {
-            const tower = new Tower({scene: this.level, x, y, texture: 'tower2'});
+            tower = new Tower({scene: this.level, x, y, texture: 'tower2'});
             this.towers.add(tower, true);
             tower.addComponent(new Health(500));
-            tower.addComponent(new Targeting(TOWER2_RANGE, [this.level.waveManager.enemies]));
-            tower.addComponent(new BombAttack(1500, 100, 133, 75, this.bombs, [this.level.waveManager.enemies]));
-            tower.addComponent(new VisualPulse(phaserColor(AppColors.PULSE_BOMB_TOWER), 400, 2000, 2.75, 10, 0.5));
-            tower.on('died', () => tower.deactivateTower());
-            tower.on('deactivate', () => tower.deactivateTower()); // Listen for deactivate event
-            this.scene.events.emit('towerPlaced');
+            tower.addComponent(new Targeting(TOWER2_RANGE, [this.level.waveManager.enemies, this.level.waveManager.specialEnemies]));
+            tower.addComponent(new BombAttack(1500, 100, 133, 75, this.bombs, [this.level.waveManager.enemies, this.level.waveManager.specialEnemies]));
+            tower.addComponent(new VisualPulse(phaserColor(AppColors.PULSE_BOMB_TOWER), 400, 2000, 2, 10, 0.5));
+        } else if (towerType === 'tower3') {
+            tower = new Tower({scene: this.level, x, y, texture: 'tower3'});
+            this.towers.add(tower, true);
+            tower.addComponent(new Health(200));
+            tower.addComponent(new SlowingAura(TOWER3_RANGE, 0.5)); // 50% slow factor
+            tower.addComponent(new VisualPulse(phaserColor(AppColors.TOWER_SLOW), 300, 1500, 3.5, 10, 0.5));
+        } else {
+            return;
         }
+        
+        tower.on('died', () => tower.deactivateTower());
+        tower.on('deactivate', () => tower.deactivateTower());
+        this.level.events.emit('towerPlaced', tower);
     }
 
     public getTowerRange(towerType: string): number {
@@ -115,6 +130,8 @@ export class TowerManager extends Manager {
                 return TOWER1_RANGE;
             case 'tower2':
                 return TOWER2_RANGE;
+            case 'tower3':
+                return TOWER3_RANGE;
             default:
                 return 0;
         }
@@ -126,6 +143,8 @@ export class TowerManager extends Manager {
                 return TOWER1_COST;
             case 'tower2':
                 return TOWER2_COST;
+            case 'tower3':
+                return TOWER3_COST;
             default:
                 return -1;
         }

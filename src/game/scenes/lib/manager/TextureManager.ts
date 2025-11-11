@@ -15,6 +15,7 @@ export class TextureManager extends Manager {
         // --- Towers ---
         this.createTowerTexture('tower1', 32, AppColors.TOWER_LASER);
         this.createTowerTexture('tower2', 32, AppColors.TOWER_BOMB);
+        this.createTowerTexture('tower3', 32, AppColors.TOWER_SLOW); // New Orange Tower
 
         // --- Projectiles ---
         this.createBulletTexture('bullet', 10, AppColors.BULLET_LASER);
@@ -22,7 +23,7 @@ export class TextureManager extends Manager {
 
         // --- Player & Special Enemy ---
         this.createPlayerTexture('player', 24, AppColors.PLAYER);
-        this.createSpecialEnemyTexture('specialEnemy', 24, AppColors.SPECIAL_ENEMY); // Renamed from healer
+        this.createSpecialEnemyTexture('specialEnemy', 24, AppColors.SPECIAL_ENEMY);
 
         // --- UI & Effects ---
         this.createPlaceholderTexture('towerSlot', 32, 32, AppColors.UI_DISABLED);
@@ -77,7 +78,7 @@ export class TextureManager extends Manager {
         graphics.destroy();
     }
 
-    private createSpecialEnemyTexture(key: string, size: number, color: string): void { // Renamed
+    private createSpecialEnemyTexture(key: string, size: number, color: string): void {
         const graphics = this.scene.make.graphics({x: 0, y: 0});
         graphics.fillStyle(phaserColor(color));
         graphics.fillRect(0, 0, size, size);

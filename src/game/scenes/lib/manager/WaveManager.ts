@@ -30,6 +30,13 @@ export class WaveManager extends Manager {
         this.level.events.on('specialEnemyKilledByPlayer', this.handleSpecialEnemyKilledByPlayer, this); // New event listener
     }
 
+    destroy(): void {
+        this.enemies.destroy(true);
+        this.specialEnemies.destroy(true);
+        this.level.events.off('enemyDied', this.handleEnemyDied, this);
+        this.level.events.off('specialEnemyKilledByPlayer', this.handleSpecialEnemyKilledByPlayer, this);
+    }
+
     startWave(waveNumber: number): void {
         const waveConfig = this.level.getWaveConfig(waveNumber);
         if (!waveConfig || waveConfig.length === 0) {
@@ -127,12 +134,9 @@ export class WaveManager extends Manager {
         }
         // Wave is complete if all regular enemies have been spawned AND all active regular enemies are gone
         // Special enemies are handled separately for game over condition
-        console.log(this.enemiesSpawnedInWave, this.maxEnemiesInWave, this.enemiesRemaining)
         if (this.enemiesSpawnedInWave >= this.maxEnemiesInWave && this.enemiesRemaining === 0) {
-            if (this.noMoreWavesLeft()) {
-                console.log('no more waves left');
+            if (this.noMoreWavesLeft()) {;
                 if (this.level.scene.key === 'Tutorial') {
-                    console.log('waveCompleted')
                     this.level.events.emit('waveCompleted');
                 }
                 this.level.physics.pause();

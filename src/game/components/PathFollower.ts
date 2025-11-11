@@ -3,26 +3,26 @@ import * as Phaser from 'phaser';
 import {WaveManager} from "../scenes/lib/manager/WaveManager.ts";
 import {Level} from "../scenes/lib/Level.ts";
 
-/**
- * A component that makes a GameObject follow a Phaser.Curves.Path.
- */
 export class PathFollower extends Component {
     private path: Phaser.Curves.Path;
-    private speed: number;
-    private pathPosition: number = 0; // A value from 0 (start) to 1 (end)
+    private baseSpeed: number;
+    private pathPosition: number = 0;
+    private speedModifiers: Map<number, number> = new Map();
 
     constructor(path: Phaser.Curves.Path, speed: number) {
         super();
         this.path = path;
-        this.speed = speed;
+        this.baseSpeed = speed;
     }
 
     public update(_time: number, deltaTime: number): void {
         if (this.isWaveManagerStopped()) {
             return;
         }
+        
+        const currentSpeed = this.calculateCurrentSpeed();
         const pathLength = this.path.getLength();
-        const distance = (this.speed * deltaTime) / 1000;
+        const distance = (currentSpeed * deltaTime) / 1000;
         this.pathPosition += distance / pathLength;
 
         if (this.pathPosition >= 1) {
@@ -35,6 +35,25 @@ export class PathFollower extends Component {
         if (point) {
             this.gameObject.setPosition(point.x, point.y);
         }
+    }
+
+    public applySpeedModifier(modifier: number, sourceId: number): void {
+        this.speedModifiers.set(sourceId, modifier);
+    }
+
+    public removeSpeedModifier(sourceId: number): void {
+        this.speedModifiers.delete(sourceId);
+    }
+
+    private calculateCurrentSpeed(): number {
+        let finalModifier = 1;
+        // Find the strongest slow effect (lowest modifier)
+        this.speedModifiers.forEach(modifier => {
+            if (modifier < finalModifier) {
+                finalModifier = modifier;
+            }
+        });
+        return this.baseSpeed * finalModifier;
     }
 
     private isWaveManagerStopped() {

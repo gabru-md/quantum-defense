@@ -5,4 +5,6 @@ export abstract class Manager {
     abstract setup(): void;
 
     update?(time: number, delta: number): void;
+
+    abstract destroy(): void; // Add abstract destroy method
 }

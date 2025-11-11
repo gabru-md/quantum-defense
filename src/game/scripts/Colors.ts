@@ -37,6 +37,7 @@ export const AppColors = {
     // Tower Colors
     TOWER_LASER: '#2ecc71', // Green (Laser Tower)
     TOWER_BOMB: '#9b59b6', // Purple (Bomb Tower)
+    TOWER_SLOW: '#e67e22', // Orange (Slow Tower)
 
     // Projectile Colors
     BULLET_LASER: '#2ecc71', // Green (Laser Bullet)
