@@ -135,7 +135,7 @@ export class WaveManager extends Manager {
         // Wave is complete if all regular enemies have been spawned AND all active regular enemies are gone
         // Special enemies are handled separately for game over condition
         if (this.enemiesSpawnedInWave >= this.maxEnemiesInWave && this.enemiesRemaining === 0) {
-            if (this.noMoreWavesLeft()) {;
+            if (this.noMoreWavesLeft()) {
                 if (this.level.scene.key === 'Tutorial') {
                     this.level.events.emit('waveCompleted');
                 }
@@ -181,5 +181,4 @@ export class WaveManager extends Manager {
     public resume() {
         this.enabled = true;
     }
-
 }

@@ -1,6 +1,7 @@
 import {GameObject} from '../core/GameObject';
 import {PlayerController} from '../scripts/PlayerController';
 import * as Phaser from 'phaser';
+import {BreatheOnHover} from '../components/BreatheOnHover.ts'; // Import BreatheOnHover
 
 export interface PlayerConfig {
     scene: Phaser.Scene;
@@ -19,7 +20,8 @@ export class Player extends GameObject {
         body.setCollideWorldBounds(true); // Keep player within game bounds
         body.setDrag(350); // Add some drag for smoother movement
 
-        // Add the PlayerController component
+        // Add the PlayerController and BreatheOnHover
         this.addComponent(new PlayerController());
+        this.addComponent(new BreatheOnHover(1.2, 1000)); // Add the breathing effect
     }
 }

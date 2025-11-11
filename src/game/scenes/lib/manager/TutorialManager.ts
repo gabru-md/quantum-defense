@@ -85,4 +85,9 @@ export class TutorialManager extends Manager {
             onAcknowledge();
         });
     }
+
+    destroy() {
+        this.instructionText?.destroy();
+        this.level.state.isTutorialActive = false;
+    }
 }

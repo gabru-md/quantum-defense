@@ -2,6 +2,7 @@ import {phaserColor, AppColors} from "../../../scripts/Colors.ts";
 import {Manager} from "../Manager.ts";
 
 export class TextureManager extends Manager {
+
     constructor(protected level: Phaser.Scene) {
         super(level);
     }
@@ -100,5 +101,9 @@ export class TextureManager extends Manager {
         graphics.fillRect(0, 0, width, height);
         graphics.generateTexture(key, width, height);
         graphics.destroy();
+    }
+
+    destroy(): void {
+        // do nothing
     }
 }

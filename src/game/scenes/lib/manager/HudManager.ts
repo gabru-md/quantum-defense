@@ -21,6 +21,7 @@ export class HudManager extends Manager {
     protected messageText!: Phaser.GameObjects.Text;
     private rangePreview!: Phaser.GameObjects.Sprite;
     private selectionIndicator!: Phaser.GameObjects.Graphics;
+    private helpText!: Phaser.GameObjects.Text;
 
     constructor(public scene: Level) {
         super(scene);
@@ -52,6 +53,7 @@ export class HudManager extends Manager {
         this.messageText.destroy();
         this.rangePreview.destroy();
         this.selectionIndicator.destroy();
+        this.helpText.destroy();
     }
 
     public update(_time: number = 0, _delta: number = 0): void {
@@ -69,6 +71,10 @@ export class HudManager extends Manager {
                 callback();
             }
         });
+    }
+
+    public setHelpText(text: string): void {
+        this.helpText.setText(text);
     }
 
     private createMainStatsPanel() {
@@ -181,7 +187,7 @@ export class HudManager extends Manager {
 
         // Tower 1 Button
         const tower1Button = this.scene.add.sprite(hudX + 50, yOffset, 'tower1').setInteractive();
-        this.scene.add.text(hudX + 100, yOffset, `Tower 1\nCost: ${TOWER1_COST}`, {
+        this.scene.add.text(hudX + 100, yOffset, `Tower 1\nCost: ${TOWER1_COST}\nRange: ${this.scene.towerManager.getTowerRange('tower1')}`, {
             font: '16px',
             color: '#ffffff'
         }).setOrigin(0, 0.5);
@@ -189,10 +195,12 @@ export class HudManager extends Manager {
             this.scene.state.selectedTowerType = 'tower1';
             this.selectionIndicator.setPosition(tower1Button.x - 32, tower1Button.y - 32);
         });
+        tower1Button.on('pointerover', () => this.setHelpText(this.scene.towerManager.getTowerDescription('tower1')));
+        tower1Button.on('pointerout', () => this.setHelpText(''));
 
         // Tower 2 Button
         const tower2Button = this.scene.add.sprite(hudX + 50, yOffset + spacing, 'tower2').setInteractive();
-        this.scene.add.text(hudX + 100, yOffset + spacing, `Tower 2\nCost: ${TOWER2_COST}`, {
+        this.scene.add.text(hudX + 100, yOffset + spacing, `Tower 2\nCost: ${TOWER2_COST}\nRange: ${this.scene.towerManager.getTowerRange('tower2')}`, {
             font: '16px',
             color: '#ffffff'
         }).setOrigin(0, 0.5);
@@ -200,10 +208,12 @@ export class HudManager extends Manager {
             this.scene.state.selectedTowerType = 'tower2';
             this.selectionIndicator.setPosition(tower2Button.x - 32, tower2Button.y - 32);
         });
+        tower2Button.on('pointerover', () => this.setHelpText(this.scene.towerManager.getTowerDescription('tower2')));
+        tower2Button.on('pointerout', () => this.setHelpText(''));
 
         // Tower 3 Button
         const tower3Button = this.scene.add.sprite(hudX + 50, yOffset + spacing * 2, 'tower3').setInteractive();
-        this.scene.add.text(hudX + 100, yOffset + spacing * 2, `Tower 3\nCost: ${TOWER3_COST}`, {
+        this.scene.add.text(hudX + 100, yOffset + spacing * 2, `Tower 3\nCost: ${TOWER3_COST}\nRange: ${this.scene.towerManager.getTowerRange('tower3')}`, {
             font: '16px',
             color: '#ffffff'
         }).setOrigin(0, 0.5);
@@ -211,6 +221,15 @@ export class HudManager extends Manager {
             this.scene.state.selectedTowerType = 'tower3';
             this.selectionIndicator.setPosition(tower3Button.x - 32, tower3Button.y - 32);
         });
+        tower3Button.on('pointerover', () => this.setHelpText(this.scene.towerManager.getTowerDescription('tower3')));
+        tower3Button.on('pointerout', () => this.setHelpText(''));
+
+        // Help Text
+        this.helpText = this.scene.add.text(hudX + 15, yOffset + spacing * 3 + 20, '', {
+            font: '14px',
+            color: '#dddddd',
+            wordWrap: {width: panelWidth - 30}
+        }).setDepth(100);
 
         // Set initial selection
         this.selectionIndicator.setPosition(tower1Button.x - 32, tower1Button.y - 32);

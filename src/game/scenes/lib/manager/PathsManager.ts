@@ -28,4 +28,8 @@ export class PathsManager extends Manager {
             this.pathGraphics.fillCircle(endPoint.x, endPoint.y, 30);
         }
     }
+    destroy(): void {
+        this.pathGraphics.destroy();
+        this.paths = {};
+    }
 }

@@ -102,6 +102,8 @@ export class TowerManager extends Manager {
             tower.addComponent(new Targeting(TOWER1_RANGE, [this.level.waveManager.enemies, this.level.waveManager.specialEnemies]));
             tower.addComponent(new LaserAttack(200, 25, 300, this.bullets));
             tower.addComponent(new VisualPulse(phaserColor(AppColors.PULSE_LASER_TOWER), 250, 1000, 2.75, 10, 0.5));
+            tower.on('pointerover', () => this.level.hud.setHelpText(this.getTowerDescription(towerType)));
+            tower.on('pointerout', () => this.level.hud.setHelpText(''));
         } else if (towerType === 'tower2') {
             tower = new Tower({scene: this.level, x, y, texture: 'tower2'});
             this.towers.add(tower, true);
@@ -109,16 +111,20 @@ export class TowerManager extends Manager {
             tower.addComponent(new Targeting(TOWER2_RANGE, [this.level.waveManager.enemies, this.level.waveManager.specialEnemies]));
             tower.addComponent(new BombAttack(1500, 100, 133, 75, this.bombs, [this.level.waveManager.enemies, this.level.waveManager.specialEnemies]));
             tower.addComponent(new VisualPulse(phaserColor(AppColors.PULSE_BOMB_TOWER), 400, 2000, 2, 10, 0.5));
+            tower.on('pointerover', () => this.level.hud.setHelpText(this.getTowerDescription(towerType)));
+            tower.on('pointerout', () => this.level.hud.setHelpText(''));
         } else if (towerType === 'tower3') {
             tower = new Tower({scene: this.level, x, y, texture: 'tower3'});
             this.towers.add(tower, true);
             tower.addComponent(new Health(200));
             tower.addComponent(new SlowingAura(TOWER3_RANGE, 0.5)); // 50% slow factor
             tower.addComponent(new VisualPulse(phaserColor(AppColors.TOWER_SLOW), 300, 1500, 3.5, 10, 0.5));
+            tower.on('pointerover', () => this.level.hud.setHelpText(this.getTowerDescription(towerType)));
+            tower.on('pointerout', () => this.level.hud.setHelpText(''));
         } else {
             return;
         }
-        
+
         tower.on('died', () => tower.deactivateTower());
         tower.on('deactivate', () => tower.deactivateTower());
         this.level.events.emit('towerPlaced', tower);
@@ -147,6 +153,19 @@ export class TowerManager extends Manager {
                 return TOWER3_COST;
             default:
                 return -1;
+        }
+    }
+
+    public getTowerDescription(towerType: string): string {
+        switch (towerType) {
+            case 'tower1':
+                return 'Laser Tower:\nRapid fire, single target damage.';
+            case 'tower2':
+                return 'Bomb Tower:\nSlow fire, area of effect damage.';
+            case 'tower3':
+                return 'Slowing Tower:\nSlows all enemies within its range.';
+            default:
+                return '';
         }
     }
 }

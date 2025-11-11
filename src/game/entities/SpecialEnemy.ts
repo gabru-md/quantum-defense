@@ -1,7 +1,8 @@
 import {GameObject} from '../core/GameObject';
 import {Health} from '../components/Health';
 import {PathFollower} from '../components/PathFollower';
-import {Deactivator} from '../components/Deactivator'; // Import Deactivator
+import {Deactivator} from '../components/Deactivator';
+import {ContinuousBreathing} from "../components/ContinuousBreathing.ts"; // Import Deactivator
 
 export interface SpecialEnemyConfig {
     scene: Phaser.Scene;
@@ -27,6 +28,7 @@ export class SpecialEnemy extends GameObject {
         this.addComponent(this.healthComponent);
         this.addComponent(new PathFollower(config.path, config.speed));
         this.addComponent(new Deactivator()); // Add the Deactivator component
+        this.addComponent(new ContinuousBreathing(0.5, 500)); // Add the continuous breathing effect
 
         this.on('reachedEnd', () => {
             this.scene.events.emit('gameOver');

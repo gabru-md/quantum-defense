@@ -26,6 +26,28 @@ export class Tower extends GameObject {
         // Store original color for revival
         this.originalPulseColor = (config.texture === 'tower1') ? phaserColor(AppColors.PULSE_LASER_TOWER) : phaserColor(AppColors.PULSE_BOMB_TOWER);
         this.on('healthChanged', this.handleHealthChanged, this);
+
+        this.setInteractive();
+
+        // Add hover events
+        this.on('pointerover', () => {
+            this.scene.tweens.add({
+                targets: this,
+                scale: 1.2,
+                duration: 200,
+                ease: 'Sine.easeInOut'
+            });
+        });
+
+        this.on('pointerout', () => {
+            this.scene.tweens.add({
+                targets: this,
+                scale: 1,
+                duration: 200,
+                ease: 'Sine.easeInOut'
+            });
+        });
+
     }
 
     private handleHealthChanged(currentHealth: number): void {

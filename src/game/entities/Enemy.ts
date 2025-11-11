@@ -1,6 +1,7 @@
 import { GameObject } from '../core/GameObject';
 import { Health } from '../components/Health';
 import { PathFollower } from '../components/PathFollower';
+import { ContinuousBreathing } from '../components/ContinuousBreathing.ts'; // Import ContinuousBreathing
 import * as Phaser from 'phaser';
 
 export interface EnemyConfig {
@@ -28,6 +29,7 @@ export class Enemy extends GameObject {
     this.healthComponent = new Health(config.health);
     this.addComponent(this.healthComponent);
     this.addComponent(new PathFollower(config.path, config.speed));
+    this.addComponent(new ContinuousBreathing(0.75, 750)); // Add the continuous breathing effect
 
     // Listen for health changes to update transparency
     this.on('healthChanged', this.handleHealthChanged, this);
