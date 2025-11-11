@@ -44,7 +44,7 @@ export class PlayerWaveAmplifier extends Component {
         const nearestTower = this.findNearestTowerComponent.nearestTower;
 
         if (this.playerPressedKey(time)) {
-            if (nearestTower && nearestTower.isTowerDeactivated()) {
+            if (nearestTower && (nearestTower.isNotFullHealth() || nearestTower.isTowerDeactivated())) {
                 const distance = Phaser.Math.Distance.Between(this.gameObject.x, this.gameObject.y, nearestTower.x, nearestTower.y);
                 if (distance <= this.activationRange) {
                     this.activateWave(nearestTower);
@@ -100,7 +100,8 @@ export class PlayerWaveAmplifier extends Component {
             });
         }
 
-        if (tower && tower.isTowerDeactivated()) {
+        if (tower && tower.isNotFullHealth()) {
+            console.log('reviving')
             tower.scene.physics.world.enable(tower);
             tower.reviveProgress = (tower.reviveProgress || 0) + 1;
             const healthComponent = tower.getComponent(Health);
