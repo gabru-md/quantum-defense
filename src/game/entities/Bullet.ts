@@ -2,6 +2,7 @@ import {GameObject} from '../core/GameObject';
 import {Health} from '../components/Health';
 import * as Phaser from 'phaser';
 import {VisualPulse} from "../components/VisualPulse.ts";
+import {GAME_HEIGHT, GAME_WIDTH} from "../scripts/Util.ts";
 
 export class Bullet extends GameObject {
     public damage: number = 0;
@@ -13,7 +14,6 @@ export class Bullet extends GameObject {
         this.scene.physics.world.enable(this);
         this.setActive(false);
         this.setVisible(false);
-        // this.addComponent(new VisualPulse(Phaser.Display.Color.ValueToColor('0xcf0d0d').color, 200, 800, 1.2, 20))
     }
 
     public fire(x: number, y: number, targetX: number, targetY: number, speed: number, damage: number): void {
@@ -41,5 +41,21 @@ export class Bullet extends GameObject {
             visualPulseComponent.destroy();
         }
         this.destroy();
+    }
+
+    update(_time: number, _delta: number) {
+        if (this.outOfBounds()) {
+            this.destroyBullet();
+        }
+    }
+
+    private outOfBounds(): boolean {
+        if (!this.scene) {
+            return true;
+        }
+        return this.x < 0 ||
+            this.x > GAME_WIDTH ||
+            this.y < 0 ||
+            this.y > GAME_HEIGHT;
     }
 }

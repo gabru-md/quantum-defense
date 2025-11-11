@@ -3,6 +3,7 @@ import {Health} from '../components/Health';
 import {Enemy} from './Enemy';
 import {SpecialEnemy} from './SpecialEnemy'; // Import SpecialEnemy
 import * as Phaser from 'phaser';
+import {GAME_HEIGHT, GAME_WIDTH} from "../scripts/Util.ts";
 
 /**
  * Represents a bomb projectile that deals Area of Effect (AoE) damage.
@@ -72,17 +73,9 @@ export class Bomb extends GameObject {
         if (!this.scene) {
             return true;
         }
-
-        const gameWidth = this.scene.game.config.width as number;
-        const gameHeight = this.scene.game.config.height as number;
-
-        if (this.x < 0 ||
-            this.x > gameWidth ||
+        return this.x < 0 ||
+            this.x > GAME_WIDTH ||
             this.y < 0 ||
-            this.y > gameHeight) {
-            return true;
-        }
-
-        return false;
+            this.y > GAME_HEIGHT;
     }
 }
