@@ -5,9 +5,11 @@ import {VisualPulse} from "../components/VisualPulse.ts";
 
 export class Bullet extends GameObject {
     public damage: number = 0;
+    public source?: GameObject;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
-        super(scene, x, y, texture, frame);
+    constructor(scene: Phaser.Scene, x: number, y: number, texture: string, source?: GameObject) {
+        super(scene, x, y, texture);
+        this.source = source;
         this.scene.physics.world.enable(this);
         this.setActive(false);
         this.setVisible(false);

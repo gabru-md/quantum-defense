@@ -41,6 +41,17 @@ export class GameObject extends Phaser.GameObjects.Sprite {
   }
 
   /**
+   * Deletes a component from the GameObject.
+   * @param component The component to delete.
+   */
+  public deleteComponent(component: Component): void {
+      const index = this.components.indexOf(component);
+      if (index !== -1) {
+          this.components.splice(index, 1);
+      }
+  }
+
+  /**
    * The update method is called every frame by the Scene's update event.
    * It calls the update method on all of its attached components.
    * @param _time The current time.

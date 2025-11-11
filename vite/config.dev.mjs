@@ -15,6 +15,7 @@ export default defineConfig({
         port: 8080,
         allowedHosts: [
             '6001163615d6.ngrok-free.app',
+            'cb60a10a2deb.ngrok-free.app'
         ]
     }
 });

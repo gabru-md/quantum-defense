@@ -1,7 +1,8 @@
 import * as Phaser from 'phaser';
-import {BaseLevel, GAME_HEIGHT, GAME_WIDTH} from './BaseLevel.ts';
+import {Level} from './lib/Level.ts';
+import {GAME_HEIGHT, GAME_WIDTH} from "../scripts/util.ts";
 
-export class Level1 extends BaseLevel {
+export class Level1 extends Level {
     constructor() {
         super('Level 1'); // Unique key for this scene
     }
@@ -18,18 +19,13 @@ export class Level1 extends BaseLevel {
         return path;
     }
 
-    protected definePaths() {
-        this.paths = {
+    definePaths(): { [key: string]: Phaser.Curves.Path } {
+        return {
             'first': this.firstPath()
         }
     }
 
-    protected getTowerSlots(): { x: number; y: number }[] {
-        return [
-        ];
-    }
-
-    protected getWaveConfig(wave: number): {
+    getWaveConfig(wave: number): {
         type: string;
         texture: string;
         count: number;
@@ -60,7 +56,7 @@ export class Level1 extends BaseLevel {
         return []; // No more waves for this level yet
     }
 
-    protected nextScene(): string {
+    nextScene(): string {
         return "Level 2";
     }
 }

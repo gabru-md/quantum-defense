@@ -1,7 +1,8 @@
 import * as Phaser from 'phaser';
-import {BaseLevel, GAME_HEIGHT, GAME_WIDTH} from './BaseLevel.ts';
+import {Level} from './lib/Level.ts';
+import {GAME_HEIGHT, GAME_WIDTH} from "../scripts/util.ts";
 
-export class Level5 extends BaseLevel {
+export class Level5 extends Level {
     constructor() {
         super('Level 5');
     }
@@ -30,18 +31,14 @@ export class Level5 extends BaseLevel {
         return path;
     }
 
-    protected definePaths() {
-        this.paths = {
+    definePaths() {
+        return {
             'first': this.firstPath(),
             'second': this.secondPath()
         }
     }
 
-    protected getTowerSlots(): { x: number; y: number }[] {
-        return [];
-    }
-
-    protected getWaveConfig(wave: number): {
+    getWaveConfig(wave: number): {
         type: string;
         texture: string;
         count: number;
@@ -122,7 +119,7 @@ export class Level5 extends BaseLevel {
         return [];
     }
 
-    protected nextScene(): string {
+    nextScene(): string {
         return "Level 1"; // Loop back to Level1 for now, or a dedicated WinScene
     }
 }

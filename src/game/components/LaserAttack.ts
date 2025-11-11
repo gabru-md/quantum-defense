@@ -38,7 +38,7 @@ export class LaserAttack extends Component {
   }
 
   private fireAt(target: Phaser.GameObjects.Sprite): void {
-    const bullet = new Bullet(this.gameObject.scene, this.gameObject.x, this.gameObject.y, 'bullet');
+    const bullet = new Bullet(this.gameObject.scene, this.gameObject.x, this.gameObject.y, 'bullet', this.gameObject);
     this.bullets.add(bullet, true);
 
     if (bullet) {

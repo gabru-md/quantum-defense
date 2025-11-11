@@ -1,0 +1,156 @@
+import Phaser from "phaser";
+import {Level} from "../Level.ts";
+import {Manager} from "../Manager.ts";
+import {GAME_HEIGHT, GAME_WIDTH, TOWER1_COST, TOWER2_COST, WIDTH} from "../../../scripts/util.ts";
+
+export class HudManager extends Manager {
+
+    protected gameName!: Phaser.GameObjects.Text;
+    protected levelText!: Phaser.GameObjects.Text;
+    protected baseHealthText!: Phaser.GameObjects.Text;
+    protected moneyText!: Phaser.GameObjects.Text;
+    protected waveProgressText!: Phaser.GameObjects.Text;
+    protected messageText!: Phaser.GameObjects.Text;
+
+    constructor(public scene: Level) {
+        super(scene);
+    }
+
+    public setup() {
+        const hudY = 10
+        const hudX: number = GAME_WIDTH + 10
+        const spacing: number = 40;
+
+        this.gameName = this.scene.add.text(hudX, hudY, 'Quantum Defense', {
+            font: '30px',
+            color: '#ffffff'
+        }).setScrollFactor(0).setDepth(100);
+        this.levelText = this.scene.add.text(hudX, hudY + spacing, '',).setScrollFactor(0).setDepth(100);
+        this.baseHealthText = this.scene.add.text(hudX, hudY + 1.5 * spacing, '',).setScrollFactor(0).setDepth(100);
+        this.moneyText = this.scene.add.text(hudX, hudY + 2 * spacing, '',).setScrollFactor(0).setDepth(100);
+        this.waveProgressText = this.scene.add.text(hudX, hudY + 2.5 * spacing, '',).setScrollFactor(0).setDepth(100);
+
+        this.messageText = this.scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2, '', {
+            font: '48px Roboto',
+            color: '#ff0000',
+            backgroundColor: 'rgba(0,0,0,0.40)',
+            padding: {x: 20, y: 10}
+        }).setOrigin(0.5).setScrollFactor(0).setVisible(false).setDepth(100);
+        this.setupGameVisualSeparators();
+        this.setupHudVisualSeparators();
+        this.createTowerSelectionUI();
+        this.update();
+    }
+
+    public update(_time: number = 0, _delta: number = 0): void {
+        this.baseHealthText.setText(`Base Health: ${this.scene.state.baseHealth}`);
+        this.moneyText.setText(`Money: $${this.scene.state.money}`);
+        this.waveProgressText.setText(`Wave ${this.scene.waveManager.currentWave}: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`);
+    }
+
+    public info(message: string, color: string, callback?: () => void) {
+        this.messageText.setText(message).setColor(color).setVisible(true);
+        this.scene.time.delayedCall(1500, () => {
+            this.messageText.setVisible(false)
+            if (callback) {
+                callback();
+            }
+        });
+    }
+
+    private createTowerSelectionUI() {
+        const hudX = GAME_WIDTH + 10;
+        const hudY = 200;
+        const spacing = 80;
+
+        // Tower 1 Button
+        const tower1Button = this.scene.add.sprite(hudX + 50, hudY, 'tower1').setInteractive();
+        this.scene.add.text(hudX + 100, hudY, `Tower 1\nCost: ${TOWER1_COST}`, { font: '16px Arial', color: '#ffffff' }).setOrigin(0, 0.5);
+        tower1Button.on('pointerdown', () => {
+            this.scene.towerManager.selectedTowerType = 'tower1';
+        });
+
+        // Tower 2 Button
+        const tower2Button = this.scene.add.sprite(hudX + 50, hudY + spacing, 'tower2').setInteractive();
+        this.scene.add.text(hudX + 100, hudY + spacing, `Tower 2\nCost: ${TOWER2_COST}`, { font: '16px Arial', color: '#ffffff' }).setOrigin(0, 0.5);
+        tower2Button.on('pointerdown', () => {
+            this.scene.towerManager.selectedTowerType = 'tower2';
+        });
+    }
+
+    private setupGameVisualSeparators() {
+        this.scene.add.graphics()
+            .lineStyle(1, 0xffffff, 1)
+            .beginPath()
+            .moveTo(GAME_WIDTH, 0)
+            .lineTo(GAME_WIDTH, GAME_HEIGHT)
+            .closePath()
+            .stroke()
+            .setScrollFactor(0);
+
+        this.scene.add.graphics()
+            .lineStyle(1, 0xffffff, 1)
+            .beginPath()
+            .moveTo(0, 0)
+            .lineTo(0, GAME_HEIGHT)
+            .closePath()
+            .stroke()
+            .setScrollFactor(0);
+
+        this.scene.add.graphics()
+            .lineStyle(1, 0xffffff, 1)
+            .beginPath()
+            .moveTo(0, 0)
+            .lineTo(GAME_WIDTH, 0)
+            .closePath()
+            .stroke()
+            .setScrollFactor(0);
+
+        this.scene.add.graphics()
+            .lineStyle(1, 0xffffff, 1)
+            .beginPath()
+            .moveTo(0, GAME_HEIGHT)
+            .lineTo(GAME_WIDTH, GAME_HEIGHT)
+            .closePath()
+            .stroke()
+            .setScrollFactor(0);
+    }
+
+    private setupHudVisualSeparators() {
+        this.scene.add.graphics()
+            .lineStyle(1, 0xffffff, 1)
+            .beginPath()
+            .moveTo(GAME_WIDTH, 0)
+            .lineTo(GAME_WIDTH, GAME_HEIGHT)
+            .closePath()
+            .stroke()
+            .setScrollFactor(0);
+
+        this.scene.add.graphics()
+            .lineStyle(1, 0xffffff, 1)
+            .beginPath()
+            .moveTo(WIDTH, 0)
+            .lineTo(WIDTH, GAME_HEIGHT)
+            .closePath()
+            .stroke()
+            .setScrollFactor(0);
+
+        this.scene.add.graphics()
+            .lineStyle(1, 0xffffff, 1)
+            .beginPath()
+            .moveTo(GAME_WIDTH, 0)
+            .lineTo(WIDTH, 0)
+            .closePath()
+            .stroke()
+            .setScrollFactor(0);
+
+        this.scene.add.graphics()
+            .lineStyle(1, 0xffffff, 1)
+            .beginPath()
+            .moveTo(GAME_WIDTH, GAME_HEIGHT)
+            .lineTo(WIDTH, GAME_HEIGHT)
+            .closePath()
+            .stroke()
+            .setScrollFactor(0);
+    }
+}

@@ -8,7 +8,7 @@ export class VisualPulse extends Component {
     private pulseGraphicsList!: Phaser.GameObjects.Graphics[];
     private pulseTweenList!: Phaser.Tweens.Tween[];
 
-    constructor(private color: number, private pulseDelay: number, private duration: number, private scale: number = 2.75, private totalPulses: number = 10, private lineWidth: number = 1) {
+    constructor(public color: number, private pulseDelay: number, private duration: number, private scale: number = 2.75, private totalPulses: number = 10, private lineWidth: number = 1) {
         super();
         this.pulseTweenList = [];
         this.pulseGraphicsList = [];
