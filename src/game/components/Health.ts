@@ -37,7 +37,6 @@ export class Health extends Component {
 
         this._currentHealth -= amount;
         this.gameObject.emit('healthChanged', this._currentHealth);
-
         if (this.isDead()) {
             this._currentHealth = 0;
             this.gameObject.emit('died');

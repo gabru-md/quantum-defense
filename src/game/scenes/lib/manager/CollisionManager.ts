@@ -4,7 +4,7 @@ import Phaser from "phaser";
 import {GameObject} from "../../../core/GameObject.ts";
 import {Enemy} from "../../../entities/Enemy.ts";
 import {Bomb} from "../../../entities/Bomb.ts";
-import {Healer} from "../../../entities/Healer.ts";
+import {SpecialEnemy} from "../../../entities/SpecialEnemy.ts"; // Import SpecialEnemy
 import {Player} from "../../../entities/Player.ts";
 import {Manager} from "../Manager.ts";
 import {Tower} from "../../../entities/Tower.ts";
@@ -18,15 +18,15 @@ export class CollisionManager extends Manager {
         // @ts-ignore
         this.level.physics.add.overlap(this.level.towerManager.bullets, this.level.waveManager.enemies, this.handleBulletEnemyCollision, undefined, this);
         // @ts-ignore
-        this.level.physics.add.overlap(this.level.towerManager.bullets, this.level.waveManager.healers, this.handleBulletHealerCollision, undefined, this);
+        this.level.physics.add.overlap(this.level.towerManager.bullets, this.level.waveManager.specialEnemies, this.handleBulletSpecialEnemyCollision, undefined, this); // New collision
         // @ts-ignore
         this.level.physics.add.overlap(this.level.towerManager.bombs, this.level.waveManager.enemies, this.handleBombEnemyCollision, undefined, this);
         // @ts-ignore
-        this.level.physics.add.overlap(this.level.towerManager.bombs, this.level.waveManager.healers, this.handleBombHealerCollision, undefined, this);
+        this.level.physics.add.overlap(this.level.towerManager.bombs, this.level.waveManager.specialEnemies, this.handleBombSpecialEnemyCollision, undefined, this); // New collision
         // @ts-ignore
         this.level.physics.add.overlap(this.level.towerManager.bullets, this.level.playerManager.player, this.handleBulletPlayerCollision, undefined, this);
         // @ts-ignore
-        this.level.physics.add.overlap(this.level.towerManager.bullets, this.level.towerManager.towers, this.handleBulletTowerCollision, undefined, this)
+        this.level.physics.add.overlap(this.level.towerManager.bullets, this.level.towerManager.towers, this.handleBulletTowerCollision, undefined, this);
     }
 
     protected handleBulletEnemyCollision(bullet: Bullet, enemyObject: Phaser.GameObjects.GameObject): void {
@@ -45,19 +45,19 @@ export class CollisionManager extends Manager {
         }
     }
 
-    protected handleBombHealerCollision(bombObject: Phaser.GameObjects.GameObject): void {
-        if (bombObject instanceof Bomb) {
+    protected handleBombSpecialEnemyCollision(bombObject: Phaser.GameObjects.GameObject, specialEnemyObject: Phaser.GameObjects.GameObject): void {
+        if (bombObject instanceof Bomb && specialEnemyObject instanceof SpecialEnemy) {
             const bomb = bombObject as Bomb;
             bomb.explode();
         }
     }
 
-    protected handleBulletHealerCollision(bullet: Bullet, healerObject: Phaser.GameObjects.GameObject): void {
-        if (healerObject instanceof GameObject) {
-            const healer = healerObject as Healer;
-            bullet.applyDamage(healer);
+    protected handleBulletSpecialEnemyCollision(bullet: Bullet, specialEnemyObject: Phaser.GameObjects.GameObject): void {
+        if (specialEnemyObject instanceof GameObject) {
+            const specialEnemy = specialEnemyObject as SpecialEnemy;
+            bullet.applyDamage(specialEnemy);
         } else {
-            console.warn("Collision detected with an object not recognized as a custom GameObject:", healerObject);
+            console.warn("Collision detected with an object not recognized as a custom GameObject:", specialEnemyObject);
         }
     }
 

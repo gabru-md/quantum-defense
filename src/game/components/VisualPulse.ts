@@ -8,9 +8,11 @@ import {phaserColor} from '../scripts/Colors.ts'
 export class VisualPulse extends Component {
     private pulseGraphicsList!: Phaser.GameObjects.Graphics[];
     private pulseTweenList!: Phaser.Tweens.Tween[];
+    private _color: number; // Internal color property
 
-    constructor(public color: number, private pulseDelay: number, private duration: number, private scale: number = 2.75, private totalPulses: number = 10, private lineWidth: number = 1) {
+    constructor(color: number, private pulseDelay: number, private duration: number, private scale: number = 2.75, private totalPulses: number = 10, private lineWidth: number = 1) {
         super();
+        this._color = color;
         this.pulseTweenList = [];
         this.pulseGraphicsList = [];
     }
@@ -23,17 +25,16 @@ export class VisualPulse extends Component {
                     return;
                 }
                 const pulseGraphics = this.gameObject.scene.add.graphics({
-                    fillStyle: {color: phaserColor(this.color), alpha: 0.1}, // Use phaserColor
-                    lineStyle: {width: this.lineWidth, color: phaserColor(this.color), alpha: 0.8} // Use phaserColor
+                    fillStyle: {color: phaserColor(this._color), alpha: 0.1},
+                    lineStyle: {width: this.lineWidth, color: phaserColor(this._color), alpha: 0.8}
                 });
-                pulseGraphics.setDepth(this.gameObject.depth - 1); // Draw pulse behind the game object
+                pulseGraphics.setDepth(this.gameObject.depth - 1);
                 pulseGraphics.x = this.gameObject.x;
                 pulseGraphics.y = this.gameObject.y;
 
-                // Create a tween that animates the pulse
                 this.pulseTweenList.push(this.gameObject.scene.tweens.add({
                     targets: pulseGraphics,
-                    scale: this.scale, // Scale to reach desired radius
+                    scale: this.scale,
                     alpha: 0,
                     duration: this.duration,
                     ease: 'Sine.easeOut',
@@ -42,10 +43,9 @@ export class VisualPulse extends Component {
                         if(!this.enabled) {
                             return;
                         }
-                        // Draw expanding circle
                         pulseGraphics.clear();
-                        pulseGraphics.lineStyle(this.lineWidth, phaserColor(this.color), target.alpha * 0.8); // Use phaserColor
-                        pulseGraphics.fillStyle(phaserColor(this.color), target.alpha * 0.3); // Use phaserColor
+                        pulseGraphics.lineStyle(this.lineWidth, phaserColor(this._color), target.alpha * 0.8);
+                        pulseGraphics.fillStyle(phaserColor(this._color), target.alpha * 0.3);
                         const radius = (this.gameObject.width / 2) * target.scale;
                         pulseGraphics.fillCircle(0, 0, radius);
                         pulseGraphics.strokeCircle(0, 0, radius);
@@ -64,11 +64,19 @@ export class VisualPulse extends Component {
             this.destroy();
             return;
         }
-        // empty
         for (let i = 0; i < this.pulseGraphicsList.length; i++) {
             this.pulseGraphicsList[i].x = this.gameObject.x;
             this.pulseGraphicsList[i].y = this.gameObject.y;
         }
+    }
+
+    public setColor(newColor: number): void {
+        this._color = newColor;
+        // Re-draw existing pulses with new color
+        this.pulseGraphicsList.forEach(graphics => {
+            graphics.lineStyle(this.lineWidth, phaserColor(this._color), graphics.alpha * 0.8);
+            graphics.fillStyle(phaserColor(this._color), graphics.alpha * 0.3);
+        });
     }
 
     public destroy(): void {

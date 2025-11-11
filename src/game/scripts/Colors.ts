@@ -32,7 +32,7 @@ export const AppColors = {
     ENEMY_NORMAL: '#3498db', // Blue (Square)
     ENEMY_FAST: '#e74c3c', // Red (Triangle)
     ENEMY_TANK: '#f1c40f', // Yellow (Hexagon)
-    ENEMY_HEALER: '#27ae60', // Dark Green (Healer)
+    SPECIAL_ENEMY: '#27ae60', // Dark Green (Special Enemy) - Renamed from HEALER
 
     // Tower Colors
     TOWER_LASER: '#2ecc71', // Green (Laser Tower)
@@ -47,6 +47,6 @@ export const AppColors = {
     PLAYER_WAVE_PULSE: 'rgba(4,138,73,0.8)', // Greenish pulse
 
     // Visual Pulse Colors (for towers)
-    PULSE_LASER_TOWER: 'rgba(46,204,113,0.7)', // Pinkish-red
-    PULSE_BOMB_TOWER: 'rgba(155,89,182,0.7)', // Magenta
+    PULSE_LASER_TOWER: 'rgba(46,204,113,0.7)', // Greenish
+    PULSE_BOMB_TOWER: 'rgba(155,89,182,0.7)', // Purplish
 };

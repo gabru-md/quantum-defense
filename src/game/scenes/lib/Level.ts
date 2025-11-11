@@ -1,7 +1,7 @@
 import * as Phaser from 'phaser';
 import {HudManager} from "./manager/HudManager.ts";
 import {WaveManager} from "./manager/WaveManager.ts";
-import {State} from "./State.ts"; // Import State
+import {State} from "./State.ts";
 import {CollisionManager} from "./manager/CollisionManager.ts";
 import {TowerManager} from "./manager/TowerManager.ts";
 import {TextureManager} from "./manager/TextureManager.ts";
@@ -14,7 +14,7 @@ export abstract class Level extends Phaser.Scene {
     hud: HudManager;
     waveManager: WaveManager;
     collisionManager: CollisionManager;
-    state!: State; // Now a reference to the shared state, initialized in init()
+    state!: State;
     towerManager: TowerManager;
     textureLoader: TextureManager;
     pathsManager: PathsManager;
@@ -37,7 +37,6 @@ export abstract class Level extends Phaser.Scene {
 
     protected constructor(key: string) {
         super({key});
-        // Managers are instantiated here, but depend on 'state' being available in init()
         this.hud = new HudManager(this);
         this.waveManager = new WaveManager(this);
         this.collisionManager = new CollisionManager(this);
@@ -47,17 +46,13 @@ export abstract class Level extends Phaser.Scene {
         this.playerManager = new PlayerManager(this);
     }
 
-    // init() is called after the constructor but before preload()
     init(): void {
-        // Get the shared State instance from the registry
         this.state = this.sys.registry.get('gameState');
         if (!this.state) {
-            // This case should ideally not happen if MenuScene is loaded first
             console.error("Game State not found in registry. Creating a new one.");
             this.state = new State(100, 350, this.scene.key);
             this.sys.registry.set('gameState', this.state);
         }
-        // Update the level key in the state
         this.state.level = this.scene.key;
     }
 
@@ -74,12 +69,14 @@ export abstract class Level extends Phaser.Scene {
         this.playerManager.setup();
         this.collisionManager.setup();
 
-        // --- Escape Key Listener ---
         // @ts-ignore
         this.input.keyboard.on('keydown-ESC', () => {
-            this.scene.stop(this.scene.key); // Stop the current level scene
-            this.scene.start('MenuScene'); // Go back to the MenuScene
+            this.scene.stop(this.scene.key);
+            this.scene.start('MenuScene');
         });
+
+        // Listen for the global game over event from SpecialEnemy
+        this.events.on('gameOver', this.handleGameOver, this);
 
         this.hud.info('Incoming First Wave', AppColors.UI_MESSAGE_ERROR, () => {
             this.waveManager.startWave(1);
@@ -91,5 +88,13 @@ export abstract class Level extends Phaser.Scene {
         this.towerManager.update(time, delta);
         this.playerManager.update(time, delta);
         this.hud.update();
+    }
+
+    private handleGameOver(): void {
+        this.waveManager.gameOver = true; // Stop wave spawning and updates
+        this.physics.pause();
+        this.hud.info('GAME OVER!', AppColors.UI_MESSAGE_ERROR, () => {
+            this.scene.restart();
+        });
     }
 }

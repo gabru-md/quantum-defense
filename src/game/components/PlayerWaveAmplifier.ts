@@ -7,16 +7,24 @@ import {LaserAttack} from "./LaserAttack.ts";
 import {BombAttack} from "./BombAttack.ts";
 import {VisualPulse} from "./VisualPulse.ts";
 import {AppColors, phaserColor} from "../scripts/Colors.ts";
+import {SpecialEnemy} from "../entities/SpecialEnemy.ts"; // Import SpecialEnemy
 
 /**
- * A component that allows the player to activate a wave to revive deactivated towers.
+ * A component that allows the player to activate a wave to revive deactivated towers or damage special enemies.
  */
 export class PlayerWaveAmplifier extends Component {
     private keys!: { e: Phaser.Input.Keyboard.Key };
     private cooldownTime: number = 1000; // 1 second cooldown
     private lastActivated: number = 0;
     private activationRange: number = 100; // Range to be near a tower to revive it
+    private waveDamage: number = 50; // Damage dealt by the wave to special enemies
     private findNearestTowerComponent!: FindNearestTower;
+    private specialEnemiesGroup!: Phaser.GameObjects.Group; // Reference to special enemies group
+
+    constructor(specialEnemiesGroup: Phaser.GameObjects.Group) {
+        super();
+        this.specialEnemiesGroup = specialEnemiesGroup;
+    }
 
     public start(): void {
         if (this.gameObject.scene.input.keyboard) {
@@ -37,14 +45,14 @@ export class PlayerWaveAmplifier extends Component {
 
         if (this.playerPressedKey(time)) {
             if (nearestTower && nearestTower.isTowerDeactivated()) {
-                // check for activation range when near deactivated tower
                 const distance = Phaser.Math.Distance.Between(this.gameObject.x, this.gameObject.y, nearestTower.x, nearestTower.y);
                 if (distance <= this.activationRange) {
                     this.activateWave(nearestTower);
                     this.lastActivated = time;
                 }
             } else {
-                this.activateWave(); // Activate wave even if no tower is nearby, but it won't revive anything
+                // If no deactivated tower is nearby or in range, activate wave to damage special enemies
+                this.activateWave();
                 this.lastActivated = time;
             }
         }
@@ -55,13 +63,11 @@ export class PlayerWaveAmplifier extends Component {
     }
 
     private activateWave(tower?: Tower): void {
-        // --- RIPPLE EFFECT CONFIGURATION ---
         const totalPulses = 4;
         const pulseDelay = 150;
         const pulseDuration = 1000;
-        const pulseColor = tower ? tower.tintTopLeft : phaserColor(AppColors.PLAYER_WAVE_PULSE); // Use tower color or default player wave color
+        const pulseColor = tower ? tower.tintTopLeft : phaserColor(AppColors.PLAYER_WAVE_PULSE);
 
-        // --- VISUAL EFFECT: CREATING THE RIPPLE ---
         for (let i = 0; i < totalPulses; i++) {
             this.gameObject.scene.time.delayedCall(i * pulseDelay, () => {
                 const graphics = this.gameObject.scene.add.graphics({
@@ -95,7 +101,6 @@ export class PlayerWaveAmplifier extends Component {
         }
 
         if (tower && tower.isTowerDeactivated()) {
-            // --- REVIVAL LOGIC ---
             tower.scene.physics.world.enable(tower);
             tower.reviveProgress = (tower.reviveProgress || 0) + 1;
             const healthComponent = tower.getComponent(Health);
@@ -113,8 +118,25 @@ export class PlayerWaveAmplifier extends Component {
                         if (c) c.enabled = true;
                     });
                     tower.reviveProgress = 0;
+
+                    tower.setOriginalPulseColor();
                 }
             }
+        } else {
+            // Damage special enemies within range
+            // @ts-ignore
+            this.specialEnemiesGroup.children.each((specialEnemyObject: Phaser.GameObjects.GameObject) => {
+                if (specialEnemyObject instanceof SpecialEnemy) {
+                    const specialEnemy = specialEnemyObject as SpecialEnemy;
+                    const distance = Phaser.Math.Distance.Between(this.gameObject.x, this.gameObject.y, specialEnemy.x, specialEnemy.y);
+                    if (distance <= this.activationRange) { // Use activationRange for damage as well
+                        const healthComponent = specialEnemy.getComponent(Health);
+                        if (healthComponent) {
+                            healthComponent.takeDamage(this.waveDamage);
+                        }
+                    }
+                }
+            });
         }
     }
 }

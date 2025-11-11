@@ -38,7 +38,7 @@ export class Level1 extends Level {
         if (wave === 1) {
             return [
                 {type: 'enemy', texture: 'enemy1', count: 15, delay: 1000, health: 100, speed: 50, moneyValue: 10, path: 'first'},
-                {type: 'healer', texture: 'healer', count: 3, delay: 500, health: 50, speed: 100, moneyValue: 50, path: 'first'},
+                {type: 'specialEnemy', texture: 'specialEnemy', count: 3, delay: 500, health: 50, speed: 100, moneyValue: 50, path: 'first'},
                 {type: 'enemy', texture: 'enemy2', count: 10, delay: 1200, health: 50, speed: 100, moneyValue: 50, path: 'first'}
             ];
         }
