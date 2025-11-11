@@ -17,8 +17,6 @@ export class TowerManager extends Manager {
     protected bullets!: Phaser.GameObjects.Group;
     protected bombs!: Phaser.GameObjects.Group;
 
-    selectedTowerType: string;
-
     constructor(protected level: Level) {
         super(level);
     }
@@ -32,11 +30,10 @@ export class TowerManager extends Manager {
 
 
     private setupInputEventListeners() {
-        this.selectedTowerType = 'tower1';
         this.level.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
             if (pointer.x <= GAME_WIDTH && pointer.y <= GAME_HEIGHT) {
                 // place tower only if witin game bounds else interact with hud
-                this.tryPlaceTower(pointer.x, pointer.y, this.selectedTowerType);
+                this.tryPlaceTower(pointer.x, pointer.y, this.level.state.selectedTowerType);
             }
         });
     }
@@ -94,6 +91,17 @@ export class TowerManager extends Manager {
             tower.addComponent(new BombAttack(1500, 100, 133, 75, this.bombs, [this.level.waveManager.enemies, this.level.waveManager.healers]));
             tower.addComponent(new VisualPulse(phaserColor('0xff00ff'), 400, 2000));
             tower.on('died', () => this.deactivateTower(tower));
+        }
+    }
+
+    public getTowerRange(towerType: string): number {
+        switch (towerType) {
+            case 'tower1':
+                return 150;
+            case 'tower2':
+                return 180;
+            default:
+                return 0;
         }
     }
 

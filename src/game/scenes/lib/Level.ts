@@ -55,7 +55,7 @@ export abstract class Level extends Phaser.Scene {
         // --- Physics World Bounds ---
         this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
         // --- UI Setup (positioned in HUD area) ---
-        this.hud.setup();
+        this.hud.setup(); // This now includes createTowerSelectionUI()
         this.pathsManager.setup();
         this.waveManager.setup();
         this.towerManager.setup();

@@ -11,6 +11,8 @@ export class HudManager extends Manager {
     protected moneyText!: Phaser.GameObjects.Text;
     protected waveProgressText!: Phaser.GameObjects.Text;
     protected messageText!: Phaser.GameObjects.Text;
+    private rangePreview!: Phaser.GameObjects.Sprite;
+    private selectionIndicator!: Phaser.GameObjects.Graphics;
 
     constructor(public scene: Level) {
         super(scene);
@@ -46,6 +48,7 @@ export class HudManager extends Manager {
         this.baseHealthText.setText(`Base Health: ${this.scene.state.baseHealth}`);
         this.moneyText.setText(`Money: $${this.scene.state.money}`);
         this.waveProgressText.setText(`Wave ${this.scene.waveManager.currentWave}: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`);
+        this.updateRangePreview();
     }
 
     public info(message: string, color: string, callback?: () => void) {
@@ -63,19 +66,46 @@ export class HudManager extends Manager {
         const hudY = 200;
         const spacing = 80;
 
+        this.selectionIndicator = this.scene.add.graphics();
+        this.selectionIndicator.lineStyle(2, 0xffffff, 1);
+        this.selectionIndicator.strokeRect(0, 0, 64, 64);
+        this.selectionIndicator.setDepth(101);
+
         // Tower 1 Button
         const tower1Button = this.scene.add.sprite(hudX + 50, hudY, 'tower1').setInteractive();
         this.scene.add.text(hudX + 100, hudY, `Tower 1\nCost: ${TOWER1_COST}`, { font: '16px Arial', color: '#ffffff' }).setOrigin(0, 0.5);
         tower1Button.on('pointerdown', () => {
-            this.scene.towerManager.selectedTowerType = 'tower1';
+            this.scene.state.selectedTowerType = 'tower1';
+            this.selectionIndicator.setPosition(tower1Button.x - 32, tower1Button.y - 32);
         });
 
         // Tower 2 Button
         const tower2Button = this.scene.add.sprite(hudX + 50, hudY + spacing, 'tower2').setInteractive();
         this.scene.add.text(hudX + 100, hudY + spacing, `Tower 2\nCost: ${TOWER2_COST}`, { font: '16px Arial', color: '#ffffff' }).setOrigin(0, 0.5);
         tower2Button.on('pointerdown', () => {
-            this.scene.towerManager.selectedTowerType = 'tower2';
+            this.scene.state.selectedTowerType = 'tower2';
+            this.selectionIndicator.setPosition(tower2Button.x - 32, tower2Button.y - 32);
         });
+
+        // Set initial selection
+        this.selectionIndicator.setPosition(tower1Button.x - 32, tower1Button.y - 32);
+
+        // Range Preview
+        this.rangePreview = this.scene.add.sprite(0, 0, 'rangePreview').setAlpha(0.10).setVisible(false);
+    }
+
+    private updateRangePreview() {
+        if (this.rangePreview) {
+            const pointer = this.scene.input.activePointer;
+            if (pointer.x < GAME_WIDTH) {
+                this.rangePreview.setVisible(true);
+                this.rangePreview.setPosition(pointer.x, pointer.y);
+                const range = this.scene.state.selectedTowerType === 'tower1' ? 150 : 180;
+                this.rangePreview.setScale(range * 2 / 300);
+            } else {
+                this.rangePreview.setVisible(false);
+            }
+        }
     }
 
     private setupGameVisualSeparators() {
