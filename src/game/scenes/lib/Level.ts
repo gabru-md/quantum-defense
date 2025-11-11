@@ -74,6 +74,13 @@ export abstract class Level extends Phaser.Scene {
         this.playerManager.setup();
         this.collisionManager.setup();
 
+        // --- Escape Key Listener ---
+        // @ts-ignore
+        this.input.keyboard.on('keydown-ESC', () => {
+            this.scene.stop(this.scene.key); // Stop the current level scene
+            this.scene.start('MenuScene'); // Go back to the MenuScene
+        });
+
         this.hud.info('Incoming First Wave', AppColors.UI_MESSAGE_ERROR, () => {
             this.waveManager.startWave(1);
         });
