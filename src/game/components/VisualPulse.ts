@@ -38,6 +38,9 @@ export class VisualPulse extends Component {
                     ease: 'Sine.easeOut',
                     repeat: -1,
                     onUpdate: (_tween, target) => {
+                        if(!this.enabled) {
+                            return;
+                        }
                         // Draw expanding circle
                         pulseGraphics.clear();
                         pulseGraphics.lineStyle(this.lineWidth, this.color, target.alpha * 0.8);
@@ -51,12 +54,15 @@ export class VisualPulse extends Component {
                     }
                 }));
                 this.pulseGraphicsList.push(pulseGraphics);
-
             });
         }
     }
 
     public update(_deltatime: number): void {
+        if(!this.enabled) {
+            this.destroy();
+            return;
+        }
         // empty
         for (let i = 0; i < this.pulseGraphicsList.length; i++) {
             this.pulseGraphicsList[i].x = this.gameObject.x;

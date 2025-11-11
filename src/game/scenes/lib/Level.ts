@@ -37,7 +37,7 @@ export abstract class Level extends Phaser.Scene {
 
     protected constructor(key: string) {
         super({key});
-        this.state = new State(100, 300, key);
+        this.state = new State(100, 350, key);
         this.hud = new HudManager(this);
         this.waveManager = new WaveManager(this);
         this.collisionManager = new CollisionManager(this);

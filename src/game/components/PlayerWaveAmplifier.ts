@@ -1,23 +1,21 @@
 import {Component} from '../core/Component';
-import {Health} from './Health';
 import * as Phaser from 'phaser';
-import {Healer} from "../entities/Healer.ts";
+import {FindNearestTower} from "./FindNearestTower.ts";
+import {Tower} from "../entities/Tower.ts";
+import {Health} from "./Health.ts";
+import {LaserAttack} from "./LaserAttack.ts";
+import {BombAttack} from "./BombAttack.ts";
+import {VisualPulse} from "./VisualPulse.ts";
 
 /**
- * A component that allows the player to activate a wave of damage around them.
+ * A component that allows the player to activate a wave to revive deactivated towers.
  */
 export class PlayerWaveAmplifier extends Component {
     private keys!: { e: Phaser.Input.Keyboard.Key };
-    private cooldownTime: number = 3000; // 3 seconds cooldown
+    private cooldownTime: number = 1000; // 1 second cooldown
     private lastActivated: number = 0;
-    private waveRadius: number = 75; // Radius of the damage wave
-    private waveDamage: number = 50; // Damage dealt by the wave
-    private enemiesGroup!: Phaser.GameObjects.Group; // Reference to the enemies group
-
-    constructor(enemiesGroup: Phaser.GameObjects.Group) {
-        super();
-        this.enemiesGroup = enemiesGroup;
-    }
+    private activationRange: number = 100; // Range to be near a tower to revive it
+    private findNearestTowerComponent!: FindNearestTower;
 
     public start(): void {
         if (this.gameObject.scene.input.keyboard) {
@@ -25,47 +23,65 @@ export class PlayerWaveAmplifier extends Component {
                 e: Phaser.Input.Keyboard.KeyCodes.E,
             }) as { e: Phaser.Input.Keyboard.Key };
         }
+        const findNearest = this.gameObject.getComponent(FindNearestTower);
+        if (!findNearest) {
+            throw new Error('PlayerWaveAmplifier component requires a FindNearestTower component on the same GameObject.');
+        }
+        this.findNearestTowerComponent = findNearest;
     }
 
     public update(_deltaTime: number): void {
         const time = this.gameObject.scene.time.now;
+        const nearestTower = this.findNearestTowerComponent.nearestTower;
 
-        if (this.keys.e.isDown && time > this.lastActivated + this.cooldownTime) {
-            this.activateWave();
-            this.lastActivated = time;
+        if (this.playerPressedKey(time)) {
+            if (nearestTower && nearestTower.isTowerDeactivated()) {
+                // check for activation range when near deactivated tower
+                const distance = Phaser.Math.Distance.Between(this.gameObject.x, this.gameObject.y, nearestTower.x, nearestTower.y);
+                if (distance <= this.activationRange) {
+                    this.activateWave(nearestTower);
+                    this.lastActivated = time;
+                }
+            } else {
+                this.activateWave();
+                this.lastActivated = time;
+            }
         }
     }
 
-    private activateWave(): void {
+    private playerPressedKey(time: number) {
+        return this.keys.e.isDown && time > this.lastActivated + this.cooldownTime;
+    }
+
+    private activateWave(tower?: Tower): void {
         // --- RIPPLE EFFECT CONFIGURATION ---
-        const totalPulses = 4; // How many circles in the ripple
-        const pulseDelay = 150; // Delay between each pulse (in ms)
-        const pulseDuration = 1000; // Duration of each individual circle animation
+        const totalPulses = 4;
+        const pulseDelay = 150;
+        const pulseDuration = 1000;
+        const towerColor = tower ? tower.tintTopLeft : 0x048a49; // Use the tower's tint color
 
         // --- VISUAL EFFECT: CREATING THE RIPPLE ---
         for (let i = 0; i < totalPulses; i++) {
-            // Use a delayed call to stagger the start of each pulse
             this.gameObject.scene.time.delayedCall(i * pulseDelay, () => {
                 const graphics = this.gameObject.scene.add.graphics({
-                    fillStyle: {color: 0xffa500, alpha: 0.3},
-                    lineStyle: {width: 1, color: 0xffa500, alpha: 0.8}
+                    fillStyle: {color: towerColor, alpha: 0.3},
+                    lineStyle: {width: 1, color: towerColor, alpha: 0.8}
                 });
 
-                graphics.setDepth(10); // Above player, below UI
+                graphics.setDepth(10);
                 graphics.x = this.gameObject.x;
                 graphics.y = this.gameObject.y;
 
                 this.gameObject.scene.tweens.add({
                     targets: graphics,
-                    scale: 2.5, // Scale to reach desired radius
+                    scale: 2.5,
                     alpha: 0,
                     duration: pulseDuration,
                     ease: 'Sine.easeOut',
                     onUpdate: (_tween, target) => {
-                        // Draw expanding circle
                         graphics.clear();
-                        graphics.lineStyle(1, 0x048a49, target.alpha * 0.8);
-                        graphics.fillStyle(0x048a49, target.alpha * 0.3);
+                        graphics.lineStyle(1, towerColor, target.alpha * 0.8);
+                        graphics.fillStyle(towerColor, target.alpha * 0.3);
                         const radius = (this.gameObject.width / 2) * target.scale;
                         graphics.fillCircle(0, 0, radius);
                         graphics.strokeCircle(0, 0, radius);
@@ -77,19 +93,27 @@ export class PlayerWaveAmplifier extends Component {
             });
         }
 
-        // Deal damage to enemies (This only runs once when E is pressed, which is correct for damage application)
-        this.enemiesGroup.children.each((enemyObject: Phaser.GameObjects.GameObject) => {
-            if (enemyObject instanceof Healer) {
-                const enemy = enemyObject as Healer;
-                const distance = Phaser.Math.Distance.Between(this.gameObject.x, this.gameObject.y, enemy.x, enemy.y);
-                if (distance <= this.waveRadius) {
-                    const healthComponent = enemy.getComponent(Health);
-                    if (healthComponent) {
-                        healthComponent.takeDamage(this.waveDamage);
-                    }
+        if (tower && tower.isTowerDeactivated()) {
+            // --- REVIVAL LOGIC ---
+            tower.scene.physics.world.enable(tower);
+            tower.reviveProgress = (tower.reviveProgress || 0) + 1;
+            const healthComponent = tower.getComponent(Health);
+            if (healthComponent) {
+                const newAlpha = 0.5 + (tower.reviveProgress / 3) * 0.5;
+                tower.setAlpha(newAlpha);
+
+                if (tower.reviveProgress >= 3) {
+                    healthComponent._currentHealth = healthComponent.maxHealth;
+                    tower.setActive(true);
+                    tower.setAlpha(1);
+                    tower.getComponent(VisualPulse)?.start();
+                    const attackComponents = [tower.getComponent(LaserAttack), tower.getComponent(BombAttack), tower.getComponent(VisualPulse)];
+                    attackComponents.forEach(c => {
+                        if (c) c.enabled = true;
+                    });
+                    tower.reviveProgress = 0;
                 }
             }
-            return null;
-        });
+        }
     }
 }

@@ -10,6 +10,7 @@ import {VisualPulse} from "../../../components/VisualPulse.ts";
 import {GAME_HEIGHT, GAME_WIDTH, phaserColor, TOWER1_COST, TOWER2_COST} from "../../../scripts/util.ts";
 import {BombAttack} from "../../../components/BombAttack.ts";
 import {Manager} from "../Manager.ts";
+import {Health} from "../../../components/Health.ts";
 
 export class TowerManager extends Manager {
     towers!: Phaser.GameObjects.Group;
@@ -33,7 +34,7 @@ export class TowerManager extends Manager {
     private setupInputEventListeners() {
         this.selectedTowerType = 'tower1';
         this.level.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-            if(pointer.x <= GAME_WIDTH && pointer.y <= GAME_HEIGHT) {
+            if (pointer.x <= GAME_WIDTH && pointer.y <= GAME_HEIGHT) {
                 // place tower only if witin game bounds else interact with hud
                 this.tryPlaceTower(pointer.x, pointer.y, this.selectedTowerType);
             }
@@ -80,15 +81,19 @@ export class TowerManager extends Manager {
         if (towerType === 'tower1') {
             const tower = new Tower({scene: this.level, x, y, texture: 'tower1'});
             this.towers.add(tower, true);
+            tower.addComponent(new Health(100));
             tower.addComponent(new Targeting(150, [this.level.waveManager.enemies, this.level.waveManager.healers]));
             tower.addComponent(new LaserAttack(200, 25, 300, this.bullets));
             tower.addComponent(new VisualPulse(phaserColor('rgba(255,0,132,0.84)'), 250, 1000));
+            tower.on('died', () => this.deactivateTower(tower));
         } else if (towerType === 'tower2') {
             const tower = new Tower({scene: this.level, x, y, texture: 'tower2'});
             this.towers.add(tower, true);
+            tower.addComponent(new Health(150));
             tower.addComponent(new Targeting(180, [this.level.waveManager.enemies, this.level.waveManager.healers]));
             tower.addComponent(new BombAttack(1500, 100, 133, 75, this.bombs, [this.level.waveManager.enemies, this.level.waveManager.healers]));
             tower.addComponent(new VisualPulse(phaserColor('0xff00ff'), 400, 2000));
+            tower.on('died', () => this.deactivateTower(tower));
         }
     }
 
@@ -103,4 +108,13 @@ export class TowerManager extends Manager {
         }
     }
 
+    private deactivateTower(tower: Tower) {
+        tower.setActive(false);
+        tower.setAlpha(0.5);
+        tower.getComponent(VisualPulse)?.destroy();
+        const attackComponents = [tower.getComponent(LaserAttack), tower.getComponent(BombAttack), tower.getComponent(VisualPulse)];
+        attackComponents.forEach(c => {
+            if (c) c.enabled = false;
+        });
+    }
 }
