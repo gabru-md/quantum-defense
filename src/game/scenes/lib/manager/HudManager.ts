@@ -10,6 +10,7 @@ import {
     TOWER2_RANGE,
     WIDTH
 } from "../../../scripts/Util.ts";
+import {AppColors} from "../../../scripts/Colors.ts";
 
 export class HudManager extends Manager {
 
@@ -60,9 +61,82 @@ export class HudManager extends Manager {
         });
     }
 
+    private createMainStatsPanel() {
+        const hudX = GAME_WIDTH + 15;
+        const panelWidth = WIDTH - GAME_WIDTH - 30;
+        const panelHeight = 180;
+        const startY = 10;
+
+        // Background panel
+        const panel = this.scene.add.graphics();
+        panel.fillRect(hudX, startY, panelWidth, panelHeight);
+        panel.lineStyle(1, 0xffffff, 1);
+        panel.strokeRect(hudX, startY, panelWidth, panelHeight);
+
+        let currentY = startY + 10;
+        const textX = hudX + 15;
+        const textSpacing = 25;
+
+        this.gameName = this.scene.add.text(textX, currentY, 'QUANTUM DEFENSE', {font: '28px'}).setDepth(100).setOrigin(-0.125, 0);
+        this.scene.add.graphics()
+            .lineStyle(1, 0xffffff, 1)
+            .beginPath()
+            .moveTo(hudX, currentY + 35)
+            .lineTo(hudX + panelWidth, currentY + 35)
+            .closePath()
+            .stroke();
+        currentY += 50;
+
+        this.levelText = this.scene.add.text(textX, currentY, `Level: ${this.scene.scene.key}`, {font: '20px'}).setDepth(100).setName('levelText');
+        currentY += textSpacing;
+
+        this.baseHealthText = this.scene.add.text(textX, currentY, `❤Health: ${this.scene.state.baseHealth}`, {font: '20px'}).setDepth(100).setName('baseHealthText');
+        currentY += textSpacing;
+
+        this.moneyText = this.scene.add.text(textX, currentY, `Money: $${this.scene.state.money}`, {font: '20px'}).setDepth(100).setName('moneyText');
+        currentY += textSpacing;
+
+        this.waveProgressText = this.scene.add.text(textX, currentY, `Wave: ${this.scene.waveManager.currentWave}`, {font: '20px'}).setDepth(100).setName('waveProgressText');
+    }
+
+    private createHelpPanel() {
+        const hudX = GAME_WIDTH + 15;
+        const panelPadding = 15;
+        const panelWidth = WIDTH - GAME_WIDTH - 2 * panelPadding;
+        const panelHeight = 250; // Adjusted height
+        const panelY = GAME_HEIGHT - panelHeight - 10; // Position at bottom
+
+        const panel = this.scene.add.graphics().setDepth(100);
+        panel.fillRect(hudX, panelY, panelWidth, panelHeight);
+        panel.lineStyle(1.5, 0xffffff, 1);
+        panel.strokeRect(hudX, panelY, panelWidth, panelHeight);
+
+        const textX = hudX + panelPadding;
+        let textY = panelY + panelPadding;
+        this.scene.add.text(textX, textY, 'HOW TO PLAY', {font: '24px'}).setDepth(100).setOrigin(-0.50, 0);
+        this.scene.add.graphics()
+            .lineStyle(1, 0xffffff, 1)
+            .beginPath()
+            .moveTo(hudX, textY + 25)
+            .lineTo(hudX + panelWidth, textY + 25)
+            .closePath()
+            .stroke();
+        textY += 40;
+
+        this.scene.add.text(textX, textY,
+            '1. Click a tower icon to select it.\n' +
+            '2. Click on the map to place it.\n\n' +
+            'PLAYER CONTROLS:\n' +
+            '- Move with WASD.\n' +
+            '- Absorb bullets by touching them.\n' +
+            '- Press "E" near a damaged tower to revive it.',
+            {font: '16px', lineSpacing: 8, wordWrap: {width: panelWidth - 2 * panelPadding}}
+        ).setDepth(100);
+    }
+
     private createTowerSelectionUI() {
         const hudX = GAME_WIDTH + 15;
-        const hudY = 225;
+        const hudY = 210;
         const spacing = 80;
 
         const panelWidth = WIDTH - GAME_WIDTH - 30;
@@ -82,14 +156,14 @@ export class HudManager extends Manager {
 
         this.scene.add.text(hudX + 100, hudY, 'Towers', {
             font: '48px',
-            color: '#ffffff',
+            color: AppColors.UI_TEXT,
         });
 
         this.scene.add.graphics()
             .lineStyle(1, 0xffffff, 1)
             .beginPath()
-            .moveTo(hudX + 100, hudY + 50)
-            .lineTo(hudX + panelWidth - 100, hudY + 50)
+            .moveTo(hudX, hudY + 50)
+            .lineTo(hudX + panelWidth, hudY + 50)
             .closePath()
             .stroke();
 
@@ -212,64 +286,5 @@ export class HudManager extends Manager {
             .closePath()
             .stroke()
             .setScrollFactor(0);
-    }
-
-    private createMainStatsPanel() {
-        const hudX = GAME_WIDTH + 15;
-        const panelWidth = WIDTH - GAME_WIDTH - 30;
-        const panelHeight = 180;
-        const startY = 10;
-
-        // Background panel
-        const panel = this.scene.add.graphics();
-        panel.fillRect(hudX, startY, panelWidth, panelHeight);
-        panel.lineStyle(1, 0xffffff, 1);
-        panel.strokeRect(hudX, startY, panelWidth, panelHeight);
-
-        let currentY = startY + 10;
-        const textX = hudX + 15;
-        const textSpacing = 25;
-
-        this.gameName = this.scene.add.text(textX, currentY, 'QUANTUM DEFENSE', {font: '28px'}).setDepth(100);
-        currentY += 40;
-
-        this.levelText = this.scene.add.text(textX, currentY, `Level: ${this.scene.scene.key}`, {font: '20px'}).setDepth(100).setName('levelText');
-        currentY += textSpacing;
-
-        this.baseHealthText = this.scene.add.text(textX, currentY, `❤Health: ${this.scene.state.baseHealth}`, {font: '20px'}).setDepth(100).setName('baseHealthText');
-        currentY += textSpacing;
-
-        this.moneyText = this.scene.add.text(textX, currentY, `Money: $${this.scene.state.money}`, {font: '20px'}).setDepth(100).setName('moneyText');
-        currentY += textSpacing;
-
-        this.waveProgressText = this.scene.add.text(textX, currentY, `Wave: ${this.scene.waveManager.currentWave}`, {font: '20px'}).setDepth(100).setName('waveProgressText');
-    }
-
-    private createHelpPanel() {
-        const hudX = GAME_WIDTH + 15;
-        const panelPadding = 15;
-        const panelWidth = WIDTH - GAME_WIDTH - 2 * panelPadding;
-        const panelHeight = 250; // Adjusted height
-        const panelY = GAME_HEIGHT - panelHeight - 10; // Position at bottom
-
-        const panel = this.scene.add.graphics().setDepth(100);
-        panel.fillRect(hudX, panelY, panelWidth, panelHeight);
-        panel.lineStyle(1.5, 0xffffff, 1);
-        panel.strokeRect(hudX, panelY, panelWidth, panelHeight);
-
-        const textX = hudX + panelPadding;
-        let textY = panelY + panelPadding;
-        this.scene.add.text(textX, textY, 'HOW TO PLAY', {font: '24px'}).setDepth(100);
-        textY += 40;
-
-        this.scene.add.text(textX, textY,
-            '1. Click a tower icon to select it.\n' +
-            '2. Click on the map to place it.\n\n' +
-            'PLAYER CONTROLS:\n' +
-            '- Move with WASD.\n' +
-            '- Absorb bullets by touching them.\n' +
-            '- Press "E" near a damaged tower to revive it.',
-            {font: '16px', lineSpacing: 8, wordWrap: {width: panelWidth - 2 * panelPadding}}
-        ).setDepth(100);
     }
 }
