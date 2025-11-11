@@ -33,7 +33,7 @@ export class Bomb extends GameObject {
     }
 
     public explode(): void {
-        const graphics = this.scene.add.graphics({fillStyle: {color: 0xff8800, alpha: 0.5}});
+        const graphics = this.scene.add.graphics({fillStyle: {color: 0x9b59b6, alpha: 0.2}});
         graphics.fillCircle(this.x, this.y, this.explosionRadius);
         this.scene.time.delayedCall(100, () => graphics.destroy());
 

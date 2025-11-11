@@ -16,5 +16,5 @@ export abstract class Component {
      * Called every frame, if the component is enabled.
      * @param deltaTime The time in milliseconds since the last frame.
      */
-    public update?(deltaTime: number): void;
+    public update?(time?: number, deltaTime?: number): void;
 }

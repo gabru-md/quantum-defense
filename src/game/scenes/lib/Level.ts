@@ -78,13 +78,17 @@ export abstract class Level extends Phaser.Scene {
         // Listen for the global game over event from SpecialEnemy
         this.events.on('gameOver', this.handleGameOver, this);
 
-        this.hud.info('Incoming First Wave', AppColors.UI_MESSAGE_ERROR, () => {
-            this.waveManager.startWave(1);
-        });
+        if (this.scene.key !== 'Tutorial') {
+            this.hud.info('Incoming First Wave', AppColors.UI_MESSAGE_ERROR, () => {
+                this.waveManager.startWave(1);
+            });
+        }
     }
 
     public update(time: number, delta: number): void {
-        this.waveManager.update(time, delta);
+        if (this.scene.key !== 'Tutorial') {
+            this.waveManager.update(time, delta);
+        }
         this.towerManager.update(time, delta);
         this.playerManager.update(time, delta);
         this.hud.update();

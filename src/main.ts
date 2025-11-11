@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import { MenuScene } from './game/scenes/MenuScene';
-import { CreditsScene } from './game/scenes/CreditsScene'; // Import CreditsScene
+import { CreditsScene } from './game/scenes/CreditsScene';
+import { TutorialLevel } from './game/scenes/TutorialLevel'; // Import TutorialLevel
 import { Level1 } from './game/scenes/Level1';
 import { Level2 } from './game/scenes/Level2';
 import { Level3 } from './game/scenes/Level3';
@@ -12,7 +13,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
     width: 1920,
     height: 1080,
-    scene: [MenuScene, CreditsScene, Level1, Level2, Level3, Level4, Level5], // Add CreditsScene
+    scene: [MenuScene, CreditsScene, TutorialLevel, Level1, Level2, Level3, Level4, Level5], // Add TutorialLevel
     physics: {
         default: 'arcade',
         arcade: {

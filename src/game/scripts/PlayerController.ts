@@ -30,7 +30,7 @@ export class PlayerController extends Component {
         }
     }
 
-    public update(_deltaTime: number): void {
+    public update(_time: number = 0, _deltaTime: number): void {
         const body = this.gameObject.body as Phaser.Physics.Arcade.Body;
         if (!this.keys || !body) {
             return;
@@ -40,14 +40,18 @@ export class PlayerController extends Component {
 
         if (this.keys.a.isDown) {
             body.setVelocityX(-this.speed);
+            this.gameObject.scene.events.emit('playerMoved')
         } else if (this.keys.d.isDown) {
             body.setVelocityX(this.speed);
+            this.gameObject.scene.events.emit('playerMoved')
         }
 
         if (this.keys.w.isDown) {
             body.setVelocityY(-this.speed);
+            this.gameObject.scene.events.emit('playerMoved')
         } else if (this.keys.s.isDown) {
             body.setVelocityY(this.speed);
+            this.gameObject.scene.events.emit('playerMoved')
         }
 
         // Normalize the velocity to prevent faster diagonal movement

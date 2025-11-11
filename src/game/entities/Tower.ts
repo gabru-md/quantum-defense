@@ -3,6 +3,8 @@ import * as Phaser from 'phaser';
 import {Health} from "../components/Health.ts";
 import {VisualPulse} from "../components/VisualPulse.ts";
 import {AppColors, phaserColor} from "../scripts/Colors.ts";
+import {LaserAttack} from "../components/LaserAttack.ts";
+import {BombAttack} from "../components/BombAttack.ts";
 
 export interface TowerConfig {
     scene: Phaser.Scene;
@@ -38,6 +40,20 @@ export class Tower extends GameObject {
             this.visualPulseComponent.setColor(this.originalPulseColor); // Original color
         }
     }
+
+    // add a deactivate function to deactivate the tower
+    public deactivateTower(): void {
+        this.healthComponent = this.getComponent(Health) as Health;
+        this.healthComponent.takeDamage(this.healthComponent.maxHealth);
+        this.setActive(false);
+        this.setAlpha(0.5);
+        this.getComponent(VisualPulse)?.destroy();
+        const attackComponents = [this.getComponent(LaserAttack), this.getComponent(BombAttack), this.getComponent(VisualPulse)];
+        attackComponents.forEach(c => {
+            if (c) c.enabled = false;
+        });
+    }
+
 
     public setOriginalPulseColor(): void {
         this.visualPulseComponent = this.getComponent(VisualPulse) as VisualPulse;

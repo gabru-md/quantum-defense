@@ -10,13 +10,13 @@ export class WaveManager extends Manager {
 
     enemies!: Phaser.GameObjects.Group;
     specialEnemies!: Phaser.GameObjects.Group; // Renamed from healers
+    enabled: boolean = true;
 
     constructor(protected level: Level,
                 public currentWave: number = 1,
                 protected enemiesRemaining: number = 0,
                 public enemiesSpawnedInWave: number = 0,
                 public maxEnemiesInWave: number = 20,
-                protected specialEnemiesSpawnedInWave: number = 0, // Renamed
                 public gameOver: boolean = false) {
         super(level);
     }
@@ -36,11 +36,10 @@ export class WaveManager extends Manager {
             console.warn(`No wave config found for wave ${waveNumber}`);
             return;
         }
-
-        this.maxEnemiesInWave = waveConfig.reduce((sum, config) => sum + (config.type === 'enemy' ? config.count : 0), 0);
+        this.currentWave = waveNumber; // tutorial: waveNumber and currentWave were clashing
+        this.maxEnemiesInWave = waveConfig.reduce((sum, config) => sum + config.count, 0);
         this.enemiesRemaining = this.maxEnemiesInWave;
         this.enemiesSpawnedInWave = 0;
-        this.specialEnemiesSpawnedInWave = 0; // Reset for new wave
 
 
         waveConfig.forEach(waveConfig => {
@@ -74,7 +73,7 @@ export class WaveManager extends Manager {
                             });
                             this.specialEnemies.add(specialEnemy, true); // Renamed group
                             // SpecialEnemy handles its own 'reachedEnd' to trigger game over
-                            this.specialEnemiesSpawnedInWave++;
+                            this.enemiesSpawnedInWave++;
                             this.level.hud.update();
                         }
                     },
@@ -95,8 +94,9 @@ export class WaveManager extends Manager {
     protected handleSpecialEnemyKilledByPlayer(moneyValue: number): void { // New handler
         this.level.state.money += moneyValue;
         this.level.hud.update();
-        // Special enemies don't count towards enemiesRemaining for wave completion
-        // as they are a separate threat.
+        this.enemiesRemaining--;
+        this.checkWaveCompletion();
+        this.checkGameOver();
     }
 
     protected handleEnemyReachedEnd(): void {
@@ -108,6 +108,9 @@ export class WaveManager extends Manager {
     }
 
     protected checkGameOver(): void {
+        if (this.level.scene.key === 'Tutorial') {
+            return;
+        }
         if (this.level.state.baseHealth <= 0) {
             this.level.state.baseHealth = 0;
             this.level.hud.update();
@@ -124,12 +127,21 @@ export class WaveManager extends Manager {
         }
         // Wave is complete if all regular enemies have been spawned AND all active regular enemies are gone
         // Special enemies are handled separately for game over condition
+        console.log(this.enemiesSpawnedInWave, this.maxEnemiesInWave, this.enemiesRemaining)
         if (this.enemiesSpawnedInWave >= this.maxEnemiesInWave && this.enemiesRemaining === 0) {
             if (this.noMoreWavesLeft()) {
+                console.log('no more waves left');
+                if (this.level.scene.key === 'Tutorial') {
+                    console.log('waveCompleted')
+                    this.level.events.emit('waveCompleted');
+                }
                 this.level.physics.pause();
                 this.level.hud.info('LEVEL COMPLETE!', AppColors.UI_MESSAGE_SUCCESS); // Use color constant
                 this.level.scene.start(this.level.nextScene());
             } else {
+                if (this.level.scene.key === 'Tutorial') {
+                    return;
+                }
                 this.level.hud.info('NEXT WAVE INCOMING!', AppColors.UI_MESSAGE_SUCCESS, () => { // Use color constant
                     this.currentWave++;
                     this.startWave(this.currentWave);
@@ -141,7 +153,6 @@ export class WaveManager extends Manager {
     private noMoreWavesLeft() {
         const nextWaveConfig = this.level.getWaveConfig(this.currentWave + 1);
         return nextWaveConfig.length == 0;
-
     }
 
     public update(time: number, delta: number) {
@@ -158,4 +169,13 @@ export class WaveManager extends Manager {
             return null;
         });
     }
+
+    public pause() {
+        this.enabled = false;
+    }
+
+    public resume() {
+        this.enabled = true;
+    }
+
 }

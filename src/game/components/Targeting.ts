@@ -14,7 +14,7 @@ export class Targeting extends Component {
         this.targetableGroups = targetableGroups;
     }
 
-    public update(_deltaTime: number): void {
+    public update(_time: number, _deltaTime: number): void {
         this.findClosestEnemy();
     }
 

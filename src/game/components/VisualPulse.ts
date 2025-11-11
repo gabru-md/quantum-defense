@@ -40,7 +40,7 @@ export class VisualPulse extends Component {
                     ease: 'Sine.easeOut',
                     repeat: -1,
                     onUpdate: (_tween, target) => {
-                        if(!this.enabled) {
+                        if (!this.enabled) {
                             return;
                         }
                         pulseGraphics.clear();
@@ -59,8 +59,8 @@ export class VisualPulse extends Component {
         }
     }
 
-    public update(_deltatime: number): void {
-        if(!this.enabled) {
+    public update(_time: number = 0, _deltaTime: number): void {
+        if (!this.enabled) {
             this.destroy();
             return;
         }

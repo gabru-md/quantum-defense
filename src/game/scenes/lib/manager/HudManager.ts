@@ -52,7 +52,7 @@ export class HudManager extends Manager {
     }
 
     public info(message: string, color: string, callback?: () => void) {
-        this.messageText.setText(message).setColor(color).setVisible(true);
+        this.messageText.setText(message).setColor(color).setVisible(true).setDepth(200);
         this.scene.time.delayedCall(1500, () => {
             this.messageText.setVisible(false)
             if (callback) {

@@ -17,7 +17,7 @@ export class Player extends GameObject {
         config.scene.physics.world.enable(this);
         const body = this.body as Phaser.Physics.Arcade.Body;
         body.setCollideWorldBounds(true); // Keep player within game bounds
-        body.setDrag(500); // Add some drag for smoother movement
+        body.setDrag(350); // Add some drag for smoother movement
 
         // Add the PlayerController component
         this.addComponent(new PlayerController());

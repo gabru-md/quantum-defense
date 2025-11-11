@@ -40,7 +40,7 @@ export const AppColors = {
 
     // Projectile Colors
     BULLET_LASER: '#2ecc71', // Green (Laser Bullet)
-    BULLET_BOMB: '#e67e22', // Orange (Bomb)
+    BULLET_BOMB: '#9b59b6', // Orange (Bomb)
 
     // Player Colors
     PLAYER: '#1abc9c', // Teal (Player)

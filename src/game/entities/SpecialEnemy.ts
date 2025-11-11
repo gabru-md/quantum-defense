@@ -1,6 +1,7 @@
 import {GameObject} from '../core/GameObject';
 import {Health} from '../components/Health';
 import {PathFollower} from '../components/PathFollower';
+import {Deactivator} from '../components/Deactivator'; // Import Deactivator
 
 export interface SpecialEnemyConfig {
     scene: Phaser.Scene;
@@ -22,22 +23,19 @@ export class SpecialEnemy extends GameObject {
 
         this.moneyValue = config.moneyValue;
 
-        // Add the Health component and store a reference
         this.healthComponent = new Health(config.health);
         this.addComponent(this.healthComponent);
         this.addComponent(new PathFollower(config.path, config.speed));
-        
+        this.addComponent(new Deactivator()); // Add the Deactivator component
+
         this.on('reachedEnd', () => {
-            // If a SpecialEnemy reaches the end, it's game over
-            this.scene.events.emit('gameOver'); // Emit a global game over event
+            this.scene.events.emit('gameOver');
             this.destroy();
         }, this);
 
-        // Listen for health changes to update transparency
         this.on('healthChanged', this.handleHealthChanged, this);
 
         this.on('died', () => {
-            // When killed by player, emit event to give money
             this.scene.events.emit('specialEnemyKilledByPlayer', this.moneyValue);
             this.destroy();
         });

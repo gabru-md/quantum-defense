@@ -28,9 +28,8 @@ export class LaserAttack extends Component {
         this.targetingComponent = targeting;
     }
 
-    public update(_deltaTime: number): void { // Changed parameter name to _deltaTime
+    public update(time: number, _deltaTime: number): void {
         const target = this.targetingComponent.currentTarget;
-        const time = this.gameObject.scene.time.now;
 
         let healthComponent = this.gameObject.getComponent(Health);
         if (healthComponent) {

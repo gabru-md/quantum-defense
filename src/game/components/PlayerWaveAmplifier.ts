@@ -39,8 +39,7 @@ export class PlayerWaveAmplifier extends Component {
         this.findNearestTowerComponent = findNearest;
     }
 
-    public update(_deltaTime: number): void {
-        const time = this.gameObject.scene.time.now;
+    public update(time: number, _deltaTime: number): void {
         const nearestTower = this.findNearestTowerComponent.nearestTower;
 
         if (this.playerPressedKey(time)) {
@@ -101,7 +100,6 @@ export class PlayerWaveAmplifier extends Component {
         }
 
         if (tower && tower.isNotFullHealth()) {
-            console.log('reviving')
             tower.scene.physics.world.enable(tower);
             tower.reviveProgress = (tower.reviveProgress || 0) + 1;
             const healthComponent = tower.getComponent(Health);
@@ -119,7 +117,7 @@ export class PlayerWaveAmplifier extends Component {
                         if (c) c.enabled = true;
                     });
                     tower.reviveProgress = 0;
-
+                    this.gameObject.scene.events.emit('towerRevived');
                     tower.setOriginalPulseColor();
                 }
             }

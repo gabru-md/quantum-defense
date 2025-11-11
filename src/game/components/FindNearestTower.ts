@@ -5,7 +5,7 @@ import {Tower} from "../entities/Tower.ts";
 export class FindNearestTower extends Component {
     public nearestTower: Tower | null = null;
 
-    public update(_deltaTime: number): void {
+    public update(_time: number, _deltaTime: number): void {
         this.findClosestTower();
     }
 

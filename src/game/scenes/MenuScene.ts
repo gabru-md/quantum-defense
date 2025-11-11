@@ -43,18 +43,18 @@ export class MenuScene extends Phaser.Scene {
             .stroke();
 
         // --- Level Selection Panel ---
-        this.createPanel(WIDTH / 2, 400, 450, 375, 'SELECT LEVEL', (panelX, panelY) => {
+        this.createPanel(WIDTH / 2, 400, 450, 425, 'SELECT LEVEL', (panelX, panelY) => {
             this.createLevelSelectionButtons(panelX, panelY + 20);
         });
 
         // --- Settings Panel ---
-        this.createPanel(WIDTH / 2, 715, 450, 200, 'SETTINGS', (panelX, panelY) => {
+        this.createPanel(WIDTH / 2, 750, 450, 200, 'SETTINGS', (panelX, panelY) => {
             this.createDifficultyToggle(panelX, panelY + 20);
             this.createSoundToggle(panelX, panelY + 80);
         });
 
         // --- Credits Button ---
-        this.createButton(WIDTH / 2, 850, 'CREDITS', () => {
+        this.createButton(WIDTH / 2, 900, 'CREDITS', () => {
             this.scene.start('CreditsScene');
         });
     }
@@ -96,7 +96,7 @@ export class MenuScene extends Phaser.Scene {
     }
 
     private createLevelSelectionButtons(x: number, y: number): void {
-        const levelKeys = ['Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5'];
+        const levelKeys = ['Tutorial', 'Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5'];
         const buttonSpacing = 60;
         let currentY = y;
 

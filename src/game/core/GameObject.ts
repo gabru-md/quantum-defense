@@ -57,11 +57,11 @@ export class GameObject extends Phaser.GameObjects.Sprite {
      * @param _time The current time.
      * @param delta The delta time in ms since the last frame.
      */
-    public update(_time: number, delta: number): void {
+    public update(time: number, delta: number): void {
         for (const component of this.components) {
             if (component.enabled) {
                 try {
-                    component.update?.(delta);
+                    component.update?.(time, delta);
                 } catch (e) {
                     // console.error(e);
                 }
