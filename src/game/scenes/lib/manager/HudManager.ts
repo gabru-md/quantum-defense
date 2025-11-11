@@ -19,31 +19,19 @@ export class HudManager extends Manager {
     }
 
     public setup() {
-        const hudY = 10
-        const hudX: number = GAME_WIDTH + 10
-        const spacing: number = 40;
-
-        this.gameName = this.scene.add.text(hudX, hudY, 'Quantum Defense', {
-            font: '30px',
-            color: '#ffffff'
-        }).setScrollFactor(0).setDepth(100);
-        this.levelText = this.scene.add.text(hudX, hudY + spacing, '',).setScrollFactor(0).setDepth(100);
-        this.baseHealthText = this.scene.add.text(hudX, hudY + 1.5 * spacing, '',).setScrollFactor(0).setDepth(100);
-        this.moneyText = this.scene.add.text(hudX, hudY + 2 * spacing, '',).setScrollFactor(0).setDepth(100);
-        this.waveProgressText = this.scene.add.text(hudX, hudY + 2.5 * spacing, '',).setScrollFactor(0).setDepth(100);
-
         this.messageText = this.scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2, '', {
-            font: '48px Roboto',
+            font: '48px',
             color: '#ff0000',
             backgroundColor: 'rgba(0,0,0,0.40)',
             padding: {x: 20, y: 10}
         }).setOrigin(0.5).setScrollFactor(0).setVisible(false).setDepth(100);
 
 
+        this.createMainStatsPanel();
+        this.createTowerSelectionUI();
         this.createHelpPanel();
         this.setupGameVisualSeparators();
         this.setupHudVisualSeparators();
-        this.createTowerSelectionUI();
         this.update();
     }
 
@@ -65,19 +53,44 @@ export class HudManager extends Manager {
     }
 
     private createTowerSelectionUI() {
-        const hudX = GAME_WIDTH + 10;
-        const hudY = 200;
+        const hudX = GAME_WIDTH + 15;
+        const hudY = 225;
         const spacing = 80;
+
+        const panelWidth = WIDTH - GAME_WIDTH - 30;
+        const panelHeight = 600;
+        const startY = 200;
+
+        // Background panel
+        const panel = this.scene.add.graphics();
+        panel.fillRect(hudX, startY, panelWidth, panelHeight);
+        panel.lineStyle(1, 0xffffff, 1);
+        panel.strokeRect(hudX, startY, panelWidth, panelHeight);
 
         this.selectionIndicator = this.scene.add.graphics();
         this.selectionIndicator.lineStyle(2, 0xffffff, 1);
         this.selectionIndicator.strokeRect(0, 0, 64, 64);
         this.selectionIndicator.setDepth(101);
 
+        this.scene.add.text(hudX + 100, hudY, 'Towers', {
+            font: '48px',
+            color: '#ffffff',
+        });
+
+        this.scene.add.graphics()
+            .lineStyle(1, 0xffffff, 1)
+            .beginPath()
+            .moveTo(hudX + 100, hudY + 50)
+            .lineTo(hudX + panelWidth - 100, hudY + 50)
+            .closePath()
+            .stroke();
+
+        let yOffset = hudY + 100;
+
         // Tower 1 Button
-        const tower1Button = this.scene.add.sprite(hudX + 50, hudY, 'tower1').setInteractive();
-        this.scene.add.text(hudX + 100, hudY, `Tower 1\nCost: ${TOWER1_COST}`, {
-            font: '16px Arial',
+        const tower1Button = this.scene.add.sprite(hudX + 50, yOffset, 'tower1').setInteractive();
+        this.scene.add.text(hudX + 100, yOffset, `Tower 1\nCost: ${TOWER1_COST}`, {
+            font: '16px',
             color: '#ffffff'
         }).setOrigin(0, 0.5);
         tower1Button.on('pointerdown', () => {
@@ -86,9 +99,9 @@ export class HudManager extends Manager {
         });
 
         // Tower 2 Button
-        const tower2Button = this.scene.add.sprite(hudX + 50, hudY + spacing, 'tower2').setInteractive();
-        this.scene.add.text(hudX + 100, hudY + spacing, `Tower 2\nCost: ${TOWER2_COST}`, {
-            font: '16px Arial',
+        const tower2Button = this.scene.add.sprite(hudX + 50, yOffset + spacing, 'tower2').setInteractive();
+        this.scene.add.text(hudX + 100, yOffset + spacing, `Tower 2\nCost: ${TOWER2_COST}`, {
+            font: '16px',
             color: '#ffffff'
         }).setOrigin(0, 0.5);
         tower2Button.on('pointerdown', () => {
@@ -193,8 +206,39 @@ export class HudManager extends Manager {
             .setScrollFactor(0);
     }
 
+    private createMainStatsPanel() {
+        const hudX = GAME_WIDTH + 15;
+        const panelWidth = WIDTH - GAME_WIDTH - 30;
+        const panelHeight = 180;
+        const startY = 10;
+
+        // Background panel
+        const panel = this.scene.add.graphics();
+        panel.fillRect(hudX, startY, panelWidth, panelHeight);
+        panel.lineStyle(1, 0xffffff, 1);
+        panel.strokeRect(hudX, startY, panelWidth, panelHeight);
+
+        let currentY = startY + 10;
+        const textX = hudX + 15;
+        const textSpacing = 25;
+
+        this.gameName = this.scene.add.text(textX, currentY, 'QUANTUM DEFENSE', {font: '28px'}).setDepth(100);
+        currentY += 40;
+
+        this.levelText = this.scene.add.text(textX, currentY, `Level: ${this.scene.scene.key}`, {font: '20px'}).setDepth(100).setName('levelText');
+        currentY += textSpacing;
+
+        this.baseHealthText = this.scene.add.text(textX, currentY, `❤Health: ${this.scene.state.baseHealth}`, {font: '20px'}).setDepth(100).setName('baseHealthText');
+        currentY += textSpacing;
+
+        this.moneyText = this.scene.add.text(textX, currentY, `Money: $${this.scene.state.money}`, {font: '20px'}).setDepth(100).setName('moneyText');
+        currentY += textSpacing;
+
+        this.waveProgressText = this.scene.add.text(textX, currentY, `Wave: ${this.scene.waveManager.currentWave}`, {font: '20px'}).setDepth(100).setName('waveProgressText');
+    }
+
     private createHelpPanel() {
-        const hudX = GAME_WIDTH + 10;
+        const hudX = GAME_WIDTH + 15;
         const panelPadding = 15;
         const panelWidth = WIDTH - GAME_WIDTH - 2 * panelPadding;
         const panelHeight = 250; // Adjusted height
