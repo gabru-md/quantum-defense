@@ -1,20 +1,20 @@
 import * as Phaser from 'phaser';
 import {HudManager} from "./manager/HudManager.ts";
 import {WaveManager} from "./manager/WaveManager.ts";
-import {State} from "./State.ts";
+import {State} from "./State.ts"; // Import State
 import {CollisionManager} from "./manager/CollisionManager.ts";
 import {TowerManager} from "./manager/TowerManager.ts";
 import {TextureManager} from "./manager/TextureManager.ts";
 import {PathsManager} from "./manager/PathsManager.ts";
 import {PlayerManager} from "./manager/PlayerManager.ts";
-import {GAME_HEIGHT, GAME_WIDTH} from "../../scripts/util.ts";
-import {AppColors} from "../../scripts/Colors.ts"; // Import AppColors
+import {GAME_HEIGHT, GAME_WIDTH} from "../../scripts/Util.ts";
+import {AppColors} from "../../scripts/Colors.ts";
 
 export abstract class Level extends Phaser.Scene {
     hud: HudManager;
     waveManager: WaveManager;
     collisionManager: CollisionManager;
-    state: State;
+    state!: State; // Now a reference to the shared state, initialized in init()
     towerManager: TowerManager;
     textureLoader: TextureManager;
     pathsManager: PathsManager;
@@ -37,7 +37,7 @@ export abstract class Level extends Phaser.Scene {
 
     protected constructor(key: string) {
         super({key});
-        this.state = new State(100, 350, key);
+        // Managers are instantiated here, but depend on 'state' being available in init()
         this.hud = new HudManager(this);
         this.waveManager = new WaveManager(this);
         this.collisionManager = new CollisionManager(this);
@@ -45,6 +45,20 @@ export abstract class Level extends Phaser.Scene {
         this.textureLoader = new TextureManager(this);
         this.pathsManager = new PathsManager(this);
         this.playerManager = new PlayerManager(this);
+    }
+
+    // init() is called after the constructor but before preload()
+    init(): void {
+        // Get the shared State instance from the registry
+        this.state = this.sys.registry.get('gameState');
+        if (!this.state) {
+            // This case should ideally not happen if MenuScene is loaded first
+            console.error("Game State not found in registry. Creating a new one.");
+            this.state = new State(100, 350, this.scene.key);
+            this.sys.registry.set('gameState', this.state);
+        }
+        // Update the level key in the state
+        this.state.level = this.scene.key;
     }
 
     public preload(): void {
