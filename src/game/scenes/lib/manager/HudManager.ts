@@ -38,6 +38,9 @@ export class HudManager extends Manager {
             backgroundColor: 'rgba(0,0,0,0.40)',
             padding: {x: 20, y: 10}
         }).setOrigin(0.5).setScrollFactor(0).setVisible(false).setDepth(100);
+
+
+        this.createHelpPanel();
         this.setupGameVisualSeparators();
         this.setupHudVisualSeparators();
         this.createTowerSelectionUI();
@@ -73,7 +76,10 @@ export class HudManager extends Manager {
 
         // Tower 1 Button
         const tower1Button = this.scene.add.sprite(hudX + 50, hudY, 'tower1').setInteractive();
-        this.scene.add.text(hudX + 100, hudY, `Tower 1\nCost: ${TOWER1_COST}`, { font: '16px Arial', color: '#ffffff' }).setOrigin(0, 0.5);
+        this.scene.add.text(hudX + 100, hudY, `Tower 1\nCost: ${TOWER1_COST}`, {
+            font: '16px Arial',
+            color: '#ffffff'
+        }).setOrigin(0, 0.5);
         tower1Button.on('pointerdown', () => {
             this.scene.state.selectedTowerType = 'tower1';
             this.selectionIndicator.setPosition(tower1Button.x - 32, tower1Button.y - 32);
@@ -81,7 +87,10 @@ export class HudManager extends Manager {
 
         // Tower 2 Button
         const tower2Button = this.scene.add.sprite(hudX + 50, hudY + spacing, 'tower2').setInteractive();
-        this.scene.add.text(hudX + 100, hudY + spacing, `Tower 2\nCost: ${TOWER2_COST}`, { font: '16px Arial', color: '#ffffff' }).setOrigin(0, 0.5);
+        this.scene.add.text(hudX + 100, hudY + spacing, `Tower 2\nCost: ${TOWER2_COST}`, {
+            font: '16px Arial',
+            color: '#ffffff'
+        }).setOrigin(0, 0.5);
         tower2Button.on('pointerdown', () => {
             this.scene.state.selectedTowerType = 'tower2';
             this.selectionIndicator.setPosition(tower2Button.x - 32, tower2Button.y - 32);
@@ -110,7 +119,7 @@ export class HudManager extends Manager {
 
     private setupGameVisualSeparators() {
         this.scene.add.graphics()
-            .lineStyle(1, 0xffffff, 1)
+            .lineStyle(2, 0xffffff, 1)
             .beginPath()
             .moveTo(GAME_WIDTH, 0)
             .lineTo(GAME_WIDTH, GAME_HEIGHT)
@@ -119,7 +128,7 @@ export class HudManager extends Manager {
             .setScrollFactor(0);
 
         this.scene.add.graphics()
-            .lineStyle(1, 0xffffff, 1)
+            .lineStyle(2, 0xffffff, 1)
             .beginPath()
             .moveTo(0, 0)
             .lineTo(0, GAME_HEIGHT)
@@ -128,7 +137,7 @@ export class HudManager extends Manager {
             .setScrollFactor(0);
 
         this.scene.add.graphics()
-            .lineStyle(1, 0xffffff, 1)
+            .lineStyle(2, 0xffffff, 1)
             .beginPath()
             .moveTo(0, 0)
             .lineTo(GAME_WIDTH, 0)
@@ -137,7 +146,7 @@ export class HudManager extends Manager {
             .setScrollFactor(0);
 
         this.scene.add.graphics()
-            .lineStyle(1, 0xffffff, 1)
+            .lineStyle(2, 0xffffff, 1)
             .beginPath()
             .moveTo(0, GAME_HEIGHT)
             .lineTo(GAME_WIDTH, GAME_HEIGHT)
@@ -148,7 +157,7 @@ export class HudManager extends Manager {
 
     private setupHudVisualSeparators() {
         this.scene.add.graphics()
-            .lineStyle(1, 0xffffff, 1)
+            .lineStyle(2, 0xffffff, 1)
             .beginPath()
             .moveTo(GAME_WIDTH, 0)
             .lineTo(GAME_WIDTH, GAME_HEIGHT)
@@ -157,7 +166,7 @@ export class HudManager extends Manager {
             .setScrollFactor(0);
 
         this.scene.add.graphics()
-            .lineStyle(1, 0xffffff, 1)
+            .lineStyle(2, 0xffffff, 1)
             .beginPath()
             .moveTo(WIDTH, 0)
             .lineTo(WIDTH, GAME_HEIGHT)
@@ -166,7 +175,7 @@ export class HudManager extends Manager {
             .setScrollFactor(0);
 
         this.scene.add.graphics()
-            .lineStyle(1, 0xffffff, 1)
+            .lineStyle(2, 0xffffff, 1)
             .beginPath()
             .moveTo(GAME_WIDTH, 0)
             .lineTo(WIDTH, 0)
@@ -175,12 +184,40 @@ export class HudManager extends Manager {
             .setScrollFactor(0);
 
         this.scene.add.graphics()
-            .lineStyle(1, 0xffffff, 1)
+            .lineStyle(2, 0xffffff, 1)
             .beginPath()
             .moveTo(GAME_WIDTH, GAME_HEIGHT)
             .lineTo(WIDTH, GAME_HEIGHT)
             .closePath()
             .stroke()
             .setScrollFactor(0);
+    }
+
+    private createHelpPanel() {
+        const hudX = GAME_WIDTH + 10;
+        const panelPadding = 15;
+        const panelWidth = WIDTH - GAME_WIDTH - 2 * panelPadding;
+        const panelHeight = 250; // Adjusted height
+        const panelY = GAME_HEIGHT - panelHeight - 10; // Position at bottom
+
+        const panel = this.scene.add.graphics().setDepth(100);
+        panel.fillRect(hudX, panelY, panelWidth, panelHeight);
+        panel.lineStyle(1.5, 0xffffff, 1);
+        panel.strokeRect(hudX, panelY, panelWidth, panelHeight);
+
+        const textX = hudX + panelPadding;
+        let textY = panelY + panelPadding;
+        this.scene.add.text(textX, textY, 'HOW TO PLAY', {font: '24px'}).setDepth(100);
+        textY += 40;
+
+        this.scene.add.text(textX, textY,
+            '1. Click a tower icon to select it.\n' +
+            '2. Click on the map to place it.\n\n' +
+            'PLAYER CONTROLS:\n' +
+            '- Move with WASD.\n' +
+            '- Absorb bullets by touching them.\n' +
+            '- Press "E" near a damaged tower to revive it.',
+            {font: '16px', lineSpacing: 8, wordWrap: {width: panelWidth - 2 * panelPadding}}
+        ).setDepth(100);
     }
 }
