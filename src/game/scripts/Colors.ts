@@ -10,23 +10,23 @@ export function phaserColor(color: string | number): number {
 
 export const AppColors = {
     // UI Theme
-    UI_PRIMARY_BG: '0x1a2a3a', // Dark blue-grey
-    UI_SECONDARY_BG: '0x2a3a4a', // Slightly lighter blue-grey
-    UI_ACCENT: '0x00ff99', // Bright green
+    UI_PRIMARY_BG: '#1a2a3a', // Dark blue-grey
+    UI_SECONDARY_BG: '#2a3a4a', // Slightly lighter blue-grey
+    UI_ACCENT: '#00ff99', // Bright green
     UI_TEXT: '#ffffff', // White
-    UI_DISABLED: '0x555555', // Grey for disabled elements
+    UI_DISABLED: '#555555', // Grey for disabled elements
     UI_MESSAGE_ERROR: '#ff0000', // Red for error messages
     UI_MESSAGE_SUCCESS: '#00ff00', // Green for success messages
     UI_MESSAGE_BACKGROUND: 'rgba(0,0,0,0.40)', // Semi-transparent black
-    UI_SEPARATOR: '0xffffff', // White separator lines
+    UI_SEPARATOR: '#ffffff', // White separator lines
 
     // Game Background
-    GAME_BACKGROUND: '0x2d2d2d', // Dark grey
+    GAME_BACKGROUND: '#2d2d2d', // Dark grey
 
     // Path Colors
-    PATH_LINE: '0x888888', // Medium grey
-    PATH_START: '0x3498db', // Blue (matching ENEMY_NORMAL for consistency)
-    PATH_END: '0x2ecc71', // Green (matching TOWER_LASER for consistency)
+    PATH_LINE: '#888888', // Medium grey
+    PATH_START: '#3498db', // Blue (matching ENEMY_NORMAL for consistency)
+    PATH_END: '#2ecc71', // Green (matching TOWER_LASER for consistency)
 
     // Enemy Colors
     ENEMY_NORMAL: '#3498db', // Blue (Square)

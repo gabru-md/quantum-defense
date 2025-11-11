@@ -30,8 +30,8 @@ export class HudManager extends Manager {
     public setup() {
         this.messageText = this.scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2, '', {
             font: '48px',
-            color: '#ff0000',
-            backgroundColor: 'rgba(0,0,0,0.40)',
+            color: AppColors.UI_PRIMARY_BG,
+            backgroundColor: AppColors.UI_MESSAGE_BACKGROUND,
             padding: {x: 20, y: 10}
         }).setOrigin(0.5).setScrollFactor(0).setVisible(false).setDepth(100);
 

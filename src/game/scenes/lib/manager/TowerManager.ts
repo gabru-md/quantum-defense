@@ -10,7 +10,6 @@ import {VisualPulse} from "../../../components/VisualPulse.ts";
 import {
     GAME_HEIGHT,
     GAME_WIDTH,
-    phaserColor,
     TOWER1_COST,
     TOWER1_RANGE,
     TOWER2_COST,
@@ -19,7 +18,7 @@ import {
 import {BombAttack} from "../../../components/BombAttack.ts";
 import {Manager} from "../Manager.ts";
 import {Health} from "../../../components/Health.ts";
-import {AppColors} from "../../../scripts/Colors.ts";
+import {AppColors, phaserColor} from "../../../scripts/Colors.ts";
 
 export class TowerManager extends Manager {
     towers!: Phaser.GameObjects.Group;
