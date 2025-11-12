@@ -27,6 +27,32 @@ export function createTowerTexture(scene: Phaser.Scene, key: string, size: numbe
     return key;
 }
 
+export function createBigTowerTexture(scene: Phaser.Scene, key: string, size: number, color: string): string {
+    const graphics = scene.make.graphics({x: 0, y: 0});
+    graphics.fillStyle(phaserColor(color));
+    graphics.fillCircle(size / 2, size / 2, size / 2);
+    graphics.fillStyle(phaserColor('0x000000'), 0.4); // Inner circle black
+    graphics.fillCircle(size / 2, size / 2, size / 3);
+    graphics.fillStyle(phaserColor(color)); // Inner circle black
+    graphics.fillCircle(size / 2, size / 2, size / 6);
+    graphics.generateTexture(key, size, size);
+    graphics.destroy();
+    return key;
+}
+
+export function createBigGlitchTexture(scene: Phaser.Scene, key: string, size: number, color: string): string {
+    const graphics = scene.make.graphics({x: 0, y: 0});
+    graphics.fillStyle(phaserColor(color));
+    graphics.fillCircle(size / 2, size / 2, size / 2);
+    graphics.fillStyle(phaserColor('0x000000'), 0.4); // Inner circle black
+    graphics.fillCircle(size / 2, size / 2, size / 3);
+    graphics.fillStyle(phaserColor(color)); // Inner circle black
+    graphics.fillCircle(size / 2, size / 2, size / 6);
+    graphics.generateTexture(key, size, size);
+    graphics.destroy();
+    return key;
+}
+
 export function createBulletTexture(scene: Phaser.Scene, key: string, size: number, color: string): void {
     const graphics = scene.make.graphics({x: 0, y: 0});
     graphics.fillStyle(phaserColor(color));
@@ -46,7 +72,7 @@ export function createBombTexture(scene: Phaser.Scene, key: string, size: number
 export function createPlayerTexture(scene: Phaser.Scene, key: string, size: number, color: string): string {
     const graphics = scene.make.graphics({x: 0, y: 0});
     graphics.fillStyle(phaserColor(color));
-    graphics.strokeCircle(size / 2, size / 2, size / 2);
+    graphics.fillCircle(size / 2, size / 2, size / 2);
     graphics.generateTexture(key, size, size);
     graphics.destroy();
     return key;

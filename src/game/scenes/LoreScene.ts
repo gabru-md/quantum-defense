@@ -2,6 +2,8 @@ import * as Phaser from 'phaser';
 import {AppColors, phaserColor} from '../scripts/Colors';
 import {HEIGHT, WIDTH} from '../scripts/Util';
 import {
+    createBigGlitchTexture,
+    createBigTowerTexture,
     createEnemyTexture,
     createPlayerTexture,
     createSpecialEnemyTexture,
@@ -33,8 +35,8 @@ export class LoreScene extends Phaser.Scene {
     }
 
     preload(): void {
-        createTowerTexture(this, 'nexus', 256, AppColors.NEXUS_OUTER);
-        createTowerTexture(this, 'static', 256, AppColors.STATIC_OUTER);
+        createBigTowerTexture(this, 'nexus', 256, AppColors.NEXUS_OUTER);
+        createBigGlitchTexture(this, 'static', 256, AppColors.STATIC_OUTER);
         createPlayerTexture(this, 'player', 32, AppColors.PLAYER);
         createEnemyTexture(this, 'enemy1', 32, AppColors.ENEMY_NORMAL);
         createEnemyTexture(this, 'enemy2', 32, AppColors.ENEMY_FAST);
@@ -102,11 +104,11 @@ export class LoreScene extends Phaser.Scene {
     private updateVisuals(): void {
         switch (this.currentStep) {
             case 1:
-                const nexus = this.add.sprite(200, 200, 'nexus').setAlpha(0.5);
+                const nexus = this.add.sprite(200, 200, 'nexus').setAlpha(0.3);
                 this.visuals.push(nexus);
                 break;
             case 2:
-                const staticEnemy = this.add.sprite(WIDTH - 200, 200, 'static').setAlpha(0.5);
+                const staticEnemy = this.add.sprite(WIDTH - 200, 200, 'static').setAlpha(0.3);
                 this.visuals.push(staticEnemy);
                 break;
             case 3:

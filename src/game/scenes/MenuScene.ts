@@ -2,7 +2,7 @@ import * as Phaser from 'phaser';
 import {AppColors, phaserColor} from '../scripts/Colors';
 import {GAME_HEIGHT, WIDTH} from '../scripts/Util';
 import {State} from './lib/State';
-import { createEnemyTexture, createPlayerTexture, createTowerTexture } from '../scripts/TextureUtils';
+import {createEnemyTexture, createPlayerTexture, createTowerTexture} from '../scripts/TextureUtils';
 
 export class MenuScene extends Phaser.Scene {
     private gameState!: State;
@@ -27,7 +27,7 @@ export class MenuScene extends Phaser.Scene {
         this.load.image('tower1_menu', createTowerTexture(this, 'tower1_menu', 32, AppColors.TOWER_LASER));
         this.load.image('tower2_menu', createTowerTexture(this, 'tower2_menu', 32, AppColors.TOWER_BOMB));
         this.load.image('tower3_menu', createTowerTexture(this, 'tower3_menu', 32, AppColors.TOWER_SLOW));
-        this.load.image('player_menu', createPlayerTexture(this, 'player_menu', 24, AppColors.PLAYER));
+        this.load.image('player_menu', createPlayerTexture(this, 'player_menu', 32, AppColors.PLAYER));
     }
 
     create(): void {
@@ -86,16 +86,16 @@ export class MenuScene extends Phaser.Scene {
 
         for (let i = 0; i < 2; i++) {
             // Randomize coordinates for enemies
-            this.addAnimatedElement('enemy1_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), 0.8, 2000);
-            this.addAnimatedElement('enemy2_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), 0.7, 1800);
-            this.addAnimatedElement('enemy3_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), 0.9, 2200);
-            this.addAnimatedElement('special_enemy_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), 0.85, 1900);
+            this.addAnimatedElement('enemy1_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), Phaser.Math.Between(0.7, 1.7), Phaser.Math.Between(1750, 2500));
+            this.addAnimatedElement('enemy2_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), Phaser.Math.Between(0.7, 1.7), Phaser.Math.Between(1750, 2500));
+            this.addAnimatedElement('enemy3_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), Phaser.Math.Between(0.7, 1.7), Phaser.Math.Between(1750, 2500));
+            this.addAnimatedElement('special_enemy_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), Phaser.Math.Between(0.7, 1.7), Phaser.Math.Between(1750, 2500));
             // Randomize coordinates for towers
-            this.addAnimatedElement('tower1_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), 0.9, 1800);
-            this.addAnimatedElement('tower2_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), 0.8, 2100);
-            this.addAnimatedElement('tower3_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), 0.75, 1700);
+            this.addAnimatedElement('tower1_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), Phaser.Math.Between(0.7, 1.7), Phaser.Math.Between(1750, 2500));
+            this.addAnimatedElement('tower2_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), Phaser.Math.Between(0.7, 1.7), Phaser.Math.Between(1750, 2500));
+            this.addAnimatedElement('tower3_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), Phaser.Math.Between(0.7, 1.7), Phaser.Math.Between(1750, 2500));
             // Player
-            this.addAnimatedElement('player_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), 0.7, 2200);
+            this.addAnimatedElement('player_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), Phaser.Math.Between(0.7, 1.7), Phaser.Math.Between(1750, 2500));
         }
     }
 
