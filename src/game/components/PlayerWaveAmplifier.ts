@@ -14,7 +14,7 @@ import {SpecialEnemy} from "../entities/SpecialEnemy.ts"; // Import SpecialEnemy
  */
 export class PlayerWaveAmplifier extends Component {
     private keys!: { e: Phaser.Input.Keyboard.Key };
-    private cooldownTime: number = 3000; // 3 second cooldown
+    private cooldownTime: number = 1000; // 3 second cooldown
     private lastActivated: number = 0;
     private activationRange: number = 175; // Range to be near a tower to revive it
     private waveDamage: number = 50; // Damage dealt by the wave to special enemies
@@ -62,7 +62,7 @@ export class PlayerWaveAmplifier extends Component {
     }
 
     private playerPressedKey(_time: number) {
-        return this.keys.e.isDown;
+        return Phaser.Input.Keyboard.JustDown(this.keys.e);
     }
 
     private hasCooldownExpired(time: number) {
@@ -73,7 +73,7 @@ export class PlayerWaveAmplifier extends Component {
         const totalPulses = 4;
         const pulseDelay = 150;
         const pulseDuration = 1000;
-        const pulseColor = tower ? tower.tintTopLeft : phaserColor(AppColors.PLAYER_WAVE_PULSE);
+        const pulseColor = tower ? tower.tintTopLeft : phaserColor(AppColors.PLAYER_WAVE_PULSE_DAMAGE);
 
         for (let i = 0; i < totalPulses; i++) {
             this.gameObject.scene.time.delayedCall(i * pulseDelay, () => {
@@ -88,7 +88,7 @@ export class PlayerWaveAmplifier extends Component {
 
                 this.gameObject.scene.tweens.add({
                     targets: graphics,
-                    scale: 2.5,
+                    scale: 2.75,
                     alpha: 0,
                     duration: pulseDuration,
                     ease: 'Sine.easeOut',

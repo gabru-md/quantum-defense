@@ -45,8 +45,9 @@ export const AppColors = {
     BULLET_BOMB: '#9b59b6', // Orange (Bomb)
 
     // Player Colors
-    PLAYER: '#1abc9c', // Teal (Player)
+    PLAYER: '#16ddb3', // Teal (Player)
     PLAYER_WAVE_PULSE: 'rgba(4,138,73,0.8)', // Greenish pulse
+    PLAYER_WAVE_PULSE_DAMAGE: 'rgb(250,250,250)', // White
 
     // Visual Pulse Colors (for towers)
     PULSE_LASER_TOWER: 'rgba(46,204,113,0.7)', // Greenish

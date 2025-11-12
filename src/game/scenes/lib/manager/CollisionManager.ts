@@ -70,4 +70,8 @@ export class CollisionManager extends Manager {
             bullet.applyDamage(towerObject);
         }
     }
+
+    destroy() {
+        // empty
+    }
 }
