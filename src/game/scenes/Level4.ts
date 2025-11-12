@@ -19,7 +19,7 @@ export class Level4 extends Level {
 
         const angleOffset = -Math.PI / 2;
 
-        const startRadius = Math.max(GAME_WIDTH / 2, GAME_HEIGHT / 2) - 50;
+        const startRadius = Math.max(GAME_WIDTH / 2, GAME_HEIGHT / 2) - 175;
         const endRadius = 0;
 
         for (let i = 0; i <= totalPoints; i++) {

@@ -50,7 +50,11 @@ export abstract class Level extends Phaser.Scene {
     }
 
     init(): void {
-        this.state = new State(100, 350, this.scene.key);
+        if (this.scene.key === 'Tutorial') {
+            this.state = new State(100, 1000, this.scene.key);
+        } else {
+            this.state = new State(100, 350, this.scene.key);
+        }
         this.state.level = this.scene.key;
     }
 

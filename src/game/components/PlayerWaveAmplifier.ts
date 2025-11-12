@@ -14,9 +14,9 @@ import {SpecialEnemy} from "../entities/SpecialEnemy.ts"; // Import SpecialEnemy
  */
 export class PlayerWaveAmplifier extends Component {
     private keys!: { e: Phaser.Input.Keyboard.Key };
-    private cooldownTime: number = 1000; // 1 second cooldown
+    private cooldownTime: number = 3000; // 3 second cooldown
     private lastActivated: number = 0;
-    private activationRange: number = 100; // Range to be near a tower to revive it
+    private activationRange: number = 175; // Range to be near a tower to revive it
     private waveDamage: number = 50; // Damage dealt by the wave to special enemies
     private findNearestTowerComponent!: FindNearestTower;
     private specialEnemiesGroup!: Phaser.GameObjects.Group; // Reference to special enemies group
@@ -61,8 +61,8 @@ export class PlayerWaveAmplifier extends Component {
         }
     }
 
-    private playerPressedKey(time: number) {
-        return this.keys.e.isDown && time > this.lastActivated + this.cooldownTime;
+    private playerPressedKey(_time: number) {
+        return this.keys.e.isDown;
     }
 
     private hasCooldownExpired(time: number) {

@@ -100,7 +100,7 @@ export class TowerManager extends Manager {
             tower = new Tower({scene: this.level, x, y, texture: 'tower1', cost: cost});
             this.towers.add(tower, true);
             tower.addComponent(new Health(300));
-            tower.addComponent(new Targeting(TOWER1_RANGE, [this.level.waveManager.enemies, this.level.waveManager.specialEnemies]));
+            tower.addComponent(new Targeting(TOWER1_RANGE, [this.level.waveManager.enemies]));
             tower.addComponent(new LaserAttack(200, 25, 300, this.bullets));
             tower.addComponent(new VisualPulse(phaserColor(AppColors.PULSE_LASER_TOWER), 250, 1000, 2.75, 10, 0.5));
             tower.on('pointerover', () => this.level.hud.setHelpText(this.getTowerDescription(towerType)));
@@ -109,8 +109,8 @@ export class TowerManager extends Manager {
             tower = new Tower({scene: this.level, x, y, texture: 'tower2', cost: cost});
             this.towers.add(tower, true);
             tower.addComponent(new Health(500));
-            tower.addComponent(new Targeting(TOWER2_RANGE, [this.level.waveManager.enemies, this.level.waveManager.specialEnemies]));
-            tower.addComponent(new BombAttack(1500, 100, 133, 75, this.bombs, [this.level.waveManager.enemies, this.level.waveManager.specialEnemies]));
+            tower.addComponent(new Targeting(TOWER2_RANGE, [this.level.waveManager.enemies]));
+            tower.addComponent(new BombAttack(1500, 100, 133, 75, this.bombs, [this.level.waveManager.enemies]));
             tower.addComponent(new VisualPulse(phaserColor(AppColors.PULSE_BOMB_TOWER), 400, 2000, 2, 10, 0.5));
             tower.on('pointerover', () => this.level.hud.setHelpText(this.getTowerDescription(towerType)));
             tower.on('pointerout', () => this.level.hud.setHelpText(''));
