@@ -15,7 +15,7 @@ export class PathsManager extends Manager {
         this.paths = this.level.definePaths();
         this.pathGraphics = this.level.add.graphics();
         for (let pathsKey in this.paths) {
-            this.pathGraphics.lineStyle(0.5, phaserColor(AppColors.PATH_LINE), 0.30); // Use color constant
+            this.pathGraphics.lineStyle(1, phaserColor(AppColors.PATH_LINE), 0.50); // Use color constant
             this.paths[pathsKey].draw(this.pathGraphics);
 
             // Draw start and end points

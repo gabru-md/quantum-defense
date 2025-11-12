@@ -50,12 +50,6 @@ export abstract class Level extends Phaser.Scene {
     }
 
     init(): void {
-        // this.state = this.sys.registry.get('gameState');
-        // if (!this.state) {
-        //     console.error("Game State not found in registry. Creating a new one.");
-        //
-        //     this.sys.registry.set('gameState', this.state);
-        // }
         this.state = new State(100, 350, this.scene.key);
         this.state.level = this.scene.key;
     }

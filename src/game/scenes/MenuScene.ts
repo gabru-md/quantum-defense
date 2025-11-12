@@ -13,14 +13,27 @@ export class MenuScene extends Phaser.Scene {
     }
 
     init(): void {
-        // Initialize Game State and set it in the Registry
-        // This ensures a fresh state when entering the menu, or retrieves existing if returning
-        this.gameState = new State(100, 350, 'Menu'); // Default values
+        this.gameState = new State(100, 350, 'Menu');
         this.sys.registry.set('gameState', this.gameState);
+    }
+
+    preload(): void {
+        // Preload textures for animated elements
+        this.load.image('enemy1_menu', this.createEnemyTexture('enemy1_menu', 32, AppColors.ENEMY_NORMAL));
+        this.load.image('enemy2_menu', this.createEnemyTexture('enemy2_menu', 32, AppColors.ENEMY_FAST));
+        this.load.image('enemy3_menu', this.createEnemyTexture('enemy3_menu', 32, AppColors.ENEMY_TANK));
+        this.load.image('special_enemy_menu', this.createEnemyTexture('special_enemy_menu', 32, AppColors.SPECIAL_ENEMY));
+        this.load.image('tower1_menu', this.createTowerTexture('tower1_menu', 32, AppColors.TOWER_LASER));
+        this.load.image('tower2_menu', this.createTowerTexture('tower2_menu', 32, AppColors.TOWER_BOMB));
+        this.load.image('tower3_menu', this.createTowerTexture('tower3_menu', 32, AppColors.TOWER_SLOW));
+        this.load.image('player_menu', this.createPlayerTexture('player_menu', 24, AppColors.PLAYER));
     }
 
     create(): void {
         this.cameras.main.setBackgroundColor(AppColors.GAME_BACKGROUND);
+
+        // --- Dynamic Background Grid ---
+        this.createAnimatedGridBackground();
 
         // --- Full-screen Stroke Panel ---
         this.add.graphics()
@@ -34,6 +47,7 @@ export class MenuScene extends Phaser.Scene {
             color: AppColors.UI_ACCENT,
             align: 'center'
         }).setOrigin(0.5);
+
         this.add.graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
@@ -42,9 +56,12 @@ export class MenuScene extends Phaser.Scene {
             .closePath()
             .stroke();
 
+        this.createVisualElements();
+
+
         // --- Level Selection Panel ---
-        this.createPanel(WIDTH / 2, 400, 450, 425, 'SELECT LEVEL', (panelX, panelY) => {
-            this.createLevelSelectionButtons(panelX, panelY + 20);
+        this.createPanel(WIDTH / 2, 400, 450, 410, 'SELECT LEVEL', (panelX, panelY) => {
+            this.createLevelSelectionButtons(panelX, panelY);
         });
 
         // --- Settings Panel ---
@@ -59,9 +76,83 @@ export class MenuScene extends Phaser.Scene {
         });
     }
 
+    private createVisualElements() {
+        // --- Animated Game Elements ---
+        const gameAreaLeft = 0;
+        const gameAreaRight = WIDTH;
+        const gameAreaTop = 0;
+        const gameAreaBottom = GAME_HEIGHT;
+
+        for (let i = 0; i < 2; i++) {
+            // Randomize coordinates for enemies
+            this.addAnimatedElement('enemy1_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), 0.8, 2000);
+            this.addAnimatedElement('enemy2_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), 0.7, 1800);
+            this.addAnimatedElement('enemy3_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), 0.9, 2200);
+            this.addAnimatedElement('special_enemy_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), 0.85, 1900);
+            // Randomize coordinates for towers
+            this.addAnimatedElement('tower1_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), 0.9, 1800);
+            this.addAnimatedElement('tower2_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), 0.8, 2100);
+            this.addAnimatedElement('tower3_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), 0.75, 1700);
+            // Player
+            this.addAnimatedElement('player_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), 0.7, 2200);
+        }
+    }
+
+    private createAnimatedGridBackground(): void {
+        const gridGraphics = this.add.graphics({
+            lineStyle: {
+                width: 1,
+                color: phaserColor(AppColors.UI_SEPARATOR),
+                alpha: 0.1
+            }
+        });
+        const gridSize = 5;
+
+        for (let x = 0; x < WIDTH; x += gridSize) {
+            gridGraphics.lineBetween(x, 0, x, GAME_HEIGHT);
+        }
+        for (let y = 0; y < GAME_HEIGHT; y += gridSize) {
+            gridGraphics.lineBetween(0, y, WIDTH, y);
+        }
+
+        // Simple scroll animation
+        this.tweens.add({
+            targets: gridGraphics,
+            x: {from: 0, to: -gridSize},
+            y: {from: 0, to: -gridSize},
+            duration: 5000,
+            ease: 'Linear',
+            repeat: -1,
+            yoyo: true
+        });
+    }
+
+    private addAnimatedElement(key: string, x: number, y: number, scale: number, duration: number): void {
+        const randomOffsetX = Phaser.Math.Between(-20, 20);
+        const randomOffsetY = Phaser.Math.Between(-20, 20);
+
+        const targetX = x + randomOffsetX;
+        const targetY = y + randomOffsetY;
+
+        const element = this.add.image(x, y, key)
+            .setScale(scale)
+            .setAlpha(0.7)
+            .setDepth(-1);
+
+        // 4. Create the Tween
+        this.tweens.add({
+            targets: element,
+            x: targetX,
+            y: targetY,
+            duration: duration,
+            ease: 'Sine.easeInOut',
+            yoyo: true,
+            repeat: -1
+        });
+    }
+
     private createPanel(x: number, y: number, width: number, height: number, title: string, contentCallback: (panelX: number, panelY: number) => void): void {
         const panelGraphics = this.add.graphics();
-        // panelGraphics.fillStyle(phaserColor(AppColors.UI_PRIMARY_BG), 0.8);
         panelGraphics.fillRect(x - width / 2, y - height / 2, width, height);
         panelGraphics.lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1);
         panelGraphics.strokeRect(x - width / 2, y - height / 2, width, height);
@@ -79,7 +170,7 @@ export class MenuScene extends Phaser.Scene {
             .closePath()
             .stroke();
 
-        contentCallback(x, y - height / 2 + 70); // Pass content start position
+        contentCallback(x, y - height / 2 + 70);
     }
 
     private createButton(x: number, y: number, text: string, callback: () => void): Phaser.GameObjects.Text {
@@ -122,7 +213,36 @@ export class MenuScene extends Phaser.Scene {
         this.soundText = this.createButton(x, y, `SOUND: ${this.gameState.soundEnabled ? 'ON' : 'OFF'}`, () => {
             this.gameState.soundEnabled = !this.gameState.soundEnabled;
             this.soundText.setText(`SOUND: ${this.gameState.soundEnabled ? 'ON' : 'OFF'}`);
-            // Implement actual sound mute/unmute here later
         });
+    }
+
+    // Helper functions to create textures for menu elements
+    private createEnemyTexture(key: string, size: number, color: string): string {
+        const graphics = this.make.graphics({x: 0, y: 0});
+        graphics.fillStyle(phaserColor(color));
+        graphics.fillRect(0, 0, size, size); // Simple square for menu preview
+        graphics.generateTexture(key, size, size);
+        graphics.destroy();
+        return key;
+    }
+
+    private createTowerTexture(key: string, size: number, color: string): string {
+        const graphics = this.make.graphics({x: 0, y: 0});
+        graphics.fillStyle(phaserColor(color));
+        graphics.fillCircle(size / 2, size / 2, size / 2);
+        graphics.fillStyle(phaserColor('0x000000'), 0.5);
+        graphics.fillCircle(size / 2, size / 2, size / 4);
+        graphics.generateTexture(key, size, size);
+        graphics.destroy();
+        return key;
+    }
+
+    private createPlayerTexture(key: string, size: number, color: string): string {
+        const graphics = this.make.graphics({x: 0, y: 0});
+        graphics.fillStyle(phaserColor(color));
+        graphics.fillCircle(size / 2, size / 2, size / 2);
+        graphics.generateTexture(key, size, size);
+        graphics.destroy();
+        return key;
     }
 }
