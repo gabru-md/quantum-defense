@@ -100,26 +100,34 @@ export class PlayerWaveAmplifier extends Component {
         }
 
         if (tower && tower.isNotFullHealth()) {
-            tower.scene.physics.world.enable(tower);
-            tower.reviveProgress = (tower.reviveProgress || 0) + 1;
-            const healthComponent = tower.getComponent(Health);
-            if (healthComponent) {
-                const newAlpha = 0.5 + (tower.reviveProgress / 3) * 0.5;
-                tower.setAlpha(newAlpha);
+            const reviveCost = tower.cost * 2;
+            if (this.gameObject.level.state.money >= reviveCost) {
+                this.gameObject.level.state.money -= reviveCost;
+                this.gameObject.level.hud.update();
 
-                if (tower.reviveProgress >= 3) {
-                    healthComponent._currentHealth = healthComponent.maxHealth;
-                    tower.setActive(true);
-                    tower.setAlpha(1);
-                    tower.getComponent(VisualPulse)?.start();
-                    const attackComponents = [tower.getComponent(LaserAttack), tower.getComponent(BombAttack), tower.getComponent(VisualPulse)];
-                    attackComponents.forEach(c => {
-                        if (c) c.enabled = true;
-                    });
-                    tower.reviveProgress = 0;
-                    this.gameObject.scene.events.emit('towerRevived');
-                    tower.setOriginalPulseColor();
+                tower.scene.physics.world.enable(tower);
+                tower.reviveProgress = (tower.reviveProgress || 0) + 1;
+                const healthComponent = tower.getComponent(Health);
+                if (healthComponent) {
+                    const newAlpha = 0.5 + (tower.reviveProgress / 3) * 0.5;
+                    tower.setAlpha(newAlpha);
+
+                    if (tower.reviveProgress >= 3) {
+                        healthComponent._currentHealth = healthComponent.maxHealth;
+                        tower.setActive(true);
+                        tower.setAlpha(1);
+                        tower.getComponent(VisualPulse)?.start();
+                        const attackComponents = [tower.getComponent(LaserAttack), tower.getComponent(BombAttack), tower.getComponent(VisualPulse)];
+                        attackComponents.forEach(c => {
+                            if (c) c.enabled = true;
+                        });
+                        tower.reviveProgress = 0;
+                        this.gameObject.scene.events.emit('towerRevived');
+                        tower.setOriginalPulseColor();
+                    }
                 }
+            } else {
+                this.gameObject.level.hud.alert('Not enough money to revive!', AppColors.UI_MESSAGE_ERROR);
             }
         } else {
             // Damage special enemies within range
@@ -128,7 +136,7 @@ export class PlayerWaveAmplifier extends Component {
                 if (specialEnemyObject instanceof SpecialEnemy) {
                     const specialEnemy = specialEnemyObject as SpecialEnemy;
                     const distance = Phaser.Math.Distance.Between(this.gameObject.x, this.gameObject.y, specialEnemy.x, specialEnemy.y);
-                    if (distance <= this.activationRange) { // Use activationRange for damage as well
+                    if (distance <= this.activationRange) {
                         const healthComponent = specialEnemy.getComponent(Health);
                         if (healthComponent) {
                             healthComponent.takeDamage(this.waveDamage);

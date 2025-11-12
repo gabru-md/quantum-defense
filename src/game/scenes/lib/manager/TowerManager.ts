@@ -81,22 +81,22 @@ export class TowerManager extends Manager {
         }
         const cost = this.getTowerCost(towerType);
         if (cost == -1) {
-            this.level.hud.info('Something went very wrong!', AppColors.UI_MESSAGE_ERROR)
+            this.level.hud.alert('Something went very wrong!', AppColors.UI_MESSAGE_ERROR)
             return;
         }
         if (this.level.state.money >= cost) {
-            this.placeSpecificTower(x, y, towerType);
+            this.placeSpecificTower(x, y, towerType, cost);
             this.level.state.money -= cost;
             this.level.hud.update();
         } else {
-            this.level.hud.info('Not enough money!', AppColors.UI_MESSAGE_ERROR)
+            this.level.hud.alert('Not enough money!', AppColors.UI_MESSAGE_ERROR)
         }
     }
 
-    protected placeSpecificTower(x: number, y: number, towerType: string): void {
+    protected placeSpecificTower(x: number, y: number, towerType: string, cost: number): void {
         let tower: Tower;
         if (towerType === 'tower1') {
-            tower = new Tower({scene: this.level, x, y, texture: 'tower1'});
+            tower = new Tower({scene: this.level, x, y, texture: 'tower1', cost: cost});
             this.towers.add(tower, true);
             tower.addComponent(new Health(300));
             tower.addComponent(new Targeting(TOWER1_RANGE, [this.level.waveManager.enemies, this.level.waveManager.specialEnemies]));
@@ -105,7 +105,7 @@ export class TowerManager extends Manager {
             tower.on('pointerover', () => this.level.hud.setHelpText(this.getTowerDescription(towerType)));
             tower.on('pointerout', () => this.level.hud.setHelpText(''));
         } else if (towerType === 'tower2') {
-            tower = new Tower({scene: this.level, x, y, texture: 'tower2'});
+            tower = new Tower({scene: this.level, x, y, texture: 'tower2', cost: cost});
             this.towers.add(tower, true);
             tower.addComponent(new Health(500));
             tower.addComponent(new Targeting(TOWER2_RANGE, [this.level.waveManager.enemies, this.level.waveManager.specialEnemies]));
@@ -114,7 +114,7 @@ export class TowerManager extends Manager {
             tower.on('pointerover', () => this.level.hud.setHelpText(this.getTowerDescription(towerType)));
             tower.on('pointerout', () => this.level.hud.setHelpText(''));
         } else if (towerType === 'tower3') {
-            tower = new Tower({scene: this.level, x, y, texture: 'tower3'});
+            tower = new Tower({scene: this.level, x, y, texture: 'tower3', cost: cost});
             this.towers.add(tower, true);
             tower.addComponent(new Health(200));
             tower.addComponent(new SlowingAura(TOWER3_RANGE, 0.5)); // 50% slow factor
@@ -126,7 +126,7 @@ export class TowerManager extends Manager {
         }
 
         tower.on('died', () => tower.deactivateTower());
-        tower.on('deactivate', () => tower.deactivateTower());
+        tower.on('deactivate', () => this.deactivateTower(tower)); // Listen for deactivate event
         this.level.events.emit('towerPlaced', tower);
     }
 
@@ -167,5 +167,12 @@ export class TowerManager extends Manager {
             default:
                 return '';
         }
+    }
+
+    private deactivateTower(tower: Tower) {
+        if (!tower.active) return; // Already deactivated
+        tower.deactivateTower();
+        this.level.hud.alert('A Tower has been deactivated!');
+        this.level.events.emit('towerDeactivated', tower);
     }
 }

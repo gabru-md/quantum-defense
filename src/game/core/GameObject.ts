@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser';
 import {Component} from './Component';
+import {Level} from "../scenes/lib/Level.ts";
 
 /**
  * An extended Phaser GameObject that supports a component-based architecture.
@@ -12,6 +13,7 @@ export class GameObject extends Phaser.GameObjects.Sprite {
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
         super(scene, x, y, texture, frame);
+        this.name = this.constructor.name; // Set the name to the class name
         this.id = GameObject.nextId++; // Assign and increment the unique ID
 
         // Automatically call the update method of this GameObject from the scene's update loop.
@@ -69,5 +71,9 @@ export class GameObject extends Phaser.GameObjects.Sprite {
                 }
             }
         }
+    }
+
+    get level(): Level {
+        return this.scene as Level;
     }
 }

@@ -77,6 +77,13 @@ export class HudManager extends Manager {
         this.helpText.setText(text);
     }
 
+    public alert(text: string, color: string = AppColors.UI_MESSAGE_ERROR, delay: number = 300): void {
+        this.helpText.setText(text).setColor(color);
+        this.scene.time.delayedCall(delay, () => {
+            this.setHelpText('');
+        });
+    }
+
     private createMainStatsPanel() {
         const hudX = GAME_WIDTH + 15;
         const panelWidth = WIDTH - GAME_WIDTH - 30;
