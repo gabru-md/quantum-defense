@@ -2,23 +2,22 @@ import * as Phaser from 'phaser';
 import {Level} from './lib/Level.ts';
 import {GAME_HEIGHT, GAME_WIDTH} from "../scripts/Util.ts";
 
-
 export class Level2 extends Level {
     constructor() {
-        super('Level 2'); // Unique key for this scene
+        super('Level 2');
     }
 
     private firstPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(100, -10); // Start top-left
+        const path = new Phaser.Curves.Path(100, -10);
         path.lineTo(100, GAME_HEIGHT / 2);
         path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT / 2);
-        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT + 10); // End bottom-right
+        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT + 10);
         return path;
     }
 
     private secondPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(GAME_WIDTH / 2, -10); // Start top-center
-        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT + 10); // End bottom-center
+        const path = new Phaser.Curves.Path(GAME_WIDTH / 2, -10);
+        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT + 10);
         return path;
     }
 
@@ -39,55 +38,25 @@ export class Level2 extends Level {
         moneyValue: number,
         path: string
     }[] {
-        if (wave === 1) {
-            return [
-                {
-                    type: 'enemy',
-                    texture: 'enemy1',
-                    count: 4,
-                    delay: 500,
-                    health: 100,
-                    speed: 40,
-                    moneyValue: 10,
-                    path: 'first'
-                },
-                {
-                    type: 'enemy',
-                    texture: 'enemy2',
-                    count: 5,
-                    delay: 750,
-                    health: 50,
-                    speed: 80,
-                    moneyValue: 15,
-                    path: 'second'
-                }
-            ]
+        switch (wave) {
+            case 1:
+                return [
+                    {type: 'enemy', texture: 'enemy1', count: 10, delay: 1000, health: 110, speed: 55, moneyValue: 10, path: 'first'},
+                    {type: 'enemy', texture: 'enemy2', count: 5, delay: 1500, health: 80, speed: 90, moneyValue: 15, path: 'second'},
+                ];
+            case 2:
+                return [
+                    {type: 'enemy', texture: 'enemy2', count: 10, delay: 800, health: 80, speed: 100, moneyValue: 15, path: 'first'},
+                    {type: 'enemy', texture: 'enemy1', count: 10, delay: 1200, health: 120, speed: 60, moneyValue: 12, path: 'second'},
+                ];
+            case 3:
+                return [
+                    {type: 'enemy', texture: 'enemy1', count: 15, delay: 1000, health: 120, speed: 60, moneyValue: 12, path: 'first'},
+                    {type: 'enemy', texture: 'enemy2', count: 10, delay: 800, health: 85, speed: 110, moneyValue: 18, path: 'second'},
+                ];
+            default:
+                return [];
         }
-        if (wave === 2) {
-            return [
-                {
-                    type: 'enemy',
-                    texture: 'enemy2',
-                    count: 4,
-                    delay: 1000,
-                    health: 100,
-                    speed: 50,
-                    moneyValue: 10,
-                    path: 'first'
-                },
-                {
-                    type: 'enemy',
-                    texture: 'enemy1',
-                    count: 10,
-                    delay: 1000,
-                    health: 50,
-                    speed: 100,
-                    moneyValue: 15,
-                    path: 'second'
-                }
-            ]
-        }
-        return []; // No more waves for this level yet
     }
 
     nextScene(): string {

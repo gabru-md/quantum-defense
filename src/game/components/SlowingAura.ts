@@ -39,7 +39,6 @@ export class SlowingAura extends Component {
 
             if (distance <= this.range) {
                 // Enemy is in range, apply slow
-                console.log(this.gameObject.id)
                 pathFollower.applySpeedModifier(this.slowFactor, this.gameObject.id);
                 newlyAffected.add(pathFollower);
             }

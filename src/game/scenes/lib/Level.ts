@@ -9,6 +9,7 @@ import {PathsManager} from "./manager/PathsManager.ts";
 import {PlayerManager} from "./manager/PlayerManager.ts";
 import {GAME_HEIGHT, GAME_WIDTH} from "../../scripts/Util.ts";
 import {AppColors} from "../../scripts/Colors.ts";
+import {AudioManager} from "./manager/AudioManager.ts"; // Import AudioManager
 
 export abstract class Level extends Phaser.Scene {
     hud: HudManager;
@@ -19,6 +20,7 @@ export abstract class Level extends Phaser.Scene {
     textureLoader: TextureManager;
     pathsManager: PathsManager;
     playerManager: PlayerManager;
+    audioManager: AudioManager; // Add audioManager property
 
     abstract getWaveConfig(wave: number): {
         type: string;
@@ -44,20 +46,23 @@ export abstract class Level extends Phaser.Scene {
         this.textureLoader = new TextureManager(this);
         this.pathsManager = new PathsManager(this);
         this.playerManager = new PlayerManager(this);
+        this.audioManager = new AudioManager(this); // Instantiate AudioManager
     }
 
     init(): void {
-        this.state = this.sys.registry.get('gameState');
-        if (!this.state) {
-            console.error("Game State not found in registry. Creating a new one.");
-            this.state = new State(100, 350, this.scene.key);
-            this.sys.registry.set('gameState', this.state);
-        }
+        // this.state = this.sys.registry.get('gameState');
+        // if (!this.state) {
+        //     console.error("Game State not found in registry. Creating a new one.");
+        //
+        //     this.sys.registry.set('gameState', this.state);
+        // }
+        this.state = new State(100, 350, this.scene.key);
         this.state.level = this.scene.key;
     }
 
     public preload(): void {
         this.textureLoader.setup();
+        this.audioManager.setup(); // Call setup for audio preloading
     }
 
     public create(): void {
@@ -83,7 +88,6 @@ export abstract class Level extends Phaser.Scene {
             });
         }
 
-        // Listen for scene shutdown event to clean up managers
         this.events.on('shutdown', this.shutdown, this);
     }
 
@@ -108,6 +112,6 @@ export abstract class Level extends Phaser.Scene {
         this.waveManager.destroy();
         this.towerManager.destroy();
         this.hud.destroy();
-        // Other managers can be destroyed here if they hold resources
+        this.audioManager.destroy(); // Destroy audio manager
     }
 }

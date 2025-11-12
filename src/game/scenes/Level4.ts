@@ -13,30 +13,24 @@ export class Level4 extends Level {
         const centerX = GAME_WIDTH / 2;
         const centerY = GAME_HEIGHT / 2;
 
-        const totalRotations = 5; // More rotations to start from further out
+        const totalRotations = 5;
         const pointsPerRotation = 60;
         const totalPoints = totalRotations * pointsPerRotation;
 
-        // The angle offset will make the spiral start from the top (-PI/2)
         const angleOffset = -Math.PI / 2;
 
-        // The starting radius needs to be large enough to be off-screen
         const startRadius = Math.max(GAME_WIDTH / 2, GAME_HEIGHT / 2) - 50;
-        const endRadius = 0; // End at the center
+        const endRadius = 0;
 
-        // Generate the spiral points
         for (let i = 0; i <= totalPoints; i++) {
             const progress = i / totalPoints;
             const angle = angleOffset + (progress * totalRotations * 2 * Math.PI);
-
-            // Radius decreases as progress increases
             const radius = startRadius - (progress * (startRadius - endRadius));
-
             const x = centerX + radius * Math.cos(angle);
             const y = centerY + radius * Math.sin(angle);
 
             if (i === 0) {
-                path.moveTo(x, y); // Start the path at the first point
+                path.moveTo(x, y);
             } else {
                 path.lineTo(x, y);
             }
@@ -55,81 +49,25 @@ export class Level4 extends Level {
         moneyValue: number;
         path: string;
     }[] {
-        if (wave === 1) {
-            return [
-                {
-                    type: 'enemy',
-                    texture: 'enemy1',
-                    count: 10,
-                    delay: 800,
-                    health: 120,
-                    speed: 60,
-                    moneyValue: 10,
-                    path: 'first'
-                },
-                {
-                    type: 'enemy',
-                    texture: 'enemy2',
-                    count: 5,
-                    delay: 800,
-                    health: 60,
-                    speed: 120,
-                    moneyValue: 15,
-                    path: 'first'
-                },
-                {
-                    type: 'enemy',
-                    texture: 'enemy3',
-                    count: 2,
-                    delay: 2000,
-                    health: 600,
-                    speed: 30,
-                    moneyValue: 50,
-                    path: 'first'
-                },
-                {
-                    type: 'enemy',
-                    texture: 'enemy1',
-                    count: 10,
-                    delay: 800,
-                    health: 120,
-                    speed: 60,
-                    moneyValue: 10,
-                    path: 'first'
-                },
-                {
-                    type: 'enemy',
-                    texture: 'enemy3',
-                    count: 2,
-                    delay: 2000,
-                    health: 600,
-                    speed: 30,
-                    moneyValue: 50,
-                    path: 'first'
-                },
-                {
-                    type: 'enemy',
-                    texture: 'enemy2',
-                    count: 10,
-                    delay: 800,
-                    health: 60,
-                    speed: 120,
-                    moneyValue: 15,
-                    path: 'first'
-                },
-                {
-                    type: 'enemy',
-                    texture: 'enemy3',
-                    count: 2,
-                    delay: 2000,
-                    health: 600,
-                    speed: 30,
-                    moneyValue: 50,
-                    path: 'first'
-                }
-            ]
+        switch (wave) {
+            case 1:
+                return [
+                    {type: 'enemy', texture: 'enemy1', count: 15, delay: 800, health: 130, speed: 65, moneyValue: 15, path: 'first'},
+                    {type: 'enemy', texture: 'enemy2', count: 10, delay: 600, health: 90, speed: 120, moneyValue: 20, path: 'first'},
+                ];
+            case 2:
+                return [
+                    {type: 'enemy', texture: 'enemy3', count: 5, delay: 1500, health: 700, speed: 35, moneyValue: 60, path: 'first'},
+                    {type: 'enemy', texture: 'enemy1', count: 10, delay: 800, health: 130, speed: 65, moneyValue: 15, path: 'first'},
+                ];
+            case 3:
+                return [
+                    {type: 'enemy', texture: 'enemy2', count: 20, delay: 500, health: 90, speed: 130, moneyValue: 20, path: 'first'},
+                    {type: 'specialEnemy', texture: 'specialEnemy', count: 2, delay: 5000, health: 250, speed: 80, moneyValue: 120, path: 'first'},
+                ];
+            default:
+                return [];
         }
-        return [];
     }
 
     nextScene(): string {

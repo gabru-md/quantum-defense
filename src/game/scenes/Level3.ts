@@ -46,91 +46,26 @@ export class Level3 extends Level {
         moneyValue: number,
         path: string
     }[] {
-        if (wave === 1) {
-            return [
-                {
-                    type: 'enemy',
-                    texture: 'enemy1',
-                    count: 5,
-                    delay: 1000,
-                    health: 100,
-                    speed: 50,
-                    moneyValue: 10,
-                    path: 'first'
-                },
-                {
-                    type: 'enemy',
-                    texture: 'enemy2',
-                    count: 1,
-                    delay: 1000,
-                    health: 50,
-                    speed: 100,
-                    moneyValue: 15,
-                    path: 'first'
-                },
-                {
-                    type: 'enemy',
-                    texture: 'enemy1',
-                    count: 5,
-                    delay: 1000,
-                    health: 100,
-                    speed: 50,
-                    moneyValue: 10,
-                    path: 'first'
-                },
-                {
-                    type: 'enemy',
-                    texture: 'enemy3',
-                    count: 1,
-                    delay: 2000,
-                    health: 500,
-                    speed: 25,
-                    moneyValue: 50,
-                    path: 'first'
-                }, // Tanky enemy
-                {
-                    type: 'enemy',
-                    texture: 'enemy1',
-                    count: 5,
-                    delay: 1000,
-                    health: 100,
-                    speed: 50,
-                    moneyValue: 10,
-                    path: 'second'
-                },
-                {
-                    type: 'enemy',
-                    texture: 'enemy2',
-                    count: 1,
-                    delay: 1000,
-                    health: 50,
-                    speed: 100,
-                    moneyValue: 15,
-                    path: 'second'
-                },
-                {
-                    type: 'enemy',
-                    texture: 'enemy1',
-                    count: 5,
-                    delay: 1000,
-                    health: 100,
-                    speed: 50,
-                    moneyValue: 10,
-                    path: 'second'
-                },
-                {
-                    type: 'enemy',
-                    texture: 'enemy3',
-                    count: 1,
-                    delay: 2000,
-                    health: 500,
-                    speed: 25,
-                    moneyValue: 50,
-                    path: 'second'
-                }
-            ]
+        switch (wave) {
+            case 1:
+                return [
+                    {type: 'enemy', texture: 'enemy1', count: 10, delay: 1000, health: 120, speed: 60, moneyValue: 12, path: 'first'},
+                    {type: 'enemy', texture: 'enemy2', count: 5, delay: 800, health: 85, speed: 110, moneyValue: 18, path: 'second'},
+                ];
+            case 2:
+                return [
+                    {type: 'enemy', texture: 'enemy3', count: 3, delay: 2000, health: 600, speed: 30, moneyValue: 50, path: 'first'},
+                    {type: 'enemy', texture: 'enemy1', count: 10, delay: 1000, health: 120, speed: 60, moneyValue: 12, path: 'second'},
+                ];
+            case 3:
+                return [
+                    {type: 'enemy', texture: 'enemy1', count: 10, delay: 1000, health: 130, speed: 65, moneyValue: 15, path: 'first'},
+                    {type: 'enemy', texture: 'enemy2', count: 10, delay: 700, health: 90, speed: 120, moneyValue: 20, path: 'second'},
+                    {type: 'specialEnemy', texture: 'specialEnemy', count: 1, delay: 5000, health: 200, speed: 70, moneyValue: 100, path: 'first'},
+                ];
+            default:
+                return [];
         }
-        return [];
     }
 
      nextScene(): string {
