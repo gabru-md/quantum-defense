@@ -61,7 +61,7 @@ export class MenuScene extends Phaser.Scene {
 
 
         // --- Level Selection Panel ---
-        this.createPanel(WIDTH / 2, 400, 450, 410, 'SELECT LEVEL', (panelX, panelY) => {
+        this.createPanel(WIDTH / 2, 400, 450, 475, 'SELECT LEVEL', (panelX, panelY) => {
             this.createLevelSelectionButtons(panelX, panelY);
         });
 
@@ -188,18 +188,14 @@ export class MenuScene extends Phaser.Scene {
     }
 
     private createLevelSelectionButtons(x: number, y: number): void {
-        const levelKeys = ['Tutorial', 'Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5'];
+        const levelKeys = ['Intro', 'Tutorial', 'Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5'];
         const buttonSpacing = 60;
         let currentY = y;
 
         levelKeys.forEach((key, index) => {
             this.createButton(x, currentY + (index * buttonSpacing), key, () => {
                 this.gameState.level = key;
-                if (key === 'Tutorial') {
-                    this.scene.start('LoreScene');
-                } else {
-                    this.scene.start(key);
-                }
+                this.scene.start(key);
             });
         });
     }

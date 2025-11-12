@@ -12,14 +12,14 @@ import {
 import {GameObject} from '../core/GameObject';
 import {VisualPulse} from '../components/VisualPulse';
 
-export class LoreScene extends Phaser.Scene {
+export class Introduction extends Phaser.Scene {
     private story: string[];
     private currentStep = 0;
     private instructionText!: Phaser.GameObjects.Text;
     private visuals: Phaser.GameObjects.GameObject[] = [];
 
     constructor() {
-        super('LoreScene');
+        super('Intro');
 
         this.story = [
             "In the beginning, there was the Quantum Realm\nA silent, boundless universe of pure data and energy, flowing in seamless waves.",
@@ -97,7 +97,7 @@ export class LoreScene extends Phaser.Scene {
             }).setOrigin(0.5).setDepth(200);
         } else {
             this.currentStep = 0;
-            this.scene.start('Tutorial');
+            this.startFinalAnimation();
         }
     }
 
@@ -196,5 +196,70 @@ export class LoreScene extends Phaser.Scene {
         this.story.length = 0;
         this.instructionText?.destroy();
         this.visuals?.forEach(v => v.destroy());
+    }
+
+    private startFinalAnimation(): void {
+        if (this.instructionText) {
+            this.instructionText.destroy();
+        }
+
+        const playerSprite = this.visuals.find(v => (v as GameObject).texture.key === 'player');
+        const specialEnemySprite = this.visuals.find(v => (v as GameObject).texture.key === 'specialEnemy');
+
+        this.visuals.forEach(v => {
+            if (v !== playerSprite && v !== specialEnemySprite) {
+                v.destroy();
+            }
+        });
+
+        this.visuals = this.visuals.filter(v => v === playerSprite || v === specialEnemySprite);
+
+        if (!playerSprite || !specialEnemySprite) {
+            this.scene.start('Tutorial');
+            return;
+        }
+
+        const centerX = WIDTH / 2;
+        const centerY = HEIGHT / 2;
+
+        this.tweens.add({
+            targets: [playerSprite, specialEnemySprite],
+            x: centerX,
+            y: centerY,
+            duration: 3000,
+            ease: 'Power2',
+            rotation: Math.PI * 4,
+            onComplete: () => {
+                this.tweens.add({
+                    targets: specialEnemySprite,
+                    alpha: 0,
+                    scale: 0,
+                    duration: 3000,
+                    ease: 'Power2',
+                    onComplete: () => {
+                        specialEnemySprite.destroy();
+                        this.tweens.add({
+                            targets: playerSprite,
+                            scale: (playerSprite as GameObject).scale * 5.5,
+                            alpha: 1,
+                            duration: 200,
+                            yoyo: true,
+                            onComplete: () => {
+                                this.tweens.add({
+                                    targets: playerSprite,
+                                    scale: 100,
+                                    alpha: 0,
+                                    duration: 1000,
+                                    ease: 'Power1',
+                                    onComplete: () => {
+                                        this.scene.start('MenuScene');
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }
 }
