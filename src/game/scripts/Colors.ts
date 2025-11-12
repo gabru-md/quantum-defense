@@ -10,47 +10,56 @@ export function phaserColor(color: string | number): number {
 
 export const AppColors = {
     // UI Theme
-    UI_PRIMARY_BG: '#1a2a3a', // Dark blue-grey
-    UI_SECONDARY_BG: '#2a3a4a', // Slightly lighter blue-grey
-    UI_ACCENT: '#00ff99', // Bright green
-    UI_TEXT: '#ffffff', // White
+    UI_PRIMARY_BG: '#1a2a3a',
+    UI_SECONDARY_BG: '#2a3a4a',
+    UI_ACCENT: '#00ff99',
+    UI_TEXT: '#ffffff',
     UI_MESSAGE_INFO: '#ffffff',
-    UI_DISABLED: '#555555', // Grey for disabled elements
-    UI_MESSAGE_ERROR: '#ff0000', // Red for error messages
-    UI_MESSAGE_WARN: '#ffff00', // Yellow for warning messages
-    UI_MESSAGE_SUCCESS: '#00ff00', // Green for success messages
-    UI_MESSAGE_BACKGROUND: 'rgba(0,0,0,0.40)', // Semi-transparent black
-    UI_SEPARATOR: '#ffffff', // White separator lines
+    UI_DISABLED: '#555555',
+    UI_MESSAGE_ERROR: '#ff0000',
+    UI_MESSAGE_WARN: '#ffff00',
+    UI_MESSAGE_SUCCESS: '#00ff00',
+    UI_MESSAGE_BACKGROUND: 'rgba(0,0,0,0.40)',
+    UI_SEPARATOR: '#ffffff',
 
     // Game Background
-    GAME_BACKGROUND: '#2d2d2d', // Dark grey
+    GAME_BACKGROUND: '#2d2d2d',
 
     // Path Colors
-    PATH_LINE: '#888888', // Medium grey
-    PATH_START: '#3498db', // Blue (matching ENEMY_NORMAL for consistency)
-    PATH_END: '#2ecc71', // Green (matching TOWER_LASER for consistency)
+    PATH_LINE: '#888888',
+    PATH_START: '#3498db',
+    PATH_END: '#2ecc71',
 
     // Enemy Colors
     ENEMY_NORMAL: '#3498db', // Blue (Square)
     ENEMY_FAST: '#e74c3c', // Red (Triangle)
     ENEMY_TANK: '#f1c40f', // Yellow (Hexagon)
-    SPECIAL_ENEMY: '#27ae60', // Dark Green (Special Enemy) - Renamed from HEALER
 
     // Tower Colors
-    TOWER_LASER: '#2ecc71', // Green (Laser Tower)
-    TOWER_BOMB: '#9b59b6', // Purple (Bomb Tower)
-    TOWER_SLOW: '#e67e22', // Orange (Slow Tower)
+    TOWER_LASER: '#2ecc71',
+    TOWER_BOMB: '#9b59b6',
+    TOWER_SLOW: '#e67e22',
 
     // Projectile Colors
-    BULLET_LASER: '#2ecc71', // Green (Laser Bullet)
-    BULLET_BOMB: '#9b59b6', // Orange (Bomb)
+    BULLET_LASER: '#2ecc71',
+    BULLET_BOMB: '#9b59b6',
 
-    // Player Colors
-    PLAYER: '#16ddb3', // Teal (Player)
-    PLAYER_WAVE_PULSE: 'rgba(4,138,73,0.8)', // Greenish pulse
-    PLAYER_WAVE_PULSE_DAMAGE: 'rgb(250,250,250)', // White
+    // --- Revised Palette ---
 
-    // Visual Pulse Colors (for towers)
-    PULSE_LASER_TOWER: 'rgba(46,204,113,0.7)', // Greenish
-    PULSE_BOMB_TOWER: 'rgba(155,89,182,0.7)', // Purplish
+    // Guardian & Nexus (Order)
+    PLAYER: '#00FFFF',          // Electric Blue for Guardian
+    NEXUS_OUTER: '#00FFFF',      // Outer color matches player
+    NEXUS_INNER: '#017878',      // Inner rings are white/bright
+
+    // Static & Phantom (Corruption)
+    STATIC_OUTER: '#8A2BE2',      // Blue-Violet for Static
+    STATIC_INNER: '#4B0082',      // Indigo for inner rings
+    SPECIAL_ENEMY: '#8A2BE2',     // Phantom now uses the Static's primary color
+
+    // Player Wave Pulse
+    PLAYER_WAVE_PULSE: 'rgba(0,255,255,0.8)',
+
+    // Visual Pulse Colors
+    PULSE_LASER_TOWER: 'rgba(46,204,113,0.7)',
+    PULSE_BOMB_TOWER: 'rgba(155,89,182,0.7)',
 };

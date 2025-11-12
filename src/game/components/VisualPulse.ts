@@ -8,8 +8,20 @@ import {phaserColor} from '../scripts/Colors.ts'
 export class VisualPulse extends Component {
     private pulseGraphicsList!: Phaser.GameObjects.Graphics[];
     private pulseTweenList!: Phaser.Tweens.Tween[];
-    private _color: number; // Internal color property
+    /**
+     * The color of the pulse.
+     */
+    private _color: number;
 
+    /**
+     * Creates an instance of VisualPulse.
+     * @param color The color of the pulse.
+     * @param pulseDelay The delay between the start of each individual pulse in milliseconds.
+     * @param duration The duration of a single pulse animation in milliseconds.
+     * @param scale The maximum scale factor the pulse will reach.
+     * @param totalPulses The total number of individual pulses that will be active simultaneously.
+     * @param lineWidth The width of the line used to draw the pulse circle.
+     */
     constructor(color: number, private pulseDelay: number, private duration: number, private scale: number = 2.75, private totalPulses: number = 10, private lineWidth: number = 1) {
         super();
         this._color = color;
