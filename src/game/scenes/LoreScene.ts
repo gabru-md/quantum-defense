@@ -105,10 +105,27 @@ export class LoreScene extends Phaser.Scene {
         switch (this.currentStep) {
             case 1:
                 const nexus = this.add.sprite(200, 200, 'nexus').setAlpha(0.3);
+                // make it grow and shrink
+                this.tweens.add({
+                    targets: nexus,
+                    scaleX: 1.1,
+                    scaleY: 1.1,
+                    duration: 2000,
+                    yoyo: true,
+                    repeat: -1
+                });
                 this.visuals.push(nexus);
                 break;
             case 2:
                 const staticEnemy = this.add.sprite(WIDTH - 200, 200, 'static').setAlpha(0.3);
+                this.tweens.add({
+                    targets: staticEnemy,
+                    scaleX: 1.1,
+                    scaleY: 1.1,
+                    duration: 1000,
+                    yoyo: true,
+                    repeat: -1
+                });
                 this.visuals.push(staticEnemy);
                 break;
             case 3:
