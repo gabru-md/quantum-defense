@@ -1,15 +1,15 @@
 import * as Phaser from 'phaser';
-import {HudManager} from "./manager/HudManager.ts";
-import {WaveManager} from "./manager/WaveManager.ts";
-import {State} from "./State.ts";
-import {CollisionManager} from "./manager/CollisionManager.ts";
-import {TowerManager} from "./manager/TowerManager.ts";
-import {TextureManager} from "./manager/TextureManager.ts";
-import {PathsManager} from "./manager/PathsManager.ts";
-import {PlayerManager} from "./manager/PlayerManager.ts";
-import {GAME_HEIGHT, GAME_WIDTH} from "../../scripts/Util.ts";
-import {AppColors} from "../../scripts/Colors.ts";
-import {AudioManager} from "./manager/AudioManager.ts"; // Import AudioManager
+import { HudManager } from "./manager/HudManager.ts";
+import { WaveManager } from "./manager/WaveManager.ts";
+import { State } from "./State.ts";
+import { CollisionManager } from "./manager/CollisionManager.ts";
+import { TowerManager } from "./manager/TowerManager.ts";
+import { PathsManager } from "./manager/PathsManager.ts";
+import { PlayerManager } from "./manager/PlayerManager.ts";
+import { GAME_HEIGHT, GAME_WIDTH } from "../../scripts/Util.ts";
+import { AppColors } from "../../scripts/Colors.ts";
+import { AudioManager } from "./manager/AudioManager.ts";
+import { createBombTexture, createBulletTexture, createEnemyTexture, createPlaceholderTexture, createPlayerTexture, createRangePreviewTexture, createSpecialEnemyTexture, createTowerTexture } from '../../scripts/TextureUtils';
 
 export abstract class Level extends Phaser.Scene {
     hud: HudManager;
@@ -17,10 +17,9 @@ export abstract class Level extends Phaser.Scene {
     collisionManager: CollisionManager;
     state!: State;
     towerManager: TowerManager;
-    textureLoader: TextureManager;
     pathsManager: PathsManager;
     playerManager: PlayerManager;
-    audioManager: AudioManager; // Add audioManager property
+    audioManager: AudioManager;
 
     abstract getWaveConfig(wave: number): {
         type: string;
@@ -38,15 +37,14 @@ export abstract class Level extends Phaser.Scene {
     abstract definePaths(): { [key: string]: Phaser.Curves.Path };
 
     protected constructor(key: string) {
-        super({key});
+        super({ key });
         this.hud = new HudManager(this);
         this.waveManager = new WaveManager(this);
         this.collisionManager = new CollisionManager(this);
         this.towerManager = new TowerManager(this);
-        this.textureLoader = new TextureManager(this);
         this.pathsManager = new PathsManager(this);
         this.playerManager = new PlayerManager(this);
-        this.audioManager = new AudioManager(this); // Instantiate AudioManager
+        this.audioManager = new AudioManager(this);
     }
 
     init(): void {
@@ -59,8 +57,8 @@ export abstract class Level extends Phaser.Scene {
     }
 
     public preload(): void {
-        this.textureLoader.setup();
-        this.audioManager.setup(); // Call setup for audio preloading
+        this.createTextures();
+        this.audioManager.setup();
     }
 
     public create(): void {
@@ -110,6 +108,30 @@ export abstract class Level extends Phaser.Scene {
         this.waveManager.destroy();
         this.towerManager.destroy();
         this.hud.destroy();
-        this.audioManager.destroy(); // Destroy audio manager
+        this.audioManager.destroy();
+    }
+
+    private createTextures(): void {
+        // --- Enemies ---
+        createEnemyTexture(this, 'enemy1', 32, AppColors.ENEMY_NORMAL);
+        createEnemyTexture(this, 'enemy2', 24, AppColors.ENEMY_FAST);
+        createEnemyTexture(this, 'enemy3', 40, AppColors.ENEMY_TANK);
+
+        // --- Towers ---
+        createTowerTexture(this, 'tower1', 32, AppColors.TOWER_LASER);
+        createTowerTexture(this, 'tower2', 32, AppColors.TOWER_BOMB);
+        createTowerTexture(this, 'tower3', 32, AppColors.TOWER_SLOW);
+
+        // --- Projectiles ---
+        createBulletTexture(this, 'bullet', 10, AppColors.BULLET_LASER);
+        createBombTexture(this, 'bomb', 16, AppColors.BULLET_BOMB);
+
+        // --- Player & Special Enemy ---
+        createPlayerTexture(this, 'player', 24, AppColors.PLAYER);
+        createSpecialEnemyTexture(this, 'specialEnemy', 24, AppColors.SPECIAL_ENEMY);
+
+        // --- UI & Effects ---
+        createPlaceholderTexture(this, 'towerSlot', 32, 32, AppColors.UI_DISABLED);
+        createRangePreviewTexture(this, 'rangePreview', 300, 'rgba(255, 255, 255, 0.05)');
     }
 }

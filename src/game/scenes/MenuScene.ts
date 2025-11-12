@@ -2,6 +2,7 @@ import * as Phaser from 'phaser';
 import {AppColors, phaserColor} from '../scripts/Colors';
 import {GAME_HEIGHT, WIDTH} from '../scripts/Util';
 import {State} from './lib/State';
+import { createEnemyTexture, createPlayerTexture, createTowerTexture } from '../scripts/TextureUtils';
 
 export class MenuScene extends Phaser.Scene {
     private gameState!: State;
@@ -19,14 +20,14 @@ export class MenuScene extends Phaser.Scene {
 
     preload(): void {
         // Preload textures for animated elements
-        this.load.image('enemy1_menu', this.createEnemyTexture('enemy1_menu', 32, AppColors.ENEMY_NORMAL));
-        this.load.image('enemy2_menu', this.createEnemyTexture('enemy2_menu', 32, AppColors.ENEMY_FAST));
-        this.load.image('enemy3_menu', this.createEnemyTexture('enemy3_menu', 32, AppColors.ENEMY_TANK));
-        this.load.image('special_enemy_menu', this.createEnemyTexture('special_enemy_menu', 32, AppColors.SPECIAL_ENEMY));
-        this.load.image('tower1_menu', this.createTowerTexture('tower1_menu', 32, AppColors.TOWER_LASER));
-        this.load.image('tower2_menu', this.createTowerTexture('tower2_menu', 32, AppColors.TOWER_BOMB));
-        this.load.image('tower3_menu', this.createTowerTexture('tower3_menu', 32, AppColors.TOWER_SLOW));
-        this.load.image('player_menu', this.createPlayerTexture('player_menu', 24, AppColors.PLAYER));
+        this.load.image('enemy1_menu', createEnemyTexture(this, 'enemy1_menu', 32, AppColors.ENEMY_NORMAL));
+        this.load.image('enemy2_menu', createEnemyTexture(this, 'enemy2_menu', 32, AppColors.ENEMY_FAST));
+        this.load.image('enemy3_menu', createEnemyTexture(this, 'enemy3_menu', 32, AppColors.ENEMY_TANK));
+        this.load.image('special_enemy_menu', createEnemyTexture(this, 'special_enemy_menu', 32, AppColors.SPECIAL_ENEMY));
+        this.load.image('tower1_menu', createTowerTexture(this, 'tower1_menu', 32, AppColors.TOWER_LASER));
+        this.load.image('tower2_menu', createTowerTexture(this, 'tower2_menu', 32, AppColors.TOWER_BOMB));
+        this.load.image('tower3_menu', createTowerTexture(this, 'tower3_menu', 32, AppColors.TOWER_SLOW));
+        this.load.image('player_menu', createPlayerTexture(this, 'player_menu', 24, AppColors.PLAYER));
     }
 
     create(): void {
@@ -218,35 +219,5 @@ export class MenuScene extends Phaser.Scene {
             this.gameState.soundEnabled = !this.gameState.soundEnabled;
             this.soundText.setText(`SOUND: ${this.gameState.soundEnabled ? 'ON' : 'OFF'}`);
         });
-    }
-
-    // Helper functions to create textures for menu elements
-    private createEnemyTexture(key: string, size: number, color: string): string {
-        const graphics = this.make.graphics({x: 0, y: 0});
-        graphics.fillStyle(phaserColor(color));
-        graphics.fillRect(0, 0, size, size); // Simple square for menu preview
-        graphics.generateTexture(key, size, size);
-        graphics.destroy();
-        return key;
-    }
-
-    private createTowerTexture(key: string, size: number, color: string): string {
-        const graphics = this.make.graphics({x: 0, y: 0});
-        graphics.fillStyle(phaserColor(color));
-        graphics.fillCircle(size / 2, size / 2, size / 2);
-        graphics.fillStyle(phaserColor('0x000000'), 0.5);
-        graphics.fillCircle(size / 2, size / 2, size / 4);
-        graphics.generateTexture(key, size, size);
-        graphics.destroy();
-        return key;
-    }
-
-    private createPlayerTexture(key: string, size: number, color: string): string {
-        const graphics = this.make.graphics({x: 0, y: 0});
-        graphics.fillStyle(phaserColor(color));
-        graphics.fillCircle(size / 2, size / 2, size / 2);
-        graphics.generateTexture(key, size, size);
-        graphics.destroy();
-        return key;
     }
 }
