@@ -75,25 +75,3 @@ export function createPlaceholderTexture(scene: Phaser.Scene, key: string, width
     graphics.generateTexture(key, width, height);
     graphics.destroy();
 }
-
-export function createCoreEntityTexture(scene: Phaser.Scene, key: string, size: number, outerColor: string, innerColor: string): void {
-    const graphics = scene.make.graphics({x: 0, y: 0}).setAlpha(0.8);
-    const center = size / 2;
-    const numRings = 4;
-    const ringStep = (size / 2) / (numRings + 1);
-
-    // Outer circle
-    graphics.fillStyle(phaserColor(outerColor));
-    graphics.fillCircle(center, center, size / 2);
-
-    // Inner "dark discs"
-    for (let i = 1; i <= numRings; i++) {
-        const radius = (size / 2) - (ringStep * i);
-        const alpha = 0.3 + (i * 0.1); // Make inner rings darker
-        graphics.fillStyle(phaserColor(innerColor), alpha);
-        graphics.fillCircle(center, center, radius);
-    }
-
-    graphics.generateTexture(key, size, size);
-    graphics.destroy();
-}

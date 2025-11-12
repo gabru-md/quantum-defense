@@ -33,8 +33,8 @@ export class LoreScene extends Phaser.Scene {
     }
 
     preload(): void {
-        createPlayerTexture(this, 'nexus', 128, AppColors.NEXUS_INNER);
-        createPlayerTexture(this, 'static', 128, AppColors.STATIC_INNER);
+        createTowerTexture(this, 'nexus', 256, AppColors.NEXUS_OUTER);
+        createTowerTexture(this, 'static', 256, AppColors.STATIC_OUTER);
         createPlayerTexture(this, 'player', 32, AppColors.PLAYER);
         createEnemyTexture(this, 'enemy1', 32, AppColors.ENEMY_NORMAL);
         createEnemyTexture(this, 'enemy2', 32, AppColors.ENEMY_FAST);
@@ -102,13 +102,11 @@ export class LoreScene extends Phaser.Scene {
     private updateVisuals(): void {
         switch (this.currentStep) {
             case 1:
-                const nexus = new GameObject(this, 200, 200, 'nexus').setAlpha(0.8);
-                nexus.addComponent(new VisualPulse(phaserColor(AppColors.NEXUS_OUTER), 1000, 1250, 2.25 , 1, 1));
+                const nexus = this.add.sprite(200, 200, 'nexus').setAlpha(0.5);
                 this.visuals.push(nexus);
                 break;
             case 2:
-                const staticEnemy = new GameObject(this, WIDTH - 200, 200, 'nexus').setAlpha(0.8);
-                staticEnemy.addComponent(new VisualPulse(phaserColor(AppColors.STATIC_OUTER), 333, 1000, 2.25, 3, 1));
+                const staticEnemy = this.add.sprite(WIDTH - 200, 200, 'static').setAlpha(0.5);
                 this.visuals.push(staticEnemy);
                 break;
             case 3:

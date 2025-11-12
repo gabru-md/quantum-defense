@@ -14,9 +14,9 @@ import {SpecialEnemy} from "../entities/SpecialEnemy.ts"; // Import SpecialEnemy
  */
 export class PlayerWaveAmplifier extends Component {
     private keys!: { e: Phaser.Input.Keyboard.Key };
-    private cooldownTime: number = 1000; // 3 second cooldown
+    private cooldownTime: number = 1000; // 1 second cooldown
     private lastActivated: number = 0;
-    private activationRange: number = 175; // Range to be near a tower to revive it
+    private activationRange: number = 48; // Range to be near a tower to revive it
     private waveDamage: number = 50; // Damage dealt by the wave to special enemies
     private findNearestTowerComponent!: FindNearestTower;
     private specialEnemiesGroup!: Phaser.GameObjects.Group; // Reference to special enemies group
@@ -70,16 +70,17 @@ export class PlayerWaveAmplifier extends Component {
     }
 
     private activateWave(tower?: Tower): void {
+        console.log(this.gameObject.width)
         const totalPulses = 4;
         const pulseDelay = 150;
         const pulseDuration = 1000;
-        const pulseColor = tower ? tower.tintTopLeft : phaserColor(AppColors.PLAYER_WAVE_PULSE_DAMAGE);
+        const pulseColor = tower ? tower.tintTopLeft : phaserColor(AppColors.PLAYER_WAVE_PULSE);
 
         for (let i = 0; i < totalPulses; i++) {
             this.gameObject.scene.time.delayedCall(i * pulseDelay, () => {
                 const graphics = this.gameObject.scene.add.graphics({
                     fillStyle: {color: pulseColor, alpha: 0.3},
-                    lineStyle: {width: 1, color: pulseColor, alpha: 0.8}
+                    lineStyle: {width: 0.5, color: pulseColor, alpha: 0.8}
                 });
 
                 graphics.setDepth(10);
@@ -88,7 +89,7 @@ export class PlayerWaveAmplifier extends Component {
 
                 this.gameObject.scene.tweens.add({
                     targets: graphics,
-                    scale: 2.75,
+                    scale: 2,
                     alpha: 0,
                     duration: pulseDuration,
                     ease: 'Sine.easeOut',
