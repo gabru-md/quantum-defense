@@ -74,7 +74,7 @@ export class Tower extends GameObject {
         }
 
         // Show "Tower under attack!" message if health decreased
-        this.level.hud.alert('A tower is under attack from another tower!', AppColors.UI_MESSAGE_ERROR);
+        this.level.hud.alert('UNDER ATTACK:\nA tower is under attack from another tower!', AppColors.UI_MESSAGE_ERROR, 1000);
     }
 
     // add a deactivate function to deactivate the tower

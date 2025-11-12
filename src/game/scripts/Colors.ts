@@ -16,6 +16,7 @@ export const AppColors = {
     UI_TEXT: '#ffffff', // White
     UI_DISABLED: '#555555', // Grey for disabled elements
     UI_MESSAGE_ERROR: '#ff0000', // Red for error messages
+    UI_MESSAGE_WARN: '#ffff00', // Yellow for warning messages
     UI_MESSAGE_SUCCESS: '#00ff00', // Green for success messages
     UI_MESSAGE_BACKGROUND: 'rgba(0,0,0,0.40)', // Semi-transparent black
     UI_SEPARATOR: '#ffffff', // White separator lines

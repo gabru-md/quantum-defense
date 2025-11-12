@@ -81,7 +81,7 @@ export class TowerManager extends Manager {
         }
         const cost = this.getTowerCost(towerType);
         if (cost == -1) {
-            this.level.hud.alert('Something went very wrong!', AppColors.UI_MESSAGE_ERROR)
+            this.level.hud.alert('TOWER ERROR:\nSomething went very wrong!', AppColors.UI_MESSAGE_ERROR)
             return;
         }
         if (this.level.state.money >= cost) {
@@ -89,7 +89,8 @@ export class TowerManager extends Manager {
             this.level.state.money -= cost;
             this.level.hud.update();
         } else {
-            this.level.hud.alert('Not enough money!', AppColors.UI_MESSAGE_ERROR)
+            let moneyNeededToPlace = cost - this.level.state.money;
+            this.level.hud.alert(`INSUFFICIENT BALANCE:\nNeed $${moneyNeededToPlace} to place tower!`, AppColors.UI_MESSAGE_WARN, 1000);
         }
     }
 
@@ -172,7 +173,7 @@ export class TowerManager extends Manager {
     private deactivateTower(tower: Tower) {
         if (!tower.active) return; // Already deactivated
         tower.deactivateTower();
-        this.level.hud.alert('A Tower has been deactivated!');
+        this.level.hud.alert('TOWER DEACTIVATED:\nA Tower has been deactivated!');
         this.level.events.emit('towerDeactivated', tower);
     }
 }

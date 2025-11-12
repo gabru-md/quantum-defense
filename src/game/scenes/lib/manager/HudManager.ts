@@ -232,7 +232,7 @@ export class HudManager extends Manager {
         tower3Button.on('pointerout', () => this.setHelpText(''));
 
         // Help Text
-        this.helpText = this.scene.add.text(hudX + 15, yOffset + spacing * 3 + 20, '', {
+        this.helpText = this.scene.add.text(hudX + 15, yOffset + spacing * 4 + 20, '', {
             font: '14px',
             color: '#dddddd',
             wordWrap: {width: panelWidth - 30}

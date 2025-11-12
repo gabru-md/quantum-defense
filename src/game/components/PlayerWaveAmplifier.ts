@@ -43,22 +43,30 @@ export class PlayerWaveAmplifier extends Component {
         const nearestTower = this.findNearestTowerComponent.nearestTower;
 
         if (this.playerPressedKey(time)) {
-            if (nearestTower && (nearestTower.isNotFullHealth() || nearestTower.isTowerDeactivated())) {
-                const distance = Phaser.Math.Distance.Between(this.gameObject.x, this.gameObject.y, nearestTower.x, nearestTower.y);
-                if (distance <= this.activationRange) {
-                    this.activateWave(nearestTower);
+            if (this.hasCooldownExpired(time)) {
+                if (nearestTower && (nearestTower.isNotFullHealth() || nearestTower.isTowerDeactivated())) {
+                    const distance = Phaser.Math.Distance.Between(this.gameObject.x, this.gameObject.y, nearestTower.x, nearestTower.y);
+                    if (distance <= this.activationRange) {
+                        this.activateWave(nearestTower);
+                        this.lastActivated = time;
+                    }
+                } else {
+                    // If no deactivated tower is nearby or in range, activate wave to damage special enemies
+                    this.activateWave();
                     this.lastActivated = time;
                 }
             } else {
-                // If no deactivated tower is nearby or in range, activate wave to damage special enemies
-                this.activateWave();
-                this.lastActivated = time;
+                this.gameObject.level.hud.alert('ABILITY COOLDOWN:\nWave Amplifier is on cooldown!', AppColors.UI_MESSAGE_WARN)
             }
         }
     }
 
     private playerPressedKey(time: number) {
         return this.keys.e.isDown && time > this.lastActivated + this.cooldownTime;
+    }
+
+    private hasCooldownExpired(time: number) {
+        return time > this.lastActivated + this.cooldownTime;
     }
 
     private activateWave(tower?: Tower): void {
@@ -100,7 +108,7 @@ export class PlayerWaveAmplifier extends Component {
         }
 
         if (tower && tower.isNotFullHealth()) {
-            const reviveCost = tower.cost * 2;
+            const reviveCost = tower.cost;
             if (this.gameObject.level.state.money >= reviveCost) {
                 this.gameObject.level.state.money -= reviveCost;
                 this.gameObject.level.hud.update();
@@ -127,7 +135,8 @@ export class PlayerWaveAmplifier extends Component {
                     }
                 }
             } else {
-                this.gameObject.level.hud.alert('Not enough money to revive!', AppColors.UI_MESSAGE_ERROR);
+                let moneyNeededToRevive = reviveCost - this.gameObject.level.state.money;
+                this.gameObject.level.hud.alert(`INSUFFICIENT BALANCE:\nNeed $${moneyNeededToRevive} to revive tower!`, AppColors.UI_MESSAGE_WARN, 1000);
             }
         } else {
             // Damage special enemies within range
