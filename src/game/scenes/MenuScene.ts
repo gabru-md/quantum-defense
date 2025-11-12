@@ -194,7 +194,11 @@ export class MenuScene extends Phaser.Scene {
         levelKeys.forEach((key, index) => {
             this.createButton(x, currentY + (index * buttonSpacing), key, () => {
                 this.gameState.level = key;
-                this.scene.start(key);
+                if (key === 'Tutorial') {
+                    this.scene.start('LoreScene');
+                } else {
+                    this.scene.start(key);
+                }
             });
         });
     }

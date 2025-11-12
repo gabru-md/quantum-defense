@@ -70,7 +70,7 @@ export class HudManager extends Manager {
 
     public info(message: string, color: string, callback?: () => void) {
         this.messageText.setText(message).setColor(color).setVisible(true).setDepth(200);
-        this.scene.time.delayedCall(1500, () => {
+        this.scene.time.delayedCall(2500, () => {
             this.messageText.setVisible(false)
             if (callback) {
                 callback();
@@ -243,12 +243,12 @@ export class HudManager extends Manager {
     }
 
     private createMessageText() {
-        this.messageText = this.scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2, '', {
+        this.messageText = this.scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 3, '', {
             font: '48px',
             color: AppColors.UI_MESSAGE_ERROR,
             backgroundColor: AppColors.UI_MESSAGE_BACKGROUND,
             padding: {x: 30, y: 20}
-        }).setOrigin(0.5).setScrollFactor(0).setVisible(false).setDepth(200).setName('messageText');
+        }).setOrigin(0.5).setScrollFactor(0).setVisible(false).setDepth(200).setName('messageText').setScale(0.75);
     }
 
     private updateMainStats() {

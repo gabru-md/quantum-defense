@@ -14,6 +14,7 @@ export const AppColors = {
     UI_SECONDARY_BG: '#2a3a4a', // Slightly lighter blue-grey
     UI_ACCENT: '#00ff99', // Bright green
     UI_TEXT: '#ffffff', // White
+    UI_MESSAGE_INFO: '#ffffff',
     UI_DISABLED: '#555555', // Grey for disabled elements
     UI_MESSAGE_ERROR: '#ff0000', // Red for error messages
     UI_MESSAGE_WARN: '#ffff00', // Yellow for warning messages
