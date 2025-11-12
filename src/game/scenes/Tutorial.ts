@@ -3,7 +3,7 @@ import {Level} from './lib/Level';
 import {GAME_HEIGHT, GAME_WIDTH} from '../scripts/Util';
 import {AppColors} from '../scripts/Colors';
 
-export class TutorialLevel extends Level {
+export class Tutorial extends Level {
     private tutorialStep = 0;
 
     constructor() {
@@ -19,13 +19,6 @@ export class TutorialLevel extends Level {
         const path = new Phaser.Curves.Path(0, GAME_HEIGHT / 2);
         path.lineTo(GAME_WIDTH, GAME_HEIGHT / 2);
         return {path1: path};
-    }
-
-    protected getTowerSlots(): { x: number; y: number }[] {
-        return [
-            {x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 - 100},
-            {x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 + 100},
-        ];
     }
 
     public getWaveConfig(wave: number): {
