@@ -28,7 +28,7 @@ export class MenuScene extends Phaser.Scene {
         this.load.image('tower1_menu', createTowerTexture(this, 'tower1_menu', 32, AppColors.TOWER_LASER));
         this.load.image('tower2_menu', createTowerTexture(this, 'tower2_menu', 32, AppColors.TOWER_BOMB));
         this.load.image('tower3_menu', createTowerTexture(this, 'tower3_menu', 32, AppColors.TOWER_SLOW));
-        this.load.image('player_menu', createPlayerTexture(this, 'player_menu', 32, AppColors.PLAYER));
+        this.load.image('player_menu', createPlayerTexture(this, 'player_menu', 24, AppColors.PLAYER));
     }
 
     create(): void {

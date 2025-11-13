@@ -16,7 +16,7 @@ export class Introduction extends Phaser.Scene {
     private story: string[];
     private currentStep = 0;
     private instructionText!: Phaser.GameObjects.Text;
-    private visuals: Phaser.GameObjects.GameObject[] = [];
+    private visuals: Phaser.GameObjects.Sprite[] = [];
 
     constructor() {
         super('Intro');
@@ -37,7 +37,7 @@ export class Introduction extends Phaser.Scene {
     preload(): void {
         createBigTowerTexture(this, 'nexus', 256, AppColors.NEXUS_OUTER);
         createBigGlitchTexture(this, 'static', 256, AppColors.STATIC_OUTER);
-        createPlayerTexture(this, 'player', 32, AppColors.PLAYER);
+        createPlayerTexture(this, 'player', 24, AppColors.PLAYER);
         createEnemyTexture(this, 'enemy1', 32, AppColors.ENEMY_NORMAL);
         createEnemyTexture(this, 'enemy2', 32, AppColors.ENEMY_FAST);
         createEnemyTexture(this, 'enemy3', 32, AppColors.ENEMY_TANK);
@@ -102,10 +102,21 @@ export class Introduction extends Phaser.Scene {
     }
 
     private updateVisuals(): void {
+        const animateIn = (element: Phaser.GameObjects.Sprite) => {
+            const y = element.y;
+            element.y = y < HEIGHT / 2 ? -200 : HEIGHT + 200;
+            this.tweens.add({
+                targets: element,
+                y: y,
+                duration: 1500,
+                ease: 'Power2'
+            });
+        };
+
         switch (this.currentStep) {
             case 1:
                 const nexus = this.add.sprite(200, 200, 'nexus').setAlpha(0.3);
-                // make it grow and shrink
+                animateIn(nexus);
                 this.tweens.add({
                     targets: nexus,
                     scaleX: 1.1,
@@ -118,6 +129,7 @@ export class Introduction extends Phaser.Scene {
                 break;
             case 2:
                 const staticEnemy = this.add.sprite(WIDTH - 200, 200, 'static').setAlpha(0.3);
+                animateIn(staticEnemy);
                 this.tweens.add({
                     targets: staticEnemy,
                     scaleX: 1.1,
@@ -130,6 +142,7 @@ export class Introduction extends Phaser.Scene {
                 break;
             case 3:
                 const player = new GameObject(this, WIDTH / 3, HEIGHT / 3, 'player').setAlpha(0.8);
+                animateIn(player);
                 player.addComponent(new VisualPulse(phaserColor(AppColors.PLAYER), 500, 1000, 2, 2, 2));
                 this.visuals.push(player);
                 break;
@@ -137,16 +150,19 @@ export class Introduction extends Phaser.Scene {
                 const enemy1 = this.add.sprite(WIDTH / 2 - 100, HEIGHT * 3 / 4, 'enemy1').setAlpha(0.8);
                 const enemy2 = this.add.sprite(WIDTH / 2, HEIGHT * 3 / 4, 'enemy2').setAlpha(0.8);
                 const enemy3 = this.add.sprite(WIDTH / 2 + 100, HEIGHT * 3 / 4, 'enemy3').setAlpha(0.8);
+                [enemy1, enemy2, enemy3].forEach(e => animateIn(e));
                 this.visuals.push(enemy1, enemy2, enemy3);
                 break;
             case 5:
                 const tower1 = this.add.sprite(WIDTH / 2 - 100, HEIGHT * 3 / 4 - 100, 'tower1').setAlpha(0.8);
                 const tower2 = this.add.sprite(WIDTH / 2, HEIGHT * 3 / 4 - 100, 'tower2').setAlpha(0.8);
                 const tower3 = this.add.sprite(WIDTH / 2 + 100, HEIGHT * 3 / 4 - 100, 'tower3').setAlpha(0.8);
+                [tower1, tower2, tower3].forEach(t => animateIn(t));
                 this.visuals.push(tower1, tower2, tower3);
                 break;
             case 6:
                 const phantom = new GameObject(this, WIDTH * 2 / 3, HEIGHT / 3, 'specialEnemy').setAlpha(0.8);
+                animateIn(phantom);
                 phantom.addComponent(new VisualPulse(phaserColor(AppColors.SPECIAL_ENEMY), 500, 1000, 2, 2, 2));
                 this.visuals.push(phantom);
                 break;
@@ -216,16 +232,10 @@ export class Introduction extends Phaser.Scene {
         const playerSprite = this.visuals.find(v => (v as GameObject).texture.key === 'player');
         const specialEnemySprite = this.visuals.find(v => (v as GameObject).texture.key === 'specialEnemy');
 
-        this.visuals.forEach(v => {
-            if (v !== playerSprite && v !== specialEnemySprite) {
-                v.destroy();
-            }
-        });
-
-        this.visuals = this.visuals.filter(v => v === playerSprite || v === specialEnemySprite);
+        this.animateElementsOffScreen(playerSprite, specialEnemySprite);
 
         if (!playerSprite || !specialEnemySprite) {
-            this.scene.start('Tutorial');
+            this.scene.start('MenuScene');
             return;
         }
 
@@ -236,38 +246,53 @@ export class Introduction extends Phaser.Scene {
             targets: [playerSprite, specialEnemySprite],
             x: centerX,
             y: centerY,
-            duration: 1000,
+            scale: 3,
+            duration: 2000,
             ease: 'Power2',
-            rotation: Math.PI * 4,
+            rotation: Math.PI * 2,
             onComplete: () => {
                 this.tweens.add({
                     targets: specialEnemySprite,
                     alpha: 0,
                     scale: 0,
-                    duration: 2000,
+                    duration: 1000,
                     ease: 'Power2',
                     onComplete: () => {
                         specialEnemySprite.destroy();
                         this.tweens.add({
                             targets: playerSprite,
-                            scale: (playerSprite as GameObject).scale * 5.5,
+                            scale: 3,
                             alpha: 1,
-                            duration: 200,
-                            yoyo: true,
+                            duration: 500,
                             onComplete: () => {
-                                this.tweens.add({
-                                    targets: playerSprite,
-                                    scale: 100,
-                                    alpha: 0,
-                                    duration: 1000,
-                                    ease: 'Power1',
-                                    onComplete: () => {
-                                        this.scene.start('Tutorial');
-                                    }
+                                this.time.delayedCall(1000, () => {
+                                    this.tweens.add({
+                                        targets: playerSprite,
+                                        alpha: 0,
+                                        duration: 1000,
+                                        ease: 'Power1',
+                                        onComplete: () => {
+                                            this.scene.start('Tutorial');
+                                        }
+                                    });
                                 });
                             }
                         });
                     }
+                });
+            }
+        });
+    }
+
+    private animateElementsOffScreen(playerSprite: Phaser.GameObjects.GameObject | undefined, specialEnemySprite: Phaser.GameObjects.GameObject | undefined) {
+        this.visuals.forEach(v => {
+            if (v !== playerSprite && v !== specialEnemySprite) {
+                this.tweens.add({
+                    targets: v,
+                    y: v.y < HEIGHT / 2 ? -200 : HEIGHT + 200,
+                    duration: 3000,
+                    ease: 'Power2',
+                    onComplete: () => v.destroy()
                 });
             }
         });
