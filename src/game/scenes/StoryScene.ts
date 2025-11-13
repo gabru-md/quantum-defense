@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser';
-import { AppColors, phaserColor } from '../scripts/Colors';
-import { HEIGHT, WIDTH } from '../scripts/Util';
+import {AppColors, phaserColor} from '../scripts/Colors';
+import {HEIGHT, WIDTH} from '../scripts/Util';
 
 export class StoryScene extends Phaser.Scene {
     private story: string[] = [];
@@ -8,13 +8,10 @@ export class StoryScene extends Phaser.Scene {
     private currentStep = 0;
     private instructionText!: Phaser.GameObjects.Text;
 
-    constructor() {
-        super('StoryScene');
-    }
-
-    init(data: { story: string[], nextScene: string }): void {
-        this.story = data.story;
-        this.nextScene = data.nextScene;
+    constructor(key: string, story: string[] = [], nextScene: string) {
+        super(key);
+        this.story = story;
+        this.nextScene = nextScene;
     }
 
     create(): void {
@@ -42,18 +39,18 @@ export class StoryScene extends Phaser.Scene {
             this.instructionText = this.add.text(WIDTH / 2, HEIGHT / 2, text, {
                 font: '32px',
                 color: AppColors.UI_TEXT,
-                padding: { x: 20, y: 10 },
+                padding: {x: 20, y: 10},
                 align: 'center',
-                wordWrap: { width: WIDTH - 100 }
+                wordWrap: {width: WIDTH - 100}
             }).setOrigin(0.5).setDepth(200);
 
             this.currentStep++;
             this.add.text(WIDTH - 250, HEIGHT - 50, 'Press [SPACE] to continue, [ESC] to quit.', {
                 font: '16px',
                 color: AppColors.UI_TEXT,
-                padding: { x: 20, y: 10 },
+                padding: {x: 20, y: 10},
                 align: 'center',
-                wordWrap: { width: WIDTH - 100 }
+                wordWrap: {width: WIDTH - 100}
             }).setOrigin(0.5).setDepth(200);
         } else {
             this.currentStep = 0;

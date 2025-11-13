@@ -10,12 +10,13 @@ import {Level5} from './game/scenes/Level5';
 import {AppColors} from "./game/scripts/Colors.ts";
 import {WinScene} from "./game/scenes/WinScene.ts";
 import {Introduction} from "./game/scenes/Introduction.ts";
+import {StoryLevel1, StoryLevel2, StoryLevel3, StoryLevel4, StoryLevel5} from "./game/scenes/Stories.ts";
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
     width: 1920,
     height: 1080,
-    scene: [MenuScene, Introduction, CreditsScene, Tutorial, Level1, Level2, Level3, Level4, Level5, WinScene],
+    scene: [MenuScene, Introduction, CreditsScene, Tutorial, Level1, Level2, Level3, Level4, Level5, WinScene, StoryLevel1, StoryLevel2, StoryLevel3, StoryLevel4, StoryLevel5],
     physics: {
         default: 'arcade',
         arcade: {

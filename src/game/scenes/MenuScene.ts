@@ -3,7 +3,6 @@ import {AppColors, phaserColor} from '../scripts/Colors';
 import {GAME_HEIGHT, WIDTH} from '../scripts/Util';
 import {State} from './lib/State';
 import {createEnemyTexture, createPlayerTexture, createTowerTexture} from '../scripts/TextureUtils';
-import {StoryScene} from './StoryScene';
 
 export class MenuScene extends Phaser.Scene {
     private gameState!: State;
@@ -195,28 +194,15 @@ export class MenuScene extends Phaser.Scene {
 
         levelKeys.forEach((key, index) => {
             this.createButton(x, currentY + (index * buttonSpacing), key, () => {
-                if (key === 'Level 1') {
-                    this.startLevelWithStory('Level 1', this.level1Story());
+                this.gameState.level = key;
+                if(key !== 'Intro') {
+                    this.scene.start(`Story ${key}`);
                 } else {
-                    this.gameState.level = key;
                     this.scene.start(key);
                 }
+
             });
         });
-    }
-
-    private startLevelWithStory(levelKey: string, story: string[]): void {
-        this.gameState.level = levelKey;
-        this.scene.add('StoryScene', StoryScene, true, { story, nextScene: levelKey });
-    }
-
-    private level1Story(): string[] {
-        return [
-            "Welcome to the first challenge, Guardian.",
-            "The Static is attempting to breach our defenses.",
-            "They are weak, but numerous. Do not underestimate them.",
-            "Protect the Nexus at all costs."
-        ];
     }
 
     private createDifficultyToggle(x: number, y: number): void {
