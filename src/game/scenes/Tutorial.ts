@@ -1,13 +1,14 @@
 import * as Phaser from 'phaser';
-import { Level } from './lib/Level';
-import { GAME_HEIGHT, GAME_WIDTH } from '../scripts/Util';
-import { AppColors } from '../scripts/Colors';
+import {Level} from './lib/Level';
+import {GAME_HEIGHT, GAME_WIDTH} from '../scripts/Util';
+import {AppColors} from '../scripts/Colors';
+import {getStoryName, LevelNames} from "./levels/LevelNames.ts";
 
 export class Tutorial extends Level {
     private tutorialStep = 0;
 
     constructor() {
-        super('Tutorial');
+        super(LevelNames.Introduction);
     }
 
     create(): void {
@@ -18,7 +19,7 @@ export class Tutorial extends Level {
     definePaths(): { [key: string]: Phaser.Curves.Path } {
         const path = new Phaser.Curves.Path(50, GAME_HEIGHT / 2);
         path.lineTo(GAME_WIDTH - 50, GAME_HEIGHT / 2);
-        return { path1: path };
+        return {path1: path};
     }
 
     public getWaveConfig(wave: number): {
@@ -239,6 +240,6 @@ export class Tutorial extends Level {
     }
 
     public nextScene(): string {
-        return 'Level 1';
+        return getStoryName(LevelNames.HelloGenie);
     }
 }

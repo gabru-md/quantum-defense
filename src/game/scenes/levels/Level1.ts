@@ -5,7 +5,7 @@ import { getStoryName, LevelNames } from './LevelNames.ts';
 
 export class Level1 extends Level {
     constructor() {
-        super(LevelNames.Introduction);
+        super(LevelNames.HelloGenie);
     }
 
     private firstPath(): Phaser.Curves.Path {
@@ -90,6 +90,6 @@ export class Level1 extends Level {
     }
 
     nextScene(): string {
-        return getStoryName(LevelNames.HelloGenie);
+        return getStoryName(LevelNames.TrustMe);
     }
 }
