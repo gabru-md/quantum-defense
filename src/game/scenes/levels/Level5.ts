@@ -1,7 +1,7 @@
 import * as Phaser from 'phaser';
-import {Level} from '../lib/Level.ts';
-import {GAME_HEIGHT, GAME_WIDTH} from "../../scripts/Util.ts";
-import {LevelNames} from "./LevelNames.ts";
+import { Level } from '../lib/Level.ts';
+import { GAME_HEIGHT, GAME_WIDTH } from '../../scripts/Util.ts';
+import { LevelNames } from './LevelNames.ts';
 
 export class Level5 extends Level {
     constructor() {
@@ -34,9 +34,9 @@ export class Level5 extends Level {
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {
         return {
-            'first': this.firstPath(),
-            'second': this.secondPath()
-        }
+            first: this.firstPath(),
+            second: this.secondPath(),
+        };
     }
 
     getWaveConfig(wave: number): {
@@ -46,27 +46,108 @@ export class Level5 extends Level {
         delay: number;
         health: number;
         speed: number;
-        moneyValue: number,
-        path: string
+        moneyValue: number;
+        path: string;
     }[] {
         switch (wave) {
             case 1:
                 return [
-                    {type: 'enemy', texture: 'enemy1', count: 20, delay: 500, health: 150, speed: 70, moneyValue: 15, path: 'first'},
-                    {type: 'enemy', texture: 'enemy2', count: 10, delay: 400, health: 100, speed: 130, moneyValue: 20, path: 'second'},
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 20,
+                        delay: 500,
+                        health: 150,
+                        speed: 70,
+                        moneyValue: 15,
+                        path: 'first',
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy2',
+                        count: 10,
+                        delay: 400,
+                        health: 100,
+                        speed: 130,
+                        moneyValue: 20,
+                        path: 'second',
+                    },
                 ];
             case 2:
                 return [
-                    {type: 'enemy', texture: 'enemy3', count: 5, delay: 1000, health: 800, speed: 40, moneyValue: 75, path: 'first'},
-                    {type: 'enemy', texture: 'enemy1', count: 15, delay: 500, health: 150, speed: 70, moneyValue: 15, path: 'second'},
-                    {type: 'enemy', texture: 'enemy2', count: 10, delay: 400, health: 100, speed: 130, moneyValue: 20, path: 'first'},
+                    {
+                        type: 'enemy',
+                        texture: 'enemy3',
+                        count: 5,
+                        delay: 1000,
+                        health: 800,
+                        speed: 40,
+                        moneyValue: 75,
+                        path: 'first',
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 15,
+                        delay: 500,
+                        health: 150,
+                        speed: 70,
+                        moneyValue: 15,
+                        path: 'second',
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy2',
+                        count: 10,
+                        delay: 400,
+                        health: 100,
+                        speed: 130,
+                        moneyValue: 20,
+                        path: 'first',
+                    },
                 ];
             case 3:
                 return [
-                    {type: 'enemy', texture: 'enemy1', count: 25, delay: 300, health: 160, speed: 75, moneyValue: 18, path: 'first'},
-                    {type: 'enemy', texture: 'enemy2', count: 15, delay: 250, health: 110, speed: 140, moneyValue: 25, path: 'second'},
-                    {type: 'enemy', texture: 'enemy3', count: 8, delay: 800, health: 900, speed: 45, moneyValue: 90, path: 'first'},
-                    {type: 'specialEnemy', texture: 'specialEnemy', count: 2, delay: 5000, health: 300, speed: 90, moneyValue: 150, path: 'second'},
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 25,
+                        delay: 300,
+                        health: 160,
+                        speed: 75,
+                        moneyValue: 18,
+                        path: 'first',
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy2',
+                        count: 15,
+                        delay: 250,
+                        health: 110,
+                        speed: 140,
+                        moneyValue: 25,
+                        path: 'second',
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy3',
+                        count: 8,
+                        delay: 800,
+                        health: 900,
+                        speed: 45,
+                        moneyValue: 90,
+                        path: 'first',
+                    },
+                    {
+                        type: 'specialEnemy',
+                        texture: 'specialEnemy',
+                        count: 2,
+                        delay: 5000,
+                        health: 300,
+                        speed: 90,
+                        moneyValue: 150,
+                        path: 'second',
+                    },
                 ];
             default:
                 return [];
@@ -74,6 +155,6 @@ export class Level5 extends Level {
     }
 
     nextScene(): string {
-        return "WinScene";
+        return 'WinScene';
     }
 }

@@ -1,7 +1,7 @@
-import {Component} from '../core/Component';
+import { Component } from '../core/Component';
 import * as Phaser from 'phaser';
-import {WaveManager} from "../scenes/lib/manager/WaveManager.ts";
-import {Level} from "../scenes/lib/Level.ts";
+import { WaveManager } from '../scenes/lib/manager/WaveManager.ts';
+import { Level } from '../scenes/lib/Level.ts';
 
 export class PathFollower extends Component {
     private path: Phaser.Curves.Path;
@@ -19,7 +19,7 @@ export class PathFollower extends Component {
         if (this.isWaveManagerStopped()) {
             return;
         }
-        
+
         const currentSpeed = this.calculateCurrentSpeed();
         const pathLength = this.path.getLength();
         const distance = (currentSpeed * deltaTime) / 1000;
@@ -48,7 +48,7 @@ export class PathFollower extends Component {
     private calculateCurrentSpeed(): number {
         let finalModifier = 1;
         // Find the strongest slow effect (lowest modifier)
-        this.speedModifiers.forEach(modifier => {
+        this.speedModifiers.forEach((modifier) => {
             if (modifier < finalModifier) {
                 finalModifier = modifier;
             }

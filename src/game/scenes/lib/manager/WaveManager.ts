@@ -1,32 +1,33 @@
-import {Enemy} from "../../../entities/Enemy.ts";
-import {SpecialEnemy} from "../../../entities/SpecialEnemy.ts";
-import {Level} from "../Level.ts";
-import Phaser from "phaser";
-import {GameObject} from "../../../core/GameObject.ts";
-import {Manager} from "../Manager.ts";
-import {AppColors} from "../../../scripts/Colors.ts";
+import { Enemy } from '../../../entities/Enemy.ts';
+import { SpecialEnemy } from '../../../entities/SpecialEnemy.ts';
+import { Level } from '../Level.ts';
+import Phaser from 'phaser';
+import { GameObject } from '../../../core/GameObject.ts';
+import { Manager } from '../Manager.ts';
+import { AppColors } from '../../../scripts/Colors.ts';
 
 export class WaveManager extends Manager {
-
     enemies!: Phaser.GameObjects.Group;
     specialEnemies!: Phaser.GameObjects.Group;
     enabled: boolean = true;
 
-    constructor(protected level: Level,
-                public currentWave: number = 1,
-                protected enemiesRemaining: number = 0,
-                public enemiesSpawnedInWave: number = 0,
-                public maxEnemiesInWave: number = 20,
-                public gameOver: boolean = false) {
+    constructor(
+        protected level: Level,
+        public currentWave: number = 1,
+        protected enemiesRemaining: number = 0,
+        public enemiesSpawnedInWave: number = 0,
+        public maxEnemiesInWave: number = 20,
+        public gameOver: boolean = false
+    ) {
         super(level);
     }
 
-    setup(): { enemies: Phaser.GameObjects.Group, specialEnemies: Phaser.GameObjects.Group } {
-        this.enemies = this.level.add.group({classType: Enemy, runChildUpdate: false});
-        this.specialEnemies = this.level.add.group({classType: SpecialEnemy, runChildUpdate: false});
+    setup(): { enemies: Phaser.GameObjects.Group; specialEnemies: Phaser.GameObjects.Group } {
+        this.enemies = this.level.add.group({ classType: Enemy, runChildUpdate: false });
+        this.specialEnemies = this.level.add.group({ classType: SpecialEnemy, runChildUpdate: false });
         this.level.events.on('enemyDied', this.handleEnemyDied, this);
         this.level.events.on('specialEnemyKilledByPlayer', this.handleSpecialEnemyKilledByPlayer, this);
-        return {enemies: this.enemies, specialEnemies: this.specialEnemies};
+        return { enemies: this.enemies, specialEnemies: this.specialEnemies };
     }
 
     destroy(): void {
@@ -49,7 +50,7 @@ export class WaveManager extends Manager {
 
         const { healthMultiplier, speedMultiplier } = this.getDifficultyMultiplier();
 
-        waveConfig.forEach(config => {
+        waveConfig.forEach((config) => {
             let spawnDelay = 0;
             for (let i = 0; i < config.count; i++) {
                 this.level.time.addEvent({
@@ -59,11 +60,24 @@ export class WaveManager extends Manager {
                         const speed = config.speed * speedMultiplier;
 
                         if (config.type === 'enemy') {
-                            const enemy = new Enemy({ ...config, scene: this.level, path: this.level.pathsManager.paths[config.path], health, speed });
+                            const enemy = new Enemy({
+                                ...config,
+                                scene: this.level,
+                                path: this.level.pathsManager.paths[config.path],
+                                health,
+                                speed,
+                            });
                             this.enemies.add(enemy, true);
                             enemy.on('reachedEnd', this.handleEnemyReachedEnd, this);
                         } else if (config.type === 'specialEnemy') {
-                            const specialEnemy = new SpecialEnemy({ ...config, scene: this.level, path: this.level.pathsManager.paths[config.path], health, speed });                            this.specialEnemies.add(specialEnemy, true);
+                            const specialEnemy = new SpecialEnemy({
+                                ...config,
+                                scene: this.level,
+                                path: this.level.pathsManager.paths[config.path],
+                                health,
+                                speed,
+                            });
+                            this.specialEnemies.add(specialEnemy, true);
                         }
                         this.enemiesSpawnedInWave++;
                         this.level.hud.update();
@@ -75,7 +89,7 @@ export class WaveManager extends Manager {
         });
     }
 
-    private getDifficultyMultiplier(): { healthMultiplier: number, speedMultiplier: number } {
+    private getDifficultyMultiplier(): { healthMultiplier: number; speedMultiplier: number } {
         switch (this.level.state.difficulty) {
             case 'easy':
                 return { healthMultiplier: 0.75, speedMultiplier: 0.9 };

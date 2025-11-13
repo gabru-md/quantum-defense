@@ -27,7 +27,7 @@ export class BreatheOnHover extends Component {
                 duration: this.duration,
                 ease: 'Sine.easeInOut',
                 yoyo: true,
-                repeat: -1
+                repeat: -1,
             });
         });
 
@@ -40,7 +40,7 @@ export class BreatheOnHover extends Component {
                 targets: this.gameObject,
                 scale: 1,
                 duration: 200,
-                ease: 'Sine.easeInOut'
+                ease: 'Sine.easeInOut',
             });
         });
     }

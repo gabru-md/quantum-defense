@@ -1,9 +1,8 @@
-import {Component} from '../core/Component';
-import {Targeting} from './Targeting';
-import {Bomb} from '../entities/Bomb';
+import { Component } from '../core/Component';
+import { Targeting } from './Targeting';
+import { Bomb } from '../entities/Bomb';
 import * as Phaser from 'phaser';
-import {Health} from "./Health.ts";
-
+import { Health } from './Health.ts';
 
 /**
  * A component that gives a tower a bomb attack, firing AoE bombs at a target.
@@ -18,7 +17,14 @@ export class BombAttack extends Component {
     private readonly explosionRadius: number;
     private readonly targetableGroups: Phaser.GameObjects.Group[]; // Need this for AoE damage
 
-    constructor(fireRate: number, damage: number, bombSpeed: number, explosionRadius: number, bombs: Phaser.GameObjects.Group, targetableGroups: Phaser.GameObjects.Group[]) {
+    constructor(
+        fireRate: number,
+        damage: number,
+        bombSpeed: number,
+        explosionRadius: number,
+        bombs: Phaser.GameObjects.Group,
+        targetableGroups: Phaser.GameObjects.Group[]
+    ) {
         super();
         this.fireRate = fireRate;
         this.damage = damage;
@@ -57,7 +63,16 @@ export class BombAttack extends Component {
         this.bombs.add(bomb, true);
 
         if (bomb) {
-            bomb.fire(this.gameObject.x, this.gameObject.y, target.x, target.y, this.bombSpeed, this.damage, this.explosionRadius, this.targetableGroups);
+            bomb.fire(
+                this.gameObject.x,
+                this.gameObject.y,
+                target.x,
+                target.y,
+                this.bombSpeed,
+                this.damage,
+                this.explosionRadius,
+                this.targetableGroups
+            );
         }
     }
 }

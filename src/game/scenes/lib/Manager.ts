@@ -1,6 +1,5 @@
 export abstract class Manager {
-    protected constructor(public scene: Phaser.Scene) {
-    }
+    protected constructor(public scene: Phaser.Scene) {}
 
     abstract setup(): void;
 

@@ -1,10 +1,10 @@
-import {GameObject} from '../core/GameObject';
+import { GameObject } from '../core/GameObject';
 import * as Phaser from 'phaser';
-import {Health} from "../components/Health.ts";
-import {VisualPulse} from "../components/VisualPulse.ts";
-import {AppColors, phaserColor} from "../scripts/Colors.ts";
-import {LaserAttack} from "../components/LaserAttack.ts";
-import {BombAttack} from "../components/BombAttack.ts";
+import { Health } from '../components/Health.ts';
+import { VisualPulse } from '../components/VisualPulse.ts';
+import { AppColors, phaserColor } from '../scripts/Colors.ts';
+import { LaserAttack } from '../components/LaserAttack.ts';
+import { BombAttack } from '../components/BombAttack.ts';
 
 export interface TowerConfig {
     scene: Phaser.Scene;
@@ -28,7 +28,10 @@ export class Tower extends GameObject {
         this.cost = config.cost; // Assign the cost
 
         // Store original color for revival
-        this.originalPulseColor = (config.texture === 'tower1') ? phaserColor(AppColors.PULSE_LASER_TOWER) : phaserColor(AppColors.PULSE_BOMB_TOWER);
+        this.originalPulseColor =
+            config.texture === 'tower1'
+                ? phaserColor(AppColors.PULSE_LASER_TOWER)
+                : phaserColor(AppColors.PULSE_BOMB_TOWER);
 
         this.setInteractive();
 
@@ -38,7 +41,7 @@ export class Tower extends GameObject {
                 targets: this,
                 scale: 1.2,
                 duration: 200,
-                ease: 'Sine.easeInOut'
+                ease: 'Sine.easeInOut',
             });
         });
 
@@ -47,7 +50,7 @@ export class Tower extends GameObject {
                 targets: this,
                 scale: 1,
                 duration: 200,
-                ease: 'Sine.easeInOut'
+                ease: 'Sine.easeInOut',
             });
         });
         this.on('healthChanged', this.handleHealthChanged, this);
@@ -58,7 +61,7 @@ export class Tower extends GameObject {
         this.visualPulseComponent = this.getComponent(VisualPulse) as VisualPulse;
 
         if (!this.healthComponent) {
-            console.warn("Tower missing Health component!");
+            console.warn('Tower missing Health component!');
             return;
         }
 
@@ -74,7 +77,11 @@ export class Tower extends GameObject {
         }
 
         // Show "Tower under attack!" message if health decreased
-        this.level.hud.alert('UNDER ATTACK:\nA tower is under attack from another tower!', AppColors.UI_MESSAGE_ERROR, 1000);
+        this.level.hud.alert(
+            'UNDER ATTACK:\nA tower is under attack from another tower!',
+            AppColors.UI_MESSAGE_ERROR,
+            1000
+        );
     }
 
     // add a deactivate function to deactivate the tower
@@ -85,11 +92,10 @@ export class Tower extends GameObject {
         this.setAlpha(0.5);
         this.getComponent(VisualPulse)?.destroy();
         const attackComponents = [this.getComponent(LaserAttack), this.getComponent(BombAttack)];
-        attackComponents.forEach(c => {
+        attackComponents.forEach((c) => {
             if (c) c.enabled = false;
         });
     }
-
 
     public setOriginalPulseColor(): void {
         this.visualPulseComponent = this.getComponent(VisualPulse) as VisualPulse;
@@ -100,7 +106,7 @@ export class Tower extends GameObject {
 
     public isTowerDeactivated() {
         const healthComponent = this.getComponent(Health);
-        return healthComponent && healthComponent.isDead() || this.reviveProgress > 0;
+        return (healthComponent && healthComponent.isDead()) || this.reviveProgress > 0;
     }
 
     public isNotFullHealth() {

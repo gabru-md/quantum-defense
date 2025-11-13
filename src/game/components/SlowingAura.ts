@@ -19,7 +19,7 @@ export class SlowingAura extends Component {
         const currentScene = this.gameObject.scene as Level;
         const allEnemies = [
             ...currentScene.waveManager.enemies.getChildren(),
-            ...currentScene.waveManager.specialEnemies.getChildren()
+            ...currentScene.waveManager.specialEnemies.getChildren(),
         ];
 
         const newlyAffected: Set<PathFollower> = new Set();
@@ -27,12 +27,7 @@ export class SlowingAura extends Component {
         for (const enemy of allEnemies as Enemy[]) {
             if (!enemy.active) continue;
 
-            const distance = Phaser.Math.Distance.Between(
-                this.gameObject.x,
-                this.gameObject.y,
-                enemy.x,
-                enemy.y
-            );
+            const distance = Phaser.Math.Distance.Between(this.gameObject.x, this.gameObject.y, enemy.x, enemy.y);
 
             const pathFollower = enemy.getComponent(PathFollower);
             if (!pathFollower) continue;
@@ -45,7 +40,7 @@ export class SlowingAura extends Component {
         }
 
         // Remove slow effect from enemies that are no longer in range
-        this.affectedEnemies.forEach(follower => {
+        this.affectedEnemies.forEach((follower) => {
             if (!newlyAffected.has(follower)) {
                 follower.removeSpeedModifier(this.gameObject.id);
             }
@@ -56,7 +51,7 @@ export class SlowingAura extends Component {
 
     destroy(): void {
         // When the tower is destroyed, remove its slow effect from all affected enemies
-        this.affectedEnemies.forEach(follower => {
+        this.affectedEnemies.forEach((follower) => {
             follower.removeSpeedModifier(this.gameObject.id);
         });
         this.affectedEnemies.clear();

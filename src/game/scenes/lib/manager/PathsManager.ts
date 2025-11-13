@@ -1,7 +1,7 @@
-import {Level} from "../Level.ts";
-import Phaser from "phaser";
-import {Manager} from "../Manager.ts";
-import {AppColors, phaserColor} from "../../../scripts/Colors.ts";
+import { Level } from '../Level.ts';
+import Phaser from 'phaser';
+import { Manager } from '../Manager.ts';
+import { AppColors, phaserColor } from '../../../scripts/Colors.ts';
 
 export class PathsManager extends Manager {
     paths!: { [key: string]: Phaser.Curves.Path };
@@ -12,9 +12,9 @@ export class PathsManager extends Manager {
     }
 
     setup(): {
-        path: Phaser.GameObjects.Graphics,
-        start: Phaser.GameObjects.GameObject[],
-        end: Phaser.GameObjects.GameObject[]
+        path: Phaser.GameObjects.Graphics;
+        start: Phaser.GameObjects.GameObject[];
+        end: Phaser.GameObjects.GameObject[];
     } {
         this.paths = this.level.definePaths();
         this.pathGraphics = this.level.add.graphics();
@@ -22,7 +22,7 @@ export class PathsManager extends Manager {
         const endZoneElements: Phaser.GameObjects.GameObject[] = [];
 
         for (const pathsKey in this.paths) {
-            this.pathGraphics.lineStyle(1, phaserColor(AppColors.PATH_LINE), 0.50);
+            this.pathGraphics.lineStyle(1, phaserColor(AppColors.PATH_LINE), 0.5);
             this.paths[pathsKey].draw(this.pathGraphics);
 
             // Draw start and end points
@@ -36,7 +36,7 @@ export class PathsManager extends Manager {
         return {
             path: this.pathGraphics,
             start: startZoneElements,
-            end: endZoneElements
+            end: endZoneElements,
         };
     }
 
@@ -52,7 +52,7 @@ export class PathsManager extends Manager {
             duration: 1500,
             ease: 'Sine.easeInOut',
             yoyo: true,
-            repeat: -1
+            repeat: -1,
         });
 
         // Draw the zone
@@ -62,10 +62,13 @@ export class PathsManager extends Manager {
         graphics.strokeCircle(point.x, point.y, zoneRadius);
 
         // Add label
-        const labelText = this.level.add.text(point.x, point.y, label, {
-            font: '16px',
-            color: AppColors.UI_TEXT
-        }).setOrigin(0.5).setDepth(2);
+        const labelText = this.level.add
+            .text(point.x, point.y, label, {
+                font: '16px',
+                color: AppColors.UI_TEXT,
+            })
+            .setOrigin(0.5)
+            .setDepth(2);
 
         return [graphics, labelText];
     }

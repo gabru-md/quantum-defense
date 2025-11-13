@@ -1,4 +1,4 @@
-import type {GameObject} from './GameObject';
+import type { GameObject } from './GameObject';
 
 /**
  * Base class for all components that can be attached to a GameObject.

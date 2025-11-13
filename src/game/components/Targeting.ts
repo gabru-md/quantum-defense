@@ -1,5 +1,5 @@
-import {Component} from '../core/Component';
-import {Enemy} from '../entities/Enemy';
+import { Component } from '../core/Component';
+import { Enemy } from '../entities/Enemy';
 import * as Phaser from 'phaser';
 
 export class Targeting extends Component {
@@ -27,12 +27,7 @@ export class Targeting extends Component {
         for (const targetableGroup of this.targetableGroups) {
             for (const enemy of targetableGroup.getChildren() as Enemy[]) {
                 if (enemy.active) {
-                    const distance = Phaser.Math.Distance.Between(
-                        towerPosition.x,
-                        towerPosition.y,
-                        enemy.x,
-                        enemy.y
-                    );
+                    const distance = Phaser.Math.Distance.Between(towerPosition.x, towerPosition.y, enemy.x, enemy.y);
 
                     if (distance < closestDistance) {
                         closestDistance = distance;

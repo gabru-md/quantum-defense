@@ -1,4 +1,4 @@
-import {Component} from '../core/Component';
+import { Component } from '../core/Component';
 
 /**
  * A component that gives a GameObject health and the ability to take damage.

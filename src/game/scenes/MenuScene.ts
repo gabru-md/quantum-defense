@@ -1,8 +1,9 @@
 import * as Phaser from 'phaser';
-import {AppColors, phaserColor} from '../scripts/Colors';
-import {GAME_HEIGHT, WIDTH} from '../scripts/Util';
-import {State} from './lib/State';
-import {createEnemyTexture, createPlayerTexture, createTowerTexture} from '../scripts/TextureUtils';
+import { AppColors, phaserColor } from '../scripts/Colors';
+import { GAME_HEIGHT, WIDTH } from '../scripts/Util';
+import { State } from './lib/State';
+import { createEnemyTexture, createPlayerTexture, createTowerTexture } from '../scripts/TextureUtils';
+import { getStoryName, LevelNames } from './levels/LevelNames.ts';
 
 export class MenuScene extends Phaser.Scene {
     private gameState!: State;
@@ -10,7 +11,7 @@ export class MenuScene extends Phaser.Scene {
     private soundText!: Phaser.GameObjects.Text;
 
     constructor() {
-        super({key: 'MenuScene'});
+        super({ key: 'MenuScene' });
     }
 
     init(): void {
@@ -23,7 +24,10 @@ export class MenuScene extends Phaser.Scene {
         this.load.image('enemy1_menu', createEnemyTexture(this, 'enemy1_menu', 32, AppColors.ENEMY_NORMAL));
         this.load.image('enemy2_menu', createEnemyTexture(this, 'enemy2_menu', 32, AppColors.ENEMY_FAST));
         this.load.image('enemy3_menu', createEnemyTexture(this, 'enemy3_menu', 32, AppColors.ENEMY_TANK));
-        this.load.image('special_enemy_menu', createEnemyTexture(this, 'special_enemy_menu', 32, AppColors.SPECIAL_ENEMY));
+        this.load.image(
+            'special_enemy_menu',
+            createEnemyTexture(this, 'special_enemy_menu', 32, AppColors.SPECIAL_ENEMY)
+        );
         this.load.image('tower1_menu', createTowerTexture(this, 'tower1_menu', 32, AppColors.TOWER_LASER));
         this.load.image('tower2_menu', createTowerTexture(this, 'tower2_menu', 32, AppColors.TOWER_BOMB));
         this.load.image('tower3_menu', createTowerTexture(this, 'tower3_menu', 32, AppColors.TOWER_SLOW));
@@ -37,19 +41,23 @@ export class MenuScene extends Phaser.Scene {
         this.createAnimatedGridBackground();
 
         // --- Full-screen Stroke Panel ---
-        this.add.graphics()
+        this.add
+            .graphics()
             .lineStyle(5, phaserColor(AppColors.UI_SEPARATOR), 1)
             .strokeRect(0, 0, WIDTH, GAME_HEIGHT)
             .setDepth(0);
 
         // --- Game Title ---
-        this.add.text(WIDTH / 2, 100, 'QUANTUM DEFENSE', {
-            font: '80px',
-            color: AppColors.UI_ACCENT,
-            align: 'center'
-        }).setOrigin(0.5);
+        this.add
+            .text(WIDTH / 2, 100, 'QUANTUM DEFENSE', {
+                font: '80px',
+                color: AppColors.UI_ACCENT,
+                align: 'center',
+            })
+            .setOrigin(0.5);
 
-        this.add.graphics()
+        this.add
+            .graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(0, 150)
@@ -58,7 +66,6 @@ export class MenuScene extends Phaser.Scene {
             .stroke();
 
         this.createVisualElements();
-
 
         // --- Level Selection Panel ---
         this.createPanel(WIDTH / 2, 400, 450, 475, 'SELECT LEVEL', (panelX, panelY) => {
@@ -86,16 +93,64 @@ export class MenuScene extends Phaser.Scene {
 
         for (let i = 0; i < 2; i++) {
             // Randomize coordinates for enemies
-            this.addAnimatedElement('enemy1_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), Phaser.Math.Between(0.7, 1.7), Phaser.Math.Between(1750, 2500));
-            this.addAnimatedElement('enemy2_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), Phaser.Math.Between(0.7, 1.7), Phaser.Math.Between(1750, 2500));
-            this.addAnimatedElement('enemy3_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), Phaser.Math.Between(0.7, 1.7), Phaser.Math.Between(1750, 2500));
-            this.addAnimatedElement('special_enemy_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), Phaser.Math.Between(0.7, 1.7), Phaser.Math.Between(1750, 2500));
+            this.addAnimatedElement(
+                'enemy1_menu',
+                Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50),
+                Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100),
+                Phaser.Math.Between(0.7, 1.7),
+                Phaser.Math.Between(1750, 2500)
+            );
+            this.addAnimatedElement(
+                'enemy2_menu',
+                Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50),
+                Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100),
+                Phaser.Math.Between(0.7, 1.7),
+                Phaser.Math.Between(1750, 2500)
+            );
+            this.addAnimatedElement(
+                'enemy3_menu',
+                Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50),
+                Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100),
+                Phaser.Math.Between(0.7, 1.7),
+                Phaser.Math.Between(1750, 2500)
+            );
+            this.addAnimatedElement(
+                'special_enemy_menu',
+                Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50),
+                Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100),
+                Phaser.Math.Between(0.7, 1.7),
+                Phaser.Math.Between(1750, 2500)
+            );
             // Randomize coordinates for towers
-            this.addAnimatedElement('tower1_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), Phaser.Math.Between(0.7, 1.7), Phaser.Math.Between(1750, 2500));
-            this.addAnimatedElement('tower2_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), Phaser.Math.Between(0.7, 1.7), Phaser.Math.Between(1750, 2500));
-            this.addAnimatedElement('tower3_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), Phaser.Math.Between(0.7, 1.7), Phaser.Math.Between(1750, 2500));
+            this.addAnimatedElement(
+                'tower1_menu',
+                Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50),
+                Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100),
+                Phaser.Math.Between(0.7, 1.7),
+                Phaser.Math.Between(1750, 2500)
+            );
+            this.addAnimatedElement(
+                'tower2_menu',
+                Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50),
+                Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100),
+                Phaser.Math.Between(0.7, 1.7),
+                Phaser.Math.Between(1750, 2500)
+            );
+            this.addAnimatedElement(
+                'tower3_menu',
+                Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50),
+                Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100),
+                Phaser.Math.Between(0.7, 1.7),
+                Phaser.Math.Between(1750, 2500)
+            );
             // Player
-            this.addAnimatedElement('player_menu', Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50), Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100), Phaser.Math.Between(0.7, 1.7), Phaser.Math.Between(1750, 2500));
+            this.addAnimatedElement(
+                'player_menu',
+                Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50),
+                Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100),
+                Phaser.Math.Between(0.7, 1.7),
+                Phaser.Math.Between(1750, 2500)
+            );
         }
     }
 
@@ -104,8 +159,8 @@ export class MenuScene extends Phaser.Scene {
             lineStyle: {
                 width: 1,
                 color: phaserColor(AppColors.UI_SEPARATOR),
-                alpha: 0.1
-            }
+                alpha: 0.1,
+            },
         });
         const gridSize = 5;
 
@@ -119,12 +174,12 @@ export class MenuScene extends Phaser.Scene {
         // Simple scroll animation
         this.tweens.add({
             targets: gridGraphics,
-            x: {from: 0, to: -gridSize},
-            y: {from: 0, to: -gridSize},
+            x: { from: 0, to: -gridSize },
+            y: { from: 0, to: -gridSize },
             duration: 5000,
             ease: 'Linear',
             repeat: -1,
-            yoyo: true
+            yoyo: true,
         });
     }
 
@@ -135,10 +190,7 @@ export class MenuScene extends Phaser.Scene {
         const targetX = x + randomOffsetX;
         const targetY = y + randomOffsetY;
 
-        const element = this.add.image(x, y, key)
-            .setScale(scale)
-            .setAlpha(0.7)
-            .setDepth(-1);
+        const element = this.add.image(x, y, key).setScale(scale).setAlpha(0.7).setDepth(-1);
 
         // 4. Create the Tween
         this.tweens.add({
@@ -148,22 +200,32 @@ export class MenuScene extends Phaser.Scene {
             duration: duration,
             ease: 'Sine.easeInOut',
             yoyo: true,
-            repeat: -1
+            repeat: -1,
         });
     }
 
-    private createPanel(x: number, y: number, width: number, height: number, title: string, contentCallback: (panelX: number, panelY: number) => void): void {
+    private createPanel(
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+        title: string,
+        contentCallback: (panelX: number, panelY: number) => void
+    ): void {
         const panelGraphics = this.add.graphics();
         panelGraphics.fillRect(x - width / 2, y - height / 2, width, height);
         panelGraphics.lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1);
         panelGraphics.strokeRect(x - width / 2, y - height / 2, width, height);
 
-        this.add.text(x, y - height / 2 + 25, title, {
-            font: '36px',
-            color: AppColors.UI_ACCENT,
-            align: 'center'
-        }).setOrigin(0.5);
-        this.add.graphics()
+        this.add
+            .text(x, y - height / 2 + 25, title, {
+                font: '36px',
+                color: AppColors.UI_ACCENT,
+                align: 'center',
+            })
+            .setOrigin(0.5);
+        this.add
+            .graphics()
             .lineStyle(1, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(x - width / 2, y - height / 2 + 45)
@@ -175,11 +237,14 @@ export class MenuScene extends Phaser.Scene {
     }
 
     private createButton(x: number, y: number, text: string, callback: () => void): Phaser.GameObjects.Text {
-        const button = this.add.text(x, y, text, {
-            font: '36px',
-            color: AppColors.UI_TEXT,
-            padding: {x: 20, y: 10}
-        }).setOrigin(0.5).setInteractive();
+        const button = this.add
+            .text(x, y, text, {
+                font: '36px',
+                color: AppColors.UI_TEXT,
+                padding: { x: 20, y: 10 },
+            })
+            .setOrigin(0.5)
+            .setInteractive();
 
         button.on('pointerover', () => button.setColor(AppColors.UI_ACCENT));
         button.on('pointerout', () => button.setColor(AppColors.UI_TEXT));
@@ -188,19 +253,20 @@ export class MenuScene extends Phaser.Scene {
     }
 
     private createLevelSelectionButtons(x: number, y: number): void {
-        const levelKeys = ['Intro', 'Hello, Genie!', 'Trust Me', 'The Phantom', 'Rise of Static', 'Breakthrough'];
+        const levelKeys = [
+            LevelNames.Introduction,
+            LevelNames.HelloGenie,
+            LevelNames.ThePhantom,
+            LevelNames.RiseOfStatic,
+            LevelNames.Breakthrough,
+        ];
         const buttonSpacing = 60;
         const currentY = y + 25;
 
         levelKeys.forEach((key, index) => {
-            this.createButton(x, currentY + (index * buttonSpacing), key, () => {
+            this.createButton(x, currentY + index * buttonSpacing, key, () => {
                 this.gameState.level = key;
-                if(key !== 'Intro') {
-                    this.scene.start(`Story ${key}`);
-                } else {
-                    this.scene.start(key);
-                }
-
+                this.scene.start(getStoryName(key));
             });
         });
     }

@@ -1,7 +1,7 @@
 import * as Phaser from 'phaser';
-import {Level} from '../lib/Level.ts';
-import {GAME_HEIGHT, GAME_WIDTH} from "../../scripts/Util.ts";
-import {getStoryName, LevelNames} from "./LevelNames.ts";
+import { Level } from '../lib/Level.ts';
+import { GAME_HEIGHT, GAME_WIDTH } from '../../scripts/Util.ts';
+import { getStoryName, LevelNames } from './LevelNames.ts';
 
 export class Level3 extends Level {
     constructor() {
@@ -30,46 +30,109 @@ export class Level3 extends Level {
         return path;
     }
 
-     definePaths() {
+    definePaths() {
         return {
-            'first': this.firstPath(),
-            'second': this.secondPath()
-        }
+            first: this.firstPath(),
+            second: this.secondPath(),
+        };
     }
 
-     getWaveConfig(wave: number): {
+    getWaveConfig(wave: number): {
         type: string;
         texture: string;
         count: number;
         delay: number;
         health: number;
         speed: number;
-        moneyValue: number,
-        path: string
+        moneyValue: number;
+        path: string;
     }[] {
         switch (wave) {
             case 1:
                 return [
-                    {type: 'enemy', texture: 'enemy1', count: 10, delay: 1000, health: 120, speed: 60, moneyValue: 12, path: 'first'},
-                    {type: 'enemy', texture: 'enemy2', count: 5, delay: 800, health: 85, speed: 110, moneyValue: 18, path: 'second'},
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 10,
+                        delay: 1000,
+                        health: 120,
+                        speed: 60,
+                        moneyValue: 12,
+                        path: 'first',
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy2',
+                        count: 5,
+                        delay: 800,
+                        health: 85,
+                        speed: 110,
+                        moneyValue: 18,
+                        path: 'second',
+                    },
                 ];
             case 2:
                 return [
-                    {type: 'enemy', texture: 'enemy3', count: 3, delay: 2000, health: 600, speed: 30, moneyValue: 50, path: 'first'},
-                    {type: 'enemy', texture: 'enemy1', count: 10, delay: 1000, health: 120, speed: 60, moneyValue: 12, path: 'second'},
+                    {
+                        type: 'enemy',
+                        texture: 'enemy3',
+                        count: 3,
+                        delay: 2000,
+                        health: 600,
+                        speed: 30,
+                        moneyValue: 50,
+                        path: 'first',
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 10,
+                        delay: 1000,
+                        health: 120,
+                        speed: 60,
+                        moneyValue: 12,
+                        path: 'second',
+                    },
                 ];
             case 3:
                 return [
-                    {type: 'enemy', texture: 'enemy1', count: 10, delay: 1000, health: 130, speed: 65, moneyValue: 15, path: 'first'},
-                    {type: 'enemy', texture: 'enemy2', count: 10, delay: 700, health: 90, speed: 120, moneyValue: 20, path: 'second'},
-                    {type: 'specialEnemy', texture: 'specialEnemy', count: 1, delay: 5000, health: 200, speed: 70, moneyValue: 100, path: 'first'},
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 10,
+                        delay: 1000,
+                        health: 130,
+                        speed: 65,
+                        moneyValue: 15,
+                        path: 'first',
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy2',
+                        count: 10,
+                        delay: 700,
+                        health: 90,
+                        speed: 120,
+                        moneyValue: 20,
+                        path: 'second',
+                    },
+                    {
+                        type: 'specialEnemy',
+                        texture: 'specialEnemy',
+                        count: 1,
+                        delay: 5000,
+                        health: 200,
+                        speed: 70,
+                        moneyValue: 100,
+                        path: 'first',
+                    },
                 ];
             default:
                 return [];
         }
     }
 
-     nextScene(): string {
-         return getStoryName(LevelNames.RiseOfStatic);
+    nextScene(): string {
+        return getStoryName(LevelNames.RiseOfStatic);
     }
 }

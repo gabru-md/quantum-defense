@@ -1,7 +1,7 @@
-import {GameObject} from '../core/GameObject';
-import {PlayerController} from '../scripts/PlayerController';
+import { GameObject } from '../core/GameObject';
+import { PlayerController } from '../scripts/PlayerController';
 import * as Phaser from 'phaser';
-import {BreatheOnHover} from '../components/BreatheOnHover.ts'; // Import BreatheOnHover
+import { BreatheOnHover } from '../components/BreatheOnHover.ts'; // Import BreatheOnHover
 
 export interface PlayerConfig {
     scene: Phaser.Scene;

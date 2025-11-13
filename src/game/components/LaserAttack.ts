@@ -1,8 +1,8 @@
-import {Component} from '../core/Component';
-import {Targeting} from './Targeting';
-import {Bullet} from '../entities/Bullet';
+import { Component } from '../core/Component';
+import { Targeting } from './Targeting';
+import { Bullet } from '../entities/Bullet';
 import * as Phaser from 'phaser';
-import {Health} from "./Health.ts";
+import { Health } from './Health.ts';
 
 export class LaserAttack extends Component {
     private targetingComponent!: Targeting;
@@ -44,7 +44,13 @@ export class LaserAttack extends Component {
     }
 
     private fireAt(target: Phaser.GameObjects.Sprite): void {
-        const bullet = new Bullet(this.gameObject.scene, this.gameObject.x, this.gameObject.y, 'bullet', this.gameObject);
+        const bullet = new Bullet(
+            this.gameObject.scene,
+            this.gameObject.x,
+            this.gameObject.y,
+            'bullet',
+            this.gameObject
+        );
         this.bullets.add(bullet, true);
 
         if (bullet) {

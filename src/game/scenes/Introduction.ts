@@ -1,16 +1,16 @@
 import * as Phaser from 'phaser';
-import {AppColors, phaserColor} from '../scripts/Colors';
-import {HEIGHT, WIDTH} from '../scripts/Util';
+import { AppColors, phaserColor } from '../scripts/Colors';
+import { HEIGHT, WIDTH } from '../scripts/Util';
 import {
     createBigGlitchTexture,
     createBigTowerTexture,
     createEnemyTexture,
     createPlayerTexture,
     createSpecialEnemyTexture,
-    createTowerTexture
+    createTowerTexture,
 } from '../scripts/TextureUtils';
-import {GameObject} from '../core/GameObject';
-import {VisualPulse} from '../components/VisualPulse';
+import { GameObject } from '../core/GameObject';
+import { VisualPulse } from '../components/VisualPulse';
 
 export class Introduction extends Phaser.Scene {
     private story: string[];
@@ -22,15 +22,15 @@ export class Introduction extends Phaser.Scene {
         super('Intro');
 
         this.story = [
-            "In the beginning, there was the Quantum Realm\nA silent, boundless universe of pure data and energy, flowing in seamless waves.",
-            "At its heart lay the Nexus, the source of all life and logic.",
-            "This tranquility was shattered by the Static.\nA dissonant, corrupting force that gave birth to monstrous Glitches.",
-            "You are the Guardian: The Sentient\nCreated by the Nexus to be its last line of defense.",
-            "Your purpose is to protect the Nexus from the encroaching waves of Static Glitches.",
-            "You can build Echo Towers\nThey shoot bullets, bombs or slow the glitches down.",
-            "But beware of the Phantoms!\nThey are special Wave Glitches.\nThey can corrupt your towers, rendering you defenseless.",
-            "Your most powerful ability is the Resonance Wave.\nUse it to revive corrupted towers and disrupt the Phantoms.",
-            "The fate of the Quantum Realm is in your hands.\nYou are the last hope!",
+            'In the beginning, there was the Quantum Realm\nA silent, boundless universe of pure data and energy, flowing in seamless waves.',
+            'At its heart lay the Nexus, the source of all life and logic.',
+            'This tranquility was shattered by the Static.\nA dissonant, corrupting force that gave birth to monstrous Glitches.',
+            'You are the Guardian: The Sentient\nCreated by the Nexus to be its last line of defense.',
+            'Your purpose is to protect the Nexus from the encroaching waves of Static Glitches.',
+            'You can build Echo Towers\nThey shoot bullets, bombs or slow the glitches down.',
+            'But beware of the Phantoms!\nThey are special Wave Glitches.\nThey can corrupt your towers, rendering you defenseless.',
+            'Your most powerful ability is the Resonance Wave.\nUse it to revive corrupted towers and disrupt the Phantoms.',
+            'The fate of the Quantum Realm is in your hands.\nYou are the last hope!',
         ];
     }
 
@@ -65,7 +65,7 @@ export class Introduction extends Phaser.Scene {
     }
 
     update(time: number, delta: number): void {
-        this.visuals.forEach(v => {
+        this.visuals.forEach((v) => {
             if (v instanceof GameObject) {
                 v.update(time, delta);
             }
@@ -78,23 +78,29 @@ export class Introduction extends Phaser.Scene {
         }
         if (this.currentStep < this.story.length) {
             const text = this.story[this.currentStep];
-            this.instructionText = this.add.text(WIDTH / 2, HEIGHT / 2, text, {
-                font: '32px',
-                color: AppColors.UI_TEXT,
-                padding: {x: 20, y: 10},
-                align: 'center',
-                wordWrap: {width: WIDTH - 100}
-            }).setOrigin(0.5).setDepth(200);
+            this.instructionText = this.add
+                .text(WIDTH / 2, HEIGHT / 2, text, {
+                    font: '32px',
+                    color: AppColors.UI_TEXT,
+                    padding: { x: 20, y: 10 },
+                    align: 'center',
+                    wordWrap: { width: WIDTH - 100 },
+                })
+                .setOrigin(0.5)
+                .setDepth(200);
 
             this.updateVisuals();
             this.currentStep++;
-            this.add.text(WIDTH - 250, HEIGHT - 50, 'Press [SPACE] to continue, [ESC] to quit.', {
-                font: '16px',
-                color: AppColors.UI_TEXT,
-                padding: {x: 20, y: 10},
-                align: 'center',
-                wordWrap: {width: WIDTH - 100}
-            }).setOrigin(0.5).setDepth(200);
+            this.add
+                .text(WIDTH - 250, HEIGHT - 50, 'Press [SPACE] to continue, [ESC] to quit.', {
+                    font: '16px',
+                    color: AppColors.UI_TEXT,
+                    padding: { x: 20, y: 10 },
+                    align: 'center',
+                    wordWrap: { width: WIDTH - 100 },
+                })
+                .setOrigin(0.5)
+                .setDepth(200);
         } else {
             this.currentStep = 0;
             this.startFinalAnimation();
@@ -109,7 +115,7 @@ export class Introduction extends Phaser.Scene {
                 targets: element,
                 y: y,
                 duration: 1500,
-                ease: 'Power2'
+                ease: 'Power2',
             });
         };
 
@@ -119,14 +125,16 @@ export class Introduction extends Phaser.Scene {
                 const nexus_image = this.add.sprite(200, 200, 'nexus').setAlpha(0.3);
                 animateIn(nexus_object);
                 animateIn(nexus_image);
-                nexus_object.addComponent(new VisualPulse(phaserColor(AppColors.NEXUS_OUTER), 500, 1000, 1.25, 2, 0.25));
+                nexus_object.addComponent(
+                    new VisualPulse(phaserColor(AppColors.NEXUS_OUTER), 500, 1000, 1.25, 2, 0.25)
+                );
                 this.tweens.add({
                     targets: [nexus_object, nexus_image],
                     scaleX: 1.1,
                     scaleY: 1.1,
                     duration: 2000,
                     yoyo: true,
-                    repeat: -1
+                    repeat: -1,
                 });
                 this.visuals.push(nexus_image);
                 this.visuals.push(nexus_object);
@@ -136,14 +144,16 @@ export class Introduction extends Phaser.Scene {
                 const static_image = this.add.sprite(WIDTH - 200, 200, 'static').setAlpha(0.3);
                 animateIn(static_object);
                 animateIn(static_image);
-                static_object.addComponent(new VisualPulse(phaserColor(AppColors.STATIC_OUTER), 333, 1000, 1.25, 2, 0.25));
+                static_object.addComponent(
+                    new VisualPulse(phaserColor(AppColors.STATIC_OUTER), 333, 1000, 1.25, 2, 0.25)
+                );
                 this.tweens.add({
                     targets: [static_object, static_image],
                     scaleX: 1.1,
                     scaleY: 1.1,
                     duration: 1000,
                     yoyo: true,
-                    repeat: -1
+                    repeat: -1,
                 });
                 this.visuals.push(static_image);
                 this.visuals.push(static_object);
@@ -155,27 +165,27 @@ export class Introduction extends Phaser.Scene {
                 this.visuals.push(player);
                 break;
             case 4:
-                const enemy1 = this.add.sprite(WIDTH / 2 - 100, HEIGHT * 3 / 4, 'enemy1').setAlpha(0.8);
-                const enemy2 = this.add.sprite(WIDTH / 2, HEIGHT * 3 / 4, 'enemy2').setAlpha(0.8);
-                const enemy3 = this.add.sprite(WIDTH / 2 + 100, HEIGHT * 3 / 4, 'enemy3').setAlpha(0.8);
-                [enemy1, enemy2, enemy3].forEach(e => animateIn(e));
+                const enemy1 = this.add.sprite(WIDTH / 2 - 100, (HEIGHT * 3) / 4, 'enemy1').setAlpha(0.8);
+                const enemy2 = this.add.sprite(WIDTH / 2, (HEIGHT * 3) / 4, 'enemy2').setAlpha(0.8);
+                const enemy3 = this.add.sprite(WIDTH / 2 + 100, (HEIGHT * 3) / 4, 'enemy3').setAlpha(0.8);
+                [enemy1, enemy2, enemy3].forEach((e) => animateIn(e));
                 this.visuals.push(enemy1, enemy2, enemy3);
                 break;
             case 5:
-                const tower1 = this.add.sprite(WIDTH / 2 - 100, HEIGHT * 3 / 4 - 100, 'tower1').setAlpha(0.8);
-                const tower2 = this.add.sprite(WIDTH / 2, HEIGHT * 3 / 4 - 100, 'tower2').setAlpha(0.8);
-                const tower3 = this.add.sprite(WIDTH / 2 + 100, HEIGHT * 3 / 4 - 100, 'tower3').setAlpha(0.8);
-                [tower1, tower2, tower3].forEach(t => animateIn(t));
+                const tower1 = this.add.sprite(WIDTH / 2 - 100, (HEIGHT * 3) / 4 - 100, 'tower1').setAlpha(0.8);
+                const tower2 = this.add.sprite(WIDTH / 2, (HEIGHT * 3) / 4 - 100, 'tower2').setAlpha(0.8);
+                const tower3 = this.add.sprite(WIDTH / 2 + 100, (HEIGHT * 3) / 4 - 100, 'tower3').setAlpha(0.8);
+                [tower1, tower2, tower3].forEach((t) => animateIn(t));
                 this.visuals.push(tower1, tower2, tower3);
                 break;
             case 6:
-                const phantom = new GameObject(this, WIDTH * 2 / 3, HEIGHT / 3, 'specialEnemy').setAlpha(0.8);
+                const phantom = new GameObject(this, (WIDTH * 2) / 3, HEIGHT / 3, 'specialEnemy').setAlpha(0.8);
                 animateIn(phantom);
                 phantom.addComponent(new VisualPulse(phaserColor(AppColors.SPECIAL_ENEMY), 500, 1000, 2, 2, 2));
                 this.visuals.push(phantom);
                 break;
             case 7:
-                const playerSprite = this.visuals.find(v => (v as GameObject).texture.key === 'player');
+                const playerSprite = this.visuals.find((v) => (v as GameObject).texture.key === 'player');
                 if (playerSprite && playerSprite instanceof GameObject) {
                     playerSprite.setAlpha(1);
                     playerSprite.addComponent(new VisualPulse(phaserColor(AppColors.PLAYER), 200, 2000, 2, 5, 2));
@@ -219,7 +229,7 @@ export class Introduction extends Phaser.Scene {
         this.currentStep = 0;
         this.story.length = 0;
         this.instructionText?.destroy();
-        this.visuals?.forEach(v => v.destroy());
+        this.visuals?.forEach((v) => v.destroy());
         this.textures.remove('nexus');
         this.textures.remove('static');
         this.textures.remove('player');
@@ -237,8 +247,8 @@ export class Introduction extends Phaser.Scene {
             this.instructionText.destroy();
         }
 
-        const playerSprite = this.visuals.find(v => (v as GameObject).texture.key === 'player');
-        const specialEnemySprite = this.visuals.find(v => (v as GameObject).texture.key === 'specialEnemy');
+        const playerSprite = this.visuals.find((v) => (v as GameObject).texture.key === 'player');
+        const specialEnemySprite = this.visuals.find((v) => (v as GameObject).texture.key === 'specialEnemy');
 
         this.animateElementsOffScreen(playerSprite, specialEnemySprite);
 
@@ -281,19 +291,22 @@ export class Introduction extends Phaser.Scene {
                                         ease: 'Power1',
                                         onComplete: () => {
                                             this.scene.start('Tutorial');
-                                        }
+                                        },
                                     });
                                 });
-                            }
+                            },
                         });
-                    }
+                    },
                 });
-            }
+            },
         });
     }
 
-    private animateElementsOffScreen(playerSprite: Phaser.GameObjects.GameObject | undefined, specialEnemySprite: Phaser.GameObjects.GameObject | undefined) {
-        this.visuals.forEach(v => {
+    private animateElementsOffScreen(
+        playerSprite: Phaser.GameObjects.GameObject | undefined,
+        specialEnemySprite: Phaser.GameObjects.GameObject | undefined
+    ) {
+        this.visuals.forEach((v) => {
             if (v !== playerSprite && v !== specialEnemySprite) {
                 this.tweens.add({
                     targets: v,
@@ -301,7 +314,7 @@ export class Introduction extends Phaser.Scene {
                     duration: 5000,
                     ease: 'Power2',
                     delay: 1000,
-                    onComplete: () => v.destroy()
+                    onComplete: () => v.destroy(),
                 });
             }
         });

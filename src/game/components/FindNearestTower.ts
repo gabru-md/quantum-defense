@@ -1,6 +1,6 @@
-import {Component} from "../core/Component.ts";
-import {Level} from "../scenes/lib/Level.ts";
-import {Tower} from "../entities/Tower.ts";
+import { Component } from '../core/Component.ts';
+import { Level } from '../scenes/lib/Level.ts';
+import { Tower } from '../entities/Tower.ts';
 
 export class FindNearestTower extends Component {
     public nearestTower: Tower | null = null;
@@ -23,12 +23,7 @@ export class FindNearestTower extends Component {
 
             for (const tower of towers.getChildren()) {
                 const _tower: Tower = tower as Tower;
-                const distance = Phaser.Math.Distance.Between(
-                    playerPosition.x,
-                    playerPosition.y,
-                    _tower.x,
-                    _tower.y
-                );
+                const distance = Phaser.Math.Distance.Between(playerPosition.x, playerPosition.y, _tower.x, _tower.y);
 
                 if (distance < closestDistance) {
                     closestDistance = distance;
@@ -40,5 +35,4 @@ export class FindNearestTower extends Component {
             // console.error(e);
         }
     }
-
 }

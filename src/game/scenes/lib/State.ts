@@ -4,6 +4,9 @@ export class State {
     public soundEnabled: boolean = true; // Sound enabled by default
     public isTutorialActive: boolean = false; // New property to control tutorial state
 
-    constructor(public baseHealth: number, public money: number, public level: string) {
-    }
+    constructor(
+        public baseHealth: number,
+        public money: number,
+        public level: string
+    ) {}
 }

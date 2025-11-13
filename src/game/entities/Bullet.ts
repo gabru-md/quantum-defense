@@ -1,8 +1,8 @@
-import {GameObject} from '../core/GameObject';
-import {Health} from '../components/Health';
+import { GameObject } from '../core/GameObject';
+import { Health } from '../components/Health';
 import * as Phaser from 'phaser';
-import {VisualPulse} from "../components/VisualPulse.ts";
-import {GAME_HEIGHT, GAME_WIDTH} from "../scripts/Util.ts";
+import { VisualPulse } from '../components/VisualPulse.ts';
+import { GAME_HEIGHT, GAME_WIDTH } from '../scripts/Util.ts';
 
 export class Bullet extends GameObject {
     public damage: number = 0;
@@ -53,9 +53,6 @@ export class Bullet extends GameObject {
         if (!this.scene) {
             return true;
         }
-        return this.x < 0 ||
-            this.x > GAME_WIDTH ||
-            this.y < 0 ||
-            this.y > GAME_HEIGHT;
+        return this.x < 0 || this.x > GAME_WIDTH || this.y < 0 || this.y > GAME_HEIGHT;
     }
 }

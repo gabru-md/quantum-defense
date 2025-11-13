@@ -22,7 +22,7 @@ export class ContinuousBreathing extends Component {
             duration: this.duration,
             ease: 'Sine.easeInOut',
             yoyo: true,
-            repeat: -1
+            repeat: -1,
         });
     }
 

@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser';
-import {Component} from './Component';
-import {Level} from "../scenes/lib/Level.ts";
+import { Component } from './Component';
+import { Level } from '../scenes/lib/Level.ts';
 
 /**
  * An extended Phaser GameObject that supports a component-based architecture.
@@ -41,7 +41,7 @@ export class GameObject extends Phaser.GameObjects.Sprite {
      * @returns The component if found, otherwise undefined.
      */
     public getComponent<T extends Component>(type: new (...args: any[]) => T): T | undefined {
-        return this.components.find(c => c instanceof type) as T;
+        return this.components.find((c) => c instanceof type) as T;
     }
 
     /**

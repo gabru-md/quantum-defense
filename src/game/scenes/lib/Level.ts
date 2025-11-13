@@ -1,14 +1,14 @@
 import * as Phaser from 'phaser';
-import {HudManager} from "./manager/HudManager.ts";
-import {WaveManager} from "./manager/WaveManager.ts";
-import {State} from "./State.ts";
-import {CollisionManager} from "./manager/CollisionManager.ts";
-import {TowerManager} from "./manager/TowerManager.ts";
-import {PathsManager} from "./manager/PathsManager.ts";
-import {PlayerManager} from "./manager/PlayerManager.ts";
-import {GAME_HEIGHT, GAME_WIDTH} from "../../scripts/Util.ts";
-import {AppColors} from "../../scripts/Colors.ts";
-import {AudioManager} from "./manager/AudioManager.ts";
+import { HudManager } from './manager/HudManager.ts';
+import { WaveManager } from './manager/WaveManager.ts';
+import { State } from './State.ts';
+import { CollisionManager } from './manager/CollisionManager.ts';
+import { TowerManager } from './manager/TowerManager.ts';
+import { PathsManager } from './manager/PathsManager.ts';
+import { PlayerManager } from './manager/PlayerManager.ts';
+import { GAME_HEIGHT, GAME_WIDTH } from '../../scripts/Util.ts';
+import { AppColors } from '../../scripts/Colors.ts';
+import { AudioManager } from './manager/AudioManager.ts';
 import {
     createBombTexture,
     createBulletTexture,
@@ -17,9 +17,9 @@ import {
     createPlayerTexture,
     createRangePreviewTexture,
     createSpecialEnemyTexture,
-    createTowerTexture
+    createTowerTexture,
 } from '../../scripts/TextureUtils';
-import {GameObject} from "../../core/GameObject.ts";
+import { GameObject } from '../../core/GameObject.ts';
 
 export abstract class Level extends Phaser.Scene {
     hud: HudManager;
@@ -48,7 +48,7 @@ export abstract class Level extends Phaser.Scene {
     abstract definePaths(): { [key: string]: Phaser.Curves.Path };
 
     protected constructor(key: string) {
-        super({key});
+        super({ key });
         this.hud = new HudManager(this);
         this.waveManager = new WaveManager(this);
         this.collisionManager = new CollisionManager(this);
@@ -98,24 +98,24 @@ export abstract class Level extends Phaser.Scene {
 
     private animateGameElements(
         hudElements: {
-            stats: Phaser.GameObjects.GameObject[],
-            towers: Phaser.GameObjects.GameObject[],
-            help: Phaser.GameObjects.GameObject[],
-            separators: Phaser.GameObjects.Graphics[],
-            hudSeparators: Phaser.GameObjects.Graphics[]
+            stats: Phaser.GameObjects.GameObject[];
+            towers: Phaser.GameObjects.GameObject[];
+            help: Phaser.GameObjects.GameObject[];
+            separators: Phaser.GameObjects.Graphics[];
+            hudSeparators: Phaser.GameObjects.Graphics[];
         },
         pathElements: {
-            path: Phaser.GameObjects.Graphics,
-            start: Phaser.GameObjects.GameObject[],
-            end: Phaser.GameObjects.GameObject[]
+            path: Phaser.GameObjects.Graphics;
+            start: Phaser.GameObjects.GameObject[];
+            end: Phaser.GameObjects.GameObject[];
         },
         player: Phaser.GameObjects.GameObject,
         towerGroups: {
-            towers: Phaser.GameObjects.Group,
-            bullets: Phaser.GameObjects.Group,
-            bombs: Phaser.GameObjects.Group
+            towers: Phaser.GameObjects.Group;
+            bullets: Phaser.GameObjects.Group;
+            bombs: Phaser.GameObjects.Group;
         },
-        waveGroups: { enemies: Phaser.GameObjects.Group, specialEnemies: Phaser.GameObjects.Group }
+        waveGroups: { enemies: Phaser.GameObjects.Group; specialEnemies: Phaser.GameObjects.Group }
     ) {
         const allElements = [
             ...hudElements.stats,
@@ -131,10 +131,10 @@ export abstract class Level extends Phaser.Scene {
             ...towerGroups.bullets.getChildren(),
             ...towerGroups.bombs.getChildren(),
             ...waveGroups.enemies.getChildren(),
-            ...waveGroups.specialEnemies.getChildren()
+            ...waveGroups.specialEnemies.getChildren(),
         ];
 
-        allElements.forEach(el => (el as GameObject).setAlpha(0));
+        allElements.forEach((el) => (el as GameObject).setAlpha(0));
 
         let delay = 0;
         const fadeIn = (elements: Phaser.GameObjects.GameObject[] | Phaser.GameObjects.GameObject, duration = 500) => {
@@ -143,7 +143,7 @@ export abstract class Level extends Phaser.Scene {
                     targets: elements,
                     alpha: 1,
                     duration: duration,
-                    ease: 'Power2'
+                    ease: 'Power2',
                 });
             });
             delay += duration;

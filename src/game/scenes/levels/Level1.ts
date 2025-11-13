@@ -1,7 +1,7 @@
 import * as Phaser from 'phaser';
-import {Level} from '../lib/Level.ts';
-import {GAME_HEIGHT, GAME_WIDTH} from "../../scripts/Util.ts";
-import {getStoryName, LevelNames} from "./LevelNames.ts";
+import { Level } from '../lib/Level.ts';
+import { GAME_HEIGHT, GAME_WIDTH } from '../../scripts/Util.ts';
+import { getStoryName, LevelNames } from './LevelNames.ts';
 
 export class Level1 extends Level {
     constructor() {
@@ -21,7 +21,7 @@ export class Level1 extends Level {
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {
-        return { 'first': this.firstPath() };
+        return { first: this.firstPath() };
     }
 
     getWaveConfig(wave: number): {
@@ -37,16 +37,52 @@ export class Level1 extends Level {
         switch (wave) {
             case 1:
                 return [
-                    {type: 'enemy', texture: 'enemy1', count: 10, delay: 1500, health: 100, speed: 50, moneyValue: 10, path: 'first'},
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 10,
+                        delay: 1500,
+                        health: 100,
+                        speed: 50,
+                        moneyValue: 10,
+                        path: 'first',
+                    },
                 ];
             case 2:
                 return [
-                    {type: 'enemy', texture: 'enemy1', count: 15, delay: 1200, health: 100, speed: 55, moneyValue: 10, path: 'first'},
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 15,
+                        delay: 1200,
+                        health: 100,
+                        speed: 55,
+                        moneyValue: 10,
+                        path: 'first',
+                    },
                 ];
             case 3:
                 return [
-                    {type: 'enemy', texture: 'enemy1', count: 10, delay: 1000, health: 110, speed: 60, moneyValue: 12, path: 'first'},
-                    {type: 'enemy', texture: 'enemy2', count: 5, delay: 2000, health: 75, speed: 80, moneyValue: 15, path: 'first'},
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 10,
+                        delay: 1000,
+                        health: 110,
+                        speed: 60,
+                        moneyValue: 12,
+                        path: 'first',
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy2',
+                        count: 5,
+                        delay: 2000,
+                        health: 75,
+                        speed: 80,
+                        moneyValue: 15,
+                        path: 'first',
+                    },
                 ];
             default:
                 return [];

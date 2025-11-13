@@ -1,13 +1,13 @@
-import {Component} from '../core/Component';
+import { Component } from '../core/Component';
 import * as Phaser from 'phaser';
-import {FindNearestTower} from "./FindNearestTower.ts";
-import {Tower} from "../entities/Tower.ts";
-import {Health} from "./Health.ts";
-import {LaserAttack} from "./LaserAttack.ts";
-import {BombAttack} from "./BombAttack.ts";
-import {VisualPulse} from "./VisualPulse.ts";
-import {AppColors, phaserColor} from "../scripts/Colors.ts";
-import {SpecialEnemy} from "../entities/SpecialEnemy.ts"; // Import SpecialEnemy
+import { FindNearestTower } from './FindNearestTower.ts';
+import { Tower } from '../entities/Tower.ts';
+import { Health } from './Health.ts';
+import { LaserAttack } from './LaserAttack.ts';
+import { BombAttack } from './BombAttack.ts';
+import { VisualPulse } from './VisualPulse.ts';
+import { AppColors, phaserColor } from '../scripts/Colors.ts';
+import { SpecialEnemy } from '../entities/SpecialEnemy.ts'; // Import SpecialEnemy
 
 /**
  * A component that allows the player to activate a wave to revive deactivated towers or damage special enemies.
@@ -34,7 +34,9 @@ export class PlayerWaveAmplifier extends Component {
         }
         const findNearest = this.gameObject.getComponent(FindNearestTower);
         if (!findNearest) {
-            throw new Error('PlayerWaveAmplifier component requires a FindNearestTower component on the same GameObject.');
+            throw new Error(
+                'PlayerWaveAmplifier component requires a FindNearestTower component on the same GameObject.'
+            );
         }
         this.findNearestTowerComponent = findNearest;
     }
@@ -45,7 +47,12 @@ export class PlayerWaveAmplifier extends Component {
         if (this.playerPressedKey(time)) {
             if (this.hasCooldownExpired(time)) {
                 if (nearestTower && (nearestTower.isNotFullHealth() || nearestTower.isTowerDeactivated())) {
-                    const distance = Phaser.Math.Distance.Between(this.gameObject.x, this.gameObject.y, nearestTower.x, nearestTower.y);
+                    const distance = Phaser.Math.Distance.Between(
+                        this.gameObject.x,
+                        this.gameObject.y,
+                        nearestTower.x,
+                        nearestTower.y
+                    );
                     if (distance <= this.activationRange) {
                         this.activateWave(nearestTower);
                         this.lastActivated = time;
@@ -56,7 +63,10 @@ export class PlayerWaveAmplifier extends Component {
                     this.lastActivated = time;
                 }
             } else {
-                this.gameObject.level.hud.alert('ABILITY COOLDOWN:\nWave Amplifier is on cooldown!', AppColors.UI_MESSAGE_WARN)
+                this.gameObject.level.hud.alert(
+                    'ABILITY COOLDOWN:\nWave Amplifier is on cooldown!',
+                    AppColors.UI_MESSAGE_WARN
+                );
             }
         }
     }
@@ -70,7 +80,7 @@ export class PlayerWaveAmplifier extends Component {
     }
 
     private activateWave(tower?: Tower): void {
-        console.log(this.gameObject.width)
+        console.log(this.gameObject.width);
         const totalPulses = 4;
         const pulseDelay = 150;
         const pulseDuration = 1000;
@@ -79,8 +89,8 @@ export class PlayerWaveAmplifier extends Component {
         for (let i = 0; i < totalPulses; i++) {
             this.gameObject.scene.time.delayedCall(i * pulseDelay, () => {
                 const graphics = this.gameObject.scene.add.graphics({
-                    fillStyle: {color: pulseColor, alpha: 0.3},
-                    lineStyle: {width: 0.5, color: pulseColor, alpha: 0.8}
+                    fillStyle: { color: pulseColor, alpha: 0.3 },
+                    lineStyle: { width: 0.5, color: pulseColor, alpha: 0.8 },
                 });
 
                 graphics.setDepth(10);
@@ -103,7 +113,7 @@ export class PlayerWaveAmplifier extends Component {
                     },
                     onComplete: () => {
                         graphics.destroy();
-                    }
+                    },
                 });
             });
         }
@@ -126,8 +136,12 @@ export class PlayerWaveAmplifier extends Component {
                         tower.setActive(true);
                         tower.setAlpha(1);
                         tower.getComponent(VisualPulse)?.start();
-                        const attackComponents = [tower.getComponent(LaserAttack), tower.getComponent(BombAttack), tower.getComponent(VisualPulse)];
-                        attackComponents.forEach(c => {
+                        const attackComponents = [
+                            tower.getComponent(LaserAttack),
+                            tower.getComponent(BombAttack),
+                            tower.getComponent(VisualPulse),
+                        ];
+                        attackComponents.forEach((c) => {
                             if (c) c.enabled = true;
                         });
                         tower.reviveProgress = 0;
@@ -137,7 +151,11 @@ export class PlayerWaveAmplifier extends Component {
                 }
             } else {
                 const moneyNeededToRevive = reviveCost - this.gameObject.level.state.money;
-                this.gameObject.level.hud.alert(`INSUFFICIENT BALANCE:\nNeed $${moneyNeededToRevive} to revive tower!`, AppColors.UI_MESSAGE_WARN, 1000);
+                this.gameObject.level.hud.alert(
+                    `INSUFFICIENT BALANCE:\nNeed $${moneyNeededToRevive} to revive tower!`,
+                    AppColors.UI_MESSAGE_WARN,
+                    1000
+                );
             }
         }
 
@@ -147,17 +165,21 @@ export class PlayerWaveAmplifier extends Component {
         this.specialEnemiesGroup.children.each((specialEnemyObject: Phaser.GameObjects.GameObject) => {
             if (specialEnemyObject instanceof SpecialEnemy) {
                 const specialEnemy = specialEnemyObject as SpecialEnemy;
-                const distance = Phaser.Math.Distance.Between(this.gameObject.x, this.gameObject.y, specialEnemy.x, specialEnemy.y);
+                const distance = Phaser.Math.Distance.Between(
+                    this.gameObject.x,
+                    this.gameObject.y,
+                    specialEnemy.x,
+                    specialEnemy.y
+                );
                 console.log(specialEnemy, distance);
                 if (distance <= this.activationRange) {
                     const healthComponent = specialEnemy.getComponent(Health);
                     if (healthComponent) {
                         healthComponent.takeDamage(this.waveDamage);
-                        console.log('doing damage')
+                        console.log('doing damage');
                     }
                 }
             }
         });
-
     }
 }

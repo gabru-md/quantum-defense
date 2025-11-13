@@ -1,6 +1,6 @@
-import {Component} from '../core/Component';
+import { Component } from '../core/Component';
 import * as Phaser from 'phaser';
-import {GAME_HEIGHT, GAME_WIDTH} from "./Util.ts";
+import { GAME_HEIGHT, GAME_WIDTH } from './Util.ts';
 
 /**
  * A script that moves a GameObject based on WASD keyboard input.
@@ -40,25 +40,33 @@ export class PlayerController extends Component {
 
         if (this.keys.a.isDown) {
             body.setVelocityX(-this.speed);
-            this.gameObject.scene.events.emit('playerMoved')
+            this.gameObject.scene.events.emit('playerMoved');
         } else if (this.keys.d.isDown) {
             body.setVelocityX(this.speed);
-            this.gameObject.scene.events.emit('playerMoved')
+            this.gameObject.scene.events.emit('playerMoved');
         }
 
         if (this.keys.w.isDown) {
             body.setVelocityY(-this.speed);
-            this.gameObject.scene.events.emit('playerMoved')
+            this.gameObject.scene.events.emit('playerMoved');
         } else if (this.keys.s.isDown) {
             body.setVelocityY(this.speed);
-            this.gameObject.scene.events.emit('playerMoved')
+            this.gameObject.scene.events.emit('playerMoved');
         }
 
         // Normalize the velocity to prevent faster diagonal movement
         body.velocity.normalize().scale(this.speed);
 
         // Keep player within game bounds (GAME_AREA_WIDTH)
-        this.gameObject.x = Phaser.Math.Clamp(this.gameObject.x, this.gameObject.width / 2, GAME_WIDTH - this.gameObject.width / 2);
-        this.gameObject.y = Phaser.Math.Clamp(this.gameObject.y, this.gameObject.height / 2, GAME_HEIGHT - this.gameObject.height / 2);
+        this.gameObject.x = Phaser.Math.Clamp(
+            this.gameObject.x,
+            this.gameObject.width / 2,
+            GAME_WIDTH - this.gameObject.width / 2
+        );
+        this.gameObject.y = Phaser.Math.Clamp(
+            this.gameObject.y,
+            this.gameObject.height / 2,
+            GAME_HEIGHT - this.gameObject.height / 2
+        );
     }
 }

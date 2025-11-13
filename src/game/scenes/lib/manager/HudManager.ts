@@ -1,18 +1,10 @@
-import Phaser from "phaser";
-import {Level} from "../Level.ts";
-import {Manager} from "../Manager.ts";
-import {
-    GAME_HEIGHT,
-    GAME_WIDTH,
-    TOWER1_COST,
-    TOWER2_COST,
-    TOWER3_COST,
-    WIDTH
-} from "../../../scripts/Util.ts";
-import {AppColors, phaserColor} from "../../../scripts/Colors.ts";
+import Phaser from 'phaser';
+import { Level } from '../Level.ts';
+import { Manager } from '../Manager.ts';
+import { GAME_HEIGHT, GAME_WIDTH, TOWER1_COST, TOWER2_COST, TOWER3_COST, WIDTH } from '../../../scripts/Util.ts';
+import { AppColors, phaserColor } from '../../../scripts/Colors.ts';
 
 export class HudManager extends Manager {
-
     protected gameName!: Phaser.GameObjects.Text;
     protected levelText!: Phaser.GameObjects.Text;
     protected baseHealthText!: Phaser.GameObjects.Text;
@@ -23,10 +15,10 @@ export class HudManager extends Manager {
     private selectionIndicator!: Phaser.GameObjects.Graphics;
     private towerSelectionButtons: {
         [key: string]: {
-            button: Phaser.GameObjects.Image,
-            panel: Phaser.GameObjects.Graphics,
-            textObjects: Phaser.GameObjects.Text[]
-        }
+            button: Phaser.GameObjects.Image;
+            panel: Phaser.GameObjects.Graphics;
+            textObjects: Phaser.GameObjects.Text[];
+        };
     } = {};
     private helpTextPanel!: Phaser.GameObjects.Text;
 
@@ -35,11 +27,11 @@ export class HudManager extends Manager {
     }
 
     public setup(): {
-        stats: Phaser.GameObjects.GameObject[],
-        towers: Phaser.GameObjects.GameObject[],
-        help: Phaser.GameObjects.GameObject[],
-        separators: Phaser.GameObjects.Graphics[],
-        hudSeparators: Phaser.GameObjects.Graphics[]
+        stats: Phaser.GameObjects.GameObject[];
+        towers: Phaser.GameObjects.GameObject[];
+        help: Phaser.GameObjects.GameObject[];
+        separators: Phaser.GameObjects.Graphics[];
+        hudSeparators: Phaser.GameObjects.Graphics[];
     } {
         this.createMessageText(); // Message text first so it's on top
         const statsElements = this.createMainStatsPanel();
@@ -54,7 +46,7 @@ export class HudManager extends Manager {
             towers: towerElements,
             help: helpElements,
             separators: [...gameSeparators],
-            hudSeparators: [...hudSeparators]
+            hudSeparators: [...hudSeparators],
         };
     }
 
@@ -72,7 +64,7 @@ export class HudManager extends Manager {
         for (const key in this.towerSelectionButtons) {
             this.towerSelectionButtons[key].button.destroy();
             this.towerSelectionButtons[key].panel.destroy();
-            this.towerSelectionButtons[key].textObjects.forEach(text => text.destroy());
+            this.towerSelectionButtons[key].textObjects.forEach((text) => text.destroy());
         }
     }
 
@@ -85,7 +77,7 @@ export class HudManager extends Manager {
     public info(message: string, color: string, callback?: () => void) {
         this.messageText.setText(message).setColor(color).setVisible(true).setDepth(200);
         this.scene.time.delayedCall(2500, () => {
-            this.messageText.setVisible(false)
+            this.messageText.setVisible(false);
             if (callback) {
                 callback();
             }
@@ -95,7 +87,6 @@ export class HudManager extends Manager {
     public setHelpText(text: string): void {
         this.helpTextPanel.setText(text);
     }
-
 
     public alert(text: string, color: string = AppColors.UI_MESSAGE_ERROR, delay: number = 300): void {
         this.helpTextPanel.setText(text).setColor(color);
@@ -121,34 +112,48 @@ export class HudManager extends Manager {
         const textX = hudX + 15;
         const textSpacing = 25;
 
-        this.gameName = this.scene.add.text(textX, currentY, 'QUANTUM DEFENSE', {
-            font: '28px',
-            color: AppColors.UI_ACCENT
-        }).setDepth(100);
+        this.gameName = this.scene.add
+            .text(textX, currentY, 'QUANTUM DEFENSE', {
+                font: '28px',
+                color: AppColors.UI_ACCENT,
+            })
+            .setDepth(100);
         currentY += 40;
 
-        this.levelText = this.scene.add.text(textX, currentY, `Level: ${this.scene.scene.key}`, {
-            font: '20px',
-            color: AppColors.UI_TEXT
-        }).setDepth(100).setName('levelText');
+        this.levelText = this.scene.add
+            .text(textX, currentY, `Level: ${this.scene.scene.key}`, {
+                font: '20px',
+                color: AppColors.UI_TEXT,
+            })
+            .setDepth(100)
+            .setName('levelText');
         currentY += textSpacing;
 
-        this.baseHealthText = this.scene.add.text(textX, currentY, `Health: ${this.scene.state.baseHealth}`, {
-            font: '20px',
-            color: AppColors.UI_TEXT
-        }).setDepth(100).setName('baseHealthText');
+        this.baseHealthText = this.scene.add
+            .text(textX, currentY, `Health: ${this.scene.state.baseHealth}`, {
+                font: '20px',
+                color: AppColors.UI_TEXT,
+            })
+            .setDepth(100)
+            .setName('baseHealthText');
         currentY += textSpacing;
 
-        this.moneyText = this.scene.add.text(textX, currentY, `Money: $${this.scene.state.money}`, {
-            font: '20px',
-            color: AppColors.UI_TEXT
-        }).setDepth(100).setName('moneyText');
+        this.moneyText = this.scene.add
+            .text(textX, currentY, `Money: $${this.scene.state.money}`, {
+                font: '20px',
+                color: AppColors.UI_TEXT,
+            })
+            .setDepth(100)
+            .setName('moneyText');
         currentY += textSpacing;
 
-        this.waveProgressText = this.scene.add.text(textX, currentY, `Wave: ${this.scene.waveManager.currentWave}`, {
-            font: '20px',
-            color: AppColors.UI_TEXT
-        }).setDepth(100).setName('waveProgressText');
+        this.waveProgressText = this.scene.add
+            .text(textX, currentY, `Wave: ${this.scene.waveManager.currentWave}`, {
+                font: '20px',
+                color: AppColors.UI_TEXT,
+            })
+            .setDepth(100)
+            .setName('waveProgressText');
 
         return [panel, this.gameName, this.levelText, this.baseHealthText, this.moneyText, this.waveProgressText];
     }
@@ -166,32 +171,49 @@ export class HudManager extends Manager {
         panel.strokeRect(hudX, startY, panelWidth, panelHeight);
         panel.setDepth(90);
 
-        const title = this.scene.add.text(hudX + 10, startY + 10, 'BUILD TOWERS', {
-            font: '28px',
-            color: AppColors.UI_ACCENT
-        }).setDepth(100);
+        const title = this.scene.add
+            .text(hudX + 10, startY + 10, 'BUILD TOWERS', {
+                font: '28px',
+                color: AppColors.UI_ACCENT,
+            })
+            .setDepth(100);
 
         // Tower 1
         this.createTowerButton(hudX + 15, startY + 50, 'tower1', TOWER1_COST, 'DMG: 25 | FR: 5/s', 'Laser Tower');
         // Tower 2
         this.createTowerButton(hudX + 15, startY + 150, 'tower2', TOWER2_COST, 'DMG: 75 | AoE: 80', 'Bomb Tower');
         // Tower 3
-        this.createTowerButton(hudX + 15, startY + 250, 'tower3', TOWER3_COST, 'Slow: 50% | Range: 100', 'Slowing Tower');
+        this.createTowerButton(
+            hudX + 15,
+            startY + 250,
+            'tower3',
+            TOWER3_COST,
+            'Slow: 50% | Range: 100',
+            'Slowing Tower'
+        );
 
         // Selection Indicator
         this.selectionIndicator = this.scene.add.graphics().setDepth(101);
         this.updateSelectionIndicator('tower1'); // Default selection
 
         // Help Text Panel (positioned within the tower selection panel for now)
-        this.helpTextPanel = this.scene.add.text(hudX + 15, startY + panelHeight - 80, '', {
-            font: '14px',
-            color: AppColors.UI_TEXT,
-            wordWrap: {width: panelWidth - 30}
-        }).setDepth(100);
+        this.helpTextPanel = this.scene.add
+            .text(hudX + 15, startY + panelHeight - 80, '', {
+                font: '14px',
+                color: AppColors.UI_TEXT,
+                wordWrap: { width: panelWidth - 30 },
+            })
+            .setDepth(100);
 
         this.rangePreview = this.scene.add.sprite(0, 0, 'rangePreview').setAlpha(0.0025).setVisible(false);
 
-        const elements: Phaser.GameObjects.GameObject[] = [panel, title, this.selectionIndicator, this.helpTextPanel, this.rangePreview];
+        const elements: Phaser.GameObjects.GameObject[] = [
+            panel,
+            title,
+            this.selectionIndicator,
+            this.helpTextPanel,
+            this.rangePreview,
+        ];
         for (const key in this.towerSelectionButtons) {
             elements.push(this.towerSelectionButtons[key].button);
             elements.push(this.towerSelectionButtons[key].panel);
@@ -209,22 +231,31 @@ export class HudManager extends Manager {
         buttonPanel.strokeRect(x, y, buttonWidth, buttonHeight);
         buttonPanel.setDepth(95);
 
-        const buttonImage = this.scene.add.image(x + 40, y + buttonHeight / 2, towerKey).setInteractive().setDepth(100);
+        const buttonImage = this.scene.add
+            .image(x + 40, y + buttonHeight / 2, towerKey)
+            .setInteractive()
+            .setDepth(100);
         buttonImage.setScale(1.5); // Make tower icons a bit larger
         buttonImage.setAlpha(0);
 
-        const nameText = this.scene.add.text(x + 80, y + 10, name, {
-            font: '18px',
-            color: AppColors.UI_TEXT
-        }).setDepth(100);
-        const costText = this.scene.add.text(x + 80, y + 35, `Cost: $${cost}`, {
-            font: '16px',
-            color: AppColors.UI_TEXT
-        }).setDepth(100);
-        const statsText = this.scene.add.text(x + 80, y + 60, `Stats: ${stats}`, {
-            font: '14px',
-            color: AppColors.UI_DISABLED
-        }).setDepth(100);
+        const nameText = this.scene.add
+            .text(x + 80, y + 10, name, {
+                font: '18px',
+                color: AppColors.UI_TEXT,
+            })
+            .setDepth(100);
+        const costText = this.scene.add
+            .text(x + 80, y + 35, `Cost: $${cost}`, {
+                font: '16px',
+                color: AppColors.UI_TEXT,
+            })
+            .setDepth(100);
+        const statsText = this.scene.add
+            .text(x + 80, y + 60, `Stats: ${stats}`, {
+                font: '14px',
+                color: AppColors.UI_DISABLED,
+            })
+            .setDepth(100);
 
         buttonImage.on('pointerdown', () => {
             this.scene.state.selectedTowerType = towerKey;
@@ -236,7 +267,7 @@ export class HudManager extends Manager {
         this.towerSelectionButtons[towerKey] = {
             button: buttonImage,
             panel: buttonPanel,
-            textObjects: [nameText, costText, statsText]
+            textObjects: [nameText, costText, statsText],
         };
     }
 
@@ -253,58 +284,73 @@ export class HudManager extends Manager {
         panel.strokeRect(hudX, startY, panelWidth, panelHeight);
         panel.setDepth(90);
 
-        const title = this.scene.add.text(hudX + 10, startY + 10, 'HOW TO PLAY', {
-            font: '24px',
-            color: AppColors.UI_ACCENT
-        }).setDepth(100);
-        const helpText = this.scene.add.text(hudX + 10, startY + 50,
-            '1. Click a tower icon to select it.\n' +
-            '2. Click on the map to place it.\n' +
-            '3. Use WASD to move your player.\n' +
-            '4. Press E near a damaged tower to revive it.\n' +
-            '5. Prevent enemies from reaching your base!',
-            {font: '16px', color: AppColors.UI_TEXT, lineSpacing: 8, wordWrap: {width: panelWidth - 20}}
-        ).setDepth(100);
+        const title = this.scene.add
+            .text(hudX + 10, startY + 10, 'HOW TO PLAY', {
+                font: '24px',
+                color: AppColors.UI_ACCENT,
+            })
+            .setDepth(100);
+        const helpText = this.scene.add
+            .text(
+                hudX + 10,
+                startY + 50,
+                '1. Click a tower icon to select it.\n' +
+                    '2. Click on the map to place it.\n' +
+                    '3. Use WASD to move your player.\n' +
+                    '4. Press E near a damaged tower to revive it.\n' +
+                    '5. Prevent enemies from reaching your base!',
+                { font: '16px', color: AppColors.UI_TEXT, lineSpacing: 8, wordWrap: { width: panelWidth - 20 } }
+            )
+            .setDepth(100);
 
         return [panel, title, helpText];
     }
 
     private createMessageText() {
-        this.messageText = this.scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 3, '', {
-            font: '48px',
-            color: AppColors.UI_MESSAGE_ERROR,
-            backgroundColor: AppColors.UI_MESSAGE_BACKGROUND,
-            padding: {x: 30, y: 20}
-        }).setOrigin(0.5).setScrollFactor(0).setVisible(false).setDepth(200).setName('messageText').setScale(0.75);
+        this.messageText = this.scene.add
+            .text(GAME_WIDTH / 2, GAME_HEIGHT / 3, '', {
+                font: '48px',
+                color: AppColors.UI_MESSAGE_ERROR,
+                backgroundColor: AppColors.UI_MESSAGE_BACKGROUND,
+                padding: { x: 30, y: 20 },
+            })
+            .setOrigin(0.5)
+            .setScrollFactor(0)
+            .setVisible(false)
+            .setDepth(200)
+            .setName('messageText')
+            .setScale(0.75);
     }
 
     private updateMainStats() {
         this.levelText.setText(`Level: ${this.scene.scene.key}`);
         this.baseHealthText.setText(`Health: ${this.scene.state.baseHealth}`);
         this.moneyText.setText(`Money: $${this.scene.state.money}`);
-        this.waveProgressText.setText(`Wave: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`);
+        this.waveProgressText.setText(
+            `Wave: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`
+        );
     }
 
     private updateTowerSelectionUI() {
         for (const key in this.towerSelectionButtons) {
             const cost = this.scene.towerManager.getTowerCost(key);
-            const {button, panel, textObjects} = this.towerSelectionButtons[key];
+            const { button, panel, textObjects } = this.towerSelectionButtons[key];
             if (this.scene.state.money < cost) {
                 button.setAlpha(0.5);
                 panel.setAlpha(0.5);
                 button.disableInteractive();
-                textObjects.forEach(text => text.setColor(AppColors.UI_DISABLED));
+                textObjects.forEach((text) => text.setColor(AppColors.UI_DISABLED));
             } else {
                 button.setAlpha(1);
                 panel.setAlpha(1);
                 button.setInteractive();
-                textObjects.forEach(text => text.setColor(AppColors.UI_TEXT));
+                textObjects.forEach((text) => text.setColor(AppColors.UI_TEXT));
             }
         }
     }
 
     private updateSelectionIndicator(towerKey: string) {
-        const {button} = this.towerSelectionButtons[towerKey];
+        const { button } = this.towerSelectionButtons[towerKey];
         this.selectionIndicator.clear();
 
         this.selectionIndicator.lineStyle(2, 0xffffff, 1);
@@ -318,16 +364,17 @@ export class HudManager extends Manager {
                 this.rangePreview.setVisible(true);
                 this.rangePreview.setPosition(pointer.x, pointer.y);
                 const range = this.scene.towerManager.getTowerRange(this.scene.state.selectedTowerType);
-                this.rangePreview.setScale(range * 2 / 300); // Assuming original texture size is 300
+                this.rangePreview.setScale((range * 2) / 300); // Assuming original texture size is 300
             } else {
                 this.rangePreview.setVisible(false);
             }
-            this.rangePreview.setAlpha(0.0625)
+            this.rangePreview.setAlpha(0.0625);
         }
     }
 
     private setupGameVisualSeparators(): Phaser.GameObjects.Graphics[] {
-        const g1 = this.scene.add.graphics()
+        const g1 = this.scene.add
+            .graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(WIDTH, 0)
@@ -337,7 +384,8 @@ export class HudManager extends Manager {
             .setScrollFactor(0)
             .setDepth(1500);
 
-        const g2 = this.scene.add.graphics()
+        const g2 = this.scene.add
+            .graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(0, 0)
@@ -347,7 +395,8 @@ export class HudManager extends Manager {
             .setScrollFactor(0)
             .setDepth(1500);
 
-        const g3 = this.scene.add.graphics()
+        const g3 = this.scene.add
+            .graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(0, 0)
@@ -357,7 +406,8 @@ export class HudManager extends Manager {
             .setScrollFactor(0)
             .setDepth(1500);
 
-        const g4 = this.scene.add.graphics()
+        const g4 = this.scene.add
+            .graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(0, GAME_HEIGHT)
@@ -370,7 +420,8 @@ export class HudManager extends Manager {
     }
 
     private setupHudVisualSeparators(): Phaser.GameObjects.Graphics[] {
-        const g1 = this.scene.add.graphics()
+        const g1 = this.scene.add
+            .graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(GAME_WIDTH, 0)
@@ -380,7 +431,8 @@ export class HudManager extends Manager {
             .setScrollFactor(0)
             .setDepth(1500);
 
-        const g2 = this.scene.add.graphics()
+        const g2 = this.scene.add
+            .graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(WIDTH, 0)
@@ -390,7 +442,8 @@ export class HudManager extends Manager {
             .setScrollFactor(0)
             .setDepth(1500);
 
-        const g3 = this.scene.add.graphics()
+        const g3 = this.scene.add
+            .graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(GAME_WIDTH, 0)
@@ -400,7 +453,8 @@ export class HudManager extends Manager {
             .setScrollFactor(0)
             .setDepth(1500);
 
-        const g4 = this.scene.add.graphics()
+        const g4 = this.scene.add
+            .graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(GAME_WIDTH, GAME_HEIGHT)

@@ -1,6 +1,6 @@
-import {Component} from '../core/Component';
-import {Tower} from '../entities/Tower';
-import {Level} from '../scenes/lib/Level';
+import { Component } from '../core/Component';
+import { Tower } from '../entities/Tower';
+import { Level } from '../scenes/lib/Level';
 import * as Phaser from 'phaser';
 
 /**
@@ -26,12 +26,7 @@ export class Deactivator extends Component {
 
         for (const tower of towers.getChildren() as Tower[]) {
             if (tower.active) {
-                const distance = Phaser.Math.Distance.Between(
-                    this.gameObject.x,
-                    this.gameObject.y,
-                    tower.x,
-                    tower.y
-                );
+                const distance = Phaser.Math.Distance.Between(this.gameObject.x, this.gameObject.y, tower.x, tower.y);
 
                 if (distance <= this.deactivationRadius) {
                     // Emit an event from the tower to be deactivated

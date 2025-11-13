@@ -1,9 +1,10 @@
-import {GameObject} from '../core/GameObject';
-import {Health} from '../components/Health';
-import {PathFollower} from '../components/PathFollower';
-import {Deactivator} from '../components/Deactivator';
-import {VisualPulse} from "../components/VisualPulse.ts";
-import {AppColors, phaserColor} from "../scripts/Colors.ts";import {ContinuousBreathing} from "../components/ContinuousBreathing.ts"; // Import Deactivator
+import { GameObject } from '../core/GameObject';
+import { Health } from '../components/Health';
+import { PathFollower } from '../components/PathFollower';
+import { Deactivator } from '../components/Deactivator';
+import { VisualPulse } from '../components/VisualPulse.ts';
+import { AppColors, phaserColor } from '../scripts/Colors.ts';
+import { ContinuousBreathing } from '../components/ContinuousBreathing.ts'; // Import Deactivator
 
 export interface SpecialEnemyConfig {
     scene: Phaser.Scene;
@@ -31,10 +32,14 @@ export class SpecialEnemy extends GameObject {
         this.addComponent(new Deactivator()); // Add the Deactivator component
         this.addComponent(new VisualPulse(phaserColor(AppColors.SPECIAL_ENEMY), 500, 1000, 2, 2, 2));
 
-        this.on('reachedEnd', () => {
-            this.scene.events.emit('gameOver');
-            this.destroy();
-        }, this);
+        this.on(
+            'reachedEnd',
+            () => {
+                this.scene.events.emit('gameOver');
+                this.destroy();
+            },
+            this
+        );
 
         this.on('healthChanged', this.handleHealthChanged, this);
 
@@ -46,7 +51,7 @@ export class SpecialEnemy extends GameObject {
 
     destroy(fromScene?: boolean) {
         // delete the visualpulse
-        this.components.forEach(c => {
+        this.components.forEach((c) => {
             if (c instanceof VisualPulse) {
                 c.destroy();
             }
@@ -57,6 +62,6 @@ export class SpecialEnemy extends GameObject {
 
     private handleHealthChanged(currentHealth: number): void {
         const healthPercentage = currentHealth / this.healthComponent.maxHealth;
-        this.setAlpha(0.2 + (0.8 * healthPercentage));
+        this.setAlpha(0.2 + 0.8 * healthPercentage);
     }
 }

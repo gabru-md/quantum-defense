@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import Phaser from 'phaser';
 
 // Utility function to convert string colors to Phaser's internal number format
 export function phaserColor(color: string | number): number {
@@ -47,14 +47,14 @@ export const AppColors = {
     // --- Revised Palette ---
 
     // Guardian & Nexus (Order)
-    PLAYER: '#00FFFF',          // Electric Blue for Guardian
-    NEXUS_OUTER: '#00FFFF',      // Outer color matches player
-    NEXUS_INNER: '#017878',      // Inner rings are white/bright
+    PLAYER: '#00FFFF', // Electric Blue for Guardian
+    NEXUS_OUTER: '#00FFFF', // Outer color matches player
+    NEXUS_INNER: '#017878', // Inner rings are white/bright
 
     // Static & Phantom (Corruption)
-    STATIC_OUTER: '#8A2BE2',      // Blue-Violet for Static
-    STATIC_INNER: '#4B0082',      // Indigo for inner rings
-    SPECIAL_ENEMY: '#8A2BE2',     // Phantom now uses the Static's primary color
+    STATIC_OUTER: '#8A2BE2', // Blue-Violet for Static
+    STATIC_INNER: '#4B0082', // Indigo for inner rings
+    SPECIAL_ENEMY: '#8A2BE2', // Phantom now uses the Static's primary color
 
     // Player Wave Pulse
     PLAYER_WAVE_PULSE: 'rgba(0,255,255,0.8)',
