@@ -191,11 +191,21 @@ export class Introduction extends Phaser.Scene {
         graphics.stroke();
     }
 
-    destroy(): void {
+    shutdown(): void {
         this.currentStep = 0;
         this.story.length = 0;
         this.instructionText?.destroy();
         this.visuals?.forEach(v => v.destroy());
+        this.textures.remove('nexus');
+        this.textures.remove('static');
+        this.textures.remove('player');
+        this.textures.remove('enemy1');
+        this.textures.remove('enemy2');
+        this.textures.remove('enemy3');
+        this.textures.remove('tower1');
+        this.textures.remove('tower2');
+        this.textures.remove('tower3');
+        this.textures.remove('specialEnemy');
     }
 
     private startFinalAnimation(): void {
@@ -226,7 +236,7 @@ export class Introduction extends Phaser.Scene {
             targets: [playerSprite, specialEnemySprite],
             x: centerX,
             y: centerY,
-            duration: 3000,
+            duration: 1000,
             ease: 'Power2',
             rotation: Math.PI * 4,
             onComplete: () => {
@@ -234,7 +244,7 @@ export class Introduction extends Phaser.Scene {
                     targets: specialEnemySprite,
                     alpha: 0,
                     scale: 0,
-                    duration: 3000,
+                    duration: 2000,
                     ease: 'Power2',
                     onComplete: () => {
                         specialEnemySprite.destroy();
@@ -252,7 +262,7 @@ export class Introduction extends Phaser.Scene {
                                     duration: 1000,
                                     ease: 'Power1',
                                     onComplete: () => {
-                                        this.scene.start('MenuScene');
+                                        this.scene.start('Tutorial');
                                     }
                                 });
                             }

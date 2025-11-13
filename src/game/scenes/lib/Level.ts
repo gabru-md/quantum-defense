@@ -105,6 +105,19 @@ export abstract class Level extends Phaser.Scene {
     }
 
     private shutdown(): void {
+        this.textures.remove('player');
+        this.textures.remove('enemy1');
+        this.textures.remove('enemy2');
+        this.textures.remove('enemy3');
+        this.textures.remove('tower1');
+        this.textures.remove('tower2');
+        this.textures.remove('tower3');
+        this.textures.remove('bullet');
+        this.textures.remove('bomb');
+        this.textures.remove('towerSlot');
+        this.textures.remove('rangePreview');
+        this.textures.remove('specialEnemy');
+
         this.waveManager.destroy();
         this.towerManager.destroy();
         this.hud.destroy();

@@ -2,6 +2,9 @@ import * as Phaser from 'phaser';
 import {phaserColor} from './Colors';
 
 export function createEnemyTexture(scene: Phaser.Scene, key: string, size: number, color: string): string {
+    if (scene.textures.exists(key)) {
+        scene.textures.remove(key);
+    }
     const graphics = scene.make.graphics({x: 0, y: 0});
     graphics.fillStyle(phaserColor(color));
     if (key.includes('enemy2')) { // Triangle
@@ -17,6 +20,9 @@ export function createEnemyTexture(scene: Phaser.Scene, key: string, size: numbe
 }
 
 export function createTowerTexture(scene: Phaser.Scene, key: string, size: number, color: string): string {
+    if (scene.textures.exists(key)) {
+        scene.textures.remove(key);
+    }
     const graphics = scene.make.graphics({x: 0, y: 0});
     graphics.fillStyle(phaserColor(color));
     graphics.fillCircle(size / 2, size / 2, size / 2);
@@ -28,6 +34,9 @@ export function createTowerTexture(scene: Phaser.Scene, key: string, size: numbe
 }
 
 export function createBigTowerTexture(scene: Phaser.Scene, key: string, size: number, color: string): string {
+    if (scene.textures.exists(key)) {
+        scene.textures.remove(key);
+    }
     const graphics = scene.make.graphics({x: 0, y: 0});
     graphics.fillStyle(phaserColor(color));
     graphics.fillCircle(size / 2, size / 2, size / 2);
@@ -41,6 +50,9 @@ export function createBigTowerTexture(scene: Phaser.Scene, key: string, size: nu
 }
 
 export function createBigGlitchTexture(scene: Phaser.Scene, key: string, size: number, color: string): string {
+    if (scene.textures.exists(key)) {
+        scene.textures.remove(key);
+    }
     const graphics = scene.make.graphics({x: 0, y: 0});
     graphics.fillStyle(phaserColor(color));
     graphics.fillCircle(size / 2, size / 2, size / 2);
@@ -54,6 +66,9 @@ export function createBigGlitchTexture(scene: Phaser.Scene, key: string, size: n
 }
 
 export function createBulletTexture(scene: Phaser.Scene, key: string, size: number, color: string): void {
+    if (scene.textures.exists(key)) {
+        scene.textures.remove(key);
+    }
     const graphics = scene.make.graphics({x: 0, y: 0});
     graphics.fillStyle(phaserColor(color));
     graphics.fillCircle(size / 2, size / 2, size / 2);
@@ -62,6 +77,9 @@ export function createBulletTexture(scene: Phaser.Scene, key: string, size: numb
 }
 
 export function createBombTexture(scene: Phaser.Scene, key: string, size: number, color: string): void {
+    if (scene.textures.exists(key)) {
+        scene.textures.remove(key);
+    }
     const graphics = scene.make.graphics({x: 0, y: 0});
     graphics.fillStyle(phaserColor(color));
     graphics.fillCircle(size / 2, size / 2, size / 2);
@@ -70,6 +88,9 @@ export function createBombTexture(scene: Phaser.Scene, key: string, size: number
 }
 
 export function createPlayerTexture(scene: Phaser.Scene, key: string, size: number, color: string): string {
+    if (scene.textures.exists(key)) {
+        scene.textures.remove(key);
+    }
     const graphics = scene.make.graphics({x: 0, y: 0});
     graphics.fillStyle(phaserColor(color));
     graphics.fillCircle(size / 2, size / 2, size / 2);
@@ -79,6 +100,9 @@ export function createPlayerTexture(scene: Phaser.Scene, key: string, size: numb
 }
 
 export function createSpecialEnemyTexture(scene: Phaser.Scene, key: string, size: number, color: string): void {
+    if (scene.textures.exists(key)) {
+        scene.textures.remove(key);
+    }
     const graphics = scene.make.graphics({x: 0, y: 0});
     graphics.fillStyle(phaserColor(color));
     graphics.fillCircle(size / 2, size / 2, size / 2);
@@ -87,6 +111,9 @@ export function createSpecialEnemyTexture(scene: Phaser.Scene, key: string, size
 }
 
 export function createRangePreviewTexture(scene: Phaser.Scene, key: string, size: number, color: string): void {
+    if (scene.textures.exists(key)) {
+        scene.textures.remove(key);
+    }
     const graphics = scene.make.graphics({x: 0, y: 0});
     graphics.fillStyle(phaserColor(color));
     graphics.fillCircle(size / 2, size / 2, size / 2);
@@ -95,6 +122,9 @@ export function createRangePreviewTexture(scene: Phaser.Scene, key: string, size
 }
 
 export function createPlaceholderTexture(scene: Phaser.Scene, key: string, width: number, height: number, color: string): void {
+    if (scene.textures.exists(key)) {
+        scene.textures.remove(key);
+    }
     const graphics = scene.make.graphics({x: width, y: height});
     graphics.fillStyle(phaserColor(color));
     graphics.fillRect(0, 0, width, height);
