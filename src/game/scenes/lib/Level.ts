@@ -93,14 +93,6 @@ export abstract class Level extends Phaser.Scene {
 
         this.events.on('gameOver', this.handleGameOver, this);
 
-        if (this.scene.key !== 'Tutorial') {
-            this.time.delayedCall(2000, () => {
-                this.hud.info('Incoming First Wave', AppColors.UI_MESSAGE_ERROR, () => {
-                    this.waveManager.startWave(1);
-                });
-            });
-        }
-
         this.events.on('shutdown', this.shutdown, this);
     }
 
@@ -169,6 +161,13 @@ export abstract class Level extends Phaser.Scene {
 
         this.time.delayedCall(delay, () => {
             this.isLoaded = true;
+            if (this.scene.key !== 'Tutorial') {
+                this.time.delayedCall(2000, () => {
+                    this.hud.info('Incoming First Wave', AppColors.UI_MESSAGE_ERROR, () => {
+                        this.waveManager.startWave(1);
+                    });
+                });
+            }
         });
     }
 
