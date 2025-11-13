@@ -11,23 +11,36 @@ export class PathsManager extends Manager {
         super(level);
     }
 
-    setup() {
+    setup(): {
+        path: Phaser.GameObjects.Graphics,
+        start: Phaser.GameObjects.GameObject[],
+        end: Phaser.GameObjects.GameObject[]
+    } {
         this.paths = this.level.definePaths();
         this.pathGraphics = this.level.add.graphics();
+        const startZoneElements: Phaser.GameObjects.GameObject[] = [];
+        const endZoneElements: Phaser.GameObjects.GameObject[] = [];
+
         for (let pathsKey in this.paths) {
             this.pathGraphics.lineStyle(1, phaserColor(AppColors.PATH_LINE), 0.50);
             this.paths[pathsKey].draw(this.pathGraphics);
 
             // Draw start and end points
             const startPoint = this.paths[pathsKey].getStartPoint();
-            this.drawZone(startPoint, AppColors.PATH_START, 'START');
+            startZoneElements.push(...this.drawZone(startPoint, AppColors.PATH_START, 'START'));
 
             const endPoint = this.paths[pathsKey].getEndPoint();
-            this.drawZone(endPoint, AppColors.PATH_END, 'BASE');
+            endZoneElements.push(...this.drawZone(endPoint, AppColors.PATH_END, 'BASE'));
         }
+
+        return {
+            path: this.pathGraphics,
+            start: startZoneElements,
+            end: endZoneElements
+        };
     }
 
-    private drawZone(point: Phaser.Math.Vector2, color: string, label: string): void {
+    private drawZone(point: Phaser.Math.Vector2, color: string, label: string): Phaser.GameObjects.GameObject[] {
         const zoneRadius = 40;
         const graphics = this.level.add.graphics();
         graphics.setDepth(1); // Ensure it's behind enemies but above the path line
@@ -49,10 +62,12 @@ export class PathsManager extends Manager {
         graphics.strokeCircle(point.x, point.y, zoneRadius);
 
         // Add label
-        this.level.add.text(point.x, point.y, label, {
+        const labelText = this.level.add.text(point.x, point.y, label, {
             font: '16px',
             color: AppColors.UI_TEXT
         }).setOrigin(0.5).setDepth(2);
+
+        return [graphics, labelText];
     }
 
     destroy(): void {

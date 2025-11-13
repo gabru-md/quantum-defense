@@ -10,6 +10,7 @@ import { GAME_HEIGHT, GAME_WIDTH } from "../../scripts/Util.ts";
 import { AppColors } from "../../scripts/Colors.ts";
 import { AudioManager } from "./manager/AudioManager.ts";
 import { createBombTexture, createBulletTexture, createEnemyTexture, createPlaceholderTexture, createPlayerTexture, createRangePreviewTexture, createSpecialEnemyTexture, createTowerTexture } from '../../scripts/TextureUtils';
+import {GameObject} from "../../core/GameObject.ts";
 
 export abstract class Level extends Phaser.Scene {
     hud: HudManager;
@@ -63,12 +64,16 @@ export abstract class Level extends Phaser.Scene {
 
     public create(): void {
         this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
-        this.hud.setup();
-        this.pathsManager.setup();
-        this.waveManager.setup();
-        this.towerManager.setup();
-        this.playerManager.setup();
+
+        const hudElements = this.hud.setup();
+        const pathElements = this.pathsManager.setup();
+        const player = this.playerManager.setup();
+        const towerGroups = this.towerManager.setup();
+        const waveGroups = this.waveManager.setup();
+
         this.collisionManager.setup();
+
+        this.animateGameElements(hudElements, pathElements, player, towerGroups, waveGroups);
 
         // @ts-ignore
         this.input.keyboard.on('keydown-ESC', () => {
@@ -79,12 +84,62 @@ export abstract class Level extends Phaser.Scene {
         this.events.on('gameOver', this.handleGameOver, this);
 
         if (this.scene.key !== 'Tutorial') {
-            this.hud.info('Incoming First Wave', AppColors.UI_MESSAGE_ERROR, () => {
-                this.waveManager.startWave(1);
+            this.time.delayedCall(2000, () => {
+                this.hud.info('Incoming First Wave', AppColors.UI_MESSAGE_ERROR, () => {
+                    this.waveManager.startWave(1);
+                });
             });
         }
 
         this.events.on('shutdown', this.shutdown, this);
+    }
+
+    private animateGameElements(
+        hudElements: { stats: Phaser.GameObjects.GameObject[], towers: Phaser.GameObjects.GameObject[], help: Phaser.GameObjects.GameObject[], separators: Phaser.GameObjects.Graphics[] },
+        pathElements: { path: Phaser.GameObjects.Graphics, start: Phaser.GameObjects.GameObject[], end: Phaser.GameObjects.GameObject[] },
+        player: Phaser.GameObjects.GameObject,
+        towerGroups: { towers: Phaser.GameObjects.Group, bullets: Phaser.GameObjects.Group, bombs: Phaser.GameObjects.Group },
+        waveGroups: { enemies: Phaser.GameObjects.Group, specialEnemies: Phaser.GameObjects.Group }
+    ) {
+        const allElements = [
+            ...hudElements.stats,
+            ...hudElements.towers,
+            ...hudElements.help,
+            ...hudElements.separators,
+            pathElements.path,
+            ...pathElements.start,
+            ...pathElements.end,
+            player,
+            ...towerGroups.towers.getChildren(),
+            ...towerGroups.bullets.getChildren(),
+            ...towerGroups.bombs.getChildren(),
+            ...waveGroups.enemies.getChildren(),
+            ...waveGroups.specialEnemies.getChildren()
+        ];
+
+        allElements.forEach(el => (el as GameObject).setAlpha(0));
+
+        let delay = 0;
+        const fadeIn = (elements: Phaser.GameObjects.GameObject[] | Phaser.GameObjects.GameObject, duration = 500) => {
+            this.time.delayedCall(delay, () => {
+                this.tweens.add({
+                    targets: elements,
+                    alpha: 1,
+                    duration: duration,
+                    ease: 'Power2'
+                });
+            });
+            delay += duration;
+        };
+
+        fadeIn(hudElements.separators);
+        fadeIn(player);
+        fadeIn(pathElements.path);
+        fadeIn(pathElements.start);
+        fadeIn(pathElements.end);
+        fadeIn(hudElements.stats);
+        fadeIn(hudElements.towers);
+        fadeIn(hudElements.help);
     }
 
     public update(time: number, delta: number): void {

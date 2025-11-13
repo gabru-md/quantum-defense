@@ -14,7 +14,7 @@ export class PlayerManager extends Manager {
         super(level);
     }
 
-    setup() {
+    setup(): Player {
         this.player = new Player({scene: this.level, x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2, texture: 'player'});
         this.player.addComponent(new FindNearestTower());
         this.player.addComponent(new PlayerWaveAmplifier(this.level.waveManager.specialEnemies)) // Pass specialEnemies
@@ -23,6 +23,7 @@ export class PlayerManager extends Manager {
         this.player.setDepth(150); // Set a high depth value to ensure it's on top
         this.player.on('pointerover', () => this.level.hud.setHelpText('Player:\nHelp the towers and protect the base'));
         this.player.on('pointerout', () => this.level.hud.setHelpText(''));
+        return this.player;
     }
 
     update(time: number, delta: number) {

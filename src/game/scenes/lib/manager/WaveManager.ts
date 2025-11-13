@@ -21,11 +21,12 @@ export class WaveManager extends Manager {
         super(level);
     }
 
-    setup() {
+    setup(): { enemies: Phaser.GameObjects.Group, specialEnemies: Phaser.GameObjects.Group } {
         this.enemies = this.level.add.group({classType: Enemy, runChildUpdate: false});
         this.specialEnemies = this.level.add.group({classType: SpecialEnemy, runChildUpdate: false});
         this.level.events.on('enemyDied', this.handleEnemyDied, this);
         this.level.events.on('specialEnemyKilledByPlayer', this.handleSpecialEnemyKilledByPlayer, this);
+        return {enemies: this.enemies, specialEnemies: this.specialEnemies};
     }
 
     destroy(): void {

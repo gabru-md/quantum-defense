@@ -34,14 +34,26 @@ export class HudManager extends Manager {
         super(scene);
     }
 
-    public setup() {
+    public setup(): {
+        stats: Phaser.GameObjects.GameObject[],
+        towers: Phaser.GameObjects.GameObject[],
+        help: Phaser.GameObjects.GameObject[],
+        separators: Phaser.GameObjects.Graphics[]
+    } {
         this.createMessageText(); // Message text first so it's on top
-        this.createMainStatsPanel();
-        this.createTowerSelectionPanel();
-        this.createHelpPanel();
-        this.setupGameVisualSeparators();
-        this.setupHudVisualSeparators();
+        const statsElements = this.createMainStatsPanel();
+        const towerElements = this.createTowerSelectionPanel();
+        const helpElements = this.createHelpPanel();
+        const gameSeparators = this.setupGameVisualSeparators();
+        const hudSeparators = this.setupHudVisualSeparators();
         this.update(); // Initial UI update
+
+        return {
+            stats: statsElements,
+            towers: towerElements,
+            help: helpElements,
+            separators: [...gameSeparators, ...hudSeparators]
+        };
     }
 
     destroy(): void {
@@ -90,7 +102,7 @@ export class HudManager extends Manager {
         });
     }
 
-    private createMainStatsPanel() {
+    private createMainStatsPanel(): Phaser.GameObjects.GameObject[] {
         const hudX = GAME_WIDTH + 15;
         const panelWidth = WIDTH - GAME_WIDTH - 30;
         const panelHeight = 180;
@@ -135,9 +147,11 @@ export class HudManager extends Manager {
             font: '20px',
             color: AppColors.UI_TEXT
         }).setDepth(100).setName('waveProgressText');
+
+        return [panel, this.gameName, this.levelText, this.baseHealthText, this.moneyText, this.waveProgressText];
     }
 
-    private createTowerSelectionPanel() {
+    private createTowerSelectionPanel(): Phaser.GameObjects.GameObject[] {
         const hudX = GAME_WIDTH + 15;
         const startY = 200;
         const panelWidth = WIDTH - GAME_WIDTH - 30;
@@ -150,7 +164,7 @@ export class HudManager extends Manager {
         panel.strokeRect(hudX, startY, panelWidth, panelHeight);
         panel.setDepth(90);
 
-        this.scene.add.text(hudX + 10, startY + 10, 'BUILD TOWERS', {
+        const title = this.scene.add.text(hudX + 10, startY + 10, 'BUILD TOWERS', {
             font: '28px',
             color: AppColors.UI_ACCENT
         }).setDepth(100);
@@ -173,7 +187,15 @@ export class HudManager extends Manager {
             wordWrap: {width: panelWidth - 30}
         }).setDepth(100);
 
-        this.rangePreview = this.scene.add.sprite(0, 0, 'rangePreview').setAlpha(0.0625).setVisible(false);
+        this.rangePreview = this.scene.add.sprite(0, 0, 'rangePreview').setAlpha(0.0025).setVisible(false);
+
+        const elements: Phaser.GameObjects.GameObject[] = [panel, title, this.selectionIndicator, this.helpTextPanel, this.rangePreview];
+        for (const key in this.towerSelectionButtons) {
+            elements.push(this.towerSelectionButtons[key].button);
+            elements.push(this.towerSelectionButtons[key].panel);
+            elements.push(...this.towerSelectionButtons[key].textObjects);
+        }
+        return elements;
     }
 
     private createTowerButton(x: number, y: number, towerKey: string, cost: number, stats: string, name: string) {
@@ -215,7 +237,7 @@ export class HudManager extends Manager {
         };
     }
 
-    private createHelpPanel() {
+    private createHelpPanel(): Phaser.GameObjects.GameObject[] {
         const hudX = GAME_WIDTH + 15;
         const startY = GAME_HEIGHT - 270; // Positioned lower
         const panelWidth = WIDTH - GAME_WIDTH - 30;
@@ -228,11 +250,11 @@ export class HudManager extends Manager {
         panel.strokeRect(hudX, startY, panelWidth, panelHeight);
         panel.setDepth(90);
 
-        this.scene.add.text(hudX + 10, startY + 10, 'HOW TO PLAY', {
+        const title = this.scene.add.text(hudX + 10, startY + 10, 'HOW TO PLAY', {
             font: '24px',
             color: AppColors.UI_ACCENT
         }).setDepth(100);
-        this.scene.add.text(hudX + 10, startY + 50,
+        const helpText = this.scene.add.text(hudX + 10, startY + 50,
             '1. Click a tower icon to select it.\n' +
             '2. Click on the map to place it.\n' +
             '3. Use WASD to move your player.\n' +
@@ -240,6 +262,8 @@ export class HudManager extends Manager {
             '5. Prevent enemies from reaching your base!',
             {font: '16px', color: AppColors.UI_TEXT, lineSpacing: 8, wordWrap: {width: panelWidth - 20}}
         ).setDepth(100);
+
+        return [panel, title, helpText];
     }
 
     private createMessageText() {
@@ -295,11 +319,12 @@ export class HudManager extends Manager {
             } else {
                 this.rangePreview.setVisible(false);
             }
+            this.rangePreview.setAlpha(0.0625)
         }
     }
 
-    private setupGameVisualSeparators() {
-        this.scene.add.graphics()
+    private setupGameVisualSeparators(): Phaser.GameObjects.Graphics[] {
+        const g1 = this.scene.add.graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(GAME_WIDTH, 0)
@@ -309,7 +334,7 @@ export class HudManager extends Manager {
             .setScrollFactor(0)
             .setDepth(1500);
 
-        this.scene.add.graphics()
+        const g2 = this.scene.add.graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(0, 0)
@@ -319,7 +344,7 @@ export class HudManager extends Manager {
             .setScrollFactor(0)
             .setDepth(1500);
 
-        this.scene.add.graphics()
+        const g3 = this.scene.add.graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(0, 0)
@@ -329,7 +354,7 @@ export class HudManager extends Manager {
             .setScrollFactor(0)
             .setDepth(1500);
 
-        this.scene.add.graphics()
+        const g4 = this.scene.add.graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(0, GAME_HEIGHT)
@@ -338,10 +363,11 @@ export class HudManager extends Manager {
             .stroke()
             .setScrollFactor(0)
             .setDepth(1500);
+        return [g1, g2, g3, g4];
     }
 
-    private setupHudVisualSeparators() {
-        this.scene.add.graphics()
+    private setupHudVisualSeparators(): Phaser.GameObjects.Graphics[] {
+        const g1 = this.scene.add.graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(GAME_WIDTH, 0)
@@ -351,7 +377,7 @@ export class HudManager extends Manager {
             .setScrollFactor(0)
             .setDepth(1500);
 
-        this.scene.add.graphics()
+        const g2 = this.scene.add.graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(WIDTH, 0)
@@ -361,7 +387,7 @@ export class HudManager extends Manager {
             .setScrollFactor(0)
             .setDepth(1500);
 
-        this.scene.add.graphics()
+        const g3 = this.scene.add.graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(GAME_WIDTH, 0)
@@ -371,7 +397,7 @@ export class HudManager extends Manager {
             .setScrollFactor(0)
             .setDepth(1500);
 
-        this.scene.add.graphics()
+        const g4 = this.scene.add.graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(GAME_WIDTH, GAME_HEIGHT)
@@ -380,5 +406,6 @@ export class HudManager extends Manager {
             .stroke()
             .setScrollFactor(0)
             .setDepth(1500);
+        return [g1, g2, g3, g4];
     }
 }

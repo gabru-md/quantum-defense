@@ -30,11 +30,12 @@ export class TowerManager extends Manager {
         super(level);
     }
 
-    setup() {
+    setup(): { towers: Phaser.GameObjects.Group, bullets: Phaser.GameObjects.Group, bombs: Phaser.GameObjects.Group } {
         this.towers = this.level.add.group({classType: Tower, runChildUpdate: false});
         this.bullets = this.level.add.group({classType: Bullet, runChildUpdate: false});
         this.bombs = this.level.add.group({classType: Bomb, runChildUpdate: false});
         this.setupInputEventListeners();
+        return {towers: this.towers, bullets: this.bullets, bombs: this.bombs};
     }
 
     destroy(): void {
