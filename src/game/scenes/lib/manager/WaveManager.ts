@@ -63,8 +63,7 @@ export class WaveManager extends Manager {
                             this.enemies.add(enemy, true);
                             enemy.on('reachedEnd', this.handleEnemyReachedEnd, this);
                         } else if (config.type === 'specialEnemy') {
-                            const specialEnemy = new SpecialEnemy({ ...config, scene: this.level, path: this.level.pathsManager.paths[config.path], health, speed });
-                            this.specialEnemies.add(specialEnemy, true);
+                            const specialEnemy = new SpecialEnemy({ ...config, scene: this.level, path: this.level.pathsManager.paths[config.path], health, speed });                            this.specialEnemies.add(specialEnemy, true);
                         }
                         this.enemiesSpawnedInWave++;
                         this.level.hud.update();

@@ -3,7 +3,7 @@ import {Health} from '../components/Health';
 import {PathFollower} from '../components/PathFollower';
 import {Deactivator} from '../components/Deactivator';
 import {VisualPulse} from "../components/VisualPulse.ts";
-import {AppColors, phaserColor} from "../scripts/Colors.ts";
+import {AppColors, phaserColor} from "../scripts/Colors.ts";import {ContinuousBreathing} from "../components/ContinuousBreathing.ts"; // Import Deactivator
 
 export interface SpecialEnemyConfig {
     scene: Phaser.Scene;

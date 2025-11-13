@@ -38,7 +38,8 @@ export class HudManager extends Manager {
         stats: Phaser.GameObjects.GameObject[],
         towers: Phaser.GameObjects.GameObject[],
         help: Phaser.GameObjects.GameObject[],
-        separators: Phaser.GameObjects.Graphics[]
+        separators: Phaser.GameObjects.Graphics[],
+        hudSeparators: Phaser.GameObjects.Graphics[]
     } {
         this.createMessageText(); // Message text first so it's on top
         const statsElements = this.createMainStatsPanel();
@@ -52,7 +53,8 @@ export class HudManager extends Manager {
             stats: statsElements,
             towers: towerElements,
             help: helpElements,
-            separators: [...gameSeparators, ...hudSeparators]
+            separators: [...gameSeparators],
+            hudSeparators: [...hudSeparators]
         };
     }
 
@@ -209,6 +211,7 @@ export class HudManager extends Manager {
 
         const buttonImage = this.scene.add.image(x + 40, y + buttonHeight / 2, towerKey).setInteractive().setDepth(100);
         buttonImage.setScale(1.5); // Make tower icons a bit larger
+        buttonImage.setAlpha(0);
 
         const nameText = this.scene.add.text(x + 80, y + 10, name, {
             font: '18px',
@@ -327,8 +330,8 @@ export class HudManager extends Manager {
         const g1 = this.scene.add.graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
-            .moveTo(GAME_WIDTH, 0)
-            .lineTo(GAME_WIDTH, GAME_HEIGHT)
+            .moveTo(WIDTH, 0)
+            .lineTo(WIDTH, GAME_HEIGHT)
             .closePath()
             .stroke()
             .setScrollFactor(0)
@@ -348,7 +351,7 @@ export class HudManager extends Manager {
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(0, 0)
-            .lineTo(GAME_WIDTH, 0)
+            .lineTo(WIDTH, 0)
             .closePath()
             .stroke()
             .setScrollFactor(0)
@@ -358,7 +361,7 @@ export class HudManager extends Manager {
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
             .moveTo(0, GAME_HEIGHT)
-            .lineTo(GAME_WIDTH, GAME_HEIGHT)
+            .lineTo(WIDTH, GAME_HEIGHT)
             .closePath()
             .stroke()
             .setScrollFactor(0)
