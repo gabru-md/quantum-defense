@@ -1,8 +1,8 @@
 import * as Phaser from 'phaser';
-import {Level} from './lib/Level';
-import {GAME_HEIGHT, GAME_WIDTH} from '../scripts/Util';
-import {AppColors} from '../scripts/Colors';
-import {getStoryName, LevelNames} from "./levels/LevelNames.ts";
+import {Level} from '../lib/Level.ts';
+import {GAME_HEIGHT, GAME_WIDTH} from '../../scripts/Util.ts';
+import {AppColors} from '../../scripts/Colors.ts';
+import {getStoryName, LevelNames} from "../lib/LevelNames.ts";
 
 export class Tutorial extends Level {
     private tutorialStep = 0;

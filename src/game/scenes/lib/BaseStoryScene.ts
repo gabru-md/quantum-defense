@@ -13,6 +13,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
     protected currentStep = 0;
     protected instructionText!: Phaser.GameObjects.Text;
     protected visuals: Phaser.GameObjects.GameObject[] = [];
+    protected titleText!: Phaser.GameObjects.Text;
 
     constructor(key: string) {
         super(key);
@@ -20,6 +21,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
 
     // Abstract methods to be implemented by subclasses
     abstract getStoryConfig(): {
+        title?: string;
         steps: StoryStep[];
         nextScene: string;
     };
@@ -34,7 +36,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
     }
 
     create(): void {
-        this.showNextStep();
+        this.showTitle();
         this.createGameVisualSeparators();
 
         const spaceKeyListener = this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -56,7 +58,32 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         });
     }
 
+    protected showTitle(): void {
+        if (this.titleText) {
+            this.titleText.destroy();
+        }
+        this.titleText = this.add.text(WIDTH / 2, HEIGHT / 2, this.getStoryConfig().title || '', {
+            font: '64px',
+            color: AppColors.UI_TEXT,
+            padding: { x: 20, y: 10 },
+            align: 'center',
+            wordWrap: { width: WIDTH - 100 },
+            fontStyle: 'bold',
+        }).setOrigin(0.5).setDepth(200);
+
+        this.add.text(WIDTH - 250, HEIGHT - 50, 'Press [SPACE] to continue, [ESC] to quit.', {
+            font: '16px',
+            color: AppColors.UI_TEXT,
+            padding: { x: 20, y: 10 },
+            align: 'center',
+            wordWrap: { width: WIDTH - 100 }
+        }).setOrigin(0.5).setDepth(200);
+    }
+
     protected showNextStep(): void {
+        if (this.titleText) {
+            this.titleText.destroy();
+        }
         if (this.instructionText) {
             this.instructionText.destroy();
         }
@@ -108,6 +135,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
     shutdown(): void {
         this.currentStep = 0;
         this.steps = [];
+        this.titleText?.destroy();
         this.instructionText?.destroy();
         this.visuals?.forEach(v => v.destroy());
         this.visuals = [];

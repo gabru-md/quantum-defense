@@ -3,7 +3,7 @@ import { AppColors, phaserColor } from '../scripts/Colors';
 import { GAME_HEIGHT, WIDTH } from '../scripts/Util';
 import { State } from './lib/State';
 import { createEnemyTexture, createPlayerTexture, createTowerTexture } from '../scripts/TextureUtils';
-import { getStoryName, LevelNames } from './levels/LevelNames.ts';
+import { getStoryName, LevelNames } from './lib/LevelNames.ts';
 
 export class MenuScene extends Phaser.Scene {
     private gameState!: State;

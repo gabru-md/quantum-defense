@@ -1,7 +1,7 @@
 import * as Phaser from 'phaser';
 import { Level } from '../lib/Level.ts';
 import { GAME_HEIGHT, GAME_WIDTH } from '../../scripts/Util.ts';
-import { LevelNames } from './LevelNames.ts';
+import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
 
 export class Level5 extends Level {
     constructor() {
@@ -155,6 +155,6 @@ export class Level5 extends Level {
     }
 
     nextScene(): string {
-        return 'WinScene';
+        return getStoryName(LevelNames.TheCliffhanger);
     }
 }

@@ -12,7 +12,7 @@ import {
 import {GameObject} from '../core/GameObject';
 import {VisualPulse} from '../components/VisualPulse';
 import {BaseStoryScene, StoryStep} from './lib/BaseStoryScene';
-import {getStoryName, LevelNames} from "./levels/LevelNames.ts";
+import {getStoryName, LevelNames} from "./lib/LevelNames.ts";
 
 export class Introduction extends BaseStoryScene {
     constructor() {
@@ -33,7 +33,7 @@ export class Introduction extends BaseStoryScene {
         createSpecialEnemyTexture(this, 'specialEnemy', 32, AppColors.SPECIAL_ENEMY);
     }
 
-    getStoryConfig(): { steps: StoryStep[]; nextScene: string } {
+    getStoryConfig(): { title?: string; steps: StoryStep[]; nextScene: string } {
         const animateIn = (element: Phaser.GameObjects.GameObject) => {
             // @ts-ignore
             const y = element.y;
@@ -48,6 +48,7 @@ export class Introduction extends BaseStoryScene {
         };
 
         return {
+            title: 'The Quantum Realm Saga',
             nextScene: 'MenuScene',
             steps: [
                 {
@@ -55,10 +56,10 @@ export class Introduction extends BaseStoryScene {
                 },
                 {
                     text: 'At its heart lay the Nexus, the source of all life and logic.',
-                    action: () => {
-                        const nexus = this.add.sprite(200, 200, 'nexus').setAlpha(0.3);
+                    action: (scene) => {
+                        const nexus = scene.add.sprite(200, 200, 'nexus').setAlpha(0.3);
                         animateIn(nexus);
-                        this.tweens.add({
+                        scene.tweens.add({
                             targets: nexus,
                             scaleX: 1.1,
                             scaleY: 1.1,
@@ -71,10 +72,10 @@ export class Introduction extends BaseStoryScene {
                 },
                 {
                     text: 'This tranquility was shattered by the Static.\nA dissonant, corrupting force that gave birth to monstrous Glitches.',
-                    action: () => {
-                        const staticEnemy = this.add.sprite(WIDTH - 200, 200, 'static').setAlpha(0.3);
+                    action: (scene) => {
+                        const staticEnemy = scene.add.sprite(WIDTH - 200, 200, 'static').setAlpha(0.3);
                         animateIn(staticEnemy);
-                        this.tweens.add({
+                        scene.tweens.add({
                             targets: staticEnemy,
                             scaleX: 1.1,
                             scaleY: 1.1,
@@ -87,8 +88,8 @@ export class Introduction extends BaseStoryScene {
                 },
                 {
                     text: 'You are the Guardian: The Sentient\nCreated by the Nexus to be its last line of defense.',
-                    action: () => {
-                        const player = new GameObject(this, WIDTH / 3, HEIGHT / 3, 'player');
+                    action: (scene) => {
+                        const player = new GameObject(scene, WIDTH / 3, HEIGHT / 3, 'player');
                         animateIn(player);
                         player.addComponent(new VisualPulse(phaserColor(AppColors.PLAYER), 500, 1000, 2, 2, 2));
                         return player;
@@ -97,18 +98,18 @@ export class Introduction extends BaseStoryScene {
                 {text: 'Your purpose is to protect the Nexus from the encroaching waves of Static Glitches.'},
                 {
                     text: 'You can build Echo Towers\nThey shoot bullets, bombs or slow the glitches down.',
-                    action: () => {
-                        const tower1 = this.add.sprite(WIDTH / 2 - 100, (HEIGHT * 3) / 4 - 100, 'tower1').setAlpha(0.8);
-                        const tower2 = this.add.sprite(WIDTH / 2, (HEIGHT * 3) / 4 - 100, 'tower2').setAlpha(0.8);
-                        const tower3 = this.add.sprite(WIDTH / 2 + 100, (HEIGHT * 3) / 4 - 100, 'tower3').setAlpha(0.8);
+                    action: (scene) => {
+                        const tower1 = scene.add.sprite(WIDTH / 2 - 100, (HEIGHT * 3) / 4 - 100, 'tower1').setAlpha(0.8);
+                        const tower2 = scene.add.sprite(WIDTH / 2, (HEIGHT * 3) / 4 - 100, 'tower2').setAlpha(0.8);
+                        const tower3 = scene.add.sprite(WIDTH / 2 + 100, (HEIGHT * 3) / 4 - 100, 'tower3').setAlpha(0.8);
                         [tower1, tower2, tower3].forEach(t => animateIn(t));
                         return [tower1, tower2, tower3];
                     },
                 },
                 {
                     text: 'But beware of the Phantoms!\nThey are special Wave Glitches.\nThey can corrupt your towers, rendering you defenseless.',
-                    action: () => {
-                        const phantom = new GameObject(this, (WIDTH * 2) / 3, HEIGHT / 3, 'specialEnemy').setAlpha(0.8);
+                    action: (scene) => {
+                        const phantom = new GameObject(scene, (WIDTH * 2) / 3, HEIGHT / 3, 'specialEnemy').setAlpha(0.8);
                         animateIn(phantom);
                         phantom.addComponent(
                             new VisualPulse(phaserColor(AppColors.SPECIAL_ENEMY), 500, 1000, 2, 2, 2)
@@ -118,8 +119,8 @@ export class Introduction extends BaseStoryScene {
                 },
                 {
                     text: 'Your most powerful ability is the Resonance Wave.\nUse it to revive corrupted towers and disrupt the Phantoms.',
-                    action: () => {
-                        const playerSprite = this.visuals.find(v => (v as GameObject).texture.key === 'player');
+                    action: (scene) => {
+                        const playerSprite = (scene as Introduction).visuals.find(v => (v as GameObject).texture.key === 'player');
                         if (playerSprite && playerSprite instanceof GameObject) {
                             playerSprite.setAlpha(1);
                             playerSprite.addComponent(

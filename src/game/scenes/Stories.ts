@@ -1,5 +1,5 @@
 import {StoryScene} from './StoryScene.ts';
-import {getStoryName, LevelNames} from "./levels/LevelNames.ts";
+import {getStoryName, LevelNames} from "./lib/LevelNames.ts";
 
 export class StoryLevel1 extends StoryScene {
     constructor() {
@@ -72,3 +72,19 @@ export class StoryLevel5 extends StoryScene {
         );
     }
 }
+
+export class StoryLevel6 extends StoryScene {
+    constructor() {
+        super(
+            getStoryName(LevelNames.TheCliffhanger),
+            [
+                'Even the Genie couldn\'t figure out',
+                'But the developer might!',
+                'Please reach out if you want the story to proceed...',
+                ''
+            ],
+            'MenuScene'
+        );
+    }
+}
+

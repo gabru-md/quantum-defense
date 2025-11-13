@@ -5,6 +5,7 @@ export enum LevelNames {
     ThePhantom = 'The Phantom',
     RiseOfStatic = 'Rise of Static',
     Breakthrough = 'Breakthrough',
+    TheCliffhanger = 'The Cliffhanger',
 }
 
 export function getStoryName(levelName: LevelNames): string {
