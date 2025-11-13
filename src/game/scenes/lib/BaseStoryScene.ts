@@ -2,6 +2,14 @@ import * as Phaser from 'phaser';
 import {AppColors, phaserColor} from '../../scripts/Colors';
 import {HEIGHT, WIDTH} from '../../scripts/Util';
 import {GameObject} from '../../core/GameObject';
+import {
+    createBigGlitchTexture,
+    createBigTowerTexture,
+    createEnemyTexture,
+    createPlayerTexture,
+    createSpecialEnemyTexture,
+    createTowerTexture,
+} from '../../scripts/TextureUtils'; // Import texture utility functions
 
 export interface StoryStep {
     text: string;
@@ -37,6 +45,18 @@ export abstract class BaseStoryScene extends Phaser.Scene {
 
     preload(): void {
         this.steps = this.getStoryConfig().steps;
+
+        // Preload common textures for all story scenes
+        createBigTowerTexture(this, 'nexus', 256, AppColors.NEXUS_OUTER);
+        createBigGlitchTexture(this, 'static', 256, AppColors.STATIC_OUTER);
+        createPlayerTexture(this, 'player', 24, AppColors.PLAYER);
+        createEnemyTexture(this, 'enemy1', 32, AppColors.ENEMY_NORMAL);
+        createEnemyTexture(this, 'enemy2', 32, AppColors.ENEMY_FAST);
+        createEnemyTexture(this, 'enemy3', 32, AppColors.ENEMY_TANK);
+        createTowerTexture(this, 'tower1', 64, AppColors.TOWER_LASER);
+        createTowerTexture(this, 'tower2', 64, AppColors.TOWER_BOMB);
+        createTowerTexture(this, 'tower3', 64, AppColors.TOWER_SLOW);
+        createSpecialEnemyTexture(this, 'specialEnemy', 32, AppColors.SPECIAL_ENEMY);
     }
 
     create(): void {
@@ -113,6 +133,15 @@ export abstract class BaseStoryScene extends Phaser.Scene {
             fontStyle: 'bold',
         }).setOrigin(0.5).setDepth(200).setAlpha(0);
 
+        const textBounds = this.titleText.getBounds();
+        const underline = this.add.graphics();
+        underline.lineStyle(4, 0xffffff, 1); // thickness, color, alpha — adjust as needed
+        underline.beginPath();
+        underline.moveTo(textBounds.x, textBounds.bottom + 5); // small gap below text
+        underline.lineTo(textBounds.x + textBounds.width, textBounds.bottom + 5);
+        underline.strokePath();
+        underline.setDepth(200);
+
         // Create Continue Text (reused throughout the scene, part of storyElements for final fade-out)
         this.continueText = this.add.text(WIDTH - 250, HEIGHT - 50, 'Press [SPACE] to continue, [ESC] to quit.', {
             font: '16px',
@@ -188,15 +217,10 @@ export abstract class BaseStoryScene extends Phaser.Scene {
             this.currentStep++;
         } else {
             // All steps shown, fade out all elements and then complete story
-            this.tweens.add({
-                targets: this.storyElements, // This now includes continueText, border graphics, and all persistent visuals
-                alpha: 0,
-                ease: 'Power2',
-                duration: 500,
-                onComplete: () => {
-                    this.onStoryComplete();
-                }
-            });
+            this.animateElementsOffScreen();
+            this.time.delayedCall(1500, () => {
+                this.onStoryComplete();
+            })
         }
     }
 
@@ -245,11 +269,23 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         this.titleText = null as any;
         this.instructionText = null as any;
         this.continueText = null as any;
+
+        // Remove textures to prevent memory leaks if they are not used elsewhere
+        this.textures.remove('nexus');
+        this.textures.remove('static');
+        this.textures.remove('player');
+        this.textures.remove('enemy1');
+        this.textures.remove('enemy2');
+        this.textures.remove('enemy3');
+        this.textures.remove('tower1');
+        this.textures.remove('tower2');
+        this.textures.remove('tower3');
+        this.textures.remove('specialEnemy');
     }
 
     // Animation Related
 
-    protected animateIn = (element: Phaser.GameObjects.GameObject) => {
+    animateIn = (element: Phaser.GameObjects.GameObject) => {
         // @ts-ignore
         const y = element.y;
         // @ts-ignore
@@ -262,7 +298,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         });
     };
 
-    protected animateOut(v: Phaser.GameObjects.GameObject) {
+    animateOut(v: Phaser.GameObjects.GameObject) {
         this.tweens.add({
             targets: v,
             // @ts-ignore
@@ -273,4 +309,9 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         });
     }
 
+    protected animateElementsOffScreen() {
+        this.visuals.forEach(v => {
+            this.animateOut(v);
+        });
+    }
 }

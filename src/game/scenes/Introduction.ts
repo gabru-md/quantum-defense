@@ -194,9 +194,9 @@ export class Introduction extends BaseStoryScene {
         });
     }
 
-    private animateElementsOffScreen(
-        playerSprite: Phaser.GameObjects.GameObject | undefined,
-        specialEnemySprite: Phaser.GameObjects.GameObject | undefined
+    protected animateElementsOffScreen(
+        playerSprite?: Phaser.GameObjects.GameObject | undefined,
+        specialEnemySprite?: Phaser.GameObjects.GameObject | undefined
     ) {
         this.visuals.forEach(v => {
             if (v !== playerSprite && v !== specialEnemySprite) {
