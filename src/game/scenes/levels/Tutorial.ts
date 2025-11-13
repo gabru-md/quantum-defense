@@ -172,7 +172,7 @@ export class Tutorial extends Level {
                 });
                 break;
             case 4:
-                this.hud.info('And another one, slow but big!.', AppColors.UI_MESSAGE_INFO, () => {
+                this.hud.info('Here comes the last type of enemy, This one is tanky and slow..', AppColors.UI_MESSAGE_INFO, () => {
                     this.waveManager.startWave(3);
                     this.events.once('enemyDied', () => this.startNextStep());
                 });

@@ -36,10 +36,10 @@ export class Introduction extends BaseStoryScene {
     getStoryConfig(): { title?: string; steps: StoryStep[]; nextScene: string } {
         return {
             title: 'The Quantum Realm Saga',
-            nextScene: 'MenuScene',
+            nextScene: LevelNames.Introduction,
             steps: [
                 {
-                    text: 'In the beginning, there was the Quantum Realm\nA silent, boundless universe of pure data and energy, flowing in seamless waves.',
+                    text: 'In the beginning, there was the Quantum Realm\nA silent, boundless universe of pure data and energy,\nflowing in seamless waves.',
                 },
                 {
                     text: 'At its heart lay the Nexus, the source of all life and logic.',
@@ -74,7 +74,7 @@ export class Introduction extends BaseStoryScene {
                     },
                 },
                 {
-                    text: 'You are the Guardian: The Sentient\nCreated by the Nexus to be its last line of defense.',
+                    text: 'You are Guardian: The Sentient\nCreated by the Nexus to be its last line of defense.',
                     action: (scene) => {
                         const player = new GameObject(scene, WIDTH / 3, HEIGHT / 3, 'player');
                         this.animateIn(player);
@@ -103,7 +103,7 @@ export class Introduction extends BaseStoryScene {
                     },
                 },
                 {
-                    text: 'But beware of the Phantoms!\nThey are special Wave Glitches.\nThey can corrupt your towers, rendering you defenseless.',
+                    text: 'But beware of the Phantoms!\nThey are special Wave Glitches.\nThey can corrupt your towers,\nrendering you defenseless.',
                     action: (scene) => {
                         const phantom = new GameObject(scene, (WIDTH * 2) / 3, HEIGHT / 3, 'specialEnemy').setAlpha(0.8);
                         this.animateIn(phantom);

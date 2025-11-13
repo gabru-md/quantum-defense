@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
-import { Level } from '../Level.ts';
-import { Manager } from '../Manager.ts';
-import { GAME_HEIGHT, GAME_WIDTH, TOWER1_COST, TOWER2_COST, TOWER3_COST, WIDTH } from '../../../scripts/Util.ts';
-import { AppColors, phaserColor } from '../../../scripts/Colors.ts';
+import {Level} from '../Level.ts';
+import {Manager} from '../Manager.ts';
+import {GAME_HEIGHT, GAME_WIDTH, TOWER1_COST, TOWER2_COST, TOWER3_COST, WIDTH} from '../../../scripts/Util.ts';
+import {AppColors, phaserColor} from '../../../scripts/Colors.ts';
 
 export class HudManager extends Manager {
     protected gameName!: Phaser.GameObjects.Text;
@@ -201,7 +201,7 @@ export class HudManager extends Manager {
             .text(hudX + 15, startY + panelHeight - 80, '', {
                 font: '14px',
                 color: AppColors.UI_TEXT,
-                wordWrap: { width: panelWidth - 30 },
+                wordWrap: {width: panelWidth - 30},
             })
             .setDepth(100);
 
@@ -212,7 +212,6 @@ export class HudManager extends Manager {
             title,
             this.selectionIndicator,
             this.helpTextPanel,
-            this.rangePreview,
         ];
         for (const key in this.towerSelectionButtons) {
             elements.push(this.towerSelectionButtons[key].button);
@@ -295,11 +294,11 @@ export class HudManager extends Manager {
                 hudX + 10,
                 startY + 50,
                 '1. Click a tower icon to select it.\n' +
-                    '2. Click on the map to place it.\n' +
-                    '3. Use WASD to move your player.\n' +
-                    '4. Press E near a damaged tower to revive it.\n' +
-                    '5. Prevent enemies from reaching your base!',
-                { font: '16px', color: AppColors.UI_TEXT, lineSpacing: 8, wordWrap: { width: panelWidth - 20 } }
+                '2. Click on the map to place it.\n' +
+                '3. Use WASD to move your player.\n' +
+                '4. Press E near a damaged tower to revive it.\n' +
+                '5. Prevent enemies from reaching your base!',
+                {font: '16px', color: AppColors.UI_TEXT, lineSpacing: 8, wordWrap: {width: panelWidth - 20}}
             )
             .setDepth(100);
 
@@ -312,7 +311,7 @@ export class HudManager extends Manager {
                 font: '48px',
                 color: AppColors.UI_MESSAGE_ERROR,
                 backgroundColor: AppColors.UI_MESSAGE_BACKGROUND,
-                padding: { x: 30, y: 20 },
+                padding: {x: 30, y: 20},
             })
             .setOrigin(0.5)
             .setScrollFactor(0)
@@ -334,7 +333,7 @@ export class HudManager extends Manager {
     private updateTowerSelectionUI() {
         for (const key in this.towerSelectionButtons) {
             const cost = this.scene.towerManager.getTowerCost(key);
-            const { button, panel, textObjects } = this.towerSelectionButtons[key];
+            const {button, panel, textObjects} = this.towerSelectionButtons[key];
             if (this.scene.state.money < cost) {
                 button.setAlpha(0.5);
                 panel.setAlpha(0.5);
@@ -350,7 +349,7 @@ export class HudManager extends Manager {
     }
 
     private updateSelectionIndicator(towerKey: string) {
-        const { button } = this.towerSelectionButtons[towerKey];
+        const {button} = this.towerSelectionButtons[towerKey];
         this.selectionIndicator.clear();
 
         this.selectionIndicator.lineStyle(2, 0xffffff, 1);

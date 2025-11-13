@@ -5,6 +5,7 @@ import Phaser from 'phaser';
 import { GameObject } from '../../../core/GameObject.ts';
 import { Manager } from '../Manager.ts';
 import { AppColors } from '../../../scripts/Colors.ts';
+import {LevelNames} from "../LevelNames.ts";
 
 export class WaveManager extends Manager {
     enemies!: Phaser.GameObjects.Group;
@@ -124,14 +125,14 @@ export class WaveManager extends Manager {
     }
 
     protected checkGameOver(): void {
-        if (this.level.scene.key === 'Tutorial') return;
+        if (this.level.scene.key === LevelNames.Introduction) return;
         if (this.level.state.baseHealth <= 0) {
             this.level.state.baseHealth = 0;
             this.level.hud.update();
             this.level.hud.info('GAME OVER!', AppColors.UI_MESSAGE_ERROR);
             this.gameOver = true;
             this.level.physics.pause();
-            this.level.time.delayedCall(3000, () => this.level.scene.restart());
+            // Removed direct scene restart, Level.ts handleGameOver will manage the transition
         }
     }
 
@@ -139,15 +140,15 @@ export class WaveManager extends Manager {
         if (this.gameOver) return;
         if (this.enemiesSpawnedInWave >= this.maxEnemiesInWave && this.enemiesRemaining <= 0) {
             if (this.noMoreWavesLeft()) {
-                if (this.level.scene.key === 'Tutorial') {
+                if (this.level.scene.key === LevelNames.Introduction) {
                     this.level.events.emit('waveCompleted');
                     return;
                 }
                 this.level.physics.pause();
                 this.level.hud.info('LEVEL COMPLETE!', AppColors.UI_MESSAGE_SUCCESS);
-                this.level.scene.start(this.level.nextScene());
+                this.level.easeOutAndStartNextScene(this.level.nextScene()); // Use easeOutAndStartNextScene
             } else {
-                if (this.level.scene.key === 'Tutorial') return;
+                if (this.level.scene.key === LevelNames.Introduction) return;
                 this.level.hud.info('NEXT WAVE INCOMING!', AppColors.UI_MESSAGE_SUCCESS, () => {
                     this.currentWave++;
                     this.startWave(this.currentWave);

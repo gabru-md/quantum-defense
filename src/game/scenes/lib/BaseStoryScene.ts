@@ -9,7 +9,8 @@ import {
     createPlayerTexture,
     createSpecialEnemyTexture,
     createTowerTexture,
-} from '../../scripts/TextureUtils'; // Import texture utility functions
+} from '../../scripts/TextureUtils';
+import {getStoryName, LevelNames} from "./LevelNames.ts"; // Import texture utility functions
 
 export interface StoryStep {
     text: string;
@@ -26,6 +27,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
     protected storyElements: Phaser.GameObjects.GameObject[] = []; // Stores elements for overall scene fade in/out (border, continue text, and persistent visuals)
     protected isTyping: boolean = false;
     private typingTimer: Phaser.Time.TimerEvent | null = null;
+    private underline: Phaser.GameObjects.Graphics;
 
     constructor(key: string) {
         super(key);
@@ -91,6 +93,11 @@ export abstract class BaseStoryScene extends Phaser.Scene {
             this.handleSpacePress();
         });
 
+        const tildeKeyListener = this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.BACKTICK);
+        tildeKeyListener?.on('down', () => {
+            this.scene.start(this.getStoryConfig().nextScene);
+        });
+
         const escapeKeyListener = this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         escapeKeyListener?.on('down', () => {
             this.scene.start('MenuScene');
@@ -134,13 +141,13 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         }).setOrigin(0.5).setDepth(200).setAlpha(0);
 
         const textBounds = this.titleText.getBounds();
-        const underline = this.add.graphics();
-        underline.lineStyle(4, 0xffffff, 1); // thickness, color, alpha — adjust as needed
-        underline.beginPath();
-        underline.moveTo(textBounds.x, textBounds.bottom + 5); // small gap below text
-        underline.lineTo(textBounds.x + textBounds.width, textBounds.bottom + 5);
-        underline.strokePath();
-        underline.setDepth(200);
+        this.underline = this.add.graphics();
+        this.underline.lineStyle(4, 0xffffff, 1); // thickness, color, alpha — adjust as needed
+        this.underline.beginPath();
+        this.underline.moveTo(textBounds.x, textBounds.bottom + 5); // small gap below text
+        this.underline.lineTo(textBounds.x + textBounds.width, textBounds.bottom + 5);
+        this.underline.strokePath();
+        this.underline.setDepth(200);
 
         // Create Continue Text (reused throughout the scene, part of storyElements for final fade-out)
         this.continueText = this.add.text(WIDTH - 250, HEIGHT - 50, 'Press [SPACE] to continue, [ESC] to quit.', {
@@ -172,6 +179,10 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         if (this.instructionText) {
             this.instructionText.destroy();
             this.instructionText = null as any;
+        }
+        if (this.underline) {
+            this.underline.destroy();
+            this.underline = null as any;
         }
 
         if (this.currentStep < this.steps.length) {
@@ -217,7 +228,10 @@ export abstract class BaseStoryScene extends Phaser.Scene {
             this.currentStep++;
         } else {
             // All steps shown, fade out all elements and then complete story
-            this.animateElementsOffScreen();
+            // skip animation for Introduction scene as it is handled differently
+            if (this.scene.key !== getStoryName(LevelNames.Introduction)) {
+                this.animateElementsOffScreen();
+            }
             this.time.delayedCall(1500, () => {
                 this.onStoryComplete();
             })

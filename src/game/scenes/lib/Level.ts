@@ -20,6 +20,7 @@ import {
     createTowerTexture,
 } from '../../scripts/TextureUtils';
 import { GameObject } from '../../core/GameObject.ts';
+import { LevelNames } from './LevelNames.ts';
 
 export abstract class Level extends Phaser.Scene {
     hud: HudManager;
@@ -31,6 +32,7 @@ export abstract class Level extends Phaser.Scene {
     playerManager: PlayerManager;
     audioManager: AudioManager;
     isLoaded: boolean = false;
+    protected levelElements: Phaser.GameObjects.GameObject[] = []; // Stores static elements for fade in/out
 
     abstract getWaveConfig(wave: number): {
         type: string;
@@ -59,7 +61,7 @@ export abstract class Level extends Phaser.Scene {
     }
 
     init(): void {
-        if (this.scene.key === 'Tutorial') {
+        if (this.scene.key === LevelNames.Introduction) {
             this.state = new State(100, 1000, this.scene.key);
         } else {
             this.state = new State(100, 350, this.scene.key);
@@ -78,17 +80,18 @@ export abstract class Level extends Phaser.Scene {
         const hudElements = this.hud.setup();
         const pathElements = this.pathsManager.setup();
         const player = this.playerManager.setup();
+        // @ts-ignore
         const towerGroups = this.towerManager.setup();
-        const waveGroups = this.waveManager.setup();
+        // @ts-ignore
+        const waveGroups = this.waveManager.setup(); // Not directly used in animateGameElements for initial setup, but passed for completeness
 
         this.collisionManager.setup();
 
-        this.animateGameElements(hudElements, pathElements, player, towerGroups, waveGroups);
+        this.animateGameElements(hudElements, pathElements, player); // Pass only static elements for initial animation
 
         // @ts-ignore
         this.input.keyboard.on('keydown-ESC', () => {
-            this.scene.stop(this.scene.key);
-            this.scene.start('MenuScene');
+            this.easeOutAndStartNextScene('MenuScene');
         });
 
         this.events.on('gameOver', this.handleGameOver, this);
@@ -109,15 +112,10 @@ export abstract class Level extends Phaser.Scene {
             start: Phaser.GameObjects.GameObject[];
             end: Phaser.GameObjects.GameObject[];
         },
-        player: Phaser.GameObjects.GameObject,
-        towerGroups: {
-            towers: Phaser.GameObjects.Group;
-            bullets: Phaser.GameObjects.Group;
-            bombs: Phaser.GameObjects.Group;
-        },
-        waveGroups: { enemies: Phaser.GameObjects.Group; specialEnemies: Phaser.GameObjects.Group }
+        player: Phaser.GameObjects.GameObject
     ) {
-        const allElements = [
+        // Populate levelElements with static, persistent game objects
+        this.levelElements = [
             ...hudElements.stats,
             ...hudElements.towers,
             ...hudElements.help,
@@ -127,14 +125,10 @@ export abstract class Level extends Phaser.Scene {
             ...pathElements.end,
             player,
             ...hudElements.hudSeparators,
-            ...towerGroups.towers.getChildren(),
-            ...towerGroups.bullets.getChildren(),
-            ...towerGroups.bombs.getChildren(),
-            ...waveGroups.enemies.getChildren(),
-            ...waveGroups.specialEnemies.getChildren(),
         ];
 
-        allElements.forEach((el) => (el as GameObject).setAlpha(0));
+        // Set initial alpha to 0 for all elements that will fade in
+        this.levelElements.forEach((el) => (el as GameObject).setAlpha(0));
 
         let delay = 0;
         const fadeIn = (elements: Phaser.GameObjects.GameObject[] | Phaser.GameObjects.GameObject, duration = 500) => {
@@ -149,6 +143,7 @@ export abstract class Level extends Phaser.Scene {
             delay += duration;
         };
 
+        // Apply fade-in to the static elements
         fadeIn(hudElements.separators);
         fadeIn(player);
         fadeIn(pathElements.path);
@@ -161,7 +156,7 @@ export abstract class Level extends Phaser.Scene {
 
         this.time.delayedCall(delay, () => {
             this.isLoaded = true;
-            if (this.scene.key !== 'Tutorial') {
+            if (this.scene.key !== LevelNames.Introduction) {
                 this.time.delayedCall(2000, () => {
                     this.hud.info('Incoming First Wave', AppColors.UI_MESSAGE_ERROR, () => {
                         this.waveManager.startWave(1);
@@ -173,7 +168,7 @@ export abstract class Level extends Phaser.Scene {
 
     public update(time: number, delta: number): void {
         if (!this.isLoaded) return;
-        if (this.scene.key !== 'Tutorial') {
+        if (this.scene.key !== LevelNames.Introduction) {
             this.waveManager.update(time, delta);
         }
         this.towerManager.update(time, delta);
@@ -185,7 +180,30 @@ export abstract class Level extends Phaser.Scene {
         this.waveManager.gameOver = true;
         this.physics.pause();
         this.hud.info('GAME OVER!', AppColors.UI_MESSAGE_ERROR, () => {
-            this.scene.restart();
+            this.easeOutAndStartNextScene(this.scene.key); // Restart current level
+        });
+    }
+
+    easeOutAndStartNextScene(sceneKey: string): void {
+        // Gather all active game objects
+        const allActiveElements: Phaser.GameObjects.GameObject[] = [
+            ...this.levelElements, // Static UI, paths, player
+            ...this.towerManager.towers.getChildren(),
+            ...this.towerManager.bullets.getChildren(),
+            ...this.towerManager.bombs.getChildren(),
+            ...this.waveManager.enemies.getChildren(),
+            ...this.waveManager.specialEnemies.getChildren(),
+        ];
+
+        this.tweens.add({
+            targets: allActiveElements,
+            alpha: 0,
+            ease: 'Power2',
+            duration: 1500,
+            onComplete: () => {
+                this.scene.stop(this.scene.key);
+                this.scene.start(sceneKey);
+            },
         });
     }
 
