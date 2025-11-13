@@ -1,15 +1,16 @@
-import { StoryScene } from './StoryScene.ts';
+import {StoryScene} from './StoryScene.ts';
+import {getStoryName, LevelNames} from "./levels/LevelNames.ts";
 
 export class StoryLevel1 extends StoryScene {
     constructor() {
         super(
-            'Story Level 1',
+            getStoryName(LevelNames.HelloGenie),
             [
                 'Even a Guardian needs a guide\nHi I am Genie!',
                 "Static's operations are rising rapidly,\nHe is sending out fleet of Glitches.",
                 'We need your help Guardian!',
             ],
-            'Level 1'
+            LevelNames.HelloGenie
         );
     }
 }
@@ -17,12 +18,12 @@ export class StoryLevel1 extends StoryScene {
 export class StoryLevel2 extends StoryScene {
     constructor() {
         super(
-            'Story Level 2',
+            getStoryName(LevelNames.TrustMe),
             [
                 "The Glitches have identified more paths to the nexus\nIt's not looking good.",
                 "The Glitches have identified more paths to the nexus\nIt's not looking good.\n\nBut I can still count on you, right?",
             ],
-            'Level 2'
+            LevelNames.TrustMe
         );
     }
 }
@@ -30,14 +31,14 @@ export class StoryLevel2 extends StoryScene {
 export class StoryLevel3 extends StoryScene {
     constructor() {
         super(
-            'Story Level 3',
+            getStoryName(LevelNames.ThePhantom),
             [
                 'I have some news for you Guardian.',
                 'The Phantom is on the move!',
                 'Remember Guardian:\n\n- It disables all towers\n- Only you can defeat the Phantom!',
                 'Good Luck Guardian!',
             ],
-            'Level 3'
+            LevelNames.ThePhantom
         );
     }
 }
@@ -45,7 +46,7 @@ export class StoryLevel3 extends StoryScene {
 export class StoryLevel4 extends StoryScene {
     constructor() {
         super(
-            'Story Level 4',
+            getStoryName(LevelNames.RiseOfStatic),
             [
                 "We don't know the source of Static's Power",
                 'But with your help we can sample the remains of Phantom.',
@@ -53,7 +54,7 @@ export class StoryLevel4 extends StoryScene {
                 'Oh no, there are more glitches!!',
                 'You are needed Guardian!',
             ],
-            'Level 4'
+            LevelNames.RiseOfStatic
         );
     }
 }
@@ -61,13 +62,13 @@ export class StoryLevel4 extends StoryScene {
 export class StoryLevel5 extends StoryScene {
     constructor() {
         super(
-            'Story Level 5',
+            getStoryName(LevelNames.Breakthrough),
             [
                 'That was amazing, I know we can count on you!',
                 'Also, I am close to sampling Phantom\nI need maybe 2 more for a breakthrough',
                 'Can you do that, Guardian?',
             ],
-            'Level 5'
+            LevelNames.Breakthrough
         );
     }
 }

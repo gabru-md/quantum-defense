@@ -256,6 +256,7 @@ export class MenuScene extends Phaser.Scene {
         const levelKeys = [
             LevelNames.Introduction,
             LevelNames.HelloGenie,
+            LevelNames.TrustMe,
             LevelNames.ThePhantom,
             LevelNames.RiseOfStatic,
             LevelNames.Breakthrough,
