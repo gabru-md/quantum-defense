@@ -9,6 +9,7 @@ export class MenuScene extends Phaser.Scene {
     private gameState!: State;
     private difficultyText!: Phaser.GameObjects.Text;
     private soundText!: Phaser.GameObjects.Text;
+    private menuElements: Phaser.GameObjects.GameObject[] = []; // Added to store all elements for animation
 
     constructor() {
         super({ key: 'MenuScene' });
@@ -41,22 +42,24 @@ export class MenuScene extends Phaser.Scene {
         this.createAnimatedGridBackground();
 
         // --- Full-screen Stroke Panel ---
-        this.add
+        const fullScreenStroke = this.add
             .graphics()
             .lineStyle(5, phaserColor(AppColors.UI_SEPARATOR), 1)
             .strokeRect(0, 0, WIDTH, GAME_HEIGHT)
             .setDepth(0);
+        this.menuElements.push(fullScreenStroke);
 
         // --- Game Title ---
-        this.add
+        const gameTitle = this.add
             .text(WIDTH / 2, 100, 'QUANTUM DEFENSE', {
                 font: '80px',
                 color: AppColors.UI_ACCENT,
                 align: 'center',
             })
             .setOrigin(0.5);
+        this.menuElements.push(gameTitle);
 
-        this.add
+        const titleSeparator = this.add
             .graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
@@ -64,6 +67,7 @@ export class MenuScene extends Phaser.Scene {
             .lineTo(WIDTH, 150)
             .closePath()
             .stroke();
+        this.menuElements.push(titleSeparator);
 
         this.createVisualElements();
 
@@ -80,7 +84,7 @@ export class MenuScene extends Phaser.Scene {
 
         // --- Credits Button ---
         this.createButton(WIDTH / 2, 900, 'CREDITS', () => {
-            this.scene.start('CreditsScene');
+            this.easeOutAndStartScene('CreditsScene'); // Use easeOutAndStartScene
         });
     }
 
@@ -162,6 +166,7 @@ export class MenuScene extends Phaser.Scene {
                 alpha: 0.1,
             },
         });
+        this.menuElements.push(gridGraphics); // Added to menuElements
         const gridSize = 5;
 
         for (let x = 0; x < WIDTH; x += gridSize) {
@@ -191,6 +196,7 @@ export class MenuScene extends Phaser.Scene {
         const targetY = y + randomOffsetY;
 
         const element = this.add.image(x, y, key).setScale(scale).setAlpha(0.7).setDepth(-1);
+        this.menuElements.push(element); // Added to menuElements
 
         // 4. Create the Tween
         this.tweens.add({
@@ -216,15 +222,18 @@ export class MenuScene extends Phaser.Scene {
         panelGraphics.fillRect(x - width / 2, y - height / 2, width, height);
         panelGraphics.lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1);
         panelGraphics.strokeRect(x - width / 2, y - height / 2, width, height);
+        this.menuElements.push(panelGraphics); // Added to menuElements
 
-        this.add
+        const panelTitle = this.add
             .text(x, y - height / 2 + 25, title, {
                 font: '36px',
                 color: AppColors.UI_ACCENT,
                 align: 'center',
             })
             .setOrigin(0.5);
-        this.add
+        this.menuElements.push(panelTitle); // Added to menuElements
+
+        const separatorGraphics = this.add
             .graphics()
             .lineStyle(1, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
@@ -232,6 +241,7 @@ export class MenuScene extends Phaser.Scene {
             .lineTo(x + width / 2, y - height / 2 + 45)
             .closePath()
             .stroke();
+        this.menuElements.push(separatorGraphics); // Added to menuElements
 
         contentCallback(x, y - height / 2 + 70);
     }
@@ -249,6 +259,7 @@ export class MenuScene extends Phaser.Scene {
         button.on('pointerover', () => button.setColor(AppColors.UI_ACCENT));
         button.on('pointerout', () => button.setColor(AppColors.UI_TEXT));
         button.on('pointerdown', callback);
+        this.menuElements.push(button); // Added to menuElements
         return button;
     }
 
@@ -267,7 +278,7 @@ export class MenuScene extends Phaser.Scene {
         levelKeys.forEach((key, index) => {
             this.createButton(x, currentY + index * buttonSpacing, key, () => {
                 this.gameState.level = key;
-                this.scene.start(getStoryName(key));
+                this.easeOutAndStartScene(getStoryName(key)); // Changed to use easeOutAndStartScene
             });
         });
     }
@@ -286,6 +297,18 @@ export class MenuScene extends Phaser.Scene {
         this.soundText = this.createButton(x, y, `SOUND: ${this.gameState.soundEnabled ? 'ON' : 'OFF'}`, () => {
             this.gameState.soundEnabled = !this.gameState.soundEnabled;
             this.soundText.setText(`SOUND: ${this.gameState.soundEnabled ? 'ON' : 'OFF'}`);
+        });
+    }
+
+    private easeOutAndStartScene(sceneKey: string): void {
+        this.tweens.add({
+            targets: this.menuElements,
+            alpha: 0,
+            ease: 'Power2',
+            duration: 1500, // Animation duration in milliseconds
+            onComplete: () => {
+                this.scene.start(sceneKey);
+            },
         });
     }
 }
