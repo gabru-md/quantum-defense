@@ -16,8 +16,8 @@ export class Tutorial extends Level {
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {
-        const path = new Phaser.Curves.Path(0, GAME_HEIGHT / 2);
-        path.lineTo(GAME_WIDTH, GAME_HEIGHT / 2);
+        const path = new Phaser.Curves.Path(50, GAME_HEIGHT / 2);
+        path.lineTo(GAME_WIDTH - 50, GAME_HEIGHT / 2);
         return {path1: path};
     }
 

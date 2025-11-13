@@ -21,8 +21,8 @@ export class FindNearestTower extends Component {
                 return;
             }
 
-            for (let tower of towers.getChildren()) {
-                let _tower: Tower = tower as Tower;
+            for (const tower of towers.getChildren()) {
+                const _tower: Tower = tower as Tower;
                 const distance = Phaser.Math.Distance.Between(
                     playerPosition.x,
                     playerPosition.y,

@@ -99,12 +99,12 @@ export class Tower extends GameObject {
     }
 
     public isTowerDeactivated() {
-        let healthComponent = this.getComponent(Health);
+        const healthComponent = this.getComponent(Health);
         return healthComponent && healthComponent.isDead() || this.reviveProgress > 0;
     }
 
     public isNotFullHealth() {
-        let healthComponent = this.getComponent(Health);
+        const healthComponent = this.getComponent(Health);
         return healthComponent && healthComponent.currentHealth < healthComponent.maxHealth;
     }
 }

@@ -21,7 +21,7 @@ export class PathsManager extends Manager {
         const startZoneElements: Phaser.GameObjects.GameObject[] = [];
         const endZoneElements: Phaser.GameObjects.GameObject[] = [];
 
-        for (let pathsKey in this.paths) {
+        for (const pathsKey in this.paths) {
             this.pathGraphics.lineStyle(1, phaserColor(AppColors.PATH_LINE), 0.50);
             this.paths[pathsKey].draw(this.pathGraphics);
 

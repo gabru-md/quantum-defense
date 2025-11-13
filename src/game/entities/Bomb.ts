@@ -38,7 +38,7 @@ export class Bomb extends GameObject {
         graphics.fillCircle(this.x, this.y, this.explosionRadius);
         this.scene.time.delayedCall(100, () => graphics.destroy());
 
-        for (var i = 0; i < this.targetableGroups.length; i++) {
+        for (let i = 0; i < this.targetableGroups.length; i++) {
             const targetableGroup = this.targetableGroups[i];
             targetableGroup.children.each((targetableObject: Phaser.GameObjects.GameObject) => {
                 if (targetableObject instanceof Enemy || targetableObject instanceof SpecialEnemy) { // Check for both Enemy and SpecialEnemy

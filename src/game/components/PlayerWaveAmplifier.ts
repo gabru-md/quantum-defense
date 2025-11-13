@@ -136,7 +136,7 @@ export class PlayerWaveAmplifier extends Component {
                     }
                 }
             } else {
-                let moneyNeededToRevive = reviveCost - this.gameObject.level.state.money;
+                const moneyNeededToRevive = reviveCost - this.gameObject.level.state.money;
                 this.gameObject.level.hud.alert(`INSUFFICIENT BALANCE:\nNeed $${moneyNeededToRevive} to revive tower!`, AppColors.UI_MESSAGE_WARN, 1000);
             }
         }

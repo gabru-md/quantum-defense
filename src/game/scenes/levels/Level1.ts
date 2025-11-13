@@ -1,10 +1,11 @@
 import * as Phaser from 'phaser';
-import {Level} from './lib/Level.ts';
-import {GAME_HEIGHT, GAME_WIDTH} from "../scripts/Util.ts";
+import {Level} from '../lib/Level.ts';
+import {GAME_HEIGHT, GAME_WIDTH} from "../../scripts/Util.ts";
+import {getStoryName, LevelNames} from "./LevelNames.ts";
 
 export class Level1 extends Level {
     constructor() {
-        super('Level 1');
+        super(LevelNames.Introduction);
     }
 
     private firstPath(): Phaser.Curves.Path {
@@ -53,6 +54,6 @@ export class Level1 extends Level {
     }
 
     nextScene(): string {
-        return "Level 2";
+        return getStoryName(LevelNames.HelloGenie);
     }
 }

@@ -188,9 +188,9 @@ export class MenuScene extends Phaser.Scene {
     }
 
     private createLevelSelectionButtons(x: number, y: number): void {
-        const levelKeys = ['Intro', 'Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5'];
+        const levelKeys = ['Intro', 'Hello, Genie!', 'Trust Me', 'The Phantom', 'Rise of Static', 'Breakthrough'];
         const buttonSpacing = 60;
-        let currentY = y + 25;
+        const currentY = y + 25;
 
         levelKeys.forEach((key, index) => {
             this.createButton(x, currentY + (index * buttonSpacing), key, () => {

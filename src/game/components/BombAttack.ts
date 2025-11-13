@@ -39,7 +39,7 @@ export class BombAttack extends Component {
     public update(time: number, _deltaTime: number): void {
         const target = this.targetingComponent.currentTarget;
 
-        let healthComponent = this.gameObject.getComponent(Health);
+        const healthComponent = this.gameObject.getComponent(Health);
         if (healthComponent) {
             if (healthComponent.isDead()) {
                 return;

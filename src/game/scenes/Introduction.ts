@@ -25,10 +25,10 @@ export class Introduction extends Phaser.Scene {
             "In the beginning, there was the Quantum Realm\nA silent, boundless universe of pure data and energy, flowing in seamless waves.",
             "At its heart lay the Nexus, the source of all life and logic.",
             "This tranquility was shattered by the Static.\nA dissonant, corrupting force that gave birth to monstrous Glitches.",
-            "You are the Guardian.\nA sentient program created by the Nexus to be its last line of defense.",
-            "Your purpose is to protect the Nexus from the encroaching waves of Glitches.",
-            "You can manifest Echo Towerss\nThey shoot bullets, bombs or slow the glitches down.",
-            "But beware of the Phantoms!\nThey are special Glitches that can corrupt your towers, rendering you defenseless.",
+            "You are the Guardian: The Sentient\nCreated by the Nexus to be its last line of defense.",
+            "Your purpose is to protect the Nexus from the encroaching waves of Static Glitches.",
+            "You can build Echo Towers\nThey shoot bullets, bombs or slow the glitches down.",
+            "But beware of the Phantoms!\nThey are special Wave Glitches.\nThey can corrupt your towers, rendering you defenseless.",
             "Your most powerful ability is the Resonance Wave.\nUse it to revive corrupted towers and disrupt the Phantoms.",
             "The fate of the Quantum Realm is in your hands.\nYou are the last hope!",
         ];
@@ -115,30 +115,38 @@ export class Introduction extends Phaser.Scene {
 
         switch (this.currentStep) {
             case 1:
-                const nexus = this.add.sprite(200, 200, 'nexus').setAlpha(0.3);
-                animateIn(nexus);
+                const nexus_object = new GameObject(this, 200, 200, 'nexus');
+                const nexus_image = this.add.sprite(200, 200, 'nexus').setAlpha(0.3);
+                animateIn(nexus_object);
+                animateIn(nexus_image);
+                nexus_object.addComponent(new VisualPulse(phaserColor(AppColors.NEXUS_OUTER), 500, 1000, 1.25, 2, 0.25));
                 this.tweens.add({
-                    targets: nexus,
+                    targets: [nexus_object, nexus_image],
                     scaleX: 1.1,
                     scaleY: 1.1,
                     duration: 2000,
                     yoyo: true,
                     repeat: -1
                 });
-                this.visuals.push(nexus);
+                this.visuals.push(nexus_image);
+                this.visuals.push(nexus_object);
                 break;
             case 2:
-                const staticEnemy = this.add.sprite(WIDTH - 200, 200, 'static').setAlpha(0.3);
-                animateIn(staticEnemy);
+                const static_object = new GameObject(this, WIDTH - 200, 200, 'static');
+                const static_image = this.add.sprite(WIDTH - 200, 200, 'static').setAlpha(0.3);
+                animateIn(static_object);
+                animateIn(static_image);
+                static_object.addComponent(new VisualPulse(phaserColor(AppColors.STATIC_OUTER), 333, 1000, 1.25, 2, 0.25));
                 this.tweens.add({
-                    targets: staticEnemy,
+                    targets: [static_object, static_image],
                     scaleX: 1.1,
                     scaleY: 1.1,
                     duration: 1000,
                     yoyo: true,
                     repeat: -1
                 });
-                this.visuals.push(staticEnemy);
+                this.visuals.push(static_image);
+                this.visuals.push(static_object);
                 break;
             case 3:
                 const player = new GameObject(this, WIDTH / 3, HEIGHT / 3, 'player');

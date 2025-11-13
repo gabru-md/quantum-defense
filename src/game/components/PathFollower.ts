@@ -58,7 +58,7 @@ export class PathFollower extends Component {
 
     private isWaveManagerStopped() {
         if (this.gameObject) {
-            let waveManager: WaveManager = (this.gameObject.scene as Level).waveManager;
+            const waveManager: WaveManager = (this.gameObject.scene as Level).waveManager;
             return waveManager && !waveManager.enabled;
         }
         return false;

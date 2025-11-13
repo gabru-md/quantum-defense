@@ -90,7 +90,7 @@ export class TowerManager extends Manager {
             this.level.state.money -= cost;
             this.level.hud.update();
         } else {
-            let moneyNeededToPlace = cost - this.level.state.money;
+            const moneyNeededToPlace = cost - this.level.state.money;
             this.level.hud.alert(`INSUFFICIENT BALANCE:\nNeed $${moneyNeededToPlace} to place tower!`, AppColors.UI_MESSAGE_WARN, 1000);
         }
     }

@@ -36,7 +36,7 @@ export class Bullet extends GameObject {
     }
 
     public destroyBullet(): void {
-        let visualPulseComponent = this.getComponent(VisualPulse);
+        const visualPulseComponent = this.getComponent(VisualPulse);
         if (visualPulseComponent) {
             visualPulseComponent.destroy();
         }

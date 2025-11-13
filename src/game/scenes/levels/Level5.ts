@@ -1,10 +1,11 @@
 import * as Phaser from 'phaser';
-import {Level} from './lib/Level.ts';
-import {GAME_HEIGHT, GAME_WIDTH} from "../scripts/Util.ts";
+import {Level} from '../lib/Level.ts';
+import {GAME_HEIGHT, GAME_WIDTH} from "../../scripts/Util.ts";
+import {LevelNames} from "./LevelNames.ts";
 
 export class Level5 extends Level {
     constructor() {
-        super('Level 5');
+        super(LevelNames.Breakthrough);
     }
 
     private firstPath(): Phaser.Curves.Path {
