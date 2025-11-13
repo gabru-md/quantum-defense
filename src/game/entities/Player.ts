@@ -19,6 +19,7 @@ export class Player extends GameObject {
         const body = this.body as Phaser.Physics.Arcade.Body;
         body.setCollideWorldBounds(true); // Keep player within game bounds
         body.setDrag(350); // Add some drag for smoother movement
+        this.setAlpha(0.8);
 
         // Add the PlayerController and BreatheOnHover
         this.addComponent(new PlayerController());

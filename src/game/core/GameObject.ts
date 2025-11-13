@@ -9,7 +9,7 @@ import {Level} from "../scenes/lib/Level.ts";
 export class GameObject extends Phaser.GameObjects.Sprite {
     private static nextId: number = 0; // Static counter for unique IDs
     public readonly id: number; // Unique identifier for this GameObject instance
-    private components: Component[] = [];
+    components: Component[] = [];
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
         super(scene, x, y, texture, frame);

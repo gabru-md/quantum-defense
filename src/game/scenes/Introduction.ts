@@ -141,7 +141,7 @@ export class Introduction extends Phaser.Scene {
                 this.visuals.push(staticEnemy);
                 break;
             case 3:
-                const player = new GameObject(this, WIDTH / 3, HEIGHT / 3, 'player').setAlpha(0.8);
+                const player = new GameObject(this, WIDTH / 3, HEIGHT / 3, 'player');
                 animateIn(player);
                 player.addComponent(new VisualPulse(phaserColor(AppColors.PLAYER), 500, 1000, 2, 2, 2));
                 this.visuals.push(player);
@@ -290,8 +290,9 @@ export class Introduction extends Phaser.Scene {
                 this.tweens.add({
                     targets: v,
                     y: v.y < HEIGHT / 2 ? -200 : HEIGHT + 200,
-                    duration: 3000,
+                    duration: 5000,
                     ease: 'Power2',
+                    delay: 1000,
                     onComplete: () => v.destroy()
                 });
             }

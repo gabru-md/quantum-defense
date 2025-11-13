@@ -139,21 +139,25 @@ export class PlayerWaveAmplifier extends Component {
                 let moneyNeededToRevive = reviveCost - this.gameObject.level.state.money;
                 this.gameObject.level.hud.alert(`INSUFFICIENT BALANCE:\nNeed $${moneyNeededToRevive} to revive tower!`, AppColors.UI_MESSAGE_WARN, 1000);
             }
-        } else {
-            // Damage special enemies within range
-            // @ts-ignore
-            this.specialEnemiesGroup.children.each((specialEnemyObject: Phaser.GameObjects.GameObject) => {
-                if (specialEnemyObject instanceof SpecialEnemy) {
-                    const specialEnemy = specialEnemyObject as SpecialEnemy;
-                    const distance = Phaser.Math.Distance.Between(this.gameObject.x, this.gameObject.y, specialEnemy.x, specialEnemy.y);
-                    if (distance <= this.activationRange) {
-                        const healthComponent = specialEnemy.getComponent(Health);
-                        if (healthComponent) {
-                            healthComponent.takeDamage(this.waveDamage);
-                        }
+        }
+
+        this.specialEnemiesGroup = this.gameObject.level.waveManager.specialEnemies;
+        // Damage special enemies within range
+        // @ts-ignore
+        this.specialEnemiesGroup.children.each((specialEnemyObject: Phaser.GameObjects.GameObject) => {
+            if (specialEnemyObject instanceof SpecialEnemy) {
+                const specialEnemy = specialEnemyObject as SpecialEnemy;
+                const distance = Phaser.Math.Distance.Between(this.gameObject.x, this.gameObject.y, specialEnemy.x, specialEnemy.y);
+                console.log(specialEnemy, distance);
+                if (distance <= this.activationRange) {
+                    const healthComponent = specialEnemy.getComponent(Health);
+                    if (healthComponent) {
+                        healthComponent.takeDamage(this.waveDamage);
+                        console.log('doing damage')
                     }
                 }
-            });
-        }
+            }
+        });
+
     }
 }
