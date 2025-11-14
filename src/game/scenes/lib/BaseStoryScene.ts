@@ -64,6 +64,18 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         createSpecialEnemyTexture(this, 'specialEnemy', 32, AppColors.SPECIAL_ENEMY);
     }
 
+    init(): void {
+        this.currentStep = 0;
+        this.steps = [];
+        this.visuals = [];
+        this.storyElements = [];
+        this.isTyping = false;
+        if (this.typingTimer) {
+            this.typingTimer.remove();
+            this.typingTimer = null;
+        }
+    }
+
     create(): void {
         this.cameras.main.setBackgroundColor(AppColors.GAME_BACKGROUND);
 
@@ -278,7 +290,6 @@ export abstract class BaseStoryScene extends Phaser.Scene {
 
     shutdown(): void {
         this.currentStep = 0;
-        this.steps = [];
         this.typingTimer?.remove();
         this.typingTimer = null;
         this.isTyping = false;
