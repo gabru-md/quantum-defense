@@ -142,7 +142,9 @@ export abstract class BaseStoryScene extends Phaser.Scene {
             wordWrap: {width: WIDTH - 100},
             fontStyle: 'bold',
         }).setOrigin(0.5).setDepth(200).setAlpha(0);
-        this.audioManager.playSound(this.getCurrentStepAudio(), {volume:0.5, detune: 200});
+
+        // These are the title sounds
+        this.audioManager.playHeavySound(this.getCurrentStepAudio());
 
 
         const textBounds = this.titleText.getBounds();
@@ -266,7 +268,12 @@ export abstract class BaseStoryScene extends Phaser.Scene {
             },
             repeat: fullText.length // Repeat for each character
         });
-        this.audioManager.playSound(this.getCurrentStepAudio(), {volume: 0.5, detune: 200 });
+        if(this.scene.key === getStoryName(LevelNames.Introduction)) {
+            this.audioManager.playHeavySound(this.getCurrentStepAudio());
+        } else {
+            // Play light sound during narration always
+            this.audioManager.playLightSound(this.getCurrentStepAudio());
+        }
     }
 
     shutdown(): void {

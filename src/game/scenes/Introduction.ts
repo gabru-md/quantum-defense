@@ -209,15 +209,7 @@ export class Introduction extends BaseStoryScene {
 
     shutdown(): void {
         super.shutdown();
-        this.textures.remove('nexus');
-        this.textures.remove('static');
-        this.textures.remove('player');
-        this.textures.remove('enemy1');
-        this.textures.remove('enemy2');
-        this.textures.remove('enemy3');
-        this.textures.remove('tower1');
-        this.textures.remove('tower2');
-        this.textures.remove('tower3');
-        this.textures.remove('specialEnemy');
+        // Removed texture removal to prevent race conditions and texture-not-found errors on scene restart.
+        // Textures will be overwritten by the next scene's preload method, which is safe.
     }
 }

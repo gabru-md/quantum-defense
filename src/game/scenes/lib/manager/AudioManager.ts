@@ -1,5 +1,5 @@
-import { Manager } from '../Manager';
-import { State } from '../State.ts';
+import {Manager} from '../Manager';
+import {State} from '../State.ts';
 
 export class AudioManager extends Manager {
     private backgroundMusic: Phaser.Sound.BaseSound | null = null;
@@ -59,7 +59,7 @@ export class AudioManager extends Manager {
         this.level.load.audio('Story_TheCliffhanger_1', 'assets/narration/Story_TheCliffhanger_Title.wav');
     }
 
-    public playSound(key: string, config?: { volume?: number; detune?: number }): void {
+    public playSound(key: string, config?: { volume?: number; detune?: number; rate?: number}): void {
         const gameState = this.level.sys.registry.get('gameState');
         if ((gameState as State).soundEnabled) {
             // clear any playing sound
@@ -70,9 +70,18 @@ export class AudioManager extends Manager {
             }
             this.level.sound.play(key, {
                 volume: config?.volume ?? 1,
-                detune: config?.detune ?? 0,
+                detune: config?.detune ?? -600,
+                rate: config?.rate ?? 1
             });
         }
+    }
+
+    public playHeavySound(key: string) {
+        return this.playSound(key, {volume:0.5, detune: -600, rate: 1.25});
+    }
+
+    public playLightSound(key: string) {
+        return this.playSound(key, {volume:0.4, detune: 200, rate: 1});
     }
 
     public playMusic(key: string, loop: boolean = true): void {
@@ -81,7 +90,7 @@ export class AudioManager extends Manager {
             if (this.backgroundMusic) {
                 this.backgroundMusic.stop();
             }
-            this.backgroundMusic = this.level.sound.add(key, { loop });
+            this.backgroundMusic = this.level.sound.add(key, {loop});
             this.backgroundMusic.play();
         }
     }
