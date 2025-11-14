@@ -149,7 +149,7 @@ export class StoryLevel3 extends BaseStoryScene {
                     },
                 },
                 {
-                    text: 'The Phantom disables all towers near itself.',
+                    text: 'It disables all towers',
                     action: scene => {
                         const tower1 = scene.add.sprite(WIDTH / 2 - 100, (HEIGHT * 3) / 4 - 100, 'tower1').setAlpha(0.3);
                         const tower2 = scene.add.sprite(WIDTH / 2, (HEIGHT * 3) / 4 - 100, 'tower2').setAlpha(0.3);
@@ -199,7 +199,7 @@ export class StoryLevel4 extends BaseStoryScene {
                     },
                 },
                 {
-                    text: 'But with your help I can sample the remains of Phantom.',
+                    text: 'But with your help We can sample the remains of Phantom.',
                     action: scene => {
                         const phantom = new GameObject(scene, WIDTH / 2, HEIGHT / 2 - 100, 'specialEnemy').setAlpha(0.8);
                         scene.animateIn(phantom);

@@ -305,7 +305,7 @@ export class MenuScene extends Phaser.Scene {
             targets: this.menuElements,
             alpha: 0,
             ease: 'Power2',
-            duration: 1500, // Animation duration in milliseconds
+            duration: 500, // Animation duration in milliseconds
             onComplete: () => {
                 this.scene.start(sceneKey);
             },

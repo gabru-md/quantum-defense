@@ -1,5 +1,5 @@
-import {Manager} from '../Manager';
-import {State} from "../State.ts";
+import { Manager } from '../Manager';
+import { State } from '../State.ts';
 
 export class AudioManager extends Manager {
     private backgroundMusic: Phaser.Sound.BaseSound | null = null;
@@ -26,6 +26,7 @@ export class AudioManager extends Manager {
         this.level.load.audio('Story_HelloGenie_1', 'assets/music/Story_HelloGenie_Title.wav');
         this.level.load.audio('Story_HelloGenie_2', 'assets/music/Story_HelloGenie_1.wav');
         this.level.load.audio('Story_HelloGenie_3', 'assets/music/Story_HelloGenie_2.wav');
+        this.level.load.audio('Story_HelloGenie_4', 'assets/music/Story_HelloGenie_3.wav');
 
         // Audio for TrustMe
         this.level.load.audio('Story_TrustMe_1', 'assets/music/Story_TrustMe_Title.wav');
@@ -39,7 +40,6 @@ export class AudioManager extends Manager {
         this.level.load.audio('Story_ThePhantom_4', 'assets/music/Story_ThePhantom_3.wav');
         this.level.load.audio('Story_ThePhantom_5', 'assets/music/Story_ThePhantom_4.wav');
         this.level.load.audio('Story_ThePhantom_6', 'assets/music/Story_ThePhantom_5.wav');
-
 
         // Audio for RiseOfStatic
         this.level.load.audio('Story_RiseOfStatic_1', 'assets/music/Story_RiseOfStatic_Title.wav');
@@ -59,15 +59,17 @@ export class AudioManager extends Manager {
         this.level.load.audio('Story_TheCliffhanger_1', 'assets/music/Story_TheCliffhanger_Title.wav');
     }
 
-    public playSound(key: string): void {
+    public playSound(key: string, config?: { volume?: number; detune?: number }): void {
         const gameState = this.level.sys.registry.get('gameState');
         if ((gameState as State).soundEnabled) {
-            // check if key exists otherwise console.warn
             if (!this.level.cache.audio.exists(key)) {
-                console.warn(`Could not find ${key} in AudioManager.`)
+                console.warn(`Could not find ${key} in AudioManager.`);
                 return;
             }
-            this.level.sound.play(key);
+            this.level.sound.play(key, {
+                volume: config?.volume ?? 1,
+                detune: config?.detune ?? 0,
+            });
         }
     }
 
@@ -77,7 +79,7 @@ export class AudioManager extends Manager {
             if (this.backgroundMusic) {
                 this.backgroundMusic.stop();
             }
-            this.backgroundMusic = this.level.sound.add(key, {loop});
+            this.backgroundMusic = this.level.sound.add(key, { loop });
             this.backgroundMusic.play();
         }
     }
