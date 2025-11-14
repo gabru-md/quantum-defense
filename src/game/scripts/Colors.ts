@@ -27,8 +27,8 @@ export const AppColors = {
 
     // Path Colors
     PATH_LINE: '#888888',
-    PATH_START: '#3498db',
-    PATH_END: '#2ecc71',
+    PATH_START: '#8A2BE2', // Blue-Violet for Static
+    PATH_END: '#017878', // Inner rings are white/bright
 
     // Enemy Colors
     ENEMY_NORMAL: '#3498db', // Blue (Square)

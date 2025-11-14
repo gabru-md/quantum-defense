@@ -131,7 +131,7 @@ export abstract class Level extends Phaser.Scene {
         this.levelElements.forEach((el) => (el as GameObject).setAlpha(0));
 
         let delay = 0;
-        const fadeIn = (elements: Phaser.GameObjects.GameObject[] | Phaser.GameObjects.GameObject, duration = 500) => {
+        const fadeIn = (elements: Phaser.GameObjects.GameObject[] | Phaser.GameObjects.GameObject, duration = 100) => {
             this.time.delayedCall(delay, () => {
                 this.tweens.add({
                     targets: elements,
@@ -199,7 +199,7 @@ export abstract class Level extends Phaser.Scene {
             targets: allActiveElements,
             alpha: 0,
             ease: 'Power2',
-            duration: 1500,
+            duration: 500,
             onComplete: () => {
                 this.scene.stop(this.scene.key);
                 this.scene.start(sceneKey);

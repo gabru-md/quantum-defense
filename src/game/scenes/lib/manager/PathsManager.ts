@@ -27,10 +27,10 @@ export class PathsManager extends Manager {
 
             // Draw start and end points
             const startPoint = this.paths[pathsKey].getStartPoint();
-            startZoneElements.push(...this.drawZone(startPoint, AppColors.PATH_START, 'START'));
+            startZoneElements.push(...this.drawZone(startPoint, AppColors.PATH_START));
 
             const endPoint = this.paths[pathsKey].getEndPoint();
-            endZoneElements.push(...this.drawZone(endPoint, AppColors.PATH_END, 'BASE'));
+            endZoneElements.push(...this.drawZone(endPoint, AppColors.PATH_END));
         }
 
         return {
@@ -40,7 +40,7 @@ export class PathsManager extends Manager {
         };
     }
 
-    private drawZone(point: Phaser.Math.Vector2, color: string, label: string): Phaser.GameObjects.GameObject[] {
+    private drawZone(point: Phaser.Math.Vector2, color: string): Phaser.GameObjects.GameObject[] {
         const zoneRadius = 40;
         const graphics = this.level.add.graphics();
         graphics.setDepth(1); // Ensure it's behind enemies but above the path line
@@ -61,16 +61,7 @@ export class PathsManager extends Manager {
         graphics.lineStyle(0.5, phaserColor(color), 1);
         graphics.strokeCircle(point.x, point.y, zoneRadius);
 
-        // Add label
-        const labelText = this.level.add
-            .text(point.x, point.y, label, {
-                font: '16px',
-                color: AppColors.UI_TEXT,
-            })
-            .setOrigin(0.5)
-            .setDepth(2);
-
-        return [graphics, labelText];
+        return [graphics];
     }
 
     destroy(): void {
