@@ -9,15 +9,20 @@ export class MenuScene extends Phaser.Scene {
     private gameState!: State;
     private difficultyText!: Phaser.GameObjects.Text;
     private soundText!: Phaser.GameObjects.Text;
-    private menuElements: Phaser.GameObjects.GameObject[] = []; // Added to store all elements for animation
+    private menuElements: Phaser.GameObjects.GameObject[] = [];
 
     constructor() {
         super({ key: 'MenuScene' });
     }
 
     init(): void {
-        this.gameState = new State(100, 350, 'Menu');
-        this.sys.registry.set('gameState', this.gameState);
+        // Retrieve the shared game state from the registry, or create it if it doesn't exist.
+        let gameState = this.sys.registry.get('gameState');
+        if (!gameState) {
+            gameState = new State(100, 350, 'Menu');
+            this.sys.registry.set('gameState', gameState);
+        }
+        this.gameState = gameState;
     }
 
     preload(): void {
@@ -36,6 +41,13 @@ export class MenuScene extends Phaser.Scene {
     }
 
     create(): void {
+        // --- Unlock Audio on First Interaction ---
+        this.input.once('pointerdown', () => {
+            if (this.sound.context.state === 'suspended') {
+                this.sound.context.resume();
+            }
+        });
+
         this.cameras.main.setBackgroundColor(AppColors.GAME_BACKGROUND);
 
         // --- Dynamic Background Grid ---
@@ -84,7 +96,7 @@ export class MenuScene extends Phaser.Scene {
 
         // --- Credits Button ---
         this.createButton(WIDTH / 2, 900, 'CREDITS', () => {
-            this.easeOutAndStartScene('CreditsScene'); // Use easeOutAndStartScene
+            this.easeOutAndStartScene('CreditsScene');
         });
     }
 
@@ -96,7 +108,6 @@ export class MenuScene extends Phaser.Scene {
         const gameAreaBottom = GAME_HEIGHT;
 
         for (let i = 0; i < 2; i++) {
-            // Randomize coordinates for enemies
             this.addAnimatedElement(
                 'enemy1_menu',
                 Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50),
@@ -125,7 +136,6 @@ export class MenuScene extends Phaser.Scene {
                 Phaser.Math.Between(0.7, 1.7),
                 Phaser.Math.Between(1750, 2500)
             );
-            // Randomize coordinates for towers
             this.addAnimatedElement(
                 'tower1_menu',
                 Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50),
@@ -147,7 +157,6 @@ export class MenuScene extends Phaser.Scene {
                 Phaser.Math.Between(0.7, 1.7),
                 Phaser.Math.Between(1750, 2500)
             );
-            // Player
             this.addAnimatedElement(
                 'player_menu',
                 Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50),
@@ -166,7 +175,7 @@ export class MenuScene extends Phaser.Scene {
                 alpha: 0.1,
             },
         });
-        this.menuElements.push(gridGraphics); // Added to menuElements
+        this.menuElements.push(gridGraphics);
         const gridSize = 5;
 
         for (let x = 0; x < WIDTH; x += gridSize) {
@@ -176,7 +185,6 @@ export class MenuScene extends Phaser.Scene {
             gridGraphics.lineBetween(0, y, WIDTH, y);
         }
 
-        // Simple scroll animation
         this.tweens.add({
             targets: gridGraphics,
             x: { from: 0, to: -gridSize },
@@ -196,9 +204,8 @@ export class MenuScene extends Phaser.Scene {
         const targetY = y + randomOffsetY;
 
         const element = this.add.image(x, y, key).setScale(scale).setAlpha(0.7).setDepth(-1);
-        this.menuElements.push(element); // Added to menuElements
+        this.menuElements.push(element);
 
-        // 4. Create the Tween
         this.tweens.add({
             targets: element,
             x: targetX,
@@ -222,7 +229,7 @@ export class MenuScene extends Phaser.Scene {
         panelGraphics.fillRect(x - width / 2, y - height / 2, width, height);
         panelGraphics.lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1);
         panelGraphics.strokeRect(x - width / 2, y - height / 2, width, height);
-        this.menuElements.push(panelGraphics); // Added to menuElements
+        this.menuElements.push(panelGraphics);
 
         const panelTitle = this.add
             .text(x, y - height / 2 + 25, title, {
@@ -231,7 +238,7 @@ export class MenuScene extends Phaser.Scene {
                 align: 'center',
             })
             .setOrigin(0.5);
-        this.menuElements.push(panelTitle); // Added to menuElements
+        this.menuElements.push(panelTitle);
 
         const separatorGraphics = this.add
             .graphics()
@@ -241,7 +248,7 @@ export class MenuScene extends Phaser.Scene {
             .lineTo(x + width / 2, y - height / 2 + 45)
             .closePath()
             .stroke();
-        this.menuElements.push(separatorGraphics); // Added to menuElements
+        this.menuElements.push(separatorGraphics);
 
         contentCallback(x, y - height / 2 + 70);
     }
@@ -259,7 +266,7 @@ export class MenuScene extends Phaser.Scene {
         button.on('pointerover', () => button.setColor(AppColors.UI_ACCENT));
         button.on('pointerout', () => button.setColor(AppColors.UI_TEXT));
         button.on('pointerdown', callback);
-        this.menuElements.push(button); // Added to menuElements
+        this.menuElements.push(button);
         return button;
     }
 
@@ -278,7 +285,7 @@ export class MenuScene extends Phaser.Scene {
         levelKeys.forEach((key, index) => {
             this.createButton(x, currentY + index * buttonSpacing, key, () => {
                 this.gameState.level = key;
-                this.easeOutAndStartScene(getStoryName(key)); // Changed to use easeOutAndStartScene
+                this.easeOutAndStartScene(getStoryName(key));
             });
         });
     }
@@ -305,7 +312,7 @@ export class MenuScene extends Phaser.Scene {
             targets: this.menuElements,
             alpha: 0,
             ease: 'Power2',
-            duration: 500, // Animation duration in milliseconds
+            duration: 500,
             onComplete: () => {
                 this.scene.start(sceneKey);
             },

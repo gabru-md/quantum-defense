@@ -32,7 +32,7 @@ export abstract class Level extends Phaser.Scene {
     playerManager: PlayerManager;
     audioManager: AudioManager;
     isLoaded: boolean = false;
-    protected levelElements: Phaser.GameObjects.GameObject[] = []; // Stores static elements for fade in/out
+    protected levelElements: Phaser.GameObjects.GameObject[] = [];
 
     abstract getWaveConfig(wave: number): {
         type: string;
@@ -61,12 +61,18 @@ export abstract class Level extends Phaser.Scene {
     }
 
     init(): void {
-        if (this.scene.key === LevelNames.Introduction) {
-            this.state = new State(100, 1000, this.scene.key);
-        } else {
+        // Always retrieve the shared game state from the registry.
+        this.state = this.sys.registry.get('gameState');
+        if (!this.state) {
+            // This is a fallback in case a level is loaded directly without going through the menu.
             this.state = new State(100, 350, this.scene.key);
+            this.sys.registry.set('gameState', this.state);
         }
+
+        // Reset level-specific properties while preserving global settings.
         this.state.level = this.scene.key;
+        this.state.baseHealth = 100;
+        this.state.money = this.scene.key === LevelNames.Introduction ? 1000 : 350;
     }
 
     public preload(): void {
@@ -93,7 +99,6 @@ export abstract class Level extends Phaser.Scene {
         });
 
         this.events.on('gameOver', this.handleGameOver, this);
-
         this.events.on('shutdown', this.shutdown, this);
     }
 
@@ -202,8 +207,6 @@ export abstract class Level extends Phaser.Scene {
     }
 
     private shutdown(): void {
-        // Removed texture removal to prevent race conditions and texture-not-found errors on scene restart.
-        // Textures will be overwritten by the next scene's preload method, which is safe.
         this.waveManager.destroy();
         this.towerManager.destroy();
         this.hud.destroy();
@@ -211,25 +214,16 @@ export abstract class Level extends Phaser.Scene {
     }
 
     private createTextures(): void {
-        // --- Enemies ---
         createEnemyTexture(this, 'enemy1', 32, AppColors.ENEMY_NORMAL);
         createEnemyTexture(this, 'enemy2', 24, AppColors.ENEMY_FAST);
         createEnemyTexture(this, 'enemy3', 40, AppColors.ENEMY_TANK);
-
-        // --- Towers ---
         createTowerTexture(this, 'tower1', 32, AppColors.TOWER_LASER);
         createTowerTexture(this, 'tower2', 32, AppColors.TOWER_BOMB);
         createTowerTexture(this, 'tower3', 32, AppColors.TOWER_SLOW);
-
-        // --- Projectiles ---
         createBulletTexture(this, 'bullet', 10, AppColors.BULLET_LASER);
         createBombTexture(this, 'bomb', 16, AppColors.BULLET_BOMB);
-
-        // --- Player & Special Enemy ---
         createPlayerTexture(this, 'player', 24, AppColors.PLAYER);
         createSpecialEnemyTexture(this, 'specialEnemy', 24, AppColors.SPECIAL_ENEMY);
-
-        // --- UI & Effects ---
         createPlaceholderTexture(this, 'towerSlot', 32, 32, AppColors.UI_DISABLED);
         createRangePreviewTexture(this, 'rangePreview', 300, 'rgba(255, 255, 255, 0.05)');
     }
