@@ -1,7 +1,14 @@
 import Phaser from 'phaser';
 import {Level} from '../Level.ts';
 import {Manager} from '../Manager.ts';
-import {GAME_HEIGHT, GAME_WIDTH, TOWER1_COST, TOWER2_COST, TOWER3_COST, WIDTH} from '../../../scripts/Util.ts';
+import {
+    GAME_HEIGHT,
+    GAME_WIDTH,
+    TOWER1_COST,
+    TOWER2_COST,
+    TOWER3_COST,
+    WIDTH
+} from '../../../scripts/Util.ts';
 import {AppColors, phaserColor} from '../../../scripts/Colors.ts';
 
 export class HudManager extends Manager {
@@ -20,6 +27,7 @@ export class HudManager extends Manager {
             textObjects: Phaser.GameObjects.Text[];
         };
     } = {};
+    private deselectButton!: Phaser.GameObjects.Text;
     private helpTextPanel!: Phaser.GameObjects.Text;
 
     constructor(public scene: Level) {
@@ -60,6 +68,7 @@ export class HudManager extends Manager {
         this.rangePreview.destroy();
         this.selectionIndicator.destroy();
         this.helpTextPanel.destroy();
+        this.deselectButton.destroy();
         for (const key in this.towerSelectionButtons) {
             this.towerSelectionButtons[key].button.destroy();
             this.towerSelectionButtons[key].panel.destroy();
@@ -151,12 +160,19 @@ export class HudManager extends Manager {
         this.createTowerButton(hudX + 15, startY + 50, 'tower1', TOWER1_COST, 'DMG: 25 | FR: 5/s', 'Laser Tower');
         this.createTowerButton(hudX + 15, startY + 150, 'tower2', TOWER2_COST, 'DMG: 75 | AoE: 80', 'Bomb Tower');
         this.createTowerButton(hudX + 15, startY + 250, 'tower3', TOWER3_COST, 'Slow: 50% | Range: 100', 'Slowing Tower');
+        
+        this.deselectButton = this.scene.add.text(hudX + 50, startY + 375, 'CLEAR TOWER SELECTION', { font: '18px', color: AppColors.GAME_BACKGROUND, backgroundColor: AppColors.UI_ACCENT, padding: {x: 10, y: 5} }).setDepth(100);
+        this.deselectButton.setInteractive({ useHandCursor: true });
+        this.deselectButton.on('pointerdown', () => {
+            this.scene.state.selectedTowerType = 'none';
+            this.scene.events.emit('towerSelected', 'none');
+        });
 
         // Selection Indicator
         this.selectionIndicator = this.scene.add.graphics().setDepth(101);
         this.updateSelectionIndicator('tower1');
 
-        this.helpTextPanel = this.scene.add.text(hudX + 15, startY + panelHeight - 80, '', { font: '14px', color: AppColors.UI_TEXT, wordWrap: {width: panelWidth - 30} }).setDepth(100);
+        this.helpTextPanel = this.scene.add.text(hudX + 15, startY + panelHeight - 100, '', { font: '14px', color: AppColors.UI_TEXT, wordWrap: {width: panelWidth - 30} }).setDepth(100);
 
         this.rangePreview = this.scene.add.sprite(0, 0, 'rangePreview').setVisible(false).setDepth(0);
 
@@ -164,7 +180,7 @@ export class HudManager extends Manager {
         for (const key in this.towerSelectionButtons) {
             elements.push(this.towerSelectionButtons[key].button, this.towerSelectionButtons[key].panel, ...this.towerSelectionButtons[key].textObjects);
         }
-        return elements;
+        return [...elements, this.deselectButton];
     }
 
     private createTowerButton(x: number, y: number, towerKey: string, cost: number, stats: string, name: string) {
