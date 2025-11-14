@@ -1,13 +1,13 @@
-import { Level } from '../Level.ts';
-import { Bullet } from '../../../entities/Bullet.ts';
+import {Level} from '../Level.ts';
+import {Bullet} from '../../../entities/Bullet.ts';
 import Phaser from 'phaser';
-import { GameObject } from '../../../core/GameObject.ts';
-import { Enemy } from '../../../entities/Enemy.ts';
-import { Bomb } from '../../../entities/Bomb.ts';
-import { SpecialEnemy } from '../../../entities/SpecialEnemy.ts'; // Import SpecialEnemy
-import { Player } from '../../../entities/Player.ts';
-import { Manager } from '../Manager.ts';
-import { Tower } from '../../../entities/Tower.ts';
+import {GameObject} from '../../../core/GameObject.ts';
+import {Enemy} from '../../../entities/Enemy.ts';
+import {Bomb} from '../../../entities/Bomb.ts';
+import {SpecialEnemy} from '../../../entities/SpecialEnemy.ts'; // Import SpecialEnemy
+import {Player} from '../../../entities/Player.ts';
+import {Manager} from '../Manager.ts';
+import {Tower} from '../../../entities/Tower.ts';
 
 export class CollisionManager extends Manager {
     constructor(protected level: Level) {
@@ -19,47 +19,42 @@ export class CollisionManager extends Manager {
         this.level.physics.add.overlap(
             this.level.towerManager.bullets,
             this.level.waveManager.enemies,
-            this.handleBulletEnemyCollision,
+            this.handleBulletEnemyCollision as Phaser.Types.Physics.Arcade.ArcadePhysicsCallback,
             undefined,
             this
         );
-        // @ts-ignore
         this.level.physics.add.overlap(
             this.level.towerManager.bullets,
             this.level.waveManager.specialEnemies,
-            this.handleBulletSpecialEnemyCollision,
+            this.handleBulletSpecialEnemyCollision as Phaser.Types.Physics.Arcade.ArcadePhysicsCallback,
             undefined,
             this
-        ); // New collision
-        // @ts-ignore
+        );
         this.level.physics.add.overlap(
             this.level.towerManager.bombs,
             this.level.waveManager.enemies,
-            this.handleBombEnemyCollision,
+            this.handleBombEnemyCollision as Phaser.Types.Physics.Arcade.ArcadePhysicsCallback,
             undefined,
             this
         );
-        // @ts-ignore
         this.level.physics.add.overlap(
             this.level.towerManager.bombs,
             this.level.waveManager.specialEnemies,
-            this.handleBombSpecialEnemyCollision,
-            undefined,
-            this
-        ); // New collision
-        // @ts-ignore
-        this.level.physics.add.overlap(
-            this.level.towerManager.bullets,
-            this.level.playerManager.player,
-            this.handleBulletPlayerCollision,
+            this.handleBombSpecialEnemyCollision as Phaser.Types.Physics.Arcade.ArcadePhysicsCallback,
             undefined,
             this
         );
-        // @ts-ignore
+        this.level.physics.add.overlap(
+            this.level.towerManager.bullets,
+            this.level.playerManager.player,
+            this.handleBulletPlayerCollision as Phaser.Types.Physics.Arcade.ArcadePhysicsCallback,
+            undefined,
+            this
+        );
         this.level.physics.add.overlap(
             this.level.towerManager.bullets,
             this.level.towerManager.towers,
-            this.handleBulletTowerCollision,
+            this.handleBulletTowerCollision as Phaser.Types.Physics.Arcade.ArcadePhysicsCallback,
             undefined,
             this
         );

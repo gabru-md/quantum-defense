@@ -19,7 +19,6 @@ import {
     createSpecialEnemyTexture,
     createTowerTexture,
 } from '../../scripts/TextureUtils';
-import { GameObject } from '../../core/GameObject.ts';
 import { LevelNames } from './LevelNames.ts';
 
 export abstract class Level extends Phaser.Scene {
@@ -61,15 +60,12 @@ export abstract class Level extends Phaser.Scene {
     }
 
     init(): void {
-        // Always retrieve the shared game state from the registry.
         this.state = this.sys.registry.get('gameState');
         if (!this.state) {
-            // This is a fallback in case a level is loaded directly without going through the menu.
             this.state = new State(100, 350, this.scene.key);
             this.sys.registry.set('gameState', this.state);
         }
 
-        // Reset level-specific properties while preserving global settings.
         this.state.level = this.scene.key;
         this.state.baseHealth = 100;
         this.state.money = this.scene.key === LevelNames.Introduction ? 1000 : 350;
@@ -111,9 +107,9 @@ export abstract class Level extends Phaser.Scene {
             hudSeparators: Phaser.GameObjects.Graphics[];
         },
         pathElements: {
-            path: Phaser.GameObjects.Graphics;
-            start: Phaser.GameObjects.GameObject[];
-            end: Phaser.GameObjects.GameObject[];
+            path: Phaser.GameObjects.Graphics[];
+            start: Phaser.GameObjects.Graphics[];
+            end: Phaser.GameObjects.Graphics[];
         },
         player: Phaser.GameObjects.GameObject
     ) {
@@ -122,14 +118,15 @@ export abstract class Level extends Phaser.Scene {
             ...hudElements.towers,
             ...hudElements.help,
             ...hudElements.separators,
-            pathElements.path,
-            ...pathElements.start,
-            ...pathElements.end,
+            ...pathElements.path,   // Correctly spread the path graphics array
+            ...pathElements.start, // Correctly spread the start graphics array
+            ...pathElements.end,   // Correctly spread the end graphics array
             player,
             ...hudElements.hudSeparators,
         ];
 
-        this.levelElements.forEach((el) => (el as GameObject).setAlpha(0));
+        // @ts-ignore
+        this.levelElements.forEach((el) => (el as Phaser.GameObjects.GameObject).setAlpha(0));
 
         let delay = 0;
         const fadeIn = (elements: Phaser.GameObjects.GameObject[] | Phaser.GameObjects.GameObject, duration = 500) => {
@@ -156,7 +153,7 @@ export abstract class Level extends Phaser.Scene {
 
         this.time.delayedCall(delay, () => {
             this.isLoaded = true;
-            if (this.scene.key !== LevelNames.Introduction) {
+            if (this.scene.key !== LevelNames.Introduction && this.scene.key !== LevelNames.Introduction) {
                 this.time.delayedCall(2000, () => {
                     this.hud.info('Incoming First Wave', AppColors.UI_MESSAGE_ERROR, () => {
                         this.waveManager.startWave(1);
@@ -184,7 +181,7 @@ export abstract class Level extends Phaser.Scene {
         });
     }
 
-    protected easeOutAndStartNextScene(sceneKey: string): void {
+    easeOutAndStartNextScene(sceneKey: string): void {
         const allActiveElements: Phaser.GameObjects.GameObject[] = [
             ...this.levelElements,
             ...this.towerManager.towers.getChildren(),
@@ -206,7 +203,7 @@ export abstract class Level extends Phaser.Scene {
         });
     }
 
-    private shutdown(): void {
+    protected shutdown(): void {
         this.waveManager.destroy();
         this.towerManager.destroy();
         this.hud.destroy();

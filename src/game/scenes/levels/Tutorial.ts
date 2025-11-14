@@ -1,19 +1,40 @@
-import * as Phaser from 'phaser';
 import {Level} from '../lib/Level.ts';
-import {GAME_HEIGHT, GAME_WIDTH} from '../../scripts/Util.ts';
-import {AppColors} from '../../scripts/Colors.ts';
-import {getStoryName, LevelNames} from "../lib/LevelNames.ts";
+import {AppColors, phaserColor} from '../../scripts/Colors.ts';
+import {GAME_HEIGHT, GAME_WIDTH, HEIGHT, WIDTH} from '../../scripts/Util.ts';
+import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
+import Phaser from 'phaser';
+
+type TutorialStep = {
+    text: string;
+    action?: () => void;
+    markerConfig?: { x1: number; y1: number; x2: number; y2: number; text: string };
+    isHudInfo?: boolean;
+    waitForSpacePress: boolean;
+};
 
 export class Tutorial extends Level {
-    private tutorialStep = 0;
+    private tutorialText!: Phaser.GameObjects.Text;
+    private marker!: Phaser.GameObjects.Container;
+    private spacebarText!: Phaser.GameObjects.Text;
+    private hudElements!: {
+        stats: Phaser.GameObjects.GameObject[];
+        towers: Phaser.GameObjects.GameObject[];
+        help: Phaser.GameObjects.GameObject[];
+        separators: Phaser.GameObjects.Graphics[];
+        hudSeparators: Phaser.GameObjects.Graphics[];
+    };
+    private pathElements!: {
+        path: Phaser.GameObjects.Graphics[];
+        start: Phaser.GameObjects.Graphics[];
+        end: Phaser.GameObjects.Graphics[];
+    };
 
     constructor() {
         super(LevelNames.Introduction);
     }
 
-    create(): void {
-        super.create();
-        this.startNextStep();
+    nextScene(): string {
+        return getStoryName(LevelNames.HelloGenie);
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {
@@ -22,224 +43,386 @@ export class Tutorial extends Level {
         return {path1: path};
     }
 
-    public getWaveConfig(wave: number): {
-        type: string;
-        texture: string;
-        count: number;
-        delay: number;
-        health: number;
-        speed: number;
-        moneyValue: number;
-        path: string;
-    }[] {
+    getWaveConfig(wave: number) {
         switch (wave) {
-            case 1: // First enemy
-                return [
-                    {
-                        type: 'enemy',
-                        texture: 'enemy1',
-                        count: 1,
-                        delay: 1000,
-                        health: 100,
-                        speed: 70,
-                        moneyValue: 10,
-                        path: 'path1',
-                    },
-                ];
-            case 2: // Second enemy
-                return [
-                    {
-                        type: 'enemy',
-                        texture: 'enemy2',
-                        count: 1,
-                        delay: 1000,
-                        health: 100,
-                        speed: 130,
-                        moneyValue: 10,
-                        path: 'path1',
-                    },
-                ];
-            case 3: // Third enemy
-                return [
-                    {
-                        type: 'enemy',
-                        texture: 'enemy3',
-                        count: 1,
-                        delay: 1000,
-                        health: 100,
-                        speed: 50,
-                        moneyValue: 10,
-                        path: 'path1',
-                    },
-                ];
-            case 4: // First special enemy
-                return [
-                    {
-                        type: 'specialEnemy',
-                        texture: 'specialEnemy',
-                        count: 1,
-                        delay: 1000,
-                        health: 100,
-                        speed: 80,
-                        moneyValue: 25,
-                        path: 'path1',
-                    },
-                ];
-            case 5: // Final tutorial wave
+            case 1:
+                return [{
+                    type: 'enemy',
+                    texture: 'enemy1',
+                    count: 5,
+                    delay: 1000,
+                    health: 50,
+                    speed: 50,
+                    moneyValue: 10,
+                    path: 'path1'
+                }];
+            case 2:
+                return [{
+                    type: 'enemy',
+                    texture: 'enemy2',
+                    count: 5,
+                    delay: 800,
+                    health: 40,
+                    speed: 80,
+                    moneyValue: 15,
+                    path: 'path1'
+                }];
+            case 3:
+                return [{
+                    type: 'enemy',
+                    texture: 'enemy3',
+                    count: 3,
+                    delay: 1500,
+                    health: 200,
+                    speed: 40,
+                    moneyValue: 25,
+                    path: 'path1'
+                }];
+            case 4:
+                return [{
+                    type: 'specialEnemy',
+                    texture: 'specialEnemy',
+                    count: 1,
+                    delay: 1000,
+                    health: 50,
+                    speed: 60,
+                    moneyValue: 100,
+                    path: 'path1'
+                }];
+            case 5:
                 return [
                     {
                         type: 'enemy',
                         texture: 'enemy1',
                         count: 5,
                         delay: 1000,
-                        health: 100,
-                        speed: 70,
+                        health: 50,
+                        speed: 50,
                         moneyValue: 10,
-                        path: 'path1',
+                        path: 'path1'
                     },
                     {
                         type: 'enemy',
                         texture: 'enemy2',
                         count: 3,
-                        delay: 1000,
-                        health: 130,
-                        speed: 50,
-                        moneyValue: 10,
-                        path: 'path1',
-                    },
-                    {
-                        type: 'enemy',
-                        texture: 'enemy3',
-                        count: 1,
-                        delay: 1000,
-                        health: 100,
-                        speed: 50,
-                        moneyValue: 10,
-                        path: 'path1',
-                    },
-                    {
-                        type: 'specialEnemy',
-                        texture: 'specialEnemy',
-                        count: 1,
-                        delay: 1000,
-                        health: 100,
-                        speed: 70,
-                        moneyValue: 25,
-                        path: 'path1',
-                    },
+                        delay: 1200,
+                        health: 40,
+                        speed: 80,
+                        moneyValue: 15,
+                        path: 'path1'
+                    }
                 ];
             default:
                 return [];
         }
     }
 
-    private startNextStep(): void {
-        switch (this.tutorialStep) {
-            case 0:
-                this.hud.info('Welcome to Quantum Defense.', AppColors.UI_MESSAGE_INFO, () => {
-                    this.hud.info('Use WASD to move your character.', AppColors.UI_MESSAGE_INFO, () => {
-                        this.events.once('playerMoved', () => {
-                            this.hud.info(
-                                "Amazing! Let's learn how to build towers.",
-                                AppColors.UI_MESSAGE_INFO,
-                                () => {
-                                    this.startNextStep();
-                                }
-                            );
-                        });
-                    });
-                });
-                break;
-            case 1:
-                this.hud.info(
-                    'An enemy is coming! Select a tower from the HUD on the right.',
-                    AppColors.UI_MESSAGE_INFO,
-                    () => {
-                        this.waveManager.startWave(1);
-                        this.events.once('towerPlaced', () => this.startNextStep());
-                    }
-                );
-                break;
-            case 2:
-                this.hud.info('Great! Your tower will now attack enemies in range.', AppColors.UI_MESSAGE_INFO, () => {
-                    this.events.once('enemyDied', () => this.startNextStep());
-                });
-                break;
-            case 3:
-                this.hud.info('Here comes another type of enemy, This one is fast!', AppColors.UI_MESSAGE_INFO, () => {
-                    this.waveManager.startWave(2);
-                    this.events.once('enemyDied', () => this.startNextStep());
-                });
-                break;
-            case 4:
-                this.hud.info('Here comes the last type of enemy, This one is tanky and slow..', AppColors.UI_MESSAGE_INFO, () => {
-                    this.waveManager.startWave(3);
-                    this.events.once('enemyDied', () => this.startNextStep());
-                });
-                break;
-            case 5:
-                this.hud.info(
-                    'Watch out! This Special Enemy deactivates nearby towers.',
-                    AppColors.UI_MESSAGE_INFO,
-                    () => {
-                        this.waveManager.startWave(4);
-                        this.events.once('towerDeactivated', () => this.startNextStep());
-                    }
-                );
-                break;
-            case 6:
-                this.hud.info(
-                    "Your tower is now offline! Move near it and press 'E' thrice to send a revival pulse.",
-                    AppColors.UI_MESSAGE_INFO,
-                    () => {
-                        this.events.once('towerRevived', () => this.startNextStep());
-                    }
-                );
-                break;
-            case 7:
-                this.hud.info(
-                    "Excellent! You can also use your 'E' pulse to damage Special Enemies directly. Try it now!",
-                    AppColors.UI_MESSAGE_INFO,
-                    () => {
-                        this.events.once('specialEnemyKilledByPlayer', () => this.startNextStep());
-                    }
-                );
-                break;
-            case 8:
-                this.hud.info(
-                    'Towers can also damage each other and can be revived.',
-                    AppColors.UI_MESSAGE_INFO,
-                    () => {
-                        this.time.delayedCall(2500, () => {
-                            this.startNextStep();
-                        });
-                    }
-                );
-                break;
-            case 9:
-                this.hud.info(
-                    "You've learned the basics! Survive the final wave to win.",
-                    AppColors.UI_MESSAGE_INFO,
-                    () => {
-                        this.waveManager.startWave(5);
-                        this.events.once('waveCompleted', () => this.startNextStep());
-                    }
-                );
-                break;
-            case 10:
-                this.hud.info(
-                    'Tutorial Complete! You are now ready for the real challenge.',
-                    AppColors.UI_MESSAGE_INFO,
-                    () => {
-                        this.scene.start(this.nextScene());
-                    }
-                );
-                break;
-        }
-        this.tutorialStep++;
+    public create(): void {
+        this.physics.world.setBounds(0, 0, WIDTH, HEIGHT);
+
+        this.hudElements = this.hud.setup();
+        this.pathElements = this.pathsManager.setup();
+        this.playerManager.setup();
+        this.towerManager.setup();
+        this.waveManager.setup();
+        this.collisionManager.setup();
+
+        this.hideAllElements();
+        this.createTutorialUI();
+        this.runTutorialFlow().then(() => console.log("Tutorial Completed!"));
+
+        // @ts-ignore
+        this.input.keyboard.on('keydown-ESC', () => {
+            this.easeOutAndStartNextScene('MenuScene');
+        });
+
+        this.events.on('shutdown', this.shutdown, this);
     }
 
-    public nextScene(): string {
-        return getStoryName(LevelNames.HelloGenie);
+    private hideAllElements(): void {
+        // @ts-ignore
+        Object.values(this.hudElements).flat().forEach(el => el.setVisible(false));
+        Object.values(this.pathElements).flat().forEach(el => el.setVisible(false));
+        this.playerManager.player.setVisible(false);
+    }
+
+    private createTutorialUI(): void {
+        const textStyle: Phaser.Types.GameObjects.Text.TextStyle = {
+            font: '24px',
+            color: AppColors.UI_TEXT,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            padding: {x: 20, y: 10},
+            align: 'center',
+            wordWrap: {width: WIDTH / 2},
+        };
+        this.tutorialText = this.add.text(WIDTH / 2, HEIGHT - 150, '', textStyle).setOrigin(0.5).setDepth(300).setVisible(false);
+
+        const markerGraphic = this.add.graphics();
+        const markerText = this.add.text(0, 0, '', {
+            font: '16px',
+            color: AppColors.UI_TEXT,
+            backgroundColor: 'rgba(0,0,0,0.7)',
+            padding: {x: 10, y: 5}
+        }).setOrigin(0.5);
+        this.marker = this.add.container(0, 0, [markerGraphic, markerText]).setDepth(300).setVisible(false);
+
+        this.spacebarText = this.add.text(WIDTH / 2, HEIGHT - 50, '[Press SPACE to continue]', {
+            font: '16px',
+            color: AppColors.UI_ACCENT,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            padding: {x: 10, y: 5}
+        }).setOrigin(0.5).setDepth(301).setVisible(false);
+    }
+
+    private async runTutorialFlow(): Promise<void> {
+        const hudX = GAME_WIDTH + 15;
+        const hudPanelWidth = WIDTH - GAME_WIDTH - 30;
+
+        // Step 1: Show stats
+        this.hudElements.hudSeparators.forEach(sep => sep.setVisible(true));
+        this.hudElements.separators.forEach(sep => sep.setVisible(true)); // Show game boundaries
+        // @ts-ignore
+        this.hudElements.stats.forEach(el => el.setVisible(true));
+        await this.showStep({
+            text: "This is where you can see your stats like Level, Health, Money and Wave Progress",
+            markerConfig: {x1: hudX, y1: 10, x2: hudX + hudPanelWidth, y2: 190, text: "Your Stats"},
+            waitForSpacePress: true
+        });
+
+        // Step 2: Show tower arsenal panel and all dividers
+        // @ts-ignore
+        this.hudElements.towers.forEach(el => el.setVisible(true));
+        await this.showStep({
+            text: "Look at your tower arsenal",
+            markerConfig: {x1: hudX, y1: 200, x2: hudX + hudPanelWidth, y2: 800, text: "Tower Arsenal"},
+            waitForSpacePress: true
+        });
+
+        // Steps 3, 4, 5: Reveal towers
+        await this.showStep({
+            text: "This is laser tower",
+            markerConfig: {x1: hudX + 15, y1: 250, x2: hudX + hudPanelWidth - 15, y2: 340, text: "Laser Tower"},
+            waitForSpacePress: true
+        });
+        await this.showStep({
+            text: "This tower throws bombs",
+            markerConfig: {x1: hudX + 15, y1: 350, x2: hudX + hudPanelWidth - 15, y2: 440, text: "Bomb Tower"},
+            waitForSpacePress: true
+        });
+        await this.showStep({
+            text: "This tower slows all enemies",
+            markerConfig: {x1: hudX + 15, y1: 450, x2: hudX + hudPanelWidth - 15, y2: 540, text: "Slow Tower"},
+            waitForSpacePress: true
+        });
+
+        // Step 6: Show help text
+        // @ts-ignore
+        this.hudElements.help.forEach(el => el.setVisible(true));
+        await this.showStep({
+            text: "Also some help text so you dont forget Guardian!",
+            markerConfig: {
+                x1: hudX,
+                y1: GAME_HEIGHT - 270,
+                x2: hudX + hudPanelWidth,
+                y2: GAME_HEIGHT - 20,
+                text: "Help"
+            },
+            waitForSpacePress: true
+        });
+
+        // Step 7: Show player
+        this.playerManager.player.setVisible(true);
+        await this.showStep({
+            text: "This is you Guardian", isHudInfo: true,
+            waitForSpacePress: true
+        });
+
+        // Step 8: Interactive steps
+        await this.showStep({
+            text: "Press WASD to move", isHudInfo: true,
+            waitForSpacePress: true
+        });
+
+        this.pathElements.path.forEach(p => p.setVisible(true));
+        this.pathElements.start.forEach(p => p.setVisible(true));
+        this.pathElements.end.forEach(p => p.setVisible(true));
+        await this.showStep({
+            text: "This is Static's Den that spawns the Glitches",
+            markerConfig: {
+                x1: 5,
+                y1: GAME_HEIGHT / 2 - 48,
+                x2: 95,
+                y2: GAME_HEIGHT / 2 + 48,
+                text: "Den"
+            },
+            waitForSpacePress: true
+        });
+        await this.showStep({
+            text: "This is the Nexus, Protect it at all costs!",
+            markerConfig: {
+                x1: GAME_WIDTH - 95,
+                y1: GAME_HEIGHT / 2 - 48,
+                x2: GAME_WIDTH - 5,
+                y2: GAME_HEIGHT / 2 + 48,
+                text: "Nexus"
+            },
+            waitForSpacePress: true
+        });
+
+        await this.showStep({
+            text: "Select the Laser Tower from Tower Menu", isHudInfo: true,
+            waitForSpacePress: false
+        });
+        await this.waitForEvent('towerSelected');
+        await this.showStep({
+            text: "Place the tower close to static's den before the first wave comes", isHudInfo: true,
+            waitForSpacePress: false
+        });
+        await this.waitForEvent('towerPlaced');
+
+        await this.showStep({
+            text: "Here comes the most basic of Static's Glitches", isHudInfo: true,
+            waitForSpacePress: true
+        });
+        this.waveManager.startWave(1);
+        await this.waitForEvent('waveCompleted');
+
+        await this.showStep({
+            text: "Place another tower, some Glitches are fast.", isHudInfo: true,
+            waitForSpacePress: false
+        });
+        await this.waitForEvent('towerPlaced');
+        this.waveManager.startWave(2);
+        await this.waitForEvent('waveCompleted');
+
+        await this.showStep({
+            text: "Let's place another tower we need the power for the tankier glitches",
+            isHudInfo: true,
+            waitForSpacePress: false
+        });
+        await this.waitForEvent('towerPlaced');
+        this.waveManager.startWave(3);
+        await this.waitForEvent('waveCompleted');
+
+        await this.showStep({
+            text: "As you might have noticed building Towers requires money.\nMoney can be earned by killing the Glitches.",
+            isHudInfo: true,
+            waitForSpacePress: true
+        });
+        await this.showStep({
+            text: "If the glitches make it through then the Nexus loses health\nIf you lose all the health Static takes over!",
+            isHudInfo: true,
+            waitForSpacePress: true
+        });
+
+        await this.showStep({
+            text: "Now meet the Phantom!", isHudInfo: true,
+            waitForSpacePress: true
+        });
+        await this.showStep({
+            text: "Every few seconds it sends out a pulse which deactivates nearby towers.",
+            isHudInfo: true,
+            waitForSpacePress: true
+        });
+        await this.showStep({
+            text: "No tower can kill the Wave Phantom!",
+            isHudInfo: true,
+            waitForSpacePress: true
+        });
+
+        this.waveManager.startWave(4);
+        await this.waitForEvent('towerDeactivated');
+
+        this.waveManager.pause();
+        // this.physics.pause(); // Pausing physics prevents player movement
+        await this.showStep({
+            text: "A tower is down! Go near it and press E to revive it!", isHudInfo: true,
+            waitForSpacePress: true
+        });
+        await this.waitForEvent('towerRevived');
+
+        this.waveManager.resume();
+        // this.physics.resume();
+        await this.showStep({
+            text: "The Phantom must not make it to the Nexus. Even a single one and everything is over!",
+            isHudInfo: true,
+            waitForSpacePress: true
+        });
+        await this.waitForEvent('waveCompleted');
+
+        await this.showStep({
+            text: "The Towers can damage each other and can also be deactivated.\nUse your resonance wave to reactivate them",
+            isHudInfo: true,
+            waitForSpacePress: true
+        });
+        await this.showStep({
+            text: "Remember, your resonance wave has a cooldown and also costs money so be careful with it.",
+            isHudInfo: true,
+            waitForSpacePress: true
+        });
+
+        await this.showStep({
+            text: "Let's have you play one more round before the actual game", isHudInfo: true,
+            waitForSpacePress: true
+        });
+        this.waveManager.startWave(5);
+        await this.waitForEvent('waveCompleted');
+
+        this.spacebarText.setVisible(false);
+        this.hud.info('Tutorial Complete!', AppColors.UI_MESSAGE_SUCCESS);
+        this.time.delayedCall(2000, () => {
+            this.easeOutAndStartNextScene(this.nextScene());
+        });
+    }
+
+    private async showStep(step: TutorialStep): Promise<void> {
+        this.spacebarText.setVisible(false);
+        const markerGraphic = this.marker.list[0] as Phaser.GameObjects.Graphics;
+        const markerText = this.marker.list[1] as Phaser.GameObjects.Text;
+
+        markerGraphic.clear();
+        this.marker.setVisible(false);
+        this.tutorialText.setVisible(false);
+        this.hud.hideInfo();
+
+        if (step.markerConfig) {
+            const {x1, y1, x2, y2, text} = step.markerConfig;
+            const width = x2 - x1;
+            const height = y2 - y1;
+
+            markerGraphic.lineStyle(4, phaserColor(AppColors.UI_ACCENT), 0.8).strokeRect(0, 0, width, height);
+            markerGraphic.fillStyle(phaserColor(AppColors.UI_ACCENT), 0.1).fillRect(0, 0, width, height);
+
+            this.marker.setPosition(x1, y1);
+            markerText.setText(text).setPosition(width / 2, height + 30);
+            this.marker.setVisible(true);
+        }
+
+        if (step.isHudInfo) {
+            this.hud.info(step.text, AppColors.UI_MESSAGE_INFO, undefined, false);
+        } else {
+            this.tutorialText.setText(step.text).setVisible(true);
+        }
+        if (step.waitForSpacePress) {
+            this.spacebarText.setVisible(true);
+            await this.waitForSpacePress();
+        }
+        this.spacebarText.setVisible(false);
+    }
+
+    private waitForSpacePress(): Promise<void> {
+        return new Promise(resolve => {
+            // @ts-ignore
+            this.input.keyboard.once('keydown-SPACE', resolve);
+        });
+    }
+
+    private waitForEvent(eventName: string): Promise<void> {
+        return new Promise(resolve => {
+            this.events.once(eventName, resolve);
+        });
+    }
+
+    public update(): void {
     }
 }

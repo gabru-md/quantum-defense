@@ -1,7 +1,7 @@
 import { Level } from '../Level.ts';
 import { Player } from '../../../entities/Player.ts';
 import { FindNearestTower } from '../../../components/FindNearestTower.ts';
-import { PlayerWaveAmplifier } from '../../../components/PlayerWaveAmplifier.ts';
+import { ResonanceWave } from '../../../components/ResonanceWave.ts';
 import { VisualPulse } from '../../../components/VisualPulse.ts';
 import { Manager } from '../Manager.ts';
 import { AppColors, phaserColor } from '../../../scripts/Colors.ts';
@@ -17,7 +17,7 @@ export class PlayerManager extends Manager {
     setup(): Player {
         this.player = new Player({ scene: this.level, x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2, texture: 'player' });
         this.player.addComponent(new FindNearestTower());
-        this.player.addComponent(new PlayerWaveAmplifier(this.level.waveManager.specialEnemies)); // Pass specialEnemies
+        this.player.addComponent(new ResonanceWave(this.level.waveManager.specialEnemies)); // Pass specialEnemies
         this.player.addComponent(new VisualPulse(phaserColor(AppColors.PLAYER_WAVE_PULSE), 200, 2000, 2, 5, 0.025));
         this.level.add.existing(this.player);
         this.player.setDepth(150); // Set a high depth value to ensure it's on top

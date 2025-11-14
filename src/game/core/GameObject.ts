@@ -76,4 +76,8 @@ export class GameObject extends Phaser.GameObjects.Sprite {
     get level(): Level {
         return this.scene as Level;
     }
+
+    setVisible(value: boolean): this {
+        return super.setVisible(value);
+    }
 }

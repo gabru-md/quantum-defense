@@ -41,13 +41,6 @@ export class MenuScene extends Phaser.Scene {
     }
 
     create(): void {
-        // --- Unlock Audio on First Interaction ---
-        this.input.once('pointerdown', () => {
-            if (this.sound.context.state === 'suspended') {
-                this.sound.context.resume();
-            }
-        });
-
         this.cameras.main.setBackgroundColor(AppColors.GAME_BACKGROUND);
 
         // --- Dynamic Background Grid ---

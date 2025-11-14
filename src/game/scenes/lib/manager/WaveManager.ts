@@ -5,7 +5,7 @@ import Phaser from 'phaser';
 import { GameObject } from '../../../core/GameObject.ts';
 import { Manager } from '../Manager.ts';
 import { AppColors } from '../../../scripts/Colors.ts';
-import {LevelNames} from "../LevelNames.ts";
+import { LevelNames } from '../LevelNames.ts';
 
 export class WaveManager extends Manager {
     enemies!: Phaser.GameObjects.Group;
@@ -44,7 +44,7 @@ export class WaveManager extends Manager {
             console.warn(`No wave config found for wave ${waveNumber}`);
             return;
         }
-        this.currentWave = waveNumber; // tutorial: waveNumber and currentWave were clashing
+        this.currentWave = waveNumber;
         this.maxEnemiesInWave = waveConfig.reduce((sum, config) => sum + config.count, 0);
         this.enemiesRemaining = this.maxEnemiesInWave;
         this.enemiesSpawnedInWave = 0;
@@ -132,23 +132,22 @@ export class WaveManager extends Manager {
             this.level.hud.info('GAME OVER!', AppColors.UI_MESSAGE_ERROR);
             this.gameOver = true;
             this.level.physics.pause();
-            // Removed direct scene restart, Level.ts handleGameOver will manage the transition
         }
     }
 
     protected checkWaveCompletion(): void {
         if (this.gameOver) return;
         if (this.enemiesSpawnedInWave >= this.maxEnemiesInWave && this.enemiesRemaining <= 0) {
+            // Emit event for the tutorial
+            this.level.events.emit('waveCompleted');
+
             if (this.noMoreWavesLeft()) {
-                if (this.level.scene.key === LevelNames.Introduction) {
-                    this.level.events.emit('waveCompleted');
-                    return;
-                }
+                if (this.level.scene.key === LevelNames.Introduction) return; // Tutorial handles its own completion
                 this.level.physics.pause();
                 this.level.hud.info('LEVEL COMPLETE!', AppColors.UI_MESSAGE_SUCCESS);
-                this.level.easeOutAndStartNextScene(this.level.nextScene()); // Use easeOutAndStartNextScene
+                this.level.easeOutAndStartNextScene(this.level.nextScene());
             } else {
-                if (this.level.scene.key === LevelNames.Introduction) return;
+                if (this.level.scene.key === LevelNames.Introduction) return; // Tutorial handles its own wave progression
                 this.level.hud.info('NEXT WAVE INCOMING!', AppColors.UI_MESSAGE_SUCCESS, () => {
                     this.currentWave++;
                     this.startWave(this.currentWave);
@@ -162,6 +161,7 @@ export class WaveManager extends Manager {
     }
 
     public update(time: number, delta: number) {
+        if (!this.enabled) return;
         // @ts-ignore
         this.enemies.children.each((enemy: Phaser.GameObjects.GameObject) => {
             if (enemy instanceof GameObject) enemy.update(time, delta);

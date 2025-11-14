@@ -12,7 +12,7 @@ import { SpecialEnemy } from '../entities/SpecialEnemy.ts'; // Import SpecialEne
 /**
  * A component that allows the player to activate a wave to revive deactivated towers or damage special enemies.
  */
-export class PlayerWaveAmplifier extends Component {
+export class ResonanceWave extends Component {
     private keys!: { e: Phaser.Input.Keyboard.Key };
     private cooldownTime: number = 1000; // 1 second cooldown
     private lastActivated: number = 0;
@@ -118,7 +118,7 @@ export class PlayerWaveAmplifier extends Component {
             });
         }
 
-        if (tower && tower.isNotFullHealth()) {
+        if (tower && (tower.isNotFullHealth() || tower.isTowerDeactivated())) {
             const reviveCost = tower.cost;
             if (this.gameObject.level.state.money >= reviveCost) {
                 this.gameObject.level.state.money -= reviveCost;
@@ -145,7 +145,7 @@ export class PlayerWaveAmplifier extends Component {
                             if (c) c.enabled = true;
                         });
                         tower.reviveProgress = 0;
-                        this.gameObject.scene.events.emit('towerRevived');
+                        this.gameObject.scene.events.emit('towerRevived'); // Emit event for tutorial
                         tower.setOriginalPulseColor();
                     }
                 }

@@ -1,7 +1,8 @@
-import { GameObject } from '../core/GameObject';
-import { PlayerController } from '../scripts/PlayerController';
+import {GameObject} from '../core/GameObject';
+import {PlayerController} from '../scripts/PlayerController';
 import * as Phaser from 'phaser';
-import { BreatheOnHover } from '../components/BreatheOnHover.ts'; // Import BreatheOnHover
+import {BreatheOnHover} from '../components/BreatheOnHover.ts';
+import {VisualPulse} from "../components/VisualPulse.ts"; // Import BreatheOnHover
 
 export interface PlayerConfig {
     scene: Phaser.Scene;
@@ -24,5 +25,14 @@ export class Player extends GameObject {
         // Add the PlayerController and BreatheOnHover
         this.addComponent(new PlayerController());
         this.addComponent(new BreatheOnHover(1.2, 1000)); // Add the breathing effect
+    }
+
+    public setVisible(value: boolean): this {
+        // if player has visualpulse then set it's visible to same as well
+        const visualPulse = this.getComponent(VisualPulse);
+        if (visualPulse) {
+            visualPulse.enabled = value;
+        }
+        return super.setVisible(value);
     }
 }
