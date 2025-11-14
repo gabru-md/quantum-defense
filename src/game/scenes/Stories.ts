@@ -18,7 +18,7 @@ export class StoryLevel1 extends BaseStoryScene {
             nextScene: LevelNames.HelloGenie,
             steps: [
                 {
-                    text: 'Even a Guardian needs a guide!',
+                    text: 'Hi! I am Genie.\nEven a Guardian needs a guide!',
                     action: scene => {
                         const player = new GameObject(scene, WIDTH / 2, HEIGHT * 3 / 4, 'player');
                         scene.animateIn(player);
@@ -37,7 +37,6 @@ export class StoryLevel1 extends BaseStoryScene {
                         return [player, nexus];
                     },
                 },
-                {text: 'Hi! I am Genie.\nI am here to help you.'},
                 {
                     text: "Static's operations are rising rapidly,\nHe is sending out fleet of Glitches.",
                     action: scene => {

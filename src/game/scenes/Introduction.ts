@@ -125,7 +125,7 @@ export class Introduction extends BaseStoryScene {
                         }
                     },
                 },
-                {text: 'The fate of the Quantum Realm is in your hands.\nYou are the last hope!'},
+                {text: ' '},
             ],
         };
     }

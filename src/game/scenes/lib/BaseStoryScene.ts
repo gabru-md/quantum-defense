@@ -10,7 +10,8 @@ import {
     createSpecialEnemyTexture,
     createTowerTexture,
 } from '../../scripts/TextureUtils';
-import {getStoryName, LevelNames} from "./LevelNames.ts"; // Import texture utility functions
+import { getLevelNameKey, getStoryName, LevelNames} from "./LevelNames.ts";
+import {AudioManager} from "./manager/AudioManager.ts"; // Import texture utility functions
 
 export interface StoryStep {
     text: string;
@@ -28,9 +29,11 @@ export abstract class BaseStoryScene extends Phaser.Scene {
     protected isTyping: boolean = false;
     private typingTimer: Phaser.Time.TimerEvent | null = null;
     private underline: Phaser.GameObjects.Graphics;
+    audioManager: AudioManager
 
     constructor(key: string) {
         super(key);
+        this.audioManager = new AudioManager(this);
     }
 
     // Abstract methods to be implemented by subclasses
@@ -47,7 +50,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
 
     preload(): void {
         this.steps = this.getStoryConfig().steps;
-
+        this.audioManager.setup();
         // Preload common textures for all story scenes
         createBigTowerTexture(this, 'nexus', 256, AppColors.NEXUS_OUTER);
         createBigGlitchTexture(this, 'static', 256, AppColors.STATIC_OUTER);
@@ -139,6 +142,8 @@ export abstract class BaseStoryScene extends Phaser.Scene {
             wordWrap: {width: WIDTH - 100},
             fontStyle: 'bold',
         }).setOrigin(0.5).setDepth(200).setAlpha(0);
+        this.audioManager.playSound(this.getCurrentStepAudio());
+
 
         const textBounds = this.titleText.getBounds();
         this.underline = this.add.graphics();
@@ -255,12 +260,13 @@ export abstract class BaseStoryScene extends Phaser.Scene {
                         targets: this.continueText,
                         alpha: 1,
                         ease: 'Power1',
-                        duration: 200
+                        duration: 400
                     });
                 }
             },
             repeat: fullText.length // Repeat for each character
         });
+        this.audioManager.playSound(this.getCurrentStepAudio());
     }
 
     shutdown(): void {
@@ -327,5 +333,10 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         this.visuals.forEach(v => {
             this.animateOut(v);
         });
+    }
+
+    private getCurrentStepAudio(): string {
+        const levelNameKey: string = getLevelNameKey(this.scene.key);
+        return `Story_${levelNameKey}_${this.currentStep + 1}`;
     }
 }
