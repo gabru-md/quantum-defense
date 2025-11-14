@@ -266,7 +266,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
             },
             repeat: fullText.length // Repeat for each character
         });
-        this.audioManager.playSound(this.getCurrentStepAudio(), {volume: 0.3, detune: 200 });
+        this.audioManager.playSound(this.getCurrentStepAudio(), {volume: 0.5, detune: 200 });
     }
 
     shutdown(): void {
@@ -323,7 +323,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
             targets: v,
             // @ts-ignore
             y: v.y < HEIGHT / 2 ? -200 : HEIGHT + 200,
-            duration: 1500,
+            duration: 500,
             ease: 'Power2',
             onComplete: () => v.destroy(),
         });
