@@ -62,6 +62,8 @@ export class AudioManager extends Manager {
     public playSound(key: string, config?: { volume?: number; detune?: number }): void {
         const gameState = this.level.sys.registry.get('gameState');
         if ((gameState as State).soundEnabled) {
+            // clear any playing sound
+            this.level.sound.stopAll();
             if (!this.level.cache.audio.exists(key)) {
                 console.warn(`Could not find ${key} in AudioManager.`);
                 return;
