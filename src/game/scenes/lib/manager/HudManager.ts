@@ -206,7 +206,7 @@ export class HudManager extends Manager {
         panel.setDepth(90);
 
         const title = this.scene.add.text(hudX + 10, startY + 10, 'HOW TO PLAY', { font: '24px', color: AppColors.UI_ACCENT }).setDepth(100);
-        const helpText = this.scene.add.text(hudX + 10, startY + 50, '1. Click a tower icon to select it.\n2. Right-click to deselect.\n3. Click on the map to place a tower.\n4. Use WASD to move your player.\n5. Press E near a damaged tower to revive it.\n6. Prevent enemies from reaching your base!', {font: '16px', color: AppColors.UI_TEXT, lineSpacing: 8, wordWrap: {width: panelWidth - 20}}).setDepth(100);
+        const helpText = this.scene.add.text(hudX + 10, startY + 50, '1. Click a tower icon to select it.\n2. Click on the map to place a tower.\n3. Use WASD to move your player.\n4. Press E near a damaged tower to revive it.\n5. Prevent enemies from reaching your base!', {font: '16px', color: AppColors.UI_TEXT, lineSpacing: 4, wordWrap: {width: panelWidth - 20}}).setDepth(100);
 
         return [panel, title, helpText];
     }

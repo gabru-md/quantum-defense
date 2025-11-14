@@ -129,7 +129,7 @@ export abstract class Level extends Phaser.Scene {
         this.levelElements.forEach((el) => (el as Phaser.GameObjects.GameObject).setAlpha(0));
 
         let delay = 0;
-        const fadeIn = (elements: Phaser.GameObjects.GameObject[] | Phaser.GameObjects.GameObject, duration = 500) => {
+        const fadeIn = (elements: Phaser.GameObjects.GameObject[] | Phaser.GameObjects.GameObject, duration = 250) => {
             this.time.delayedCall(delay, () => {
                 this.tweens.add({
                     targets: elements,
@@ -142,14 +142,14 @@ export abstract class Level extends Phaser.Scene {
         };
 
         fadeIn(hudElements.separators);
+        fadeIn(hudElements.hudSeparators, 0);
+        fadeIn(hudElements.stats, 0);
+        fadeIn(hudElements.towers, 0);
+        fadeIn(hudElements.help, 0);
         fadeIn(player);
-        fadeIn(pathElements.path);
         fadeIn(pathElements.start);
         fadeIn(pathElements.end);
-        fadeIn(hudElements.hudSeparators);
-        fadeIn(hudElements.stats);
-        fadeIn(hudElements.towers);
-        fadeIn(hudElements.help);
+        fadeIn(pathElements.path);
 
         this.time.delayedCall(delay, () => {
             this.isLoaded = true;
