@@ -228,7 +228,7 @@ export class HudManager extends Manager {
     }
 
     private createMessageText() {
-        this.messageText = this.scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 3, '', { font: '48px', color: AppColors.UI_MESSAGE_ERROR, backgroundColor: AppColors.UI_MESSAGE_BACKGROUND, padding: {x: 30, y: 20} }).setOrigin(0.5).setScrollFactor(0).setVisible(false).setDepth(200).setName('messageText').setScale(0.75);
+        this.messageText = this.scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 3, '', { font: '32px', color: AppColors.UI_MESSAGE_ERROR, backgroundColor: AppColors.UI_MESSAGE_BACKGROUND, padding: {x: 30, y: 20} }).setOrigin(0.5).setScrollFactor(0).setVisible(false).setDepth(200).setName('messageText').setScale(0.75);
     }
 
     private updateMainStats() {
