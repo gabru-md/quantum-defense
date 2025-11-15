@@ -4,12 +4,10 @@ import {Manager} from '../Manager.ts';
 import {
     GAME_HEIGHT,
     GAME_WIDTH,
-    TOWER1_COST,
-    TOWER2_COST,
-    TOWER3_COST,
     WIDTH
 } from '../../../scripts/Util.ts';
 import {AppColors, phaserColor} from '../../../scripts/Colors.ts';
+import {TowerConfigs, TowerConfigType} from '../../../config/TowerConfigs.ts';
 
 export class HudManager extends Manager {
     protected gameName!: Phaser.GameObjects.Text;
@@ -138,7 +136,7 @@ export class HudManager extends Manager {
         this.moneyText = this.scene.add.text(textX, currentY, `Money: $${this.scene.state.money}`, { font: '20px', color: AppColors.UI_TEXT }).setDepth(100).setName('moneyText');
         currentY += textSpacing;
 
-        this.waveProgressText = this.scene.add.text(textX, currentY, `Wave: ${this.scene.waveManager.currentWave}`, { font: '20px', color: AppColors.UI_TEXT }).setDepth(100).setName('waveProgressText');
+        this.waveProgressText = this.scene.add.text(textX, currentY, `Wave: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`, { font: '20px', color: AppColors.UI_TEXT }).setDepth(100).setName('waveProgressText');
 
         return [panel, this.gameName, this.levelText, this.baseHealthText, this.moneyText, this.waveProgressText];
     }
@@ -157,11 +155,23 @@ export class HudManager extends Manager {
 
         const title = this.scene.add.text(hudX + 10, startY + 10, 'BUILD TOWERS', { font: '28px', color: AppColors.UI_ACCENT }).setDepth(100);
 
-        this.createTowerButton(hudX + 15, startY + 50, 'tower1', TOWER1_COST, 'DMG: 25 | FR: 5/s', 'Laser Tower');
-        this.createTowerButton(hudX + 15, startY + 150, 'tower2', TOWER2_COST, 'DMG: 75 | AoE: 80', 'Bomb Tower');
-        this.createTowerButton(hudX + 15, startY + 250, 'tower3', TOWER3_COST, 'Slow: 50% | Range: 100', 'Slowing Tower');
+        let currentTowerY = startY + 50;
+        for (const towerKey in TowerConfigs) {
+            const config: TowerConfigType = TowerConfigs[towerKey];
+            let statsString = '';
+            if (config.attack) {
+                statsString = `DMG: ${config.attack.damage} | FR: ${1000 / config.attack.fireRate}/s`;
+                if (config.attack.aoeRadius) {
+                    statsString += ` | AoE: ${config.attack.aoeRadius}`;
+                }
+            } else if (config.slowing) {
+                statsString = `Slow: ${config.slowing.slowFactor * 100}% | Range: ${config.range}`;
+            }
+            this.createTowerButton(hudX + 15, currentTowerY, towerKey, config.cost, statsString, config.description.split('\n')[0]);
+            currentTowerY += 100; // Adjust spacing between tower buttons
+        }
         
-        this.deselectButton = this.scene.add.text(hudX + 50, startY + 375, 'CLEAR TOWER SELECTION', { font: '18px', color: AppColors.GAME_BACKGROUND, backgroundColor: AppColors.UI_ACCENT, padding: {x: 10, y: 5} }).setDepth(100);
+        this.deselectButton = this.scene.add.text(hudX + 50, currentTowerY + 25, 'CLEAR TOWER SELECTION', { font: '18px', color: AppColors.GAME_BACKGROUND, backgroundColor: AppColors.UI_ACCENT, padding: {x: 10, y: 5} }).setDepth(100);
         this.deselectButton.setInteractive({ useHandCursor: true });
         this.deselectButton.on('pointerdown', () => {
             this.scene.state.selectedTowerType = 'none';

@@ -3,32 +3,30 @@ import { Health } from '../components/Health';
 import { PathFollower } from '../components/PathFollower';
 import { ContinuousBreathing } from '../components/ContinuousBreathing.ts'; // Import ContinuousBreathing
 import * as Phaser from 'phaser';
+import { EnemyConfigType } from '../config/EnemyConfigs.ts'; // Import EnemyConfigType
 
 export interface EnemyConfig {
     scene: Phaser.Scene;
     path: Phaser.Curves.Path;
-    texture: string;
-    health: number;
-    speed: number;
-    moneyValue: number;
+    type: string; // Add type to differentiate in WaveManager
 }
 
 export class Enemy extends GameObject {
     public moneyValue: number;
     private healthComponent!: Health; // Reference to the health component
 
-    constructor(config: EnemyConfig) {
+    constructor(config: EnemyConfig, enemyConfigData: EnemyConfigType) {
         const startPoint = config.path.getStartPoint();
-        super(config.scene, startPoint.x, startPoint.y, config.texture);
+        super(config.scene, startPoint.x, startPoint.y, enemyConfigData.texture);
 
         config.scene.physics.world.enable(this);
 
-        this.moneyValue = config.moneyValue;
+        this.moneyValue = enemyConfigData.moneyValue;
 
         // Add the Health component and store a reference
-        this.healthComponent = new Health(config.health);
+        this.healthComponent = new Health(enemyConfigData.health);
         this.addComponent(this.healthComponent);
-        this.addComponent(new PathFollower(config.path, config.speed));
+        this.addComponent(new PathFollower(config.path, enemyConfigData.speed));
         this.addComponent(new ContinuousBreathing(0.75, 750)); // Add the continuous breathing effect
 
         // Listen for health changes to update transparency

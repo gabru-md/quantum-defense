@@ -5,6 +5,7 @@ import { VisualPulse } from '../components/VisualPulse.ts';
 import { AppColors, phaserColor } from '../scripts/Colors.ts';
 import { LaserAttack } from '../components/LaserAttack.ts';
 import { BombAttack } from '../components/BombAttack.ts';
+import { TowerConfigs } from '../config/TowerConfigs.ts'; // Import TowerConfigs
 
 export interface TowerConfig {
     scene: Phaser.Scene;
@@ -27,11 +28,9 @@ export class Tower extends GameObject {
 
         this.cost = config.cost; // Assign the cost
 
-        // Store original color for revival
-        this.originalPulseColor =
-            config.texture === 'tower1'
-                ? phaserColor(AppColors.PULSE_LASER_TOWER)
-                : phaserColor(AppColors.PULSE_BOMB_TOWER);
+        // Store original color for revival using TowerConfigs
+        const towerConfig = TowerConfigs[config.texture];
+        this.originalPulseColor = towerConfig ? towerConfig.pulse.color : phaserColor(AppColors.UI_TEXT); // Fallback color
 
         this.setInteractive();
 
@@ -65,7 +64,7 @@ export class Tower extends GameObject {
             return;
         }
 
-        if (!this.healthComponent || !this.visualPulseComponent) return; // Ensure components are initialized
+        if (!this.visualPulseComponent) return; // Ensure visualPulseComponent is initialized
 
         const healthPercentage = currentHealth / this.healthComponent.maxHealth;
         if (healthPercentage <= 0.25) {
@@ -73,7 +72,7 @@ export class Tower extends GameObject {
         } else if (healthPercentage <= 0.5) {
             this.visualPulseComponent.setColor(phaserColor(AppColors.BULLET_BOMB)); // Orange for medium health
         } else {
-            this.visualPulseComponent.setColor(this.originalPulseColor); // Original color
+            this.visualPulseComponent.setColor(this.originalPulseColor); // Original color from config
         }
 
         // Show "Tower under attack!" message if health decreased

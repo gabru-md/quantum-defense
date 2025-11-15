@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import {AppColors, phaserColor} from '../scripts/Colors';
+import {AppColors} from '../scripts/Colors';
 import {HEIGHT, WIDTH} from '../scripts/Util';
 import {
     createBigGlitchTexture,
@@ -13,6 +13,9 @@ import {GameObject} from '../core/GameObject';
 import {VisualPulse} from '../components/VisualPulse';
 import {BaseStoryScene, StoryStep} from './lib/BaseStoryScene';
 import {getStoryName, LevelNames} from "./lib/LevelNames.ts";
+import {PlayerConfig} from "../config/PlayerConfig.ts";
+import {EnemyConfigs, SpecialEnemyConfig} from "../config/EnemyConfigs.ts";
+import {TowerConfigs} from "../config/TowerConfigs.ts";
 
 export class Introduction extends BaseStoryScene {
     constructor() {
@@ -23,14 +26,14 @@ export class Introduction extends BaseStoryScene {
         super.preload();
         createBigTowerTexture(this, 'nexus', 256, AppColors.NEXUS_OUTER);
         createBigGlitchTexture(this, 'static', 256, AppColors.STATIC_OUTER);
-        createPlayerTexture(this, 'player', 24, AppColors.PLAYER);
-        createEnemyTexture(this, 'enemy1', 32, AppColors.ENEMY_NORMAL);
-        createEnemyTexture(this, 'enemy2', 32, AppColors.ENEMY_FAST);
-        createEnemyTexture(this, 'enemy3', 32, AppColors.ENEMY_TANK);
-        createTowerTexture(this, 'tower1', 64, AppColors.TOWER_LASER);
-        createTowerTexture(this, 'tower2', 64, AppColors.TOWER_BOMB);
-        createTowerTexture(this, 'tower3', 64, AppColors.TOWER_SLOW);
-        createSpecialEnemyTexture(this, 'specialEnemy', 32, AppColors.SPECIAL_ENEMY);
+        createPlayerTexture(this, PlayerConfig.texture, 24, AppColors.PLAYER);
+        createEnemyTexture(this, EnemyConfigs.enemy1.texture, 32, AppColors.ENEMY_NORMAL);
+        createEnemyTexture(this, EnemyConfigs.enemy2.texture, 32, AppColors.ENEMY_FAST);
+        createEnemyTexture(this, EnemyConfigs.enemy3.texture, 32, AppColors.ENEMY_TANK);
+        createTowerTexture(this, TowerConfigs.tower1.texture, 64, AppColors.TOWER_LASER);
+        createTowerTexture(this, TowerConfigs.tower2.texture, 64, AppColors.TOWER_BOMB);
+        createTowerTexture(this, TowerConfigs.tower3.texture, 64, AppColors.TOWER_SLOW);
+        createSpecialEnemyTexture(this, SpecialEnemyConfig.texture, 32, AppColors.SPECIAL_ENEMY);
     }
 
     getStoryConfig(): { title?: string; steps: StoryStep[]; nextScene: string } {
@@ -76,18 +79,27 @@ export class Introduction extends BaseStoryScene {
                 {
                     text: 'You are Guardian: The Sentient\nCreated by the Nexus to be its last line of defense.',
                     action: (scene) => {
-                        const player = new GameObject(scene, WIDTH / 3, HEIGHT / 3, 'player');
+                        const player = new GameObject(scene, WIDTH / 3, HEIGHT / 3, PlayerConfig.texture);
                         this.animateIn(player);
-                        player.addComponent(new VisualPulse(phaserColor(AppColors.PLAYER), 500, 1000, 2, 2, 2));
+                        player.addComponent(
+                            new VisualPulse(
+                                PlayerConfig.resonanceWave.pulseColor,
+                                PlayerConfig.resonanceWave.pulseDelay,
+                                PlayerConfig.resonanceWave.pulseDuration,
+                                PlayerConfig.resonanceWave.activationRange,
+                                PlayerConfig.resonanceWave.pulseTotalPulses,
+                                PlayerConfig.resonanceWave.pulseLineWidth
+                            )
+                        );
                         return player;
                     },
                 },
                 {
                     text: 'Protect the Nexus from the encroaching waves of Static Glitches.',
                     action: (scene) => {
-                        const enemy1 = scene.add.sprite(WIDTH / 2 - 100, (HEIGHT * 3) / 4, 'enemy1').setAlpha(0.8);
-                        const enemy2 = scene.add.sprite(WIDTH / 2, (HEIGHT * 3) / 4, 'enemy2').setAlpha(0.8);
-                        const enemy3 = scene.add.sprite(WIDTH / 2 + 100, (HEIGHT * 3) / 4, 'enemy3').setAlpha(0.8);
+                        const enemy1 = scene.add.sprite(WIDTH / 2 - 100, (HEIGHT * 3) / 4, EnemyConfigs.enemy1.texture).setAlpha(0.8);
+                        const enemy2 = scene.add.sprite(WIDTH / 2, (HEIGHT * 3) / 4, EnemyConfigs.enemy2.texture).setAlpha(0.8);
+                        const enemy3 = scene.add.sprite(WIDTH / 2 + 100, (HEIGHT * 3) / 4, EnemyConfigs.enemy3.texture).setAlpha(0.8);
                         [enemy1, enemy2, enemy3].forEach(t => this.animateIn(t));
                         return [enemy1, enemy2, enemy3];
                     }
@@ -95,9 +107,9 @@ export class Introduction extends BaseStoryScene {
                 {
                     text: 'You can build Echo Towers\nThey shoot bullets, bombs or slow the glitches down.',
                     action: (scene) => {
-                        const tower1 = scene.add.sprite(WIDTH / 2 - 100, (HEIGHT * 3) / 4 - 100, 'tower1').setAlpha(0.8);
-                        const tower2 = scene.add.sprite(WIDTH / 2, (HEIGHT * 3) / 4 - 100, 'tower2').setAlpha(0.8);
-                        const tower3 = scene.add.sprite(WIDTH / 2 + 100, (HEIGHT * 3) / 4 - 100, 'tower3').setAlpha(0.8);
+                        const tower1 = scene.add.sprite(WIDTH / 2 - 100, (HEIGHT * 3) / 4 - 100, TowerConfigs.tower1.texture).setAlpha(0.8);
+                        const tower2 = scene.add.sprite(WIDTH / 2, (HEIGHT * 3) / 4 - 100, TowerConfigs.tower2.texture).setAlpha(0.8);
+                        const tower3 = scene.add.sprite(WIDTH / 2 + 100, (HEIGHT * 3) / 4 - 100, TowerConfigs.tower3.texture).setAlpha(0.8);
                         [tower1, tower2, tower3].forEach(t => this.animateIn(t));
                         return [tower1, tower2, tower3];
                     },
@@ -105,10 +117,17 @@ export class Introduction extends BaseStoryScene {
                 {
                     text: 'But beware of the Phantoms!\nThey are special Wave Glitches.\nThey can corrupt your towers,\nrendering you defenseless.',
                     action: (scene) => {
-                        const phantom = new GameObject(scene, (WIDTH * 2) / 3, HEIGHT / 3, 'specialEnemy').setAlpha(0.8);
+                        const phantom = new GameObject(scene, (WIDTH * 2) / 3, HEIGHT / 3, SpecialEnemyConfig.texture).setAlpha(0.8);
                         this.animateIn(phantom);
                         phantom.addComponent(
-                            new VisualPulse(phaserColor(AppColors.SPECIAL_ENEMY), 500, 1000, 2, 2, 2)
+                            new VisualPulse(
+                                SpecialEnemyConfig.pulseColor,
+                                PlayerConfig.resonanceWave.pulseDelay, // Reusing player pulse delay for visual consistency
+                                PlayerConfig.resonanceWave.pulseDuration, // Reusing player pulse duration
+                                SpecialEnemyConfig.deactivationRadius,
+                                PlayerConfig.resonanceWave.pulseTotalPulses, // Reusing player pulse total pulses
+                                PlayerConfig.resonanceWave.pulseLineWidth // Reusing player pulse line width
+                            )
                         );
                         return phantom;
                     },
@@ -116,11 +135,18 @@ export class Introduction extends BaseStoryScene {
                 {
                     text: 'Your most powerful ability is the Resonance Wave.\nUse it to revive corrupted towers and disrupt the Phantoms.',
                     action: (scene) => {
-                        const playerSprite = (scene as Introduction).visuals.find(v => (v as GameObject).texture.key === 'player');
+                        const playerSprite = (scene as Introduction).visuals.find(v => (v as GameObject).texture.key === PlayerConfig.texture);
                         if (playerSprite && playerSprite instanceof GameObject) {
                             playerSprite.setAlpha(1);
                             playerSprite.addComponent(
-                                new VisualPulse(phaserColor(AppColors.PLAYER), 200, 2000, 2, 5, 2)
+                                new VisualPulse(
+                                    PlayerConfig.resonanceWave.pulseColor,
+                                    PlayerConfig.resonanceWave.pulseDelay,
+                                    PlayerConfig.resonanceWave.pulseDuration,
+                                    PlayerConfig.resonanceWave.activationRange,
+                                    PlayerConfig.resonanceWave.pulseTotalPulses,
+                                    PlayerConfig.resonanceWave.pulseLineWidth
+                                )
                             );
                         }
                     },
@@ -139,8 +165,8 @@ export class Introduction extends BaseStoryScene {
             this.instructionText.destroy();
         }
 
-        const playerSprite = this.visuals.find(v => (v as GameObject).texture.key === 'player');
-        const specialEnemySprite = this.visuals.find(v => (v as GameObject).texture.key === 'specialEnemy');
+        const playerSprite = this.visuals.find(v => (v as GameObject).texture.key === PlayerConfig.texture);
+        const specialEnemySprite = this.visuals.find(v => (v as GameObject).texture.key === SpecialEnemyConfig.texture);
 
         this.animateElementsOffScreen(playerSprite, specialEnemySprite);
 

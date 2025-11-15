@@ -6,6 +6,7 @@ import { GameObject } from '../../../core/GameObject.ts';
 import { Manager } from '../Manager.ts';
 import { AppColors } from '../../../scripts/Colors.ts';
 import { LevelNames } from '../LevelNames.ts';
+import { EnemyConfigs, SpecialEnemyConfig } from '../../../config/EnemyConfigs.ts'; // Import EnemyConfigs
 
 export class WaveManager extends Manager {
     enemies!: Phaser.GameObjects.Group;
@@ -57,27 +58,38 @@ export class WaveManager extends Manager {
                 this.level.time.addEvent({
                     delay: spawnDelay,
                     callback: () => {
-                        const health = config.health * healthMultiplier;
-                        const speed = config.speed * speedMultiplier;
-
                         if (config.type === 'enemy') {
-                            const enemy = new Enemy({
-                                ...config,
-                                scene: this.level,
-                                path: this.level.pathsManager.paths[config.path],
-                                health,
-                                speed,
-                            });
+                            const enemyConfigData = EnemyConfigs[config.texture];
+                            if (!enemyConfigData) {
+                                console.error(`Enemy config data not found for texture: ${config.texture}`);
+                                return;
+                            }
+                            const enemy = new Enemy(
+                                {
+                                    scene: this.level,
+                                    path: this.level.pathsManager.paths[config.path],
+                                    type: config.texture,
+                                },
+                                {
+                                    ...enemyConfigData,
+                                    health: enemyConfigData.health * healthMultiplier,
+                                    speed: enemyConfigData.speed * speedMultiplier,
+                                }
+                            );
                             this.enemies.add(enemy, true);
                             enemy.on('reachedEnd', this.handleEnemyReachedEnd, this);
                         } else if (config.type === 'specialEnemy') {
-                            const specialEnemy = new SpecialEnemy({
-                                ...config,
-                                scene: this.level,
-                                path: this.level.pathsManager.paths[config.path],
-                                health,
-                                speed,
-                            });
+                            const specialEnemy = new SpecialEnemy(
+                                {
+                                    scene: this.level,
+                                    path: this.level.pathsManager.paths[config.path],
+                                },
+                                {
+                                    ...SpecialEnemyConfig,
+                                    health: SpecialEnemyConfig.health * healthMultiplier,
+                                    speed: SpecialEnemyConfig.speed * speedMultiplier,
+                                }
+                            );
                             this.specialEnemies.add(specialEnemy, true);
                         }
                         this.enemiesSpawnedInWave++;

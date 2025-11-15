@@ -4,6 +4,9 @@ import {AppColors, phaserColor} from '../scripts/Colors';
 import {VisualPulse} from '../components/VisualPulse';
 import {HEIGHT, WIDTH} from '../scripts/Util';
 import {BaseStoryScene, StoryStep} from "./lib/BaseStoryScene.ts";
+import {PlayerConfig} from "../config/PlayerConfig.ts";
+import {EnemyConfigs, SpecialEnemyConfig} from "../config/EnemyConfigs.ts";
+import {TowerConfigs} from "../config/TowerConfigs.ts";
 
 export class StoryLevel1 extends BaseStoryScene {
     constructor() {
@@ -20,9 +23,18 @@ export class StoryLevel1 extends BaseStoryScene {
                 {
                     text: 'Hi! I am Genie.\nEven a Guardian needs a guide!',
                     action: scene => {
-                        const player = new GameObject(scene, WIDTH / 2, HEIGHT * 3 / 4, 'player');
+                        const player = new GameObject(scene, WIDTH / 2, HEIGHT * 3 / 4, PlayerConfig.texture);
                         scene.animateIn(player);
-                        player.addComponent(new VisualPulse(phaserColor(AppColors.PLAYER), 500, 1000, 2, 2, 2));
+                        player.addComponent(
+                            new VisualPulse(
+                                PlayerConfig.resonanceWave.pulseColor,
+                                PlayerConfig.resonanceWave.pulseDelay,
+                                PlayerConfig.resonanceWave.pulseDuration,
+                                PlayerConfig.resonanceWave.activationRange,
+                                PlayerConfig.resonanceWave.pulseTotalPulses,
+                                PlayerConfig.resonanceWave.pulseLineWidth
+                            )
+                        );
 
                         const nexus = scene.add.sprite(WIDTH / 2, HEIGHT * 7 / 8, 'nexus').setAlpha(0.3).setScale(0.75, 0.75);
                         scene.animateIn(nexus);
@@ -51,9 +63,9 @@ export class StoryLevel1 extends BaseStoryScene {
                             repeat: -1,
                         });
 
-                        const enemy1 = scene.add.sprite(WIDTH / 2 - 100, (HEIGHT * 5) / 8, 'enemy1').setAlpha(0.4);
-                        const enemy2 = scene.add.sprite(WIDTH / 2, (HEIGHT * 5) / 8, 'enemy2').setAlpha(0.4);
-                        const enemy3 = scene.add.sprite(WIDTH / 2 + 100, (HEIGHT * 5) / 8, 'enemy3').setAlpha(0.4);
+                        const enemy1 = scene.add.sprite(WIDTH / 2 - 100, (HEIGHT * 5) / 8, EnemyConfigs.enemy1.texture).setAlpha(0.4);
+                        const enemy2 = scene.add.sprite(WIDTH / 2, (HEIGHT * 5) / 8, EnemyConfigs.enemy2.texture).setAlpha(0.4);
+                        const enemy3 = scene.add.sprite(WIDTH / 2 + 100, (HEIGHT * 5) / 8, EnemyConfigs.enemy3.texture).setAlpha(0.4);
                         [enemy1, enemy2, enemy3].forEach(t => scene.animateIn(t));
                         return [staticEnemy, enemy1, enemy2, enemy3];
                     },
@@ -92,12 +104,12 @@ export class StoryLevel2 extends BaseStoryScene {
                             repeat: -1,
                         });
 
-                        const enemy1 = scene.add.sprite(WIDTH / 2 - 100, (HEIGHT * 3) / 4, 'enemy1').setAlpha(0.8);
-                        const enemy1_2 = scene.add.sprite(WIDTH / 2 - 50, (HEIGHT * 3) / 4, 'enemy1').setAlpha(0.8);
-                        const enemy2 = scene.add.sprite(WIDTH / 2, (HEIGHT * 3) / 4, 'enemy2').setAlpha(0.8);
-                        const enemy2_2 = scene.add.sprite(WIDTH / 2 + 50, (HEIGHT * 3) / 4, 'enemy2').setAlpha(0.8);
-                        const enemy3 = scene.add.sprite(WIDTH / 2 + 100, (HEIGHT * 3) / 4, 'enemy3').setAlpha(0.8);
-                        const enemy3_2 = scene.add.sprite(WIDTH / 2 + 150, (HEIGHT * 3) / 4, 'enemy3').setAlpha(0.8);
+                        const enemy1 = scene.add.sprite(WIDTH / 2 - 100, (HEIGHT * 3) / 4, EnemyConfigs.enemy1.texture).setAlpha(0.8);
+                        const enemy1_2 = scene.add.sprite(WIDTH / 2 - 50, (HEIGHT * 3) / 4, EnemyConfigs.enemy1.texture).setAlpha(0.8);
+                        const enemy2 = scene.add.sprite(WIDTH / 2, (HEIGHT * 3) / 4, EnemyConfigs.enemy2.texture).setAlpha(0.8);
+                        const enemy2_2 = scene.add.sprite(WIDTH / 2 + 50, (HEIGHT * 3) / 4, EnemyConfigs.enemy2.texture).setAlpha(0.8);
+                        const enemy3 = scene.add.sprite(WIDTH / 2 + 100, (HEIGHT * 3) / 4, EnemyConfigs.enemy3.texture).setAlpha(0.8);
+                        const enemy3_2 = scene.add.sprite(WIDTH / 2 + 150, (HEIGHT * 3) / 4, EnemyConfigs.enemy3.texture).setAlpha(0.8);
                         [enemy1, enemy1_2, enemy2, enemy2_2, enemy3, enemy3_2].forEach(t => scene.animateIn(t));
                         return [nexus, enemy1, enemy1_2, enemy2, enemy2_2, enemy3, enemy3_2];
                     },
@@ -105,9 +117,18 @@ export class StoryLevel2 extends BaseStoryScene {
                 {
                     text: "But I can still count on you, right?",
                     action: scene => {
-                        const player = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 100, 'player');
+                        const player = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 100, PlayerConfig.texture);
                         scene.animateIn(player);
-                        player.addComponent(new VisualPulse(phaserColor(AppColors.PLAYER), 500, 1000, 2, 2, 2));
+                        player.addComponent(
+                            new VisualPulse(
+                                PlayerConfig.resonanceWave.pulseColor,
+                                PlayerConfig.resonanceWave.pulseDelay,
+                                PlayerConfig.resonanceWave.pulseDuration,
+                                PlayerConfig.resonanceWave.activationRange,
+                                PlayerConfig.resonanceWave.pulseTotalPulses,
+                                PlayerConfig.resonanceWave.pulseLineWidth
+                            )
+                        );
                         return player;
                     },
                 },
@@ -131,19 +152,35 @@ export class StoryLevel3 extends BaseStoryScene {
                 {
                     text: 'I have some news for you Guardian.',
                     action: scene => {
-                        const player = new GameObject(scene, WIDTH / 2 - 100, HEIGHT / 2 - 100, 'player');
+                        const player = new GameObject(scene, WIDTH / 2 - 100, HEIGHT / 2 - 100, PlayerConfig.texture);
                         scene.animateIn(player);
-                        player.addComponent(new VisualPulse(phaserColor(AppColors.PLAYER), 500, 1000, 2, 2, 2));
+                        player.addComponent(
+                            new VisualPulse(
+                                PlayerConfig.resonanceWave.pulseColor,
+                                PlayerConfig.resonanceWave.pulseDelay,
+                                PlayerConfig.resonanceWave.pulseDuration,
+                                PlayerConfig.resonanceWave.activationRange,
+                                PlayerConfig.resonanceWave.pulseTotalPulses,
+                                PlayerConfig.resonanceWave.pulseLineWidth
+                            )
+                        );
                         return player;
                     },
                 },
                 {
                     text: 'The Phantom is on the move!',
                     action: scene => {
-                        const phantom = new GameObject(scene, WIDTH / 2 + 100, HEIGHT / 2 - 100, 'specialEnemy').setAlpha(0.8);
+                        const phantom = new GameObject(scene, WIDTH / 2 + 100, HEIGHT / 2 - 100, SpecialEnemyConfig.texture).setAlpha(0.8);
                         scene.animateIn(phantom);
                         phantom.addComponent(
-                            new VisualPulse(phaserColor(AppColors.SPECIAL_ENEMY), 500, 1000, 2, 2, 2)
+                            new VisualPulse(
+                                SpecialEnemyConfig.pulseColor,
+                                PlayerConfig.resonanceWave.pulseDelay, // Reusing player pulse delay for visual consistency
+                                PlayerConfig.resonanceWave.pulseDuration, // Reusing player pulse duration
+                                SpecialEnemyConfig.deactivationRadius,
+                                PlayerConfig.resonanceWave.pulseTotalPulses, // Reusing player pulse total pulses
+                                PlayerConfig.resonanceWave.pulseLineWidth // Reusing player pulse line width
+                            )
                         );
                         return phantom;
                     },
@@ -151,10 +188,10 @@ export class StoryLevel3 extends BaseStoryScene {
                 {
                     text: 'It disables all towers',
                     action: scene => {
-                        const tower1 = scene.add.sprite(WIDTH / 2 - 100, (HEIGHT * 3) / 4 - 100, 'tower1').setAlpha(0.3);
-                        const tower2 = scene.add.sprite(WIDTH / 2, (HEIGHT * 3) / 4 - 100, 'tower2').setAlpha(0.3);
-                        const tower3 = scene.add.sprite(WIDTH / 2 + 100, (HEIGHT * 3) / 4 - 100, 'tower3').setAlpha(0.3);
-                        [tower1, tower2, tower3].forEach(t => this.animateIn(t));
+                        const tower1 = scene.add.sprite(WIDTH / 2 - 100, (HEIGHT * 3) / 4 - 100, TowerConfigs.tower1.texture).setAlpha(0.3);
+                        const tower2 = scene.add.sprite(WIDTH / 2, (HEIGHT * 3) / 4 - 100, TowerConfigs.tower2.texture).setAlpha(0.3);
+                        const tower3 = scene.add.sprite(WIDTH / 2 + 100, (HEIGHT * 3) / 4 - 100, TowerConfigs.tower3.texture).setAlpha(0.3);
+                        [tower1, tower2, tower3].forEach(t => scene.animateIn(t));
                         return [tower1, tower2, tower3];
                     },
                 },
@@ -201,10 +238,17 @@ export class StoryLevel4 extends BaseStoryScene {
                 {
                     text: 'But with your help We can sample the remains of Phantom.',
                     action: scene => {
-                        const phantom = new GameObject(scene, WIDTH / 2, HEIGHT / 2 - 100, 'specialEnemy').setAlpha(0.8);
+                        const phantom = new GameObject(scene, WIDTH / 2, HEIGHT / 2 - 100, SpecialEnemyConfig.texture).setAlpha(0.8);
                         scene.animateIn(phantom);
                         phantom.addComponent(
-                            new VisualPulse(phaserColor(AppColors.SPECIAL_ENEMY), 500, 1000, 2, 2, 2)
+                            new VisualPulse(
+                                SpecialEnemyConfig.pulseColor,
+                                PlayerConfig.resonanceWave.pulseDelay, // Reusing player pulse delay for visual consistency
+                                PlayerConfig.resonanceWave.pulseDuration, // Reusing player pulse duration
+                                SpecialEnemyConfig.deactivationRadius,
+                                PlayerConfig.resonanceWave.pulseTotalPulses, // Reusing player pulse total pulses
+                                PlayerConfig.resonanceWave.pulseLineWidth // Reusing player pulse line width
+                            )
                         );
                         return phantom;
                     },
@@ -212,18 +256,27 @@ export class StoryLevel4 extends BaseStoryScene {
                 {
                     text: 'And maybe together we can put an end to it all!',
                     action: scene => {
-                        const player = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 100, 'player');
+                        const player = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 100, PlayerConfig.texture);
                         scene.animateIn(player);
-                        player.addComponent(new VisualPulse(phaserColor(AppColors.PLAYER), 500, 1000, 2, 2, 2));
+                        player.addComponent(
+                            new VisualPulse(
+                                PlayerConfig.resonanceWave.pulseColor,
+                                PlayerConfig.resonanceWave.pulseDelay,
+                                PlayerConfig.resonanceWave.pulseDuration,
+                                PlayerConfig.resonanceWave.activationRange,
+                                PlayerConfig.resonanceWave.pulseTotalPulses,
+                                PlayerConfig.resonanceWave.pulseLineWidth
+                            )
+                        );
                         return [player];
                     },
                 },
                 {
                     text: 'Oh no, there are more glitches!!',
                     action: scene => {
-                        const enemy1 = scene.add.sprite(WIDTH / 2 - 100, (HEIGHT * 3) / 4, 'enemy1').setAlpha(0.8);
-                        const enemy2 = scene.add.sprite(WIDTH / 2, (HEIGHT * 3) / 4, 'enemy2').setAlpha(0.8);
-                        const enemy3 = scene.add.sprite(WIDTH / 2 + 100, (HEIGHT * 3) / 4, 'enemy3').setAlpha(0.8);
+                        const enemy1 = scene.add.sprite(WIDTH / 2 - 100, (HEIGHT * 3) / 4, EnemyConfigs.enemy1.texture).setAlpha(0.8);
+                        const enemy2 = scene.add.sprite(WIDTH / 2, (HEIGHT * 3) / 4, EnemyConfigs.enemy2.texture).setAlpha(0.8);
+                        const enemy3 = scene.add.sprite(WIDTH / 2 + 100, (HEIGHT * 3) / 4, EnemyConfigs.enemy3.texture).setAlpha(0.8);
                         [enemy1, enemy2, enemy3].forEach(t => scene.animateIn(t));
                         return [enemy1, enemy2, enemy3];
                     },
@@ -251,19 +304,35 @@ export class StoryLevel5 extends BaseStoryScene {
                 {
                     text: 'That was amazing, I know we can count on you!',
                     action: scene => {
-                        const player = new GameObject(scene, WIDTH / 2 - 100, HEIGHT / 2 - 100, 'player');
+                        const player = new GameObject(scene, WIDTH / 2 - 100, HEIGHT / 2 - 100, PlayerConfig.texture);
                         scene.animateIn(player);
-                        player.addComponent(new VisualPulse(phaserColor(AppColors.PLAYER), 500, 1000, 2, 2, 2));
+                        player.addComponent(
+                            new VisualPulse(
+                                PlayerConfig.resonanceWave.pulseColor,
+                                PlayerConfig.resonanceWave.pulseDelay,
+                                PlayerConfig.resonanceWave.pulseDuration,
+                                PlayerConfig.resonanceWave.activationRange,
+                                PlayerConfig.resonanceWave.pulseTotalPulses,
+                                PlayerConfig.resonanceWave.pulseLineWidth
+                            )
+                        );
                         return player;
                     },
                 },
                 {
                     text: 'Also, I am close to sampling Phantom\nI need maybe 2 more for a breakthrough',
                     action: scene => {
-                        const phantom = new GameObject(scene, WIDTH / 2 + 100, HEIGHT / 2 - 100, 'specialEnemy').setAlpha(0.8);
+                        const phantom = new GameObject(scene, WIDTH / 2 + 100, HEIGHT / 2 - 100, SpecialEnemyConfig.texture).setAlpha(0.8);
                         scene.animateIn(phantom);
                         phantom.addComponent(
-                            new VisualPulse(phaserColor(AppColors.SPECIAL_ENEMY), 500, 1000, 2, 2, 2)
+                            new VisualPulse(
+                                SpecialEnemyConfig.pulseColor,
+                                PlayerConfig.resonanceWave.pulseDelay, // Reusing player pulse delay for visual consistency
+                                PlayerConfig.resonanceWave.pulseDuration, // Reusing player pulse duration
+                                SpecialEnemyConfig.deactivationRadius,
+                                PlayerConfig.resonanceWave.pulseTotalPulses, // Reusing player pulse total pulses
+                                PlayerConfig.resonanceWave.pulseLineWidth // Reusing player pulse line width
+                            )
                         );
                         return phantom;
                     },

@@ -3,6 +3,7 @@ import {AppColors, phaserColor} from '../../scripts/Colors.ts';
 import {GAME_HEIGHT, GAME_WIDTH, HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
 import Phaser from 'phaser';
+import {EnemyConfigs, SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
 
 type TutorialStep = {
     text: string;
@@ -48,67 +49,67 @@ export class Tutorial extends Level {
             case 1:
                 return [{
                     type: 'enemy',
-                    texture: 'enemy1',
+                    texture: EnemyConfigs.enemy1.texture,
                     count: 5,
                     delay: 1000,
-                    health: 50,
-                    speed: 50,
-                    moneyValue: 10,
+                    health: EnemyConfigs.enemy1.health,
+                    speed: EnemyConfigs.enemy1.speed,
+                    moneyValue: EnemyConfigs.enemy1.moneyValue,
                     path: 'path1'
                 }];
             case 2:
                 return [{
                     type: 'enemy',
-                    texture: 'enemy2',
+                    texture: EnemyConfigs.enemy2.texture,
                     count: 5,
                     delay: 800,
-                    health: 40,
-                    speed: 80,
-                    moneyValue: 15,
+                    health: EnemyConfigs.enemy2.health,
+                    speed: EnemyConfigs.enemy2.speed,
+                    moneyValue: EnemyConfigs.enemy2.moneyValue,
                     path: 'path1'
                 }];
             case 3:
                 return [{
                     type: 'enemy',
-                    texture: 'enemy3',
+                    texture: EnemyConfigs.enemy3.texture,
                     count: 3,
                     delay: 1500,
-                    health: 200,
-                    speed: 40,
-                    moneyValue: 25,
+                    health: EnemyConfigs.enemy3.health,
+                    speed: EnemyConfigs.enemy3.speed,
+                    moneyValue: EnemyConfigs.enemy3.moneyValue,
                     path: 'path1'
                 }];
             case 4:
                 return [{
                     type: 'specialEnemy',
-                    texture: 'specialEnemy',
+                    texture: SpecialEnemyConfig.texture,
                     count: 1,
                     delay: 1000,
-                    health: 50,
-                    speed: 60,
-                    moneyValue: 100,
+                    health: SpecialEnemyConfig.health,
+                    speed: SpecialEnemyConfig.speed,
+                    moneyValue: SpecialEnemyConfig.moneyValue,
                     path: 'path1'
                 }];
             case 5:
                 return [
                     {
                         type: 'enemy',
-                        texture: 'enemy1',
+                        texture: EnemyConfigs.enemy1.texture,
                         count: 5,
                         delay: 1000,
-                        health: 50,
-                        speed: 50,
-                        moneyValue: 10,
+                        health: EnemyConfigs.enemy1.health,
+                        speed: EnemyConfigs.enemy1.speed,
+                        moneyValue: EnemyConfigs.enemy1.moneyValue,
                         path: 'path1'
                     },
                     {
                         type: 'enemy',
-                        texture: 'enemy2',
+                        texture: EnemyConfigs.enemy2.texture,
                         count: 3,
                         delay: 1200,
-                        health: 40,
-                        speed: 80,
-                        moneyValue: 15,
+                        health: EnemyConfigs.enemy2.health,
+                        speed: EnemyConfigs.enemy2.speed,
+                        moneyValue: EnemyConfigs.enemy2.moneyValue,
                         path: 'path1'
                     }
                 ];

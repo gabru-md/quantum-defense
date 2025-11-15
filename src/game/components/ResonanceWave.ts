@@ -5,19 +5,22 @@ import { Tower } from '../entities/Tower.ts';
 import { Health } from './Health.ts';
 import { LaserAttack } from './LaserAttack.ts';
 import { BombAttack } from './BombAttack.ts';
-import { VisualPulse } from './VisualPulse.ts';
-import { AppColors, phaserColor } from '../scripts/Colors.ts';
-import { SpecialEnemy } from '../entities/SpecialEnemy.ts'; // Import SpecialEnemy
+import { AppColors } from '../scripts/Colors.ts';
+import { SpecialEnemy } from '../entities/SpecialEnemy.ts';
+import { createWaveEffect } from '../utils/WaveEffectHelper.ts';
+import { getResonanceWaveConfig } from '../config/WaveConfig.ts';
+import { PlayerConfig } from '../config/PlayerConfig.ts';
 
 /**
  * A component that allows the player to activate a wave to revive deactivated towers or damage special enemies.
  */
 export class ResonanceWave extends Component {
     private keys!: { e: Phaser.Input.Keyboard.Key };
-    private cooldownTime: number = 1000; // 1 second cooldown
+    private cooldownTime: number = PlayerConfig.resonanceWave.cooldownTime;
     private lastActivated: number = 0;
-    private activationRange: number = 75; // Range to be near a tower to revive it
-    private waveDamage: number = 50; // Damage dealt by the wave to special enemies
+    public activationRange: number = PlayerConfig.resonanceWave.activationRange; // Made public for VisualPulse
+    private waveDamage: number = PlayerConfig.resonanceWave.waveDamage;
+    private baseActivationCost: number = PlayerConfig.resonanceWave.baseActivationCost; // New: Cost to activate the wave
     private findNearestTowerComponent!: FindNearestTower;
     private specialEnemiesGroup!: Phaser.GameObjects.Group; // Reference to special enemies group
 
@@ -45,81 +48,67 @@ export class ResonanceWave extends Component {
         const nearestTower = this.findNearestTowerComponent.nearestTower;
 
         if (this.playerPressedKey(time)) {
-            if (this.hasCooldownExpired(time)) {
-                if (nearestTower && (nearestTower.isNotFullHealth() || nearestTower.isTowerDeactivated())) {
-                    const distance = Phaser.Math.Distance.Between(
-                        this.gameObject.x,
-                        this.gameObject.y,
-                        nearestTower.x,
-                        nearestTower.y
-                    );
-                    if (distance <= this.activationRange) {
-                        this.activateWave(nearestTower);
-                        this.lastActivated = time;
-                    }
-                } else {
-                    // If no deactivated tower is nearby or in range, activate wave to damage special enemies
-                    this.activateWave();
-                    this.lastActivated = time;
-                }
-            } else {
+            if (this.isOnCooldown(time)) {
                 this.gameObject.level.hud.alert(
                     'ABILITY COOLDOWN:\nWave Amplifier is on cooldown!',
                     AppColors.UI_MESSAGE_WARN
                 );
+                return;
+            }
+
+            // Check for base activation cost
+            if (this.gameObject.level.state.money < this.baseActivationCost) {
+                this.gameObject.level.hud.alert(
+                    `INSUFFICIENT BALANCE:\nNeed $${this.baseActivationCost} to activate Resonance Wave!`,
+                    AppColors.UI_MESSAGE_WARN,
+                    1000
+                );
+                return;
+            }
+
+            // Deduct base activation cost
+            this.gameObject.level.state.money -= this.baseActivationCost;
+            this.gameObject.level.hud.update();
+            this.lastActivated = time; // Set lastActivated here after cost check
+
+            if (nearestTower && (nearestTower.isNotFullHealth() || nearestTower.isTowerDeactivated())) {
+                const distance = Phaser.Math.Distance.Between(
+                    this.gameObject.x,
+                    this.gameObject.y,
+                    nearestTower.x,
+                    nearestTower.y
+                );
+                if (distance <= this.activationRange) {
+                    this.activateWave(nearestTower);
+                }
+            } else {
+                // If no deactivated tower is nearby or in range, activate wave to damage special enemies
+                this.activateWave();
             }
         }
+    }
+
+    public isOnCooldown(time: number = this.gameObject.scene.time.now): boolean {
+        return time < this.lastActivated + this.cooldownTime;
     }
 
     private playerPressedKey(_time: number) {
         return Phaser.Input.Keyboard.JustDown(this.keys.e);
     }
 
-    private hasCooldownExpired(time: number) {
-        return time > this.lastActivated + this.cooldownTime;
-    }
-
     private activateWave(tower?: Tower): void {
-        console.log(this.gameObject.width);
-        const totalPulses = 4;
-        const pulseDelay = 150;
-        const pulseDuration = 1000;
-        const pulseColor = tower ? tower.tintTopLeft : phaserColor(AppColors.PLAYER_WAVE_PULSE);
+        const pulseColor = tower ? tower.tintTopLeft : PlayerConfig.resonanceWave.pulseColor;
 
-        for (let i = 0; i < totalPulses; i++) {
-            this.gameObject.scene.time.delayedCall(i * pulseDelay, () => {
-                const graphics = this.gameObject.scene.add.graphics({
-                    fillStyle: { color: pulseColor, alpha: 0.3 },
-                    lineStyle: { width: 0.5, color: pulseColor, alpha: 0.8 },
-                });
-
-                graphics.setDepth(10);
-                graphics.x = this.gameObject.x;
-                graphics.y = this.gameObject.y;
-
-                this.gameObject.scene.tweens.add({
-                    targets: graphics,
-                    scale: 2,
-                    alpha: 0,
-                    duration: pulseDuration,
-                    ease: 'Sine.easeOut',
-                    onUpdate: (_tween, target) => {
-                        graphics.clear();
-                        graphics.lineStyle(1, pulseColor, target.alpha * 0.8);
-                        graphics.fillStyle(pulseColor, target.alpha * 0.3);
-                        const radius = (this.gameObject.width / 2) * target.scale;
-                        graphics.fillCircle(0, 0, radius);
-                        graphics.strokeCircle(0, 0, radius);
-                    },
-                    onComplete: () => {
-                        graphics.destroy();
-                    },
-                });
-            });
-        }
+        createWaveEffect(
+            this.gameObject.scene,
+            this.gameObject.x,
+            this.gameObject.y,
+            this.gameObject.width,
+            getResonanceWaveConfig(this.activationRange, pulseColor)
+        );
 
         if (tower && (tower.isNotFullHealth() || tower.isTowerDeactivated())) {
-            const reviveCost = tower.cost;
+            const reviveCost = tower.cost; // This is the additional cost for reviving
             if (this.gameObject.level.state.money >= reviveCost) {
                 this.gameObject.level.state.money -= reviveCost;
                 this.gameObject.level.hud.update();
@@ -135,11 +124,9 @@ export class ResonanceWave extends Component {
                         healthComponent._currentHealth = healthComponent.maxHealth;
                         tower.setActive(true);
                         tower.setAlpha(1);
-                        tower.getComponent(VisualPulse)?.start();
                         const attackComponents = [
                             tower.getComponent(LaserAttack),
                             tower.getComponent(BombAttack),
-                            tower.getComponent(VisualPulse),
                         ];
                         attackComponents.forEach((c) => {
                             if (c) c.enabled = true;
@@ -152,10 +139,13 @@ export class ResonanceWave extends Component {
             } else {
                 const moneyNeededToRevive = reviveCost - this.gameObject.level.state.money;
                 this.gameObject.level.hud.alert(
-                    `INSUFFICIENT BALANCE:\nNeed $${moneyNeededToRevive} to revive tower!`,
+                    `INSUFFICIENT BALANCE:\nNeed $${moneyNeededToRevive} to fully revive tower!`,
                     AppColors.UI_MESSAGE_WARN,
                     1000
                 );
+                // If not enough money for full revive, refund base activation cost
+                this.gameObject.level.state.money += this.baseActivationCost;
+                this.gameObject.level.hud.update();
             }
         }
 
@@ -171,12 +161,10 @@ export class ResonanceWave extends Component {
                     specialEnemy.x,
                     specialEnemy.y
                 );
-                console.log(specialEnemy, distance);
                 if (distance <= this.activationRange) {
                     const healthComponent = specialEnemy.getComponent(Health);
                     if (healthComponent) {
                         healthComponent.takeDamage(this.waveDamage);
-                        console.log('doing damage');
                     }
                 }
             }

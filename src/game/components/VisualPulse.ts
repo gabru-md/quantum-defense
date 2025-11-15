@@ -1,7 +1,7 @@
 import { Component } from '../core/Component';
 import * as Phaser from 'phaser';
 import { phaserColor } from '../scripts/Colors.ts';
-import {Deactivator} from "./Deactivator.ts";
+import { ResonanceWave } from './ResonanceWave.ts'; // Import ResonanceWave
 
 /**
  * A component that adds a continuous, non-damaging visual pulse to a GameObject.
@@ -19,19 +19,19 @@ export class VisualPulse extends Component {
      * @param color The color of the pulse.
      * @param pulseDelay The delay between the start of each individual pulse in milliseconds.
      * @param duration The duration of a single pulse animation in milliseconds.
-     * @param scale The maximum scale factor the pulse will reach.
+     * @param targetRadius The final radius the pulse should reach.
      * @param totalPulses The total number of individual pulses that will be active simultaneously.
      * @param lineWidth The width of the line used to draw the pulse circle.
-     * @param deactivator
+     * @param resonanceWaveComponent An optional ResonanceWave component to check for cooldown status.
      */
     constructor(
         color: number,
         private pulseDelay: number,
         private duration: number,
-        private scale: number = 2.75,
+        private targetRadius: number,
         private totalPulses: number = 10,
         private lineWidth: number = 1,
-        private deactivator: Deactivator | null = null
+        private resonanceWaveComponent: ResonanceWave | null = null // New optional parameter
     ) {
         super();
         this._color = color;
@@ -40,6 +40,9 @@ export class VisualPulse extends Component {
     }
 
     public start(): void {
+        const initialRadius = this.gameObject.width / 2;
+        const scaleFactor = this.targetRadius / initialRadius;
+
         for (let i = 0; i < this.totalPulses; i++) {
             this.gameObject.scene.time.delayedCall(i * this.pulseDelay, () => {
                 if (!this.gameObject.active) {
@@ -56,7 +59,7 @@ export class VisualPulse extends Component {
                 this.pulseTweenList.push(
                     this.gameObject.scene.tweens.add({
                         targets: pulseGraphics,
-                        scale: this.scale,
+                        scale: scaleFactor, // Scale the graphics object to reach the targetRadius
                         alpha: 0,
                         duration: this.duration,
                         ease: 'Sine.easeOut',
@@ -65,15 +68,19 @@ export class VisualPulse extends Component {
                             if (!this.enabled) {
                                 return;
                             }
-                            pulseGraphics.clear();
-                            if (this.deactivator && !this.deactivator.isReady()) {
-                                return;
+
+                            // Adjust alpha based on cooldown if ResonanceWave component is provided
+                            let currentAlpha = target.alpha;
+                            if (this.resonanceWaveComponent && this.resonanceWaveComponent.isOnCooldown()) {
+                                currentAlpha *= 0.3; // Reduce visibility when on cooldown
                             }
-                            pulseGraphics.lineStyle(this.lineWidth, phaserColor(this._color), target.alpha * 0.8);
-                            pulseGraphics.fillStyle(phaserColor(this._color), target.alpha * 0.3);
-                            const radius = (this.gameObject.width / 2) * target.scale;
-                            pulseGraphics.fillCircle(0, 0, radius);
-                            pulseGraphics.strokeCircle(0, 0, radius);
+
+                            pulseGraphics.clear();
+                            pulseGraphics.lineStyle(this.lineWidth, phaserColor(this._color), currentAlpha * 0.8);
+                            pulseGraphics.fillStyle(phaserColor(this._color), currentAlpha * 0.3);
+                            // Draw a circle with the initial radius in the graphics object's local space
+                            pulseGraphics.fillCircle(0, 0, initialRadius);
+                            pulseGraphics.strokeCircle(0, 0, initialRadius);
                         },
                         onComplete: () => {
                             pulseGraphics.destroy();

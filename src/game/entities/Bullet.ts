@@ -1,7 +1,6 @@
 import { GameObject } from '../core/GameObject';
 import { Health } from '../components/Health';
 import * as Phaser from 'phaser';
-import { VisualPulse } from '../components/VisualPulse.ts';
 import { GAME_HEIGHT, GAME_WIDTH } from '../scripts/Util.ts';
 
 export class Bullet extends GameObject {
@@ -36,10 +35,6 @@ export class Bullet extends GameObject {
     }
 
     public destroyBullet(): void {
-        const visualPulseComponent = this.getComponent(VisualPulse);
-        if (visualPulseComponent) {
-            visualPulseComponent.destroy();
-        }
         this.destroy();
     }
 

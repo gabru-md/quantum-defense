@@ -2,30 +2,27 @@ import { GameObject } from '../core/GameObject';
 import { Health } from '../components/Health';
 import { PathFollower } from '../components/PathFollower';
 import { Deactivator } from '../components/Deactivator';
+import { SpecialEnemyConfigType } from '../config/EnemyConfigs.ts'; // Import SpecialEnemyConfigType
 
 export interface SpecialEnemyConfig {
     scene: Phaser.Scene;
     path: Phaser.Curves.Path;
-    texture: string;
-    health: number;
-    speed: number;
-    moneyValue: number;
 }
 
 export class SpecialEnemy extends GameObject {
     private moneyValue: number;
     private healthComponent!: Health;
 
-    constructor(config: SpecialEnemyConfig) {
+    constructor(config: SpecialEnemyConfig, specialEnemyConfigData: SpecialEnemyConfigType) {
         const startPoint = config.path.getStartPoint();
-        super(config.scene, startPoint.x, startPoint.y, config.texture);
+        super(config.scene, startPoint.x, startPoint.y, specialEnemyConfigData.texture);
         config.scene.physics.world.enable(this);
 
-        this.moneyValue = config.moneyValue;
+        this.moneyValue = specialEnemyConfigData.moneyValue;
 
-        this.healthComponent = new Health(config.health);
+        this.healthComponent = new Health(specialEnemyConfigData.health);
         this.addComponent(this.healthComponent);
-        this.addComponent(new PathFollower(config.path, config.speed));
+        this.addComponent(new PathFollower(config.path, specialEnemyConfigData.speed));
         this.addComponent(new Deactivator()); // Add the Deactivator component
 
         this.on(
