@@ -182,6 +182,7 @@ export class Tutorial extends Level {
         this.hudElements.separators.forEach(sep => sep.setVisible(true)); // Show game boundaries
         await this.showStep({
             text: "Welcome to the battlefield, Observer.",
+            markerConfig: {x1: 0, y1: 0, x2: WIDTH, y2: GAME_HEIGHT, text: "Battlefield"},
             waitForSpacePress: true
         });
         this.hudElements.hudSeparators.forEach(sep => sep.setVisible(true));
