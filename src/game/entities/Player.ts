@@ -35,4 +35,11 @@ export class Player extends GameObject {
         }
         return super.setVisible(value);
     }
+
+    destroy(fromScene?: boolean) {
+        for(let component of this.components) {
+            component.enabled = false;
+        }
+        super.destroy(fromScene);
+    }
 }

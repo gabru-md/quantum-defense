@@ -1,6 +1,5 @@
 import {getStoryName, LevelNames} from './lib/LevelNames.ts';
 import {GameObject} from '../core/GameObject';
-import {AppColors, phaserColor} from '../scripts/Colors';
 import {VisualPulse} from '../components/VisualPulse';
 import {HEIGHT, WIDTH} from '../scripts/Util';
 import {BaseStoryScene, StoryStep} from "./lib/BaseStoryScene.ts";
@@ -15,6 +14,11 @@ export class StoryLevel1 extends BaseStoryScene {
         );
     }
 
+    preload() {
+        this.backgroundEffectsManager.enableDataStreamEffect(this);
+        super.preload();
+    }
+
     getStoryConfig(): { title?: string; steps: StoryStep[]; nextScene: string } {
         return {
             title: 'Hello Genie',
@@ -24,6 +28,7 @@ export class StoryLevel1 extends BaseStoryScene {
                     text: 'Hi! I am Genie.\nEven a Guardian needs a guide!',
                     action: scene => {
                         const player = new GameObject(scene, WIDTH / 2, HEIGHT * 3 / 4, PlayerConfig.texture);
+                        scene.add.existing(player);
                         scene.animateIn(player);
                         player.addComponent(
                             new VisualPulse(
@@ -52,6 +57,7 @@ export class StoryLevel1 extends BaseStoryScene {
                 {
                     text: "Static's operations are rising rapidly,\nHe is sending out fleet of Glitches.",
                     action: scene => {
+                        this.backgroundEffectsManager.enableGlitchAnnihilationEffect(scene);
                         const staticEnemy = scene.add.sprite(WIDTH / 2, HEIGHT / 4, 'static').setAlpha(0.3).setScale(1.25, 1.25);
                         scene.animateIn(staticEnemy);
                         scene.tweens.add({
@@ -85,6 +91,11 @@ export class StoryLevel2 extends BaseStoryScene {
         );
     }
 
+    preload() {
+        this.backgroundEffectsManager.enableDataStreamEffect(this);
+        super.preload();
+    }
+
     getStoryConfig(): { title?: string; steps: StoryStep[]; nextScene: string } {
         return {
             title: 'Trust Me',
@@ -93,6 +104,7 @@ export class StoryLevel2 extends BaseStoryScene {
                 {
                     text: "The Glitches have identified more paths to the nexus\nIt's not looking good.",
                     action: scene => {
+                        this.backgroundEffectsManager.enableGlitchAnnihilationEffect(scene);
                         const nexus = scene.add.sprite(WIDTH / 2, HEIGHT / 4, 'nexus').setAlpha(0.3);
                         scene.animateIn(nexus);
                         scene.tweens.add({
@@ -118,6 +130,7 @@ export class StoryLevel2 extends BaseStoryScene {
                     text: "But I can still count on you, right?",
                     action: scene => {
                         const player = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 100, PlayerConfig.texture);
+                        scene.add.existing(player);
                         scene.animateIn(player);
                         player.addComponent(
                             new VisualPulse(
@@ -144,6 +157,11 @@ export class StoryLevel3 extends BaseStoryScene {
         );
     }
 
+    preload() {
+        this.backgroundEffectsManager.enableDataStreamEffect(this);
+        super.preload();
+    }
+
     getStoryConfig(): { title?: string; steps: StoryStep[]; nextScene: string } {
         return {
             title: 'The Phantom',
@@ -152,7 +170,9 @@ export class StoryLevel3 extends BaseStoryScene {
                 {
                     text: 'I have some news for you Guardian.',
                     action: scene => {
+                        this.backgroundEffectsManager.enableGhostlyClashEffect(scene);
                         const player = new GameObject(scene, WIDTH / 2 - 100, HEIGHT / 2 - 100, PlayerConfig.texture);
+                        scene.add.existing(player);
                         scene.animateIn(player);
                         player.addComponent(
                             new VisualPulse(
@@ -170,7 +190,9 @@ export class StoryLevel3 extends BaseStoryScene {
                 {
                     text: 'The Phantom is on the move!',
                     action: scene => {
+                        this.backgroundEffectsManager.enableGlitchAnnihilationEffect(scene);
                         const phantom = new GameObject(scene, WIDTH / 2 + 100, HEIGHT / 2 - 100, SpecialEnemyConfig.texture).setAlpha(0.8);
+                        scene.add.existing(phantom);
                         scene.animateIn(phantom);
                         phantom.addComponent(
                             new VisualPulse(
@@ -214,6 +236,11 @@ export class StoryLevel4 extends BaseStoryScene {
         );
     }
 
+    preload() {
+        this.backgroundEffectsManager.enableDataStreamEffect(this);
+        super.preload();
+    }
+
     getStoryConfig(): { title?: string; steps: StoryStep[]; nextScene: string } {
         return {
             title: 'Rise of Static',
@@ -222,6 +249,7 @@ export class StoryLevel4 extends BaseStoryScene {
                 {
                     text: "We don't know the source of Static's Power",
                     action: scene => {
+                        this.backgroundEffectsManager.enableGlitchAnnihilationEffect(scene);
                         const staticEnemy = scene.add.sprite(WIDTH / 2, HEIGHT / 4, 'static').setAlpha(0.3);
                         scene.animateIn(staticEnemy);
                         scene.tweens.add({
@@ -238,7 +266,9 @@ export class StoryLevel4 extends BaseStoryScene {
                 {
                     text: 'But with your help We can sample the remains of Phantom.',
                     action: scene => {
+                        this.backgroundEffectsManager.enableGhostlyClashEffect(scene);
                         const phantom = new GameObject(scene, WIDTH / 2, HEIGHT / 2 - 100, SpecialEnemyConfig.texture).setAlpha(0.8);
+                        scene.add.existing(phantom);
                         scene.animateIn(phantom);
                         phantom.addComponent(
                             new VisualPulse(
@@ -257,6 +287,7 @@ export class StoryLevel4 extends BaseStoryScene {
                     text: 'And maybe together we can put an end to it all!',
                     action: scene => {
                         const player = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 100, PlayerConfig.texture);
+                        scene.add.existing(player);
                         scene.animateIn(player);
                         player.addComponent(
                             new VisualPulse(
@@ -296,6 +327,11 @@ export class StoryLevel5 extends BaseStoryScene {
         );
     }
 
+    preload() {
+        this.backgroundEffectsManager.enableDataStreamEffect(this);
+        super.preload();
+    }
+
     getStoryConfig(): { title?: string; steps: StoryStep[]; nextScene: string } {
         return {
             title: 'Breakthrough',
@@ -305,6 +341,7 @@ export class StoryLevel5 extends BaseStoryScene {
                     text: 'That was amazing, I know we can count on you!',
                     action: scene => {
                         const player = new GameObject(scene, WIDTH / 2 - 100, HEIGHT / 2 - 100, PlayerConfig.texture);
+                        scene.add.existing(player);
                         scene.animateIn(player);
                         player.addComponent(
                             new VisualPulse(
@@ -322,7 +359,9 @@ export class StoryLevel5 extends BaseStoryScene {
                 {
                     text: 'Also, I am close to sampling Phantom\nI need maybe 2 more for a breakthrough',
                     action: scene => {
+                        this.backgroundEffectsManager.enableGlitchAnnihilationEffect(scene);
                         const phantom = new GameObject(scene, WIDTH / 2 + 100, HEIGHT / 2 - 100, SpecialEnemyConfig.texture).setAlpha(0.8);
+                        scene.add.existing(phantom);
                         scene.animateIn(phantom);
                         phantom.addComponent(
                             new VisualPulse(
@@ -350,6 +389,11 @@ export class StoryLevel6 extends BaseStoryScene {
         super(
             getStoryName(LevelNames.TheCliffhanger),
         );
+    }
+
+    preload() {
+        this.backgroundEffectsManager.enableDataStreamEffect(this);
+        super.preload();
     }
 
     getStoryConfig(): { title?: string; steps: StoryStep[]; nextScene: string } {

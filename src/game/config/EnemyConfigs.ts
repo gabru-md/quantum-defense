@@ -46,5 +46,5 @@ export const SpecialEnemyConfig: SpecialEnemyConfigType = {
     color: phaserColor(AppColors.SPECIAL_ENEMY),
     deactivationRadius: 75,
     deactivationInterval: 2000,
-    pulseColor: phaserColor(AppColors.ENEMY_SPECIAL_IDLE),
+    pulseColor: phaserColor(AppColors.SPECIAL_ENEMY_WAVE_PULSE),
 };

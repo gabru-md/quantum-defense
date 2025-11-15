@@ -16,6 +16,9 @@ import {getStoryName, LevelNames} from "./lib/LevelNames.ts";
 import {PlayerConfig} from "../config/PlayerConfig.ts";
 import {EnemyConfigs, SpecialEnemyConfig} from "../config/EnemyConfigs.ts";
 import {TowerConfigs} from "../config/TowerConfigs.ts";
+import {GlitchAnnihilationEffect} from "../effects/GlitchAnnihilationEffect.ts";
+import {Player} from "../entities/Player.ts";
+import {SpecialEnemy} from "../entities/SpecialEnemy.ts";
 
 export class Introduction extends BaseStoryScene {
     constructor() {
@@ -33,7 +36,7 @@ export class Introduction extends BaseStoryScene {
         createTowerTexture(this, TowerConfigs.tower1.texture, 64, AppColors.TOWER_LASER);
         createTowerTexture(this, TowerConfigs.tower2.texture, 64, AppColors.TOWER_BOMB);
         createTowerTexture(this, TowerConfigs.tower3.texture, 64, AppColors.TOWER_SLOW);
-        createSpecialEnemyTexture(this, SpecialEnemyConfig.texture, 32, AppColors.SPECIAL_ENEMY);
+        createSpecialEnemyTexture(this, SpecialEnemyConfig.texture, 24, AppColors.SPECIAL_ENEMY);
     }
 
     getStoryConfig(): { title?: string; steps: StoryStep[]; nextScene: string } {
@@ -44,8 +47,7 @@ export class Introduction extends BaseStoryScene {
                 {
                     text: 'In the beginning, there was the Quantum Realm\nA silent, boundless universe of pure data and energy,\nflowing in seamless waves.',
                     action: (scene) => {
-                        const backgroundEffectsManager = scene.backgroundEffectsManager;
-                        backgroundEffectsManager.enableDataStreamEffect(scene);
+                        this.backgroundEffectsManager.enableDataStreamEffect(scene, 'laminar');
                     }
                 },
                 {
@@ -77,6 +79,7 @@ export class Introduction extends BaseStoryScene {
                             yoyo: true,
                             repeat: -1,
                         });
+                        this.backgroundEffectsManager.enableDataStreamEffect(scene, 'chaos');
                         this.backgroundEffectsManager.enableGlitchAnnihilationEffect(scene);
                         return staticEnemy;
                     },
@@ -84,7 +87,8 @@ export class Introduction extends BaseStoryScene {
                 {
                     text: 'You are Guardian: The Sentient\nCreated by the Nexus to be its last line of defense.',
                     action: (scene) => {
-                        const player = new GameObject(scene, WIDTH / 3, HEIGHT / 3, PlayerConfig.texture);
+                        const player = new GameObject(scene, WIDTH / 3, HEIGHT / 3, PlayerConfig.texture).setAlpha(0.6);
+                        scene.add.existing(player);
                         this.animateIn(player);
                         player.addComponent(
                             new VisualPulse(
@@ -122,7 +126,8 @@ export class Introduction extends BaseStoryScene {
                 {
                     text: 'But beware of the Phantoms!\nThey are special Wave Glitches.\nThey can corrupt your towers,\nrendering you defenseless.',
                     action: (scene) => {
-                        const phantom = new GameObject(scene, (WIDTH * 2) / 3, HEIGHT / 3, SpecialEnemyConfig.texture).setAlpha(0.8);
+                        const phantom = new GameObject(scene, (WIDTH * 2) / 3, HEIGHT / 3, SpecialEnemyConfig.texture).setAlpha(0.6);
+                        scene.add.existing(phantom);
                         this.animateIn(phantom);
                         phantom.addComponent(
                             new VisualPulse(
@@ -170,8 +175,8 @@ export class Introduction extends BaseStoryScene {
             this.instructionText.destroy();
         }
 
-        const playerSprite = this.visuals.find(v => (v as GameObject).texture.key === PlayerConfig.texture);
-        const specialEnemySprite = this.visuals.find(v => (v as GameObject).texture.key === SpecialEnemyConfig.texture);
+        const playerSprite: Player = this.visuals.find(v => (v as GameObject).texture.key === PlayerConfig.texture) as Player;
+        const specialEnemySprite: SpecialEnemy = this.visuals.find(v => (v as GameObject).texture.key === SpecialEnemyConfig.texture) as SpecialEnemy;
 
         this.animateElementsOffScreen(playerSprite, specialEnemySprite);
 
@@ -187,41 +192,35 @@ export class Introduction extends BaseStoryScene {
             targets: [playerSprite, specialEnemySprite],
             x: centerX,
             y: centerY,
-            scale: 3,
+            scale: 1.5,
             duration: 2000,
             ease: 'Power2',
-            rotation: Math.PI * 2,
             onComplete: () => {
-                this.tweens.add({
-                    targets: specialEnemySprite,
-                    alpha: 0,
-                    scale: 0,
-                    duration: 1000,
-                    ease: 'Power2',
-                    onComplete: () => {
-                        specialEnemySprite.destroy();
-                        this.tweens.add({
-                            targets: playerSprite,
-                            scale: 3,
-                            alpha: 1,
-                            duration: 500,
-                            onComplete: () => {
-                                this.time.delayedCall(1000, () => {
-                                    this.tweens.add({
-                                        targets: playerSprite,
-                                        alpha: 0,
-                                        duration: 1000,
-                                        ease: 'Power1',
-                                        onComplete: () => {
-                                            this.scene.start(LevelNames.Introduction);
-                                        },
-                                    });
-                                });
-                            },
-                        });
-                    },
+                // @ts-ignore
+                playerSprite.destroy();
+                // @ts-ignore
+                specialEnemySprite.destroy();
+
+                const glitchEffect = new GlitchAnnihilationEffect(this);
+                glitchEffect.createDistantRift({
+                    x: centerX,
+                    y: centerY,
+                    scale: 4.5,
+                    outcome: 'player'
                 });
-            },
+
+                this.time.delayedCall(4000, () => {
+                    this.tweens.add({
+                        targets: this.cameras.main,
+                        alpha: 0,
+                        duration: 1000,
+                        ease: 'Power1',
+                        onComplete: () => {
+                            this.scene.start(LevelNames.Introduction);
+                        }
+                    });
+                });
+            }
         });
     }
 
@@ -240,7 +239,5 @@ export class Introduction extends BaseStoryScene {
 
     shutdown(): void {
         super.shutdown();
-        // Removed texture removal to prevent race conditions and texture-not-found errors on scene restart.
-        // Textures will be overwritten by the next scene's preload method, which is safe.
     }
 }

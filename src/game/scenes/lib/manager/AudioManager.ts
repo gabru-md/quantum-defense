@@ -77,7 +77,7 @@ export class AudioManager extends Manager {
     }
 
     public playHeavySound(key: string) {
-        return this.playSound(key, {volume:0.5, detune: -600, rate: 1.25});
+        return this.playSound(key, {volume:0.5, detune: -600, rate: 1.4});
     }
 
     public playLightSound(key: string) {

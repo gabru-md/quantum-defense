@@ -5,7 +5,7 @@ import {GlitchAnnihilationEffect} from './GlitchAnnihilationEffect.ts';
 import {EnergyRippleEffect} from './EnergyRippleEffect.ts'; // Import the new effect
 
 export class BackgroundEffectsManager {
-    private scene: Phaser.Scene;
+    private readonly scene: Phaser.Scene;
     private activeEffects: (GhostlyClashEffect | DataStreamEffect | GlitchAnnihilationEffect | EnergyRippleEffect)[] = []; // Add other effect types here
 
     constructor(scene: Phaser.Scene, effects: (GhostlyClashEffect | DataStreamEffect | GlitchAnnihilationEffect | EnergyRippleEffect)[] = []) {
@@ -15,7 +15,10 @@ export class BackgroundEffectsManager {
 
     public start(): void {
         this.enable_all()
-        this.activeEffects.forEach(effect => effect.start());
+        this.activeEffects.forEach(effect => {
+            // @ts-ignore
+            effect.start();
+        });
     }
 
     public enableGhostlyClashEffect(scene: Phaser.Scene) {
@@ -24,10 +27,16 @@ export class BackgroundEffectsManager {
         this.activeEffects.push(effect);
     }
 
-    public enableDataStreamEffect(scene: Phaser.Scene) {
-        const effect = new DataStreamEffect(scene);
-        effect.start();
-        this.activeEffects.push(effect);
+    public enableDataStreamEffect(scene: Phaser.Scene, flowType: 'chaos' | 'laminar' = 'chaos') {
+        const existingEffect = this.activeEffects.find(effect => effect instanceof DataStreamEffect);
+
+        if (existingEffect && existingEffect instanceof DataStreamEffect) {
+            existingEffect.setFlow(flowType);
+        } else {
+            const newEffect = new DataStreamEffect(scene);
+            newEffect.start(flowType);
+            this.activeEffects.push(newEffect);
+        }
     }
 
     public enableGlitchAnnihilationEffect(scene: Phaser.Scene) {

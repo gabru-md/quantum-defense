@@ -55,7 +55,7 @@ export const AppColors = {
     STATIC_OUTER: '#8A2BE2', // Blue-Violet for Static
     STATIC_INNER: '#4B0082', // Indigo for inner rings
     SPECIAL_ENEMY: '#8A2BE2', // Phantom now uses the Static's primary color
-    SPECIAL_ENEMY_WAVE_PULSE: 'rgba(225,225,225,0.5)', // Phantom now uses the Static's primary color
+    SPECIAL_ENEMY_WAVE_PULSE: 'rgba(138,43,226,0.65)', // Phantom now uses the Static's primary color
 
     // Player Wave Pulse
     PLAYER_WAVE_PULSE: 'rgba(0,255,255,0.8)',
