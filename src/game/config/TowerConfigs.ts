@@ -28,8 +28,8 @@ export const TowerConfigs: { [key: string]: TowerConfigType } = {
     tower1: {
         texture: 'tower1',
         energyCost: 100,
-        health: 300,
-        range: 150,
+        health: 200,
+        range: 100,
         description: 'Laser Tower:\nRapid fire, single target damage.',
         pulse: {
             color: phaserColor(AppColors.PULSE_LASER_TOWER),
@@ -46,9 +46,9 @@ export const TowerConfigs: { [key: string]: TowerConfigType } = {
     },
     tower2: {
         texture: 'tower2',
-        energyCost: 150,
-        health: 500,
-        range: 133,
+        energyCost: 250,
+        health: 200,
+        range: 80,
         description: 'Bomb Tower:\nSlow fire, area of effect damage.',
         pulse: {
             color: phaserColor(AppColors.PULSE_BOMB_TOWER),
@@ -65,9 +65,9 @@ export const TowerConfigs: { [key: string]: TowerConfigType } = {
     },
     tower3: {
         texture: 'tower3',
-        energyCost: 120,
+        energyCost: 350,
         health: 200,
-        range: 175,
+        range: 150,
         description: 'Slowing Tower:\nSlows all enemies within its range.',
         pulse: {
             color: phaserColor(AppColors.TOWER_SLOW),

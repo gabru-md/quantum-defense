@@ -160,14 +160,11 @@ export class HudManager extends Manager {
             const config: TowerConfigType = TowerConfigs[towerKey];
             let statsString = '';
             if (config.attack) {
-                statsString = `DMG: ${config.attack.damage} | FR: ${1000 / config.attack.fireRate}/s`;
-                if (config.attack.aoeRadius) {
-                    statsString += ` | AoE: ${config.attack.aoeRadius}`;
-                }
+                statsString = `DMG: ${config.attack.damage} | FR: ${(1000 / config.attack.fireRate).toFixed(2)}/s | R: ${config.range}`;
             } else if (config.slowing) {
-                statsString = `Slow: ${config.slowing.slowFactor * 100}% | Range: ${config.range}`;
+                statsString = `Slow: ${config.slowing.slowFactor * 100}% | R: ${config.range}`;
             }
-            this.createTowerButton(hudX + 15, currentTowerY, towerKey, config.energyCost, statsString, config.description.split('\n')[0]); // Use config.energyCost
+            this.createTowerButton(hudX + 15, currentTowerY, towerKey, config.energyCost, statsString, config.description.split('\n')[0].split(':')[0]); // Use config.energyCost
             currentTowerY += 100; // Adjust spacing between tower buttons
         }
         
@@ -208,7 +205,7 @@ export class HudManager extends Manager {
 
         const nameText = this.scene.add.text(x + 80, y + 10, name, { font: '18px', color: AppColors.UI_TEXT }).setDepth(100);
         const energyText = this.scene.add.text(x + 80, y + 35, `Energy: ${energyCost}`, { font: '16px', color: AppColors.UI_TEXT }).setDepth(100); // Updated text
-        const statsText = this.scene.add.text(x + 80, y + 60, `Stats: ${stats}`, { font: '14px', color: AppColors.UI_DISABLED }).setDepth(100);
+        const statsText = this.scene.add.text(x + 80, y + 60, `${stats}`, { font: '14px', color: AppColors.UI_DISABLED }).setDepth(100);
 
         buttonImage.on('pointerdown', () => {
             this.scene.events.emit('towerSelected', towerKey);
@@ -290,16 +287,15 @@ export class HudManager extends Manager {
             let drawX = GAME_WIDTH / 2;
             let drawY = GAME_HEIGHT / 2;
 
-            // If pointer is within game area, follow pointer
+            // If pointer is within game area, follow pointer and draw
             if (pointer.x < GAME_WIDTH && pointer.y < GAME_HEIGHT) {
                 drawX = pointer.x;
                 drawY = pointer.y;
+                this.rangePreview.lineStyle(2, previewColor, 0.8); // Use tower-specific color
+                this.rangePreview.fillStyle(previewColor, 0.1); // Use tower-specific color
+                this.rangePreview.fillCircle(drawX, drawY, range);
+                this.rangePreview.strokeCircle(drawX, drawY, range);
             }
-            
-            this.rangePreview.lineStyle(2, previewColor, 0.8); // Use tower-specific color
-            this.rangePreview.fillStyle(previewColor, 0.1); // Use tower-specific color
-            this.rangePreview.fillCircle(drawX, drawY, range);
-            this.rangePreview.strokeCircle(drawX, drawY, range);
         }
     }
 
