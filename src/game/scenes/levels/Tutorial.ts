@@ -91,17 +91,6 @@ export class Tutorial extends Level {
                     path: 'path1'
                 }];
             case 5:
-                return [{
-                    type: 'specialEnemy',
-                    texture: SpecialEnemyConfig.texture,
-                    count: 1,
-                    delay: 1000,
-                    health: SpecialEnemyConfig.health,
-                    speed: SpecialEnemyConfig.speed,
-                    energyValue: SpecialEnemyConfig.energyValue,
-                    path: 'path1'
-                }];
-            case 6:
                 return [
                     {
                         type: 'enemy',
@@ -190,10 +179,13 @@ export class Tutorial extends Level {
         const hudX = GAME_WIDTH + 15;
         const hudPanelWidth = WIDTH - GAME_WIDTH - 30;
 
-        // Ensure selectedTowerType is 'none' at the start of the tutorial
-        this.state.selectedTowerType = 'none';
+        // --- Lira's Feedback Implementation ---
+        this.state.energy = 9999; // Infinite energy for tutorial
+        this.hud.disableTowerSelection();
+        this.towerManager.disablePlacement();
+        // ---
 
-        this.hudElements.separators.forEach(sep => sep.setVisible(true)); // Show game boundaries
+        this.hudElements.separators.forEach(sep => sep.setVisible(true));
         this.hudElements.hudSeparators.forEach(sep => sep.setVisible(true));
         await this.showStep({
             text: "Welcome to the Quantum Realm, Observer. This is your battlefield.",
@@ -225,7 +217,13 @@ export class Tutorial extends Level {
         });
 
         await this.showStep({
-            text: "This is your Energy. It's the lifeblood of your defense.\nGain Energy by eliminating Glitches.\nUse it to construct and repair your towers.\nBe mindful: Your Resonance Wave also consumes Energy!",
+            text: "This is your Energy. It's the lifeblood of your defense.",
+            markerConfig: {x1: hudX + 5, y1: 108, x2: hudX + hudPanelWidth - 5, y2: 133, text: "Energy"},
+            waitForSpacePress: true
+        });
+
+        await this.showStep({
+            text: "Gain Energy by eliminating Glitches.\nUse it to construct and repair your towers.",
             markerConfig: {x1: hudX + 5, y1: 108, x2: hudX + hudPanelWidth - 5, y2: 133, text: "Energy"},
             waitForSpacePress: true
         });
@@ -236,11 +234,10 @@ export class Tutorial extends Level {
             waitForSpacePress: true
         });
 
-        // Step 2: Show tower arsenal panel and all dividers
         // @ts-ignore
         this.hudElements.towers.forEach(el => el.setVisible(true));
         await this.showStep({
-            text: "Now, let's examine your Tower Arsenal. These are your primary defensive tools.",
+            text: "Now, let's examine your Tower Arsenal.",
             markerConfig: {x1: hudX, y1: 200, x2: hudX + hudPanelWidth, y2: 800, text: "Tower Arsenal"},
             waitForSpacePress: true
         });
@@ -290,49 +287,30 @@ export class Tutorial extends Level {
             waitForSpacePress: true
         });
 
-        // Step 8: Interactive steps
-        await this.showStep({
-            text: "Navigate the battlefield using the WASD keys.", isHudInfo: true,
-            waitForSpacePress: false
-        });
-        await this.waitForEvent('playerMoved');
-
         this.pathElements.start.forEach(p => p.setVisible(true));
-        await this.showStep({
-            text: "This is Static's Den, the source of the Glitch incursions.\nAll Glitches spawn from here.",
-            markerConfig: {
-                x1: 5,
-                y1: GAME_HEIGHT / 2 - 48,
-                x2: 95,
-                y2: GAME_HEIGHT / 2 + 48,
-                text: "Static's Den"
-            },
-            waitForSpacePress: true
-        });
         this.pathElements.end.forEach(p => p.setVisible(true));
+        this.pathElements.path.forEach(p => p.setVisible(true));
         await this.showStep({
-            text: "This is the Nexus, the heart of the Quantum Realm.\nProtect it at all costs!",
-            markerConfig: {
-                x1: GAME_WIDTH - 95,
-                y1: GAME_HEIGHT / 2 - 48,
-                x2: GAME_WIDTH - 5,
-                y2: GAME_HEIGHT / 2 + 48,
-                text: "The Nexus"
-            },
+            text: "This is Static's Den, where Glitches spawn, and the Nexus you must protect.",
             waitForSpacePress: true
         });
-        this.pathElements.path.forEach(p => p.setVisible(true));
+
+        this.hud.enableTowerSelection();
         await this.showStep({
             text: "Select the Laser Tower from your Tower Menu.", isHudInfo: true,
             waitForSpacePress: false
         });
         await this.waitForEvent('towerSelected');
+
+        this.towerManager.enablePlacement();
         await this.showStep({
             text: "Strategically place the tower near Static's Den before the first wave of Glitches arrives.",
             isHudInfo: true,
             waitForSpacePress: false
         });
         await this.waitForEvent('towerPlaced');
+        this.hud.disableTowerSelection();
+        this.towerManager.disablePlacement();
 
         await this.showStep({
             text: "Here comes the most basic of Static's Glitches: the Square Glitch.", isHudInfo: true,
@@ -341,67 +319,37 @@ export class Tutorial extends Level {
         this.waveManager.startWave(1);
         await this.waitForEvent('waveCompleted');
 
+        this.hud.enableTowerSelection();
         await this.showStep({
             text: "Deploy another tower to counter the swift Triangle Glitch.", isHudInfo: true,
             waitForSpacePress: false
         });
+        this.towerManager.enablePlacement();
         await this.waitForEvent('towerPlaced');
         this.waveManager.startWave(2);
         await this.waitForEvent('waveCompleted');
 
         await this.showStep({
-            text: "The elusive Circle Glitch moves with an almost wave-like pattern. Prepare for its approach.",
+            text: "The Circle Glitch is slow but has high health, making it a formidable tank.",
             isHudInfo: true,
-            waitForSpacePress: false
+            waitForSpacePress: true
         });
-        await this.waitForEvent('towerPlaced');
         this.waveManager.startWave(3);
         await this.waitForEvent('waveCompleted');
-
-        await this.showStep({
-            text: "Constructing towers and utilizing your Resonance Wave consumes Energy.\nEnergy is acquired by eliminating Glitches.",
-            isHudInfo: true,
-            waitForSpacePress: true
-        });
-        await this.showStep({
-            text: "Glitches inflict damage upon the Nexus.\nShould the Nexus lose all its health, the game concludes.",
-            isHudInfo: true,
-            waitForSpacePress: true
-        });
 
         await this.showStep({
             text: "Now, prepare to encounter The Phantom! A unique and dangerous Glitch.", isHudInfo: true,
             waitForSpacePress: true
         });
-        await this.showStep({
-            text: "The Phantom emits a disruptive pulse that temporarily deactivates nearby towers, draining their energy.",
-            isHudInfo: true,
-            waitForSpacePress: true
-        });
-        await this.showStep({
-            text: "No conventional tower can destroy The Phantom! Your Resonance Wave is its only weakness.",
-            isHudInfo: true,
-            waitForSpacePress: true
-        });
-
         this.waveManager.startWave(4);
-        // Wait for the special enemy to be spawned and added to the group
 
         await this.waitForEvent('towerDeactivated');
+        this.waveManager.pause();
 
-        this.waveManager.pause();
-        // this.physics.pause(); // Pausing physics prevents player movement
         await this.showStep({
-            text: "A tower has been deactivated by The Phantom's pulse!", isHudInfo: true,
-            waitForSpacePress: true
-        });
-        this.waveManager.pause();
-        await this.showStep({
-            // This should also destroy the phantom
-            text: "Approach the deactivated tower and press 'E' to channel your energy and revive it!", isHudInfo: true,
+            text: "A tower has been deactivated! Approach it and press 'E' to revive it.", isHudInfo: true,
             waitForSpacePress: false
         });
-
         await this.waitForEvent('towerRevived');
 
         this.waveManager.resume();
@@ -413,28 +361,18 @@ export class Tutorial extends Level {
         });
         this.waveManager.startWave(5);
         await this.waitForEvent('waveCompleted');
-        await this.showStep({
-            text: "Towers can also be deactivated if they sustain too much damage, even from friendly fire.\nRevive them using your Resonance Wave (E).",
-            isHudInfo: true,
-            waitForSpacePress: true
-        });
-        await this.showStep({
-            text: "Remember, your Resonance Wave (E) has a cooldown and consumes Energy, so deploy it strategically.",
-            isHudInfo: true,
-            waitForSpacePress: true
-        });
 
         await this.showStep({
             text: "Clear this final wave to complete your Guardian training.", isHudInfo: true,
             waitForSpacePress: true
         });
-        this.waveManager.startWave(6);
+        this.waveManager.startWave(5);
         await this.waitForEvent('waveCompleted');
 
         this.spacebarText.setVisible(false);
         this.hud.info('Tutorial Complete!', AppColors.UI_MESSAGE_SUCCESS);
         this.time.delayedCall(2000, () => {
-            this.easeOutAndStartNextScene(this.fetchNextScene());
+            this.easeOutAndStartNextScene(this.nextScene());
         });
     }
 

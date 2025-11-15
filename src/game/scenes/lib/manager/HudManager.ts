@@ -74,6 +74,20 @@ export class HudManager extends Manager {
         }
     }
 
+    public enableTowerSelection(): void {
+        for (const key in this.towerSelectionButtons) {
+            this.towerSelectionButtons[key].button.setInteractive();
+        }
+        this.deselectButton.setInteractive({ useHandCursor: true });
+    }
+
+    public disableTowerSelection(): void {
+        for (const key in this.towerSelectionButtons) {
+            this.towerSelectionButtons[key].button.disableInteractive();
+        }
+        this.deselectButton.disableInteractive();
+    }
+
     public update(_time: number = 0, _delta: number = 0): void {
         this.updateMainStats();
         this.updateTowerSelectionUI();
@@ -287,15 +301,16 @@ export class HudManager extends Manager {
             let drawX = GAME_WIDTH / 2;
             let drawY = GAME_HEIGHT / 2;
 
-            // If pointer is within game area, follow pointer and draw
+            // If pointer is within game area, follow pointer
             if (pointer.x < GAME_WIDTH && pointer.y < GAME_HEIGHT) {
                 drawX = pointer.x;
                 drawY = pointer.y;
-                this.rangePreview.lineStyle(2, previewColor, 0.8); // Use tower-specific color
-                this.rangePreview.fillStyle(previewColor, 0.1); // Use tower-specific color
-                this.rangePreview.fillCircle(drawX, drawY, range);
-                this.rangePreview.strokeCircle(drawX, drawY, range);
             }
+            
+            this.rangePreview.lineStyle(2, previewColor, 0.8); // Use tower-specific color
+            this.rangePreview.fillStyle(previewColor, 0.1); // Use tower-specific color
+            this.rangePreview.fillCircle(drawX, drawY, range);
+            this.rangePreview.strokeCircle(drawX, drawY, range);
         }
     }
 

@@ -19,6 +19,7 @@ export class TowerManager extends Manager {
     towers!: Phaser.GameObjects.Group;
     bullets!: Phaser.GameObjects.Group;
     bombs!: Phaser.GameObjects.Group;
+    private canPlaceTowers: boolean = true; // Control flag for tower placement
 
     constructor(protected level: Level) {
         super(level);
@@ -39,9 +40,17 @@ export class TowerManager extends Manager {
         this.level.input.off('pointerdown');
     }
 
+    public enablePlacement(): void {
+        this.canPlaceTowers = true;
+    }
+
+    public disablePlacement(): void {
+        this.canPlaceTowers = false;
+    }
+
     private setupInputEventListeners() {
         this.level.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-            if (pointer.x > GAME_WIDTH || pointer.y > GAME_HEIGHT) return;
+            if (!this.canPlaceTowers || pointer.x > GAME_WIDTH || pointer.y > GAME_HEIGHT) return;
 
             if (pointer.leftButtonDown()) {
                 this.tryPlaceTower(pointer.x, pointer.y, this.level.state.selectedTowerType);
