@@ -2,7 +2,6 @@ import { GameObject } from '../core/GameObject';
 import { Health } from '../components/Health';
 import { PathFollower } from '../components/PathFollower';
 import { Deactivator } from '../components/Deactivator';
-import { AppColors, phaserColor } from '../scripts/Colors.ts';
 
 export interface SpecialEnemyConfig {
     scene: Phaser.Scene;

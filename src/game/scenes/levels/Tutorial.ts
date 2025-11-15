@@ -248,7 +248,7 @@ export class Tutorial extends Level {
 
         await this.showStep({
             text: "If you wish to deselect a tower, you can click this button.",
-            markerConfig: {x1: hudX + 40, y1: 560, x2: hudX + hudPanelWidth - 80, y2: 615, text: "Deselect"},
+            markerConfig: {x1: hudX + 40, y1: 560, x2: hudX + hudPanelWidth - 50, y2: 615, text: "Deselect"},
             waitForSpacePress: true
         });
 
@@ -325,7 +325,7 @@ export class Tutorial extends Level {
         await this.waitForEvent('waveCompleted');
 
         await this.showStep({
-            text: "Place another tower for the fast Triangle Glitch.", isHudInfo: true,
+            text: "Put another tower for the fast Triangle Glitch", isHudInfo: true,
             waitForSpacePress: false
         });
         await this.waitForEvent('towerPlaced');
@@ -342,7 +342,7 @@ export class Tutorial extends Level {
         await this.waitForEvent('waveCompleted');
 
         await this.showStep({
-            text: "Building towers requires money.\nMoney can be earned by eliminating Glitches.",
+            text: "Towers require money, Kill glitches to earn money.",
             isHudInfo: true,
             waitForSpacePress: true
         });

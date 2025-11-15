@@ -48,7 +48,7 @@ export class Deactivator extends Component {
         const pulseDelay = 100;
         const pulseDuration = 800; // Slightly shorter duration
         const pulseColor = phaserColor(AppColors.SPECIAL_ENEMY_WAVE_PULSE);
-        const pulseScale = this.deactivationRadius / (this.gameObject.width / 2); // Scale to cover deactivation radius
+        const maxRadius = this.deactivationRadius; // The target radius in pixels
 
         for (let i = 0; i < totalPulses; i++) {
             this.gameObject.scene.time.delayedCall(i * pulseDelay, () => {
@@ -61,19 +61,22 @@ export class Deactivator extends Component {
                 graphics.x = this.gameObject.x;
                 graphics.y = this.gameObject.y;
 
+                // Create a temporary object to tween its 'currentRadius' property
+                const pulseData = { currentRadius: 0 };
+
                 this.gameObject.scene.tweens.add({
-                    targets: graphics,
-                    scale: pulseScale,
-                    alpha: 0,
+                    targets: pulseData,
+                    currentRadius: maxRadius, // Tween currentRadius from 0 to maxRadius
                     duration: pulseDuration,
                     ease: 'Sine.easeOut',
-                    onUpdate: (_tween, target) => {
+                    onUpdate: (tween) => {
                         graphics.clear();
-                        graphics.lineStyle(1, pulseColor, target.alpha * 0.8);
-                        graphics.fillStyle(pulseColor, target.alpha * 0.3);
-                        const radius = (this.gameObject.width / 2) * target.scale;
-                        graphics.fillCircle(0, 0, radius);
-                        graphics.strokeCircle(0, 0, radius);
+                        // Use the tween's progress to calculate alpha
+                        const currentAlpha = 1 - tween.progress; // Alpha goes from 1 (start) to 0 (end)
+                        graphics.lineStyle(1, pulseColor, currentAlpha * 0.8);
+                        graphics.fillStyle(pulseColor, currentAlpha * 0.3);
+                        graphics.fillCircle(0, 0, pulseData.currentRadius);
+                        graphics.strokeCircle(0, 0, pulseData.currentRadius);
                     },
                     onComplete: () => {
                         graphics.destroy();
