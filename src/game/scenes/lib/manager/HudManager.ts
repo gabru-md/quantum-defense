@@ -40,6 +40,7 @@ export class HudManager extends Manager {
         hudSeparators: Phaser.GameObjects.Graphics[];
     } {
         this.createMessageText();
+        const hudBackground = this.createHudBackground();
         const statsElements = this.createMainStatsPanel();
         const towerElements = this.createTowerSelectionPanel();
         const helpElements = this.createHelpPanel();
@@ -48,7 +49,7 @@ export class HudManager extends Manager {
         this.update();
 
         return {
-            stats: statsElements,
+            stats: [hudBackground, ...statsElements],
             towers: towerElements,
             help: helpElements,
             separators: [...gameSeparators],
@@ -122,6 +123,14 @@ export class HudManager extends Manager {
         });
     }
 
+    private createHudBackground(): Phaser.GameObjects.Graphics {
+        const panel = this.scene.add.graphics();
+        panel.fillStyle(phaserColor(AppColors.GAME_BACKGROUND));
+        panel.fillRect(GAME_WIDTH, 0, WIDTH - GAME_WIDTH, GAME_HEIGHT);
+        panel.setDepth(80);
+        return panel;
+    }
+
     private createMainStatsPanel(): Phaser.GameObjects.GameObject[] {
         const hudX = GAME_WIDTH + 15;
         const panelWidth = WIDTH - GAME_WIDTH - 30;
@@ -129,7 +138,6 @@ export class HudManager extends Manager {
         const startY = 10;
 
         const panel = this.scene.add.graphics();
-        panel.fillRect(hudX, startY, panelWidth, panelHeight);
         panel.lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1);
         panel.strokeRect(hudX, startY, panelWidth, panelHeight);
         panel.setDepth(90);
@@ -162,7 +170,6 @@ export class HudManager extends Manager {
         const panelHeight = 600;
 
         const panel = this.scene.add.graphics();
-        panel.fillRect(hudX, startY, panelWidth, panelHeight);
         panel.lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1);
         panel.strokeRect(hudX, startY, panelWidth, panelHeight);
         panel.setDepth(90);
@@ -210,7 +217,7 @@ export class HudManager extends Manager {
         const buttonHeight = 90;
 
         const buttonPanel = this.scene.add.graphics();
-        buttonPanel.fillRect(x, y, buttonWidth, buttonHeight);
+        buttonPanel.lineStyle(1, phaserColor(AppColors.UI_SEPARATOR), 0.5);
         buttonPanel.strokeRect(x, y, buttonWidth, buttonHeight);
         buttonPanel.setDepth(95);
 
@@ -238,7 +245,6 @@ export class HudManager extends Manager {
         const panelHeight = 250;
 
         const panel = this.scene.add.graphics();
-        panel.fillRect(hudX, startY, panelWidth, panelHeight);
         panel.lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1);
         panel.strokeRect(hudX, startY, panelWidth, panelHeight);
         panel.setDepth(90);
