@@ -117,6 +117,7 @@ export class ResonanceWave extends Component {
             this.gameObject.width,
             getResonanceWaveConfig(this.activationRange, pulseColor)
         );
+        this.gameObject.scene.events.emit('resonanceWave', this.gameObject.x, this.gameObject.y, this.activationRange);
 
         if (tower && (tower.isNotFullHealth() || tower.isTowerDeactivated())) {
             const reviveEnergyCost = tower.energyCost; // This is the additional cost for reviving

@@ -20,6 +20,7 @@ import {
     createTowerTexture,
 } from '../../scripts/TextureUtils';
 import { LevelNames } from './LevelNames.ts';
+import { BackgroundEffectsManager } from '../../effects/BackgroundEffectsManager.ts'; // Import the new manager
 
 export abstract class Level extends Phaser.Scene {
     hud: HudManager;
@@ -30,6 +31,7 @@ export abstract class Level extends Phaser.Scene {
     pathsManager: PathsManager;
     playerManager: PlayerManager;
     audioManager: AudioManager;
+    backgroundEffectsManager: BackgroundEffectsManager; // Add the new manager
     isLoaded: boolean = false;
     protected levelElements: Phaser.GameObjects.GameObject[] = [];
 
@@ -65,6 +67,7 @@ export abstract class Level extends Phaser.Scene {
         this.pathsManager = new PathsManager(this);
         this.playerManager = new PlayerManager(this);
         this.audioManager = new AudioManager(this);
+        this.backgroundEffectsManager = new BackgroundEffectsManager(this); // Initialize the new manager
     }
 
     init(): void {
@@ -86,6 +89,8 @@ export abstract class Level extends Phaser.Scene {
 
     public create(): void {
         this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+        this.backgroundEffectsManager.start(); // Start the background effects
 
         const hudElements = this.hud.setup();
         const pathElements = this.pathsManager.setup();
@@ -216,6 +221,7 @@ export abstract class Level extends Phaser.Scene {
         this.towerManager.destroy();
         this.hud.destroy();
         this.audioManager.destroy();
+        this.backgroundEffectsManager.stop(); // Stop the background effects
     }
 
     private createTextures(): void {

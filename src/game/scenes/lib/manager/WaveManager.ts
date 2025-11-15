@@ -77,7 +77,7 @@ export class WaveManager extends Manager {
                                 }
                             );
                             this.enemies.add(enemy, true);
-                            enemy.on('reachedEnd', this.handleEnemyReachedEnd, this);
+                            enemy.on('reachedEnd', () => this.handleEnemyReachedEnd(enemy), this);
                         } else if (config.type === 'specialEnemy') {
                             const specialEnemy = new SpecialEnemy(
                                 {
@@ -91,6 +91,7 @@ export class WaveManager extends Manager {
                                 }
                             );
                             this.specialEnemies.add(specialEnemy, true);
+                            specialEnemy.on('reachedEnd', () => this.handleEnemyReachedEnd(specialEnemy), this);
                         }
                         this.enemiesSpawnedInWave++;
                         this.level.hud.update();
@@ -128,9 +129,10 @@ export class WaveManager extends Manager {
         this.checkWaveCompletion();
     }
 
-    protected handleEnemyReachedEnd(): void {
+    protected handleEnemyReachedEnd(enemy: Enemy | SpecialEnemy): void {
         this.level.state.baseHealth -= 10;
         this.enemiesRemaining--;
+        this.level.events.emit('nexusHit', enemy.x, enemy.y); // Emit nexusHit event
         this.level.hud.update();
         this.checkGameOver();
         this.checkWaveCompletion();

@@ -82,22 +82,21 @@ export class TowerManager extends Manager {
             return;
         }
         if (this.level.state.energy >= energyCost) { // Updated state.money to state.energy
-            this.placeSpecificTower(x, y, towerType, energyCost);
+            const tower = this.placeSpecificTower(x, y, towerType, energyCost);
             this.level.state.energy -= energyCost; // Updated state.money to state.energy
             this.level.hud.update();
-            this.level.state.selectedTowerType = 'none';
-            this.level.events.emit('towerPlaced');
+            // this.level.state.selectedTowerType = 'none';
+            this.level.events.emit('towerPlaced', tower); // Pass tower object
         } else {
             const energyNeededToPlace = energyCost - this.level.state.energy; // Updated state.money to state.energy
             this.level.hud.alert(`INSUFFICIENT ENERGY:\nNeed ${energyNeededToPlace} energy to place tower!`, AppColors.UI_MESSAGE_WARN, 1000); // Updated message
         }
     }
 
-    protected placeSpecificTower(x: number, y: number, towerType: string, energyCost: number): void { // Renamed cost to energyCost
+    protected placeSpecificTower(x: number, y: number, towerType: string, energyCost: number): Tower { // Renamed cost to energyCost
         const config: TowerConfigType = TowerConfigs[towerType];
         if (!config) {
-            console.error(`Tower configuration not found for type: ${towerType}`);
-            return;
+            throw new Error(`Tower configuration not found for type: ${towerType}`);
         }
 
         let tower: Tower;
@@ -133,6 +132,7 @@ export class TowerManager extends Manager {
         tower.on('deactivate', () => this.deactivateTower(tower));
         tower.on('pointerover', () => this.level.hud.setHelpText(this.getTowerDescription(towerType)));
         tower.on('pointerout', () => this.level.hud.setHelpText(''));
+        return tower;
     }
 
     public getTowerRange(towerType: string): number {

@@ -21,22 +21,24 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
 
     },
     scene: [
-        MenuScene,
-        Introduction,
-        CreditsScene,
-        Tutorial,
-        Level1,
-        Level2,
-        Level3,
-        Level4,
-        Level5,
-        WinScene,
-        StoryLevel1,
-        StoryLevel2,
-        StoryLevel3,
-        StoryLevel4,
-        StoryLevel5,
-        StoryLevel6
+        ...(process.env.NODE_ENV === 'development' ? [Level1] : [
+            MenuScene,
+            Introduction,
+            CreditsScene,
+            Tutorial,
+            Level1,
+            Level2,
+            Level3,
+            Level4,
+            Level5,
+            WinScene,
+            StoryLevel1,
+            StoryLevel2,
+            StoryLevel3,
+            StoryLevel4,
+            StoryLevel5,
+            StoryLevel6
+        ])
     ],
     physics: {
         default: 'arcade',
