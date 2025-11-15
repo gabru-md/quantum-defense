@@ -180,13 +180,16 @@ export class Tutorial extends Level {
         const hudX = GAME_WIDTH + 15;
         const hudPanelWidth = WIDTH - GAME_WIDTH - 30;
 
+        // Ensure selectedTowerType is 'none' at the start of the tutorial
+        this.state.selectedTowerType = 'none';
+
         this.hudElements.separators.forEach(sep => sep.setVisible(true)); // Show game boundaries
+        this.hudElements.hudSeparators.forEach(sep => sep.setVisible(true));
         await this.showStep({
             text: "Welcome to the Quantum Realm, Observer. This is your battlefield.",
-            markerConfig: {x1: 0, y1: 0, x2: WIDTH, y2: GAME_HEIGHT, text: "Battlefield"},
+            markerConfig: {x1: 0, y1: 0, x2: GAME_WIDTH, y2: GAME_HEIGHT, text: "Battlefield"},
             waitForSpacePress: true
         });
-        this.hudElements.hudSeparators.forEach(sep => sep.setVisible(true));
         await this.showStep({
             text: "On the right is your Genie-powered HUD. It provides vital information.",
             markerConfig: {x1: GAME_WIDTH, y1: 0, x2: WIDTH, y2: GAME_HEIGHT, text: "HUD"},
@@ -374,7 +377,7 @@ export class Tutorial extends Level {
         this.waveManager.startWave(4);
         // Wait for the special enemy to be spawned and added to the group
         this.time.delayedCall(100, () => {
-            // do nothing
+            // Give it a moment to spawn
         });
 
         const phantomInstance = this.waveManager.specialEnemies.getFirstAlive() as SpecialEnemy;

@@ -16,7 +16,7 @@ export class HudManager extends Manager {
     protected energyText!: Phaser.GameObjects.Text; // Renamed: moneyText to energyText
     protected waveProgressText!: Phaser.GameObjects.Text;
     protected messageText!: Phaser.GameObjects.Text;
-    private rangePreview!: Phaser.GameObjects.Sprite;
+    private rangePreview!: Phaser.GameObjects.Graphics; // Changed from Sprite to Graphics
     private selectionIndicator!: Phaser.GameObjects.Graphics;
     private towerSelectionButtons: {
         [key: string]: {
@@ -63,7 +63,7 @@ export class HudManager extends Manager {
         this.energyText.destroy(); // Renamed: moneyText to energyText
         this.waveProgressText.destroy();
         this.messageText.destroy();
-        this.rangePreview.destroy();
+        this.rangePreview.destroy(); // Still destroy the graphics object
         this.selectionIndicator.destroy();
         this.helpTextPanel.destroy();
         this.deselectButton.destroy();
@@ -184,7 +184,8 @@ export class HudManager extends Manager {
 
         this.helpTextPanel = this.scene.add.text(hudX + 15, startY + panelHeight - 100, '', { font: '14px', color: AppColors.UI_TEXT, wordWrap: {width: panelWidth - 30} }).setDepth(100);
 
-        this.rangePreview = this.scene.add.sprite(0, 0, 'rangePreview').setVisible(false).setDepth(0);
+        // Initialize rangePreview as Graphics object
+        this.rangePreview = this.scene.add.graphics().setDepth(0);
 
         const elements: Phaser.GameObjects.GameObject[] = [panel, title, this.selectionIndicator, this.helpTextPanel];
         for (const key in this.towerSelectionButtons) {
@@ -276,19 +277,19 @@ export class HudManager extends Manager {
     }
 
     private updateRangePreview() {
-        if (this.rangePreview) {
-            const pointer = this.scene.input.activePointer;
-            const selectedTower = this.scene.state.selectedTowerType;
+        this.rangePreview.clear(); // Always clear at the start of update
 
-            if (pointer.x < GAME_WIDTH && selectedTower && selectedTower !== 'none') {
-                this.rangePreview.setVisible(true);
-                this.rangePreview.setPosition(pointer.x, pointer.y);
-                const range = this.scene.towerManager.getTowerRange(selectedTower);
-                this.rangePreview.setScale((range * 2) / 300);
-                this.rangePreview.setAlpha(0.25); // Increased alpha for better visibility
-            } else {
-                this.rangePreview.setVisible(false);
-            }
+        const pointer = this.scene.input.activePointer;
+        const selectedTower = this.scene.state.selectedTowerType;
+
+        // Only draw if a tower is selected AND the pointer is within the game area
+        if (selectedTower && selectedTower !== 'none' && pointer.x < GAME_WIDTH && pointer.y < GAME_HEIGHT) {
+            const range = this.scene.towerManager.getTowerRange(selectedTower);
+            
+            this.rangePreview.lineStyle(2, phaserColor(AppColors.UI_ACCENT), 0.8);
+            this.rangePreview.fillStyle(phaserColor(AppColors.UI_ACCENT), 0.1);
+            this.rangePreview.fillCircle(pointer.x, pointer.y, range);
+            this.rangePreview.strokeCircle(pointer.x, pointer.y, range);
         }
     }
 
