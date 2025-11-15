@@ -43,6 +43,10 @@ export class Introduction extends BaseStoryScene {
             steps: [
                 {
                     text: 'In the beginning, there was the Quantum Realm\nA silent, boundless universe of pure data and energy,\nflowing in seamless waves.',
+                    action: (scene) => {
+                        const backgroundEffectsManager = scene.backgroundEffectsManager;
+                        backgroundEffectsManager.enableDataStreamEffect(scene);
+                    }
                 },
                 {
                     text: 'At its heart lay the Nexus, the source of all life and logic.',
@@ -73,6 +77,7 @@ export class Introduction extends BaseStoryScene {
                             yoyo: true,
                             repeat: -1,
                         });
+                        this.backgroundEffectsManager.enableGlitchAnnihilationEffect(scene);
                         return staticEnemy;
                     },
                 },

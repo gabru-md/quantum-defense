@@ -11,7 +11,8 @@ import {
     createTowerTexture,
 } from '../../scripts/TextureUtils';
 import { getLevelNameKey, getStoryName, LevelNames} from "./LevelNames.ts";
-import {AudioManager} from "./manager/AudioManager.ts"; // Import texture utility functions
+import {AudioManager} from "./manager/AudioManager.ts";
+import {BackgroundEffectsManager} from "../../effects/BackgroundEffectsManager.ts"; // Import texture utility functions
 
 export interface StoryStep {
     text: string;
@@ -30,10 +31,12 @@ export abstract class BaseStoryScene extends Phaser.Scene {
     private typingTimer: Phaser.Time.TimerEvent | null = null;
     private underline: Phaser.GameObjects.Graphics;
     audioManager: AudioManager
+    backgroundEffectsManager: BackgroundEffectsManager;
 
     constructor(key: string) {
         super(key);
         this.audioManager = new AudioManager(this);
+        this.backgroundEffectsManager = new BackgroundEffectsManager(this);
     }
 
     // Abstract methods to be implemented by subclasses
