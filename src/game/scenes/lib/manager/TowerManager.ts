@@ -85,6 +85,7 @@ export class TowerManager extends Manager {
             this.placeSpecificTower(x, y, towerType, energyCost);
             this.level.state.energy -= energyCost; // Updated state.money to state.energy
             this.level.hud.update();
+            this.level.state.selectedTowerType = 'none';
             this.level.events.emit('towerPlaced');
         } else {
             const energyNeededToPlace = energyCost - this.level.state.energy; // Updated state.money to state.energy

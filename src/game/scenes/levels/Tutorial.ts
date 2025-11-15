@@ -342,7 +342,7 @@ export class Tutorial extends Level {
 
         await this.showStep({
             text: "Here comes the most basic of Static's Glitches: the Square Glitch.", isHudInfo: true,
-            waitForSpacePress: true
+            waitForSpacePress: false
         });
         this.waveManager.startWave(1);
         await this.waitForEvent('waveCompleted');
