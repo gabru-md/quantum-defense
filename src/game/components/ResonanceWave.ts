@@ -16,7 +16,7 @@ export class ResonanceWave extends Component {
     private keys!: { e: Phaser.Input.Keyboard.Key };
     private cooldownTime: number = 1000; // 1 second cooldown
     private lastActivated: number = 0;
-    private activationRange: number = 48; // Range to be near a tower to revive it
+    private activationRange: number = 75; // Range to be near a tower to revive it
     private waveDamage: number = 50; // Damage dealt by the wave to special enemies
     private findNearestTowerComponent!: FindNearestTower;
     private specialEnemiesGroup!: Phaser.GameObjects.Group; // Reference to special enemies group

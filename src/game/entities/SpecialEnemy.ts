@@ -2,7 +2,6 @@ import { GameObject } from '../core/GameObject';
 import { Health } from '../components/Health';
 import { PathFollower } from '../components/PathFollower';
 import { Deactivator } from '../components/Deactivator';
-import { VisualPulse } from '../components/VisualPulse.ts';
 import { AppColors, phaserColor } from '../scripts/Colors.ts';
 
 export interface SpecialEnemyConfig {
@@ -29,7 +28,6 @@ export class SpecialEnemy extends GameObject {
         this.addComponent(this.healthComponent);
         this.addComponent(new PathFollower(config.path, config.speed));
         this.addComponent(new Deactivator()); // Add the Deactivator component
-        this.addComponent(new VisualPulse(phaserColor(AppColors.SPECIAL_ENEMY), 500, 1000, 2, 2, 2));
 
         this.on(
             'reachedEnd',
@@ -49,12 +47,6 @@ export class SpecialEnemy extends GameObject {
     }
 
     destroy(fromScene?: boolean) {
-        // delete the visualpulse
-        this.components.forEach((c) => {
-            if (c instanceof VisualPulse) {
-                c.destroy();
-            }
-        });
         this.removeListener('healthChanged', this.handleHealthChanged);
         super.destroy(fromScene);
     }

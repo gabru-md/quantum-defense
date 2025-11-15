@@ -1,6 +1,7 @@
 import { Component } from '../core/Component';
 import * as Phaser from 'phaser';
 import { phaserColor } from '../scripts/Colors.ts';
+import {Deactivator} from "./Deactivator.ts";
 
 /**
  * A component that adds a continuous, non-damaging visual pulse to a GameObject.
@@ -21,6 +22,7 @@ export class VisualPulse extends Component {
      * @param scale The maximum scale factor the pulse will reach.
      * @param totalPulses The total number of individual pulses that will be active simultaneously.
      * @param lineWidth The width of the line used to draw the pulse circle.
+     * @param deactivator
      */
     constructor(
         color: number,
@@ -28,7 +30,8 @@ export class VisualPulse extends Component {
         private duration: number,
         private scale: number = 2.75,
         private totalPulses: number = 10,
-        private lineWidth: number = 1
+        private lineWidth: number = 1,
+        private deactivator: Deactivator | null = null
     ) {
         super();
         this._color = color;
@@ -63,6 +66,9 @@ export class VisualPulse extends Component {
                                 return;
                             }
                             pulseGraphics.clear();
+                            if (this.deactivator && !this.deactivator.isReady()) {
+                                return;
+                            }
                             pulseGraphics.lineStyle(this.lineWidth, phaserColor(this._color), target.alpha * 0.8);
                             pulseGraphics.fillStyle(phaserColor(this._color), target.alpha * 0.3);
                             const radius = (this.gameObject.width / 2) * target.scale;
