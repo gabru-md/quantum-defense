@@ -22,6 +22,10 @@ You are not alone in your fight. The Nexus has granted you the ability to manife
 *   **Bomb Towers:** Explosive bursts of data, designed to control the chaotic swarms.
 *   **Slowing Towers:** Waves of temporal distortion, slowing the relentless advance of the Glitches.
 
+## The Flow of Energy
+
+In the Quantum Realm, **Energy** is the fundamental resource. It is the lifeblood of your defense, allowing you to construct new Echo Towers and repair damaged ones. You acquire Energy by eliminating Glitches; their chaotic forms dissipate into raw energy upon destruction, which you can then harness. However, be mindful: your most powerful ability, the Resonance Wave, also consumes this vital Energy.
+
 ## The Nature of the Glitches
 
 The Glitches you face are as varied as the data they were born from:
@@ -29,13 +33,13 @@ The Glitches you face are as varied as the data they were born from:
 *   **Stutters (Enemy 1):** The most common form of Glitch, born from minor data corruption. They are numerous and persistent, the foot soldiers of the Static.
 *   **Surges (Enemy 2):** Erratic and fast, these Glitches are formed from volatile, high-energy data streams. They are difficult to pin down, a testament to the unpredictable nature of the Static.
 *   **Brutes (Enemy 3):** Slow, but incredibly resilient. These Glitches are formed from dense, corrupted data blocks, veritable walls of chaotic energy.
-*   **Phantoms (Special Enemy):** The most terrifying of the Glitches. These are not just corrupted data; they are manifestations of the Static itself. They possess the ability to corrupt your Echo Towers, turning your own defenses against you.
+*   **Phantoms (Special Enemy):** The most terrifying of the Glitches. These are not just corrupted data; they are manifestations of the Static itself. They possess the insidious ability to emit disruptive pulses that temporarily corrupt and deactivate your Echo Towers, **draining their energy** and rendering them defenseless.
 
-## The Power of the Wave
+## The Power of the Resonance Wave
 
 Your most powerful ability is the **Resonance Wave**, a pulse of pure energy that emanates from your very being. This wave is the antithesis of the Static, a tool of creation and restoration. You can use it to:
 
-*   **Revive your Towers:** By sending a Resonance Wave through a corrupted Echo Tower, you can purge the Static's influence and bring it back online.
+*   **Revive your Towers:** By sending a Resonance Wave through a corrupted Echo Tower, you can purge the Static's influence, restore its energy, and bring it back online.
 *   **Disrupt the Phantoms:** The Resonance Wave is the only thing that can harm the Phantoms directly, severing their connection to the Static and making them vulnerable.
 
 ## The Theme of "Waves"
