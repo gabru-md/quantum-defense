@@ -7,7 +7,7 @@ export interface PlayerConfigType {
         cooldownTime: number;
         activationRange: number;
         waveDamage: number;
-        baseActivationCost: number; // New: Cost to activate the wave
+        baseActivationEnergy: number; // Renamed: Cost to activate the wave
         pulseColor: number;
         pulseDelay: number;
         pulseDuration: number;
@@ -23,7 +23,7 @@ export const PlayerConfig: PlayerConfigType = {
         cooldownTime: 1000, // 1 second cooldown
         activationRange: 75, // Range to be near a tower to revive it or damage special enemies
         waveDamage: 50, // Damage dealt by the wave to special enemies
-        baseActivationCost: 20, // Example cost, adjust as needed
+        baseActivationEnergy: 20, // Example cost, adjust as needed
         pulseColor: phaserColor(AppColors.PLAYER_WAVE_PULSE),
         pulseDelay: 200,
         pulseDuration: 2000,

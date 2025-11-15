@@ -40,7 +40,7 @@ export abstract class Level extends Phaser.Scene {
         delay: number;
         health: number;
         speed: number;
-        moneyValue: number;
+        energyValue: number; // Renamed: moneyValue to energyValue
         path: string;
     }[];
 
@@ -68,7 +68,7 @@ export abstract class Level extends Phaser.Scene {
 
         this.state.level = this.scene.key;
         this.state.baseHealth = 100;
-        this.state.money = this.scene.key === LevelNames.Introduction ? 1000 : 350;
+        this.state.energy = this.scene.key === LevelNames.Introduction ? 1000 : 350; // Renamed: money to energy
     }
 
     public preload(): void {

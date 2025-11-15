@@ -13,7 +13,7 @@ export class HudManager extends Manager {
     protected gameName!: Phaser.GameObjects.Text;
     protected levelText!: Phaser.GameObjects.Text;
     protected baseHealthText!: Phaser.GameObjects.Text;
-    protected moneyText!: Phaser.GameObjects.Text;
+    protected energyText!: Phaser.GameObjects.Text; // Renamed: moneyText to energyText
     protected waveProgressText!: Phaser.GameObjects.Text;
     protected messageText!: Phaser.GameObjects.Text;
     private rangePreview!: Phaser.GameObjects.Sprite;
@@ -60,7 +60,7 @@ export class HudManager extends Manager {
         this.gameName.destroy();
         this.levelText.destroy();
         this.baseHealthText.destroy();
-        this.moneyText.destroy();
+        this.energyText.destroy(); // Renamed: moneyText to energyText
         this.waveProgressText.destroy();
         this.messageText.destroy();
         this.rangePreview.destroy();
@@ -133,12 +133,12 @@ export class HudManager extends Manager {
         this.baseHealthText = this.scene.add.text(textX, currentY, `Health: ${this.scene.state.baseHealth}`, { font: '20px', color: AppColors.UI_TEXT }).setDepth(100).setName('baseHealthText');
         currentY += textSpacing;
 
-        this.moneyText = this.scene.add.text(textX, currentY, `Money: $${this.scene.state.money}`, { font: '20px', color: AppColors.UI_TEXT }).setDepth(100).setName('moneyText');
+        this.energyText = this.scene.add.text(textX, currentY, `Energy: ${this.scene.state.energy}`, { font: '20px', color: AppColors.UI_TEXT }).setDepth(100).setName('energyText'); // Renamed and updated
         currentY += textSpacing;
 
         this.waveProgressText = this.scene.add.text(textX, currentY, `Wave: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`, { font: '20px', color: AppColors.UI_TEXT }).setDepth(100).setName('waveProgressText');
 
-        return [panel, this.gameName, this.levelText, this.baseHealthText, this.moneyText, this.waveProgressText];
+        return [panel, this.gameName, this.levelText, this.baseHealthText, this.energyText, this.waveProgressText]; // Updated return
     }
 
     private createTowerSelectionPanel(): Phaser.GameObjects.GameObject[] {
@@ -167,7 +167,7 @@ export class HudManager extends Manager {
             } else if (config.slowing) {
                 statsString = `Slow: ${config.slowing.slowFactor * 100}% | Range: ${config.range}`;
             }
-            this.createTowerButton(hudX + 15, currentTowerY, towerKey, config.cost, statsString, config.description.split('\n')[0]);
+            this.createTowerButton(hudX + 15, currentTowerY, towerKey, config.energyCost, statsString, config.description.split('\n')[0]); // Use config.energyCost
             currentTowerY += 100; // Adjust spacing between tower buttons
         }
         
@@ -193,7 +193,7 @@ export class HudManager extends Manager {
         return [...elements, this.deselectButton];
     }
 
-    private createTowerButton(x: number, y: number, towerKey: string, cost: number, stats: string, name: string) {
+    private createTowerButton(x: number, y: number, towerKey: string, energyCost: number, stats: string, name: string) { // Renamed cost to energyCost
         const buttonWidth = WIDTH - GAME_WIDTH - 50;
         const buttonHeight = 90;
 
@@ -206,7 +206,7 @@ export class HudManager extends Manager {
         buttonImage.setScale(1.5);
 
         const nameText = this.scene.add.text(x + 80, y + 10, name, { font: '18px', color: AppColors.UI_TEXT }).setDepth(100);
-        const costText = this.scene.add.text(x + 80, y + 35, `Cost: $${cost}`, { font: '16px', color: AppColors.UI_TEXT }).setDepth(100);
+        const energyText = this.scene.add.text(x + 80, y + 35, `Energy: ${energyCost}`, { font: '16px', color: AppColors.UI_TEXT }).setDepth(100); // Updated text
         const statsText = this.scene.add.text(x + 80, y + 60, `Stats: ${stats}`, { font: '14px', color: AppColors.UI_DISABLED }).setDepth(100);
 
         buttonImage.on('pointerdown', () => {
@@ -216,7 +216,7 @@ export class HudManager extends Manager {
         buttonImage.on('pointerover', () => this.setHelpText(this.scene.towerManager.getTowerDescription(towerKey)));
         buttonImage.on('pointerout', () => this.setHelpText(''));
 
-        this.towerSelectionButtons[towerKey] = { button: buttonImage, panel: buttonPanel, textObjects: [nameText, costText, statsText] };
+        this.towerSelectionButtons[towerKey] = { button: buttonImage, panel: buttonPanel, textObjects: [nameText, energyText, statsText] }; // Updated textObjects
     }
 
     private createHelpPanel(): Phaser.GameObjects.GameObject[] {
@@ -244,15 +244,15 @@ export class HudManager extends Manager {
     private updateMainStats() {
         this.levelText.setText(`Level: ${this.scene.scene.key}`);
         this.baseHealthText.setText(`Health: ${this.scene.state.baseHealth}`);
-        this.moneyText.setText(`Money: $${this.scene.state.money}`);
+        this.energyText.setText(`Energy: ${this.scene.state.energy}`); // Updated text
         this.waveProgressText.setText(`Wave: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`);
     }
 
     private updateTowerSelectionUI() {
         for (const key in this.towerSelectionButtons) {
-            const cost = this.scene.towerManager.getTowerCost(key);
+            const energyCost = this.scene.towerManager.getTowerEnergyCost(key); // Renamed getTowerCost
             const {button, panel, textObjects} = this.towerSelectionButtons[key];
-            if (this.scene.state.money < cost) {
+            if (this.scene.state.energy < energyCost) { // Updated state.money to state.energy
                 button.setAlpha(0.5);
                 panel.setAlpha(0.5);
                 button.disableInteractive();

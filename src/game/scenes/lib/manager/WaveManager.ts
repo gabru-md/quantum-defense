@@ -114,15 +114,15 @@ export class WaveManager extends Manager {
         }
     }
 
-    protected handleEnemyDied(moneyValue: number): void {
-        this.level.state.money += moneyValue;
+    protected handleEnemyDied(energyValue: number): void { // Renamed moneyValue to energyValue
+        this.level.state.energy += energyValue; // Updated state.money to state.energy
         this.enemiesRemaining--;
         this.level.hud.update();
         this.checkWaveCompletion();
     }
 
-    protected handleSpecialEnemyKilledByPlayer(moneyValue: number): void {
-        this.level.state.money += moneyValue;
+    protected handleSpecialEnemyKilledByPlayer(energyValue: number): void { // Renamed moneyValue to energyValue
+        this.level.state.energy += energyValue; // Updated state.money to state.energy
         this.enemiesRemaining--;
         this.level.hud.update();
         this.checkWaveCompletion();

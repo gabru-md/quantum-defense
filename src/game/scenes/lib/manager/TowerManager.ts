@@ -67,23 +67,23 @@ export class TowerManager extends Manager {
     protected tryPlaceTower(x: number, y: number, towerType: string): void {
         if (!towerType || towerType === 'none') return;
 
-        const cost = this.getTowerCost(towerType);
-        if (cost === -1) {
+        const energyCost = this.getTowerEnergyCost(towerType); // Renamed getTowerCost
+        if (energyCost === -1) {
             this.level.hud.alert('TOWER ERROR:\nSomething went very wrong!', AppColors.UI_MESSAGE_ERROR);
             return;
         }
-        if (this.level.state.money >= cost) {
-            this.placeSpecificTower(x, y, towerType, cost);
-            this.level.state.money -= cost;
+        if (this.level.state.energy >= energyCost) { // Updated state.money to state.energy
+            this.placeSpecificTower(x, y, towerType, energyCost);
+            this.level.state.energy -= energyCost; // Updated state.money to state.energy
             this.level.hud.update();
             this.level.events.emit('towerPlaced');
         } else {
-            const moneyNeededToPlace = cost - this.level.state.money;
-            this.level.hud.alert(`INSUFFICIENT BALANCE:\nNeed $${moneyNeededToPlace} to place tower!`, AppColors.UI_MESSAGE_WARN, 1000);
+            const energyNeededToPlace = energyCost - this.level.state.energy; // Updated state.money to state.energy
+            this.level.hud.alert(`INSUFFICIENT ENERGY:\nNeed ${energyNeededToPlace} energy to place tower!`, AppColors.UI_MESSAGE_WARN, 1000); // Updated message
         }
     }
 
-    protected placeSpecificTower(x: number, y: number, towerType: string, cost: number): void {
+    protected placeSpecificTower(x: number, y: number, towerType: string, energyCost: number): void { // Renamed cost to energyCost
         const config: TowerConfigType = TowerConfigs[towerType];
         if (!config) {
             console.error(`Tower configuration not found for type: ${towerType}`);
@@ -91,7 +91,7 @@ export class TowerManager extends Manager {
         }
 
         let tower: Tower;
-        tower = new Tower({scene: this.level, x, y, texture: config.texture, cost: cost});
+        tower = new Tower({scene: this.level, x, y, texture: config.texture, energyCost: energyCost}); // Updated cost to energyCost
         this.towers.add(tower, true);
         tower.addComponent(new Health(config.health));
         tower.addComponent(new Targeting(config.range, [this.level.waveManager.enemies]));
@@ -129,8 +129,8 @@ export class TowerManager extends Manager {
         return TowerConfigs[towerType]?.range || 0;
     }
 
-    getTowerCost(towerType: string): number {
-        return TowerConfigs[towerType]?.cost || -1;
+    getTowerEnergyCost(towerType: string): number { // Renamed getTowerCost
+        return TowerConfigs[towerType]?.energyCost || -1; // Updated to energyCost
     }
 
     public getTowerDescription(towerType: string): string {

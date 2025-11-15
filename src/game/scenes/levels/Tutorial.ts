@@ -4,6 +4,7 @@ import {GAME_HEIGHT, GAME_WIDTH, HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
 import Phaser from 'phaser';
 import {EnemyConfigs, SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
+import {SpecialEnemy} from "../../entities/SpecialEnemy.ts"; // Import SpecialEnemy
 
 type TutorialStep = {
     text: string;
@@ -54,7 +55,7 @@ export class Tutorial extends Level {
                     delay: 1000,
                     health: EnemyConfigs.enemy1.health,
                     speed: EnemyConfigs.enemy1.speed,
-                    moneyValue: EnemyConfigs.enemy1.moneyValue,
+                    energyValue: EnemyConfigs.enemy1.energyValue,
                     path: 'path1'
                 }];
             case 2:
@@ -65,7 +66,7 @@ export class Tutorial extends Level {
                     delay: 800,
                     health: EnemyConfigs.enemy2.health,
                     speed: EnemyConfigs.enemy2.speed,
-                    moneyValue: EnemyConfigs.enemy2.moneyValue,
+                    energyValue: EnemyConfigs.enemy2.energyValue,
                     path: 'path1'
                 }];
             case 3:
@@ -76,7 +77,7 @@ export class Tutorial extends Level {
                     delay: 1500,
                     health: EnemyConfigs.enemy3.health,
                     speed: EnemyConfigs.enemy3.speed,
-                    moneyValue: EnemyConfigs.enemy3.moneyValue,
+                    energyValue: EnemyConfigs.enemy3.energyValue,
                     path: 'path1'
                 }];
             case 4:
@@ -87,7 +88,7 @@ export class Tutorial extends Level {
                     delay: 1000,
                     health: SpecialEnemyConfig.health,
                     speed: SpecialEnemyConfig.speed,
-                    moneyValue: SpecialEnemyConfig.moneyValue,
+                    energyValue: SpecialEnemyConfig.energyValue,
                     path: 'path1'
                 }];
             case 5:
@@ -99,7 +100,7 @@ export class Tutorial extends Level {
                         delay: 1000,
                         health: EnemyConfigs.enemy1.health,
                         speed: EnemyConfigs.enemy1.speed,
-                        moneyValue: EnemyConfigs.enemy1.moneyValue,
+                        energyValue: EnemyConfigs.enemy1.energyValue,
                         path: 'path1'
                     },
                     {
@@ -109,7 +110,7 @@ export class Tutorial extends Level {
                         delay: 1200,
                         health: EnemyConfigs.enemy2.health,
                         speed: EnemyConfigs.enemy2.speed,
-                        moneyValue: EnemyConfigs.enemy2.moneyValue,
+                        energyValue: EnemyConfigs.enemy2.energyValue,
                         path: 'path1'
                     }
                 ];
@@ -181,43 +182,43 @@ export class Tutorial extends Level {
 
         this.hudElements.separators.forEach(sep => sep.setVisible(true)); // Show game boundaries
         await this.showStep({
-            text: "Welcome to the battlefield, Observer.",
+            text: "Welcome to the Quantum Realm, Observer. This is your battlefield.",
             markerConfig: {x1: 0, y1: 0, x2: WIDTH, y2: GAME_HEIGHT, text: "Battlefield"},
             waitForSpacePress: true
         });
         this.hudElements.hudSeparators.forEach(sep => sep.setVisible(true));
         await this.showStep({
-            text: "On the right is your Genie-powered HUD.",
+            text: "On the right is your Genie-powered HUD. It provides vital information.",
             markerConfig: {x1: GAME_WIDTH, y1: 0, x2: WIDTH, y2: GAME_HEIGHT, text: "HUD"},
             waitForSpacePress: true
         });
         // @ts-ignore
         this.hudElements.stats.forEach(el => el.setVisible(true));
         await this.showStep({
-            text: "This is where you can see your stats:\nLevel, Health, Money, and Wave Progress.",
-            markerConfig: {x1: hudX + 5, y1: 10, x2: hudX + hudPanelWidth - 5, y2: 190, text: "Your Stats"},
+            text: "This is where you can see your core stats:\nLevel, Nexus Health, Energy, and Wave Progress.",
+            markerConfig: {x1: hudX, y1: 10, x2: hudX + hudPanelWidth, y2: 190, text: "Your Stats"},
             waitForSpacePress: true
         });
         await this.showStep({
-            text: "This is your current level.\nAs you progress, the glitches get stronger.",
+            text: "This is your current level.\nAs you progress, the glitches become more formidable.",
             markerConfig: {x1: hudX + 5, y1: 58, x2: hudX + hudPanelWidth - 5, y2: 83, text: "Level"},
             waitForSpacePress: true
         });
 
         await this.showStep({
-            text: "This is your Nexus's health.\nIf it reaches zero, the game is over.",
-            markerConfig: {x1: hudX + 5, y1: 83, x2: hudX + hudPanelWidth - 5, y2: 108, text: "Health"},
+            text: "This is your Nexus's health, representing its structural integrity.\nIf it reaches zero, the Nexus collapses, and the game is over.",
+            markerConfig: {x1: hudX + 5, y1: 83, x2: hudX + hudPanelWidth - 5, y2: 108, text: "Nexus Health"},
             waitForSpacePress: true
         });
 
         await this.showStep({
-            text: "Gain money by killing Glitches.\nUse it to build and repair towers.\nCareful: Your Resonance Wave also costs money!",
-            markerConfig: {x1: hudX + 5, y1: 108, x2: hudX + hudPanelWidth - 5, y2: 133, text: "Money"},
+            text: "This is your Energy. It's the lifeblood of your defense.\nGain Energy by eliminating Glitches.\nUse it to construct and repair your towers.\nBe mindful: Your Resonance Wave also consumes Energy!",
+            markerConfig: {x1: hudX + 5, y1: 108, x2: hudX + hudPanelWidth - 5, y2: 133, text: "Energy"},
             waitForSpacePress: true
         });
 
         await this.showStep({
-            text: "This shows the current wave of glitches.\nPrepare for each wave!",
+            text: "This displays the current wave of Glitches.\nEach wave brings new challenges. Prepare accordingly!",
             markerConfig: {x1: hudX + 5, y1: 133, x2: hudX + hudPanelWidth - 5, y2: 158, text: "Wave"},
             waitForSpacePress: true
         });
@@ -226,30 +227,30 @@ export class Tutorial extends Level {
         // @ts-ignore
         this.hudElements.towers.forEach(el => el.setVisible(true));
         await this.showStep({
-            text: "Let's look at your tower arsenal.",
+            text: "Now, let's examine your Tower Arsenal. These are your primary defensive tools.",
             markerConfig: {x1: hudX, y1: 200, x2: hudX + hudPanelWidth, y2: 800, text: "Tower Arsenal"},
             waitForSpacePress: true
         });
 
         // Steps 3, 4, 5: Reveal towers
         await this.showStep({
-            text: "The Laser Tower shoots particles from a laser beam.\nThey travel in a straight line.",
+            text: "The Laser Tower projects concentrated particle beams.\nThese beams travel in a straight line, dealing precise damage.",
             markerConfig: {x1: hudX + 15, y1: 250, x2: hudX + hudPanelWidth - 15, y2: 340, text: "Laser Tower"},
             waitForSpacePress: true
         });
         await this.showStep({
-            text: "The Bomb Tower charges the laser and shoots a particle explosion.",
+            text: "The Bomb Tower charges and releases a volatile particle explosion.\nEffective against groups of Glitches.",
             markerConfig: {x1: hudX + 15, y1: 350, x2: hudX + hudPanelWidth - 15, y2: 440, text: "Bomb Tower"},
             waitForSpacePress: true
         });
         await this.showStep({
-            text: "The Slow Tower emits a continuous wave that slows Glitches.",
+            text: "The Slow Tower emits a continuous, disruptive wave that significantly reduces the speed of Glitches within its radius.",
             markerConfig: {x1: hudX + 15, y1: 450, x2: hudX + hudPanelWidth - 15, y2: 540, text: "Slow Tower"},
             waitForSpacePress: true
         });
 
         await this.showStep({
-            text: "If you wish to deselect a tower, you can click this button.",
+            text: "Should you wish to deselect a tower, simply click on this button.",
             markerConfig: {x1: hudX + 40, y1: 560, x2: hudX + hudPanelWidth - 50, y2: 615, text: "Deselect"},
             waitForSpacePress: true
         });
@@ -258,7 +259,7 @@ export class Tutorial extends Level {
         // @ts-ignore
         this.hudElements.help.forEach(el => el.setVisible(true));
         await this.showStep({
-            text: "Here is some helpful text so you don't forget!",
+            text: "This section provides helpful reminders and tips to aid you in your defense!",
             markerConfig: {
                 x1: hudX,
                 y1: GAME_HEIGHT - 270,
@@ -272,49 +273,50 @@ export class Tutorial extends Level {
         // Step 7: Show player
         this.playerManager.player.setVisible(true);
         await this.showStep({
-            text: "This is you, Guardian!", isHudInfo: true,
+            text: "This is you, Guardian! The sentient protector of the Nexus.", isHudInfo: true,
             waitForSpacePress: true
         });
 
         // Step 8: Interactive steps
         await this.showStep({
-            text: "Press WASD to move.", isHudInfo: true,
+            text: "Navigate the battlefield using the WASD keys.", isHudInfo: true,
             waitForSpacePress: false
         });
         await this.waitForEvent('playerMoved');
 
         this.pathElements.start.forEach(p => p.setVisible(true));
         await this.showStep({
-            text: "This is Static's Den.\nIt spawns the Glitches.",
+            text: "This is Static's Den, the source of the Glitch incursions.\nAll Glitches spawn from here.",
             markerConfig: {
                 x1: 5,
                 y1: GAME_HEIGHT / 2 - 48,
                 x2: 95,
                 y2: GAME_HEIGHT / 2 + 48,
-                text: "Den"
+                text: "Static's Den"
             },
             waitForSpacePress: true
         });
         this.pathElements.end.forEach(p => p.setVisible(true));
         await this.showStep({
-            text: "This is the Nexus.\nProtect it at all costs!",
+            text: "This is the Nexus, the heart of the Quantum Realm.\nProtect it at all costs!",
             markerConfig: {
                 x1: GAME_WIDTH - 95,
                 y1: GAME_HEIGHT / 2 - 48,
                 x2: GAME_WIDTH - 5,
                 y2: GAME_HEIGHT / 2 + 48,
-                text: "Nexus"
+                text: "The Nexus"
             },
             waitForSpacePress: true
         });
         this.pathElements.path.forEach(p => p.setVisible(true));
         await this.showStep({
-            text: "Select the Laser Tower from the Tower Menu.", isHudInfo: true,
+            text: "Select the Laser Tower from your Tower Menu.", isHudInfo: true,
             waitForSpacePress: false
         });
         await this.waitForEvent('towerSelected');
         await this.showStep({
-            text: "Place the tower close to the den before the first wave arrives.", isHudInfo: true,
+            text: "Strategically place the tower near Static's Den before the first wave of Glitches arrives.",
+            isHudInfo: true,
             waitForSpacePress: false
         });
         await this.waitForEvent('towerPlaced');
@@ -327,7 +329,7 @@ export class Tutorial extends Level {
         await this.waitForEvent('waveCompleted');
 
         await this.showStep({
-            text: "Put another tower for the fast Triangle Glitch", isHudInfo: true,
+            text: "Deploy another tower to counter the swift Triangle Glitch.", isHudInfo: true,
             waitForSpacePress: false
         });
         await this.waitForEvent('towerPlaced');
@@ -335,7 +337,7 @@ export class Tutorial extends Level {
         await this.waitForEvent('waveCompleted');
 
         await this.showStep({
-            text: "The Circle Glitch moves almost like a wave.",
+            text: "The elusive Circle Glitch moves with an almost wave-like pattern. Prepare for its approach.",
             isHudInfo: true,
             waitForSpacePress: false
         });
@@ -344,68 +346,87 @@ export class Tutorial extends Level {
         await this.waitForEvent('waveCompleted');
 
         await this.showStep({
-            text: "Towers require money, Kill glitches to earn money.",
+            text: "Constructing towers and utilizing your Resonance Wave consumes Energy.\nEnergy is acquired by eliminating Glitches.",
             isHudInfo: true,
             waitForSpacePress: true
         });
         await this.showStep({
-            text: "Glitches deal damage to the Nexus.\nIf the Nexus loses all its health, the game is over.",
+            text: "Glitches inflict damage upon the Nexus.\nShould the Nexus lose all its health, the game concludes.",
             isHudInfo: true,
             waitForSpacePress: true
         });
 
         await this.showStep({
-            text: "Now, meet The Phantom!", isHudInfo: true,
+            text: "Now, prepare to encounter The Phantom! A unique and dangerous Glitch.", isHudInfo: true,
             waitForSpacePress: true
         });
         await this.showStep({
-            text: "It sends out a pulse that deactivates nearby towers.",
+            text: "The Phantom emits a disruptive pulse that temporarily deactivates nearby towers, draining their energy.",
             isHudInfo: true,
             waitForSpacePress: true
         });
         await this.showStep({
-            text: "No tower can kill the Wave Phantom!",
+            text: "No conventional tower can destroy The Phantom! Your Resonance Wave is its only weakness.",
             isHudInfo: true,
             waitForSpacePress: true
         });
 
         this.waveManager.startWave(4);
+        // Wait for the special enemy to be spawned and added to the group
+        this.time.delayedCall(100, () => {
+            // do nothing
+        });
+
+        const phantomInstance = this.waveManager.specialEnemies.getFirstAlive() as SpecialEnemy;
+        if (phantomInstance) {
+            phantomInstance.isVulnerableToResonanceWave = false; // Make it invulnerable initially for tutorial
+        }
+
         await this.waitForEvent('towerDeactivated');
 
         this.waveManager.pause();
         // this.physics.pause(); // Pausing physics prevents player movement
         await this.showStep({
-            text: "Looks like your tower is down!", isHudInfo: true,
+            text: "A tower has been deactivated by The Phantom's pulse!", isHudInfo: true,
             waitForSpacePress: true
         });
         await this.showStep({
-            text: "Go near it and press E to revive it!", isHudInfo: true,
+            text: "Approach the deactivated tower and press 'E' to channel your energy and revive it!", isHudInfo: true,
             waitForSpacePress: false
         });
         await this.waitForEvent('towerRevived');
 
+        if (phantomInstance) {
+            phantomInstance.isVulnerableToResonanceWave = true; // Make it vulnerable after revive
+            await this.showStep({
+                text: "The Phantom is now vulnerable to your Resonance Wave! Destroy it!", isHudInfo: true,
+                waitForSpacePress: true
+            });
+        }
+
+
         this.waveManager.resume();
         // this.physics.resume();
         await this.showStep({
-            text: "Even a single Phantom can interfere with the Nexus.\nDestroy them before they reach the Nexus!",
+            text: "The Phantom must not reach the Nexus. Even a single one can cause catastrophic interference.\nDestroy them before they can inflict further damage!",
             isHudInfo: true,
             waitForSpacePress: true
         });
         await this.waitForEvent('waveCompleted');
 
         await this.showStep({
-            text: "Towers can be deactivated if they take damage.\nA tower can take damage from another tower.\nRevive them with your Resonance Wave (E).",
+            text: "Towers can also be deactivated if they sustain too much damage, even from friendly fire.\nRevive them using your Resonance Wave (E).",
             isHudInfo: true,
             waitForSpacePress: true
         });
         await this.showStep({
-            text: "Remember, your Resonance Wave (E) has a cooldown and costs money, so use it carefully.",
+            text: "Remember, your Resonance Wave (E) has a cooldown and consumes Energy, so deploy it strategically.",
             isHudInfo: true,
             waitForSpacePress: true
         });
 
         await this.showStep({
-            text: "Clear this wave to finish the tutorial.", isHudInfo: true,
+            text: "Clear this final wave to complete your Guardian training.", isHudInfo: true,
             waitForSpacePress: true
         });
         this.waveManager.startWave(5);

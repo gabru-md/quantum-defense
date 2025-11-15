@@ -6,7 +6,7 @@ export class State {
 
     constructor(
         public baseHealth: number,
-        public money: number,
+        public energy: number, // Renamed: money to energy
         public level: string
     ) {}
 }

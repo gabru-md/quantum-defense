@@ -20,7 +20,7 @@ export class ResonanceWave extends Component {
     private lastActivated: number = 0;
     public activationRange: number = PlayerConfig.resonanceWave.activationRange; // Made public for VisualPulse
     private waveDamage: number = PlayerConfig.resonanceWave.waveDamage;
-    private baseActivationCost: number = PlayerConfig.resonanceWave.baseActivationCost; // New: Cost to activate the wave
+    private baseActivationEnergy: number = PlayerConfig.resonanceWave.baseActivationEnergy; // Renamed: Cost to activate the wave
     private findNearestTowerComponent!: FindNearestTower;
     private specialEnemiesGroup!: Phaser.GameObjects.Group; // Reference to special enemies group
 
@@ -50,26 +50,26 @@ export class ResonanceWave extends Component {
         if (this.playerPressedKey(time)) {
             if (this.isOnCooldown(time)) {
                 this.gameObject.level.hud.alert(
-                    'ABILITY COOLDOWN:\nWave Amplifier is on cooldown!',
+                    'ABILITY COOLDOWN:\nResonance Wave is on cooldown!', // Updated message
                     AppColors.UI_MESSAGE_WARN
                 );
                 return;
             }
 
-            // Check for base activation cost
-            if (this.gameObject.level.state.money < this.baseActivationCost) {
+            // Check for base activation energy
+            if (this.gameObject.level.state.energy < this.baseActivationEnergy) {
                 this.gameObject.level.hud.alert(
-                    `INSUFFICIENT BALANCE:\nNeed $${this.baseActivationCost} to activate Resonance Wave!`,
+                    `INSUFFICIENT ENERGY:\nNeed ${this.baseActivationEnergy} energy to activate Resonance Wave!`,
                     AppColors.UI_MESSAGE_WARN,
                     1000
                 );
                 return;
             }
 
-            // Deduct base activation cost
-            this.gameObject.level.state.money -= this.baseActivationCost;
+            // Deduct base activation energy
+            this.gameObject.level.state.energy -= this.baseActivationEnergy;
             this.gameObject.level.hud.update();
-            this.lastActivated = time; // Set lastActivated here after cost check
+            this.lastActivated = time; // Set lastActivated here after energy check
 
             if (nearestTower && (nearestTower.isNotFullHealth() || nearestTower.isTowerDeactivated())) {
                 const distance = Phaser.Math.Distance.Between(
@@ -108,9 +108,9 @@ export class ResonanceWave extends Component {
         );
 
         if (tower && (tower.isNotFullHealth() || tower.isTowerDeactivated())) {
-            const reviveCost = tower.cost; // This is the additional cost for reviving
-            if (this.gameObject.level.state.money >= reviveCost) {
-                this.gameObject.level.state.money -= reviveCost;
+            const reviveEnergyCost = tower.energyCost; // This is the additional cost for reviving
+            if (this.gameObject.level.state.energy >= reviveEnergyCost) { // Updated state.money to state.energy
+                this.gameObject.level.state.energy -= reviveEnergyCost; // Updated state.money to state.energy
                 this.gameObject.level.hud.update();
 
                 tower.scene.physics.world.enable(tower);
@@ -137,14 +137,14 @@ export class ResonanceWave extends Component {
                     }
                 }
             } else {
-                const moneyNeededToRevive = reviveCost - this.gameObject.level.state.money;
+                const energyNeededToRevive = reviveEnergyCost - this.gameObject.level.state.energy; // Renamed
                 this.gameObject.level.hud.alert(
-                    `INSUFFICIENT BALANCE:\nNeed $${moneyNeededToRevive} to fully revive tower!`,
+                    `INSUFFICIENT ENERGY:\nNeed ${energyNeededToRevive} energy to fully revive tower!`, // Updated message
                     AppColors.UI_MESSAGE_WARN,
                     1000
                 );
-                // If not enough money for full revive, refund base activation cost
-                this.gameObject.level.state.money += this.baseActivationCost;
+                // If not enough energy for full revive, refund base activation energy
+                this.gameObject.level.state.energy += this.baseActivationEnergy;
                 this.gameObject.level.hud.update();
             }
         }
@@ -155,6 +155,11 @@ export class ResonanceWave extends Component {
         this.specialEnemiesGroup.children.each((specialEnemyObject: Phaser.GameObjects.GameObject) => {
             if (specialEnemyObject instanceof SpecialEnemy) {
                 const specialEnemy = specialEnemyObject as SpecialEnemy;
+                // Only damage if the special enemy is vulnerable
+                if (!specialEnemy.isVulnerableToResonanceWave) {
+                    return; // Skip damage if not vulnerable
+                }
+
                 const distance = Phaser.Math.Distance.Between(
                     this.gameObject.x,
                     this.gameObject.y,

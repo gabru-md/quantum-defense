@@ -2,7 +2,7 @@ import { GameObject } from '../core/GameObject';
 import { Health } from '../components/Health';
 import { PathFollower } from '../components/PathFollower';
 import { Deactivator } from '../components/Deactivator';
-import { SpecialEnemyConfigType } from '../config/EnemyConfigs.ts'; // Import SpecialEnemyConfigType
+import {SpecialEnemyConfigType} from '../config/EnemyConfigs.ts';
 
 export interface SpecialEnemyConfig {
     scene: Phaser.Scene;
@@ -10,7 +10,8 @@ export interface SpecialEnemyConfig {
 }
 
 export class SpecialEnemy extends GameObject {
-    private moneyValue: number;
+    public isVulnerableToResonanceWave: boolean = false; // New flag for tutorial control
+    private energyValue: number; // Renamed: moneyValue to energyValue
     private healthComponent!: Health;
 
     constructor(config: SpecialEnemyConfig, specialEnemyConfigData: SpecialEnemyConfigType) {
@@ -18,7 +19,7 @@ export class SpecialEnemy extends GameObject {
         super(config.scene, startPoint.x, startPoint.y, specialEnemyConfigData.texture);
         config.scene.physics.world.enable(this);
 
-        this.moneyValue = specialEnemyConfigData.moneyValue;
+        this.energyValue = specialEnemyConfigData.energyValue; // Updated to energyValue
 
         this.healthComponent = new Health(specialEnemyConfigData.health);
         this.addComponent(this.healthComponent);
@@ -37,7 +38,7 @@ export class SpecialEnemy extends GameObject {
         this.on('healthChanged', this.handleHealthChanged, this);
 
         this.on('died', () => {
-            this.scene.events.emit('specialEnemyKilledByPlayer', this.moneyValue);
+            this.scene.events.emit('specialEnemyKilledByPlayer', this.energyValue); // Updated to energyValue
             this.destroy();
         });
     }

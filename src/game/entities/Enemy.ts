@@ -12,7 +12,7 @@ export interface EnemyConfig {
 }
 
 export class Enemy extends GameObject {
-    public moneyValue: number;
+    public energyValue: number; // Renamed: moneyValue to energyValue
     private healthComponent!: Health; // Reference to the health component
 
     constructor(config: EnemyConfig, enemyConfigData: EnemyConfigType) {
@@ -21,7 +21,7 @@ export class Enemy extends GameObject {
 
         config.scene.physics.world.enable(this);
 
-        this.moneyValue = enemyConfigData.moneyValue;
+        this.energyValue = enemyConfigData.energyValue; // Updated to energyValue
 
         // Add the Health component and store a reference
         this.healthComponent = new Health(enemyConfigData.health);
@@ -33,7 +33,7 @@ export class Enemy extends GameObject {
         this.on('healthChanged', this.handleHealthChanged, this);
 
         this.on('died', () => {
-            this.scene.events.emit('enemyDied', this.moneyValue);
+            this.scene.events.emit('enemyDied', this.energyValue); // Updated to energyValue
             this.destroy();
         });
     }

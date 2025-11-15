@@ -2,7 +2,7 @@ import { AppColors, phaserColor } from '../scripts/Colors.ts';
 
 export interface TowerConfigType {
     texture: string;
-    cost: number;
+    energyCost: number; // Renamed: Cost to build the tower
     health: number;
     range: number;
     description: string;
@@ -27,7 +27,7 @@ export interface TowerConfigType {
 export const TowerConfigs: { [key: string]: TowerConfigType } = {
     tower1: {
         texture: 'tower1',
-        cost: 100,
+        energyCost: 100,
         health: 300,
         range: 150,
         description: 'Laser Tower:\nRapid fire, single target damage.',
@@ -46,7 +46,7 @@ export const TowerConfigs: { [key: string]: TowerConfigType } = {
     },
     tower2: {
         texture: 'tower2',
-        cost: 150,
+        energyCost: 150,
         health: 500,
         range: 133,
         description: 'Bomb Tower:\nSlow fire, area of effect damage.',
@@ -65,7 +65,7 @@ export const TowerConfigs: { [key: string]: TowerConfigType } = {
     },
     tower3: {
         texture: 'tower3',
-        cost: 120,
+        energyCost: 120,
         health: 200,
         range: 175,
         description: 'Slowing Tower:\nSlows all enemies within its range.',

@@ -12,12 +12,12 @@ export interface TowerConfig {
     x: number;
     y: number;
     texture: string;
-    cost: number; // Add cost to config
+    energyCost: number; // Renamed: cost to energyCost
 }
 
 export class Tower extends GameObject {
     public reviveProgress: number = 0;
-    public cost: number; // Store the cost
+    public energyCost: number; // Renamed: cost to energyCost
     private healthComponent!: Health;
     private visualPulseComponent!: VisualPulse;
     private originalPulseColor: number;
@@ -26,7 +26,7 @@ export class Tower extends GameObject {
         super(config.scene, config.x, config.y, config.texture);
         config.scene.physics.world.enable(this);
 
-        this.cost = config.cost; // Assign the cost
+        this.energyCost = config.energyCost; // Assign the energyCost
 
         // Store original color for revival using TowerConfigs
         const towerConfig = TowerConfigs[config.texture];
