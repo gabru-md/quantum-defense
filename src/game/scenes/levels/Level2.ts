@@ -1,7 +1,7 @@
 import * as Phaser from 'phaser';
-import { Level } from '../lib/Level.ts';
-import { GAME_HEIGHT, GAME_WIDTH } from '../../scripts/Util.ts';
-import { getStoryName, LevelNames } from '../lib/LevelNames.ts';
+import {Level} from '../lib/Level.ts';
+import {GAME_HEIGHT, GAME_WIDTH} from '../../scripts/Util.ts';
+import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
 
 export class Level2 extends Level {
     constructor() {
@@ -9,16 +9,16 @@ export class Level2 extends Level {
     }
 
     private firstPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(100, -10);
+        const path = new Phaser.Curves.Path(100, 100);
         path.lineTo(100, GAME_HEIGHT / 2);
         path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT / 2);
-        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT + 10);
+        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT - 100);
         return path;
     }
 
     private secondPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(GAME_WIDTH / 2, -10);
-        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT + 10);
+        const path = new Phaser.Curves.Path(GAME_WIDTH / 2, 100);
+        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT - 100);
         return path;
     }
 

@@ -1,7 +1,7 @@
 import * as Phaser from 'phaser';
-import { Level } from '../lib/Level.ts';
-import { GAME_HEIGHT, GAME_WIDTH } from '../../scripts/Util.ts';
-import { getStoryName, LevelNames } from '../lib/LevelNames.ts';
+import {Level} from '../lib/Level.ts';
+import {GAME_HEIGHT, GAME_WIDTH} from '../../scripts/Util.ts';
+import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
 
 export class Level3 extends Level {
     constructor() {
@@ -9,24 +9,32 @@ export class Level3 extends Level {
     }
 
     private firstPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(100, -10);
-        path.lineTo(100, 150);
-        path.lineTo(GAME_WIDTH - 100, 150);
-        path.lineTo(GAME_WIDTH - 100, 350);
-        path.lineTo(GAME_WIDTH / 2, 350);
+        const path = new Phaser.Curves.Path(150, 150);
+        path.lineTo(GAME_WIDTH - 150, 150);
+        path.lineTo(GAME_WIDTH - 150, GAME_HEIGHT / 2);
+        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT / 2);
         return path;
     }
 
     private secondPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(GAME_WIDTH - 100, GAME_HEIGHT + 10);
-        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT - 150);
-        path.lineTo(100, GAME_HEIGHT - 150);
-        path.lineTo(100, GAME_HEIGHT - 350);
-        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT - 350);
-        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT - 500);
-        path.lineTo(100, GAME_HEIGHT - 500);
-        path.lineTo(100, 350);
+        const path = new Phaser.Curves.Path(GAME_WIDTH - 150, GAME_HEIGHT - 150);
+        path.lineTo(150, GAME_HEIGHT - 150);
+        path.lineTo(150, GAME_HEIGHT / 2);
+        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT / 2);
+        return path;
+    }
+
+    private thirdPath(): Phaser.Curves.Path {
+        const path = new Phaser.Curves.Path(150, 350);
         path.lineTo(GAME_WIDTH / 2, 350);
+        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT / 2);
+        return path;
+    }
+
+    private fourthPath(): Phaser.Curves.Path {
+        const path = new Phaser.Curves.Path(GAME_WIDTH - 150, GAME_HEIGHT - 350);
+        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT - 350);
+        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT / 2);
         return path;
     }
 
@@ -34,6 +42,8 @@ export class Level3 extends Level {
         return {
             first: this.firstPath(),
             second: this.secondPath(),
+            third: this.thirdPath(),
+            fourth: this.fourthPath(),
         };
     }
 

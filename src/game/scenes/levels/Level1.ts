@@ -9,14 +9,13 @@ export class Level1 extends Level {
     }
 
     private firstPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(50, -10);
-        path.lineTo(50, 150);
+        const path = new Phaser.Curves.Path(50, 150);
         path.lineTo(450, 150);
         path.lineTo(450, 875);
         path.lineTo(950, 875);
         path.lineTo(950, 275);
         path.lineTo(GAME_WIDTH - 100, 275);
-        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT + 10);
+        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT - 150);
         return path;
     }
 

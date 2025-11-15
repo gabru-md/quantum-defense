@@ -36,6 +36,7 @@ export class PathsManager extends Manager {
             const endPoint = this.paths[pathsKey].getEndPoint();
             const endZone = this.drawZone(endPoint, AppColors.PATH_END);
             this.endZoneGraphics.push(endZone);
+            console.log(`For Curve: ${startPoint.x}, ${startPoint.y} and ${endPoint.x}, ${endPoint.y}`)
         }
 
         return {

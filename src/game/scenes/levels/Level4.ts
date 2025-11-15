@@ -15,12 +15,12 @@ export class Level4 extends Level {
         const centerY = GAME_HEIGHT / 2;
 
         const totalRotations = 5;
-        const pointsPerRotation = 60;
+        const pointsPerRotation = 100;
         const totalPoints = totalRotations * pointsPerRotation;
 
-        const angleOffset = -Math.PI / 2;
+        const angleOffset = -Math.PI;
 
-        const startRadius = Math.max(GAME_WIDTH / 2, GAME_HEIGHT / 2) - 175;
+        const startRadius = Math.min(GAME_WIDTH / 2, GAME_HEIGHT / 2) - 50;
         const endRadius = 0;
 
         for (let i = 0; i <= totalPoints; i++) {
@@ -31,7 +31,7 @@ export class Level4 extends Level {
             const y = centerY + radius * Math.sin(angle);
 
             if (i === 0) {
-                path.moveTo(x, y);
+                path.startPoint = new Phaser.Math.Vector2(x, y);
             } else {
                 path.lineTo(x, y);
             }

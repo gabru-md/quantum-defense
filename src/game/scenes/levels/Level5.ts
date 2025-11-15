@@ -9,26 +9,26 @@ export class Level5 extends Level {
     }
 
     private firstPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(100, -10);
+        const path = new Phaser.Curves.Path(100, 50);
         path.lineTo(100, 200);
         path.lineTo(GAME_WIDTH - 300, 200);
         path.lineTo(GAME_WIDTH - 300, 400);
         path.lineTo(100, 400);
         path.lineTo(100, 600);
         path.lineTo(GAME_WIDTH - 600, 600);
-        path.lineTo(GAME_WIDTH - 600, GAME_HEIGHT + 10); // End bottom-right
+        path.lineTo(GAME_WIDTH - 600, GAME_HEIGHT - 50); // End bottom-right
         return path;
     }
 
     private secondPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(GAME_WIDTH - 100, -10);
+        const path = new Phaser.Curves.Path(GAME_WIDTH - 100, 50);
         path.lineTo(GAME_WIDTH - 100, 200);
         path.lineTo(300, 200);
         path.lineTo(300, 400);
         path.lineTo(GAME_WIDTH - 100, 400);
         path.lineTo(GAME_WIDTH - 100, 600);
         path.lineTo(600, 600);
-        path.lineTo(600, GAME_HEIGHT + 10); // End bottom-left
+        path.lineTo(600, GAME_HEIGHT - 50); // End bottom-left
         return path;
     }
 
