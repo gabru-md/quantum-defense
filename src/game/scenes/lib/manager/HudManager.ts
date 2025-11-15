@@ -305,12 +305,11 @@ export class HudManager extends Manager {
             if (pointer.x < GAME_WIDTH && pointer.y < GAME_HEIGHT) {
                 drawX = pointer.x;
                 drawY = pointer.y;
+                this.rangePreview.lineStyle(2, previewColor, 0.8); // Use tower-specific color
+                this.rangePreview.fillStyle(previewColor, 0.1); // Use tower-specific color
+                this.rangePreview.fillCircle(drawX, drawY, range);
+                this.rangePreview.strokeCircle(drawX, drawY, range);
             }
-            
-            this.rangePreview.lineStyle(2, previewColor, 0.8); // Use tower-specific color
-            this.rangePreview.fillStyle(previewColor, 0.1); // Use tower-specific color
-            this.rangePreview.fillCircle(drawX, drawY, range);
-            this.rangePreview.strokeCircle(drawX, drawY, range);
         }
     }
 

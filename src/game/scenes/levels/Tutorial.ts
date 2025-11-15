@@ -287,8 +287,36 @@ export class Tutorial extends Level {
             waitForSpacePress: true
         });
 
+        await this.showStep({
+            text: "Navigate the battlefield using the WASD keys.", isHudInfo: true,
+            waitForSpacePress: false
+        });
+        await this.waitForEvent('playerMoved');
+
         this.pathElements.start.forEach(p => p.setVisible(true));
+        await this.showStep({
+            text: "This is Static's Den, the source of the Glitch incursions.\nAll Glitches spawn from here.",
+            markerConfig: {
+                x1: 5,
+                y1: GAME_HEIGHT / 2 - 48,
+                x2: 95,
+                y2: GAME_HEIGHT / 2 + 48,
+                text: "Static's Den"
+            },
+            waitForSpacePress: true
+        });
         this.pathElements.end.forEach(p => p.setVisible(true));
+        await this.showStep({
+            text: "This is the Nexus, the heart of the Quantum Realm.\nProtect it at all costs!",
+            markerConfig: {
+                x1: GAME_WIDTH - 95,
+                y1: GAME_HEIGHT / 2 - 48,
+                x2: GAME_WIDTH - 5,
+                y2: GAME_HEIGHT / 2 + 48,
+                text: "The Nexus"
+            },
+            waitForSpacePress: true
+        });
         this.pathElements.path.forEach(p => p.setVisible(true));
         await this.showStep({
             text: "This is Static's Den, where Glitches spawn, and the Nexus you must protect.",
