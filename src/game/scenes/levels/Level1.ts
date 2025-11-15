@@ -31,7 +31,7 @@ export class Level1 extends Level {
         delay: number;
         health: number;
         speed: number;
-        moneyValue: number;
+        energyValue: number;
         path: string;
     }[] {
         switch (wave) {
@@ -44,7 +44,7 @@ export class Level1 extends Level {
                         delay: 1500,
                         health: 100,
                         speed: 50,
-                        moneyValue: 10,
+                        energyValue: 10,
                         path: 'first',
                     },
                 ];
@@ -57,7 +57,7 @@ export class Level1 extends Level {
                         delay: 1200,
                         health: 100,
                         speed: 55,
-                        moneyValue: 10,
+                        energyValue: 10,
                         path: 'first',
                     },
                 ];
@@ -70,7 +70,7 @@ export class Level1 extends Level {
                         delay: 1000,
                         health: 110,
                         speed: 60,
-                        moneyValue: 12,
+                        energyValue: 12,
                         path: 'first',
                     },
                     {
@@ -80,7 +80,7 @@ export class Level1 extends Level {
                         delay: 2000,
                         health: 75,
                         speed: 80,
-                        moneyValue: 15,
+                        energyValue: 15,
                         path: 'first',
                     },
                 ];

@@ -47,7 +47,7 @@ export class Level4 extends Level {
         delay: number;
         health: number;
         speed: number;
-        moneyValue: number;
+        energyValue: number;
         path: string;
     }[] {
         switch (wave) {
@@ -60,7 +60,7 @@ export class Level4 extends Level {
                         delay: 800,
                         health: 130,
                         speed: 65,
-                        moneyValue: 15,
+                        energyValue: 15,
                         path: 'first',
                     },
                     {
@@ -70,7 +70,7 @@ export class Level4 extends Level {
                         delay: 600,
                         health: 90,
                         speed: 120,
-                        moneyValue: 20,
+                        energyValue: 20,
                         path: 'first',
                     },
                 ];
@@ -83,7 +83,7 @@ export class Level4 extends Level {
                         delay: 1500,
                         health: 700,
                         speed: 35,
-                        moneyValue: 60,
+                        energyValue: 60,
                         path: 'first',
                     },
                     {
@@ -93,7 +93,7 @@ export class Level4 extends Level {
                         delay: 800,
                         health: 130,
                         speed: 65,
-                        moneyValue: 15,
+                        energyValue: 15,
                         path: 'first',
                     },
                 ];
@@ -106,7 +106,7 @@ export class Level4 extends Level {
                         delay: 500,
                         health: 90,
                         speed: 130,
-                        moneyValue: 20,
+                        energyValue: 20,
                         path: 'first',
                     },
                     {
@@ -116,7 +116,7 @@ export class Level4 extends Level {
                         delay: 5000,
                         health: 250,
                         speed: 80,
-                        moneyValue: 120,
+                        energyValue: 120,
                         path: 'first',
                     },
                 ];

@@ -40,7 +40,7 @@ export abstract class Level extends Phaser.Scene {
         delay: number;
         health: number;
         speed: number;
-        energyValue: number; // Renamed: moneyValue to energyValue
+        energyValue: number;
         path: string;
     }[];
 
