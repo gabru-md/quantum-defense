@@ -77,18 +77,18 @@ export class MenuScene extends Phaser.Scene {
         this.createVisualElements();
 
         // --- Level Selection Panel ---
-        this.createPanel(WIDTH / 2, 400, 450, 475, 'SELECT LEVEL', (panelX, panelY) => {
+        this.createPanel(WIDTH / 2, 420, 450, 450, 'SELECT LEVEL', (panelX, panelY) => {
             this.createLevelSelectionButtons(panelX, panelY);
         });
 
         // --- Settings Panel ---
-        this.createPanel(WIDTH / 2, 750, 450, 200, 'SETTINGS', (panelX, panelY) => {
+        this.createPanel(WIDTH / 2, 780, 450, 200, 'SETTINGS', (panelX, panelY) => {
             this.createDifficultyToggle(panelX, panelY + 20);
             this.createSoundToggle(panelX, panelY + 80);
         });
 
         // --- Credits Button ---
-        this.createButton(WIDTH / 2, 900, 'CREDITS', () => {
+        this.createButton(WIDTH / 2, 920, 'CREDITS', () => {
             this.easeOutAndStartScene('CreditsScene');
         });
     }
