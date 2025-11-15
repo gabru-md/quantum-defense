@@ -434,7 +434,7 @@ export class Tutorial extends Level {
         this.spacebarText.setVisible(false);
         this.hud.info('Tutorial Complete!', AppColors.UI_MESSAGE_SUCCESS);
         this.time.delayedCall(2000, () => {
-            this.easeOutAndStartNextScene(this.nextScene());
+            this.easeOutAndStartNextScene(this.fetchNextScene());
         });
     }
 

@@ -157,7 +157,7 @@ export class WaveManager extends Manager {
                 if (this.level.scene.key === LevelNames.Introduction) return; // Tutorial handles its own completion
                 this.level.physics.pause();
                 this.level.hud.info('LEVEL COMPLETE!', AppColors.UI_MESSAGE_SUCCESS);
-                this.level.easeOutAndStartNextScene(this.level.nextScene());
+                this.level.easeOutAndStartNextScene(this.level.fetchNextScene());
             } else {
                 if (this.level.scene.key === LevelNames.Introduction) return; // Tutorial handles its own wave progression
                 this.level.hud.info('NEXT WAVE INCOMING!', AppColors.UI_MESSAGE_SUCCESS, () => {

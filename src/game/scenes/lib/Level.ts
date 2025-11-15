@@ -6,7 +6,7 @@ import { CollisionManager } from './manager/CollisionManager.ts';
 import { TowerManager } from './manager/TowerManager.ts';
 import { PathsManager } from './manager/PathsManager.ts';
 import { PlayerManager } from './manager/PlayerManager.ts';
-import { GAME_HEIGHT, GAME_WIDTH } from '../../scripts/Util.ts';
+import {EXIT_TO_MENU, GAME_HEIGHT, GAME_WIDTH} from '../../scripts/Util.ts';
 import { AppColors } from '../../scripts/Colors.ts';
 import { AudioManager } from './manager/AudioManager.ts';
 import {
@@ -47,6 +47,14 @@ export abstract class Level extends Phaser.Scene {
     abstract nextScene(): string;
 
     abstract definePaths(): { [key: string]: Phaser.Curves.Path };
+
+    public fetchNextScene(): string {
+        let nextScene = this.nextScene();
+        if(EXIT_TO_MENU) {
+            nextScene = 'MenuScene';
+        }
+        return nextScene;
+    }
 
     protected constructor(key: string) {
         super({ key });
