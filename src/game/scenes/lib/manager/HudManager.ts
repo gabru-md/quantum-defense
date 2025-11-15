@@ -282,14 +282,24 @@ export class HudManager extends Manager {
         const pointer = this.scene.input.activePointer;
         const selectedTower = this.scene.state.selectedTowerType;
 
-        // Only draw if a tower is selected AND the pointer is within the game area
-        if (selectedTower && selectedTower !== 'none' && pointer.x < GAME_WIDTH && pointer.y < GAME_HEIGHT) {
+        if (selectedTower && selectedTower !== 'none') {
             const range = this.scene.towerManager.getTowerRange(selectedTower);
+            const towerConfig = TowerConfigs[selectedTower];
+            const previewColor = towerConfig ? towerConfig.pulse.color : phaserColor(AppColors.UI_ACCENT); // Get color from config
+
+            let drawX = GAME_WIDTH / 2;
+            let drawY = GAME_HEIGHT / 2;
+
+            // If pointer is within game area, follow pointer
+            if (pointer.x < GAME_WIDTH && pointer.y < GAME_HEIGHT) {
+                drawX = pointer.x;
+                drawY = pointer.y;
+            }
             
-            this.rangePreview.lineStyle(2, phaserColor(AppColors.UI_ACCENT), 0.8);
-            this.rangePreview.fillStyle(phaserColor(AppColors.UI_ACCENT), 0.1);
-            this.rangePreview.fillCircle(pointer.x, pointer.y, range);
-            this.rangePreview.strokeCircle(pointer.x, pointer.y, range);
+            this.rangePreview.lineStyle(2, previewColor, 0.8); // Use tower-specific color
+            this.rangePreview.fillStyle(previewColor, 0.1); // Use tower-specific color
+            this.rangePreview.fillCircle(drawX, drawY, range);
+            this.rangePreview.strokeCircle(drawX, drawY, range);
         }
     }
 

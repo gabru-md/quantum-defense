@@ -32,13 +32,18 @@ export class Health extends Component {
      */
     public takeDamage(amount: number): void {
         if (this.isDead()) {
+            console.log(`[Health] ${this.gameObject.texture.key} is already dead. No more damage.`);
             return;
         }
 
+        const healthBefore = this._currentHealth;
         this._currentHealth -= amount;
+        console.log(`[Health] ${this.gameObject.texture.key} took ${amount} damage. Health: ${healthBefore} -> ${this._currentHealth}`);
+
         this.gameObject.emit('healthChanged', this._currentHealth);
         if (this.isDead()) {
             this._currentHealth = 0;
+            console.log(`[Health] ${this.gameObject.texture.key} died.`);
             this.gameObject.emit('died');
         }
     }

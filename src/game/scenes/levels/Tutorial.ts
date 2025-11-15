@@ -4,7 +4,6 @@ import {GAME_HEIGHT, GAME_WIDTH, HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
 import Phaser from 'phaser';
 import {EnemyConfigs, SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
-import {SpecialEnemy} from "../../entities/SpecialEnemy.ts"; // Import SpecialEnemy
 
 type TutorialStep = {
     text: string;
@@ -92,6 +91,17 @@ export class Tutorial extends Level {
                     path: 'path1'
                 }];
             case 5:
+                return [{
+                    type: 'specialEnemy',
+                    texture: SpecialEnemyConfig.texture,
+                    count: 1,
+                    delay: 1000,
+                    health: SpecialEnemyConfig.health,
+                    speed: SpecialEnemyConfig.speed,
+                    energyValue: SpecialEnemyConfig.energyValue,
+                    path: 'path1'
+                }];
+            case 6:
                 return [
                     {
                         type: 'enemy',
@@ -376,14 +386,6 @@ export class Tutorial extends Level {
 
         this.waveManager.startWave(4);
         // Wait for the special enemy to be spawned and added to the group
-        this.time.delayedCall(100, () => {
-            // Give it a moment to spawn
-        });
-
-        const phantomInstance = this.waveManager.specialEnemies.getFirstAlive() as SpecialEnemy;
-        if (phantomInstance) {
-            phantomInstance.isVulnerableToResonanceWave = false; // Make it invulnerable initially for tutorial
-        }
 
         await this.waitForEvent('towerDeactivated');
 
@@ -393,20 +395,14 @@ export class Tutorial extends Level {
             text: "A tower has been deactivated by The Phantom's pulse!", isHudInfo: true,
             waitForSpacePress: true
         });
+        this.waveManager.pause();
         await this.showStep({
+            // This should also destroy the phantom
             text: "Approach the deactivated tower and press 'E' to channel your energy and revive it!", isHudInfo: true,
             waitForSpacePress: false
         });
+
         await this.waitForEvent('towerRevived');
-
-        if (phantomInstance) {
-            phantomInstance.isVulnerableToResonanceWave = true; // Make it vulnerable after revive
-            await this.showStep({
-                text: "The Phantom is now vulnerable to your Resonance Wave! Destroy it!", isHudInfo: true,
-                waitForSpacePress: true
-            });
-        }
-
 
         this.waveManager.resume();
         // this.physics.resume();
@@ -415,8 +411,8 @@ export class Tutorial extends Level {
             isHudInfo: true,
             waitForSpacePress: true
         });
+        this.waveManager.startWave(5);
         await this.waitForEvent('waveCompleted');
-
         await this.showStep({
             text: "Towers can also be deactivated if they sustain too much damage, even from friendly fire.\nRevive them using your Resonance Wave (E).",
             isHudInfo: true,
@@ -432,7 +428,7 @@ export class Tutorial extends Level {
             text: "Clear this final wave to complete your Guardian training.", isHudInfo: true,
             waitForSpacePress: true
         });
-        this.waveManager.startWave(5);
+        this.waveManager.startWave(6);
         await this.waitForEvent('waveCompleted');
 
         this.spacebarText.setVisible(false);
