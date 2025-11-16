@@ -4,22 +4,42 @@ import * as Phaser from 'phaser';
 import {PathMaker} from "../lib/PathMaker.ts";
 import {GAME_WIDTH} from "../../scripts/Util.ts";
 
-export class Level4 extends Level {
+export class Level15 extends Level {
     constructor() {
-        super(LevelNames.Level4);
+        super(LevelNames.Level15);
+    }
+
+    private firstPath(): Phaser.Curves.Path {
+        const path = new PathMaker(GAME_WIDTH * 3 / 8, 100)
+            .down(250)
+            .right(700)
+            .down(250)
+            .left(1100)
+            .down(150)
+            .right(550)
+            .down(175)
+            .right(600)
+            .create(this);
+        return path;
+    }
+
+    private secondPath(): Phaser.Curves.Path {
+        const path = new PathMaker(170, 100)
+            .down(250)
+            .right(400)
+            .right(700)
+            .down(250)
+            .left(1100)
+            .down(150)
+            .right(550)
+            .down(175)
+            .right(600)
+            .create(this);
+        return path;
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {
-        const path = new PathMaker(GAME_WIDTH / 4, 125)
-            .down(100)
-            .left(250)
-            .down(700)
-            .right(775)
-            .up(400)
-            .right(250)
-            .up(225)
-            .create(this);
-        return {first: path};
+        return {first: this.firstPath(), second: this.secondPath()};
     }
 
     getWaveConfig(wave: number): {
@@ -52,6 +72,6 @@ export class Level4 extends Level {
     }
 
     nextScene(): string {
-        return getStoryName(LevelNames.Level6);
+        return getStoryName(LevelNames.MenuScene);
     }
 }

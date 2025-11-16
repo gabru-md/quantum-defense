@@ -3,7 +3,7 @@ import { AppColors, phaserColor } from '../scripts/Colors';
 import { GAME_HEIGHT, WIDTH } from '../scripts/Util';
 import { State } from './lib/State';
 import { createEnemyTexture, createPlayerTexture, createTowerTexture } from '../scripts/TextureUtils';
-import { getStoryName, LevelNames } from './lib/LevelNames.ts';
+import { LevelNames } from './lib/LevelNames.ts';
 
 export class MenuScene extends Phaser.Scene {
     private gameState!: State;
@@ -77,18 +77,18 @@ export class MenuScene extends Phaser.Scene {
         this.createVisualElements();
 
         // --- Level Selection Panel ---
-        this.createPanel(WIDTH / 2, 420, 450, 450, 'SELECT LEVEL', (panelX, panelY) => {
+        this.createPanel(WIDTH / 2, 450, 400, 600, 'SELECT LEVEL', (panelX, panelY) => {
             this.createLevelSelectionButtons(panelX, panelY);
         });
 
         // --- Settings Panel ---
-        this.createPanel(WIDTH / 2, 780, 450, 200, 'SETTINGS', (panelX, panelY) => {
+        this.createPanel(WIDTH / 2, 880, 450, 200, 'SETTINGS', (panelX, panelY) => {
             this.createDifficultyToggle(panelX, panelY + 20);
             this.createSoundToggle(panelX, panelY + 80);
         });
 
         // --- Credits Button ---
-        this.createButton(WIDTH / 2, 920, 'CREDITS', () => {
+        this.createButton(WIDTH / 2, 1010, 'CREDITS', () => {
             this.easeOutAndStartScene('CreditsScene');
         });
     }
@@ -219,6 +219,7 @@ export class MenuScene extends Phaser.Scene {
         contentCallback: (panelX: number, panelY: number) => void
     ): void {
         const panelGraphics = this.add.graphics();
+        panelGraphics.fillStyle(phaserColor(AppColors.GAME_BACKGROUND)); // Fill panel background
         panelGraphics.fillRect(x - width / 2, y - height / 2, width, height);
         panelGraphics.lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1);
         panelGraphics.strokeRect(x - width / 2, y - height / 2, width, height);
@@ -249,9 +250,9 @@ export class MenuScene extends Phaser.Scene {
     private createButton(x: number, y: number, text: string, callback: () => void): Phaser.GameObjects.Text {
         const button = this.add
             .text(x, y, text, {
-                font: '36px',
+                font: '20px', // Adjusted font size
                 color: AppColors.UI_TEXT,
-                padding: { x: 20, y: 10 },
+                padding: { x: 10, y: 5 },
             })
             .setOrigin(0.5)
             .setInteractive();
@@ -264,22 +265,37 @@ export class MenuScene extends Phaser.Scene {
     }
 
     private createLevelSelectionButtons(x: number, y: number): void {
-        const levelKeys = [
-            LevelNames.Introduction,
-            LevelNames.HelloGenie,
-            LevelNames.TrustMe,
-            LevelNames.ThePhantom,
-            LevelNames.RiseOfStatic,
-            LevelNames.Breakthrough,
-        ];
-        const buttonSpacing = 60;
-        const currentY = y + 25;
+        const allLevelNames = Object.values(LevelNames).filter(
+            (name) => typeof name === 'string' && name !== LevelNames.MenuScene
+        ) as LevelNames[];
 
-        levelKeys.forEach((key, index) => {
-            this.createButton(x, currentY + index * buttonSpacing, key, () => {
+        const levelsPerRow = 2;
+        const buttonWidth = 150;
+        const horizontalSpacing = 20;
+        const verticalSpacing = 15;
+        const buttonHeight = 40; // Based on font size and padding
+
+        // Calculate the starting X for the first button in a row to center the row
+        const totalRowWidth = (buttonWidth * levelsPerRow) + (horizontalSpacing * (levelsPerRow - 1));
+        const startXOffset = totalRowWidth / 2;
+
+        let currentX = x - startXOffset + (buttonWidth / 2); // Center of the first button
+        let currentY = y;
+
+        allLevelNames.forEach((key, index) => {
+            this.createButton(currentX, currentY, key, () => {
                 this.gameState.level = key;
-                this.easeOutAndStartScene(getStoryName(key));
+                this.easeOutAndStartScene(key);
             });
+
+            if ((index + 1) % levelsPerRow === 0) {
+                // Move to next row
+                currentX = x - startXOffset + (buttonWidth / 2);
+                currentY += buttonHeight + verticalSpacing;
+            } else {
+                // Move to next column in the same row
+                currentX += buttonWidth + horizontalSpacing;
+            }
         });
     }
 

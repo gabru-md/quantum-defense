@@ -4,6 +4,7 @@ import {GAME_HEIGHT, GAME_WIDTH} from '../../scripts/Util.ts';
 import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
 import {GlitchAnnihilationEffect, RiftElements} from "../../effects/GlitchAnnihilationEffect.ts";
 import {AppColors, phaserColor} from "../../scripts/Colors.ts";
+import {PathMaker} from "../lib/PathMaker.ts";
 
 export class Level1 extends Level {
     private glitchManager: GlitchAnnihilationEffect;
@@ -18,19 +19,14 @@ export class Level1 extends Level {
         this.glitchManager = new GlitchAnnihilationEffect(this);
     }
 
-    private firstPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(50, 150);
-        path.lineTo(450, 150);
-        path.lineTo(450, 875);
-        path.lineTo(950, 875);
-        path.lineTo(950, 275);
-        path.lineTo(GAME_WIDTH - 100, 275);
-        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT - 150);
-        return path;
-    }
-
     definePaths(): { [key: string]: Phaser.Curves.Path } {
-        return {first: this.firstPath()};
+        const path = new PathMaker(50, 250)
+            .right(400)
+            .down(550)
+            .right(550)
+            .up(550)
+            .create(this);
+        return {first: path};
     }
 
     getLevelSpecificElements(): Phaser.GameObjects.GameObject[] {
@@ -51,10 +47,10 @@ export class Level1 extends Level {
         for (const rift of this.rifts) {
             const distance = Phaser.Math.Distance.Between(x, y, rift.centerX, rift.centerY);
             if (distance < 100 * rift.scaleFactor) {
-                return { buildable: false, reason: 'Too close to a rift!' };
+                return {buildable: false, reason: 'Too close to a rift!'};
             }
         }
-        return { buildable: true };
+        return {buildable: true};
     }
 
     getWaveConfig(wave: number): {

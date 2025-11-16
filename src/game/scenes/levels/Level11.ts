@@ -2,22 +2,20 @@ import {Level} from '../lib/Level.ts';
 import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
 import * as Phaser from 'phaser';
 import {PathMaker} from "../lib/PathMaker.ts";
-import {GAME_WIDTH} from "../../scripts/Util.ts";
 
-export class Level4 extends Level {
+export class Level11 extends Level {
     constructor() {
-        super(LevelNames.Level4);
+        super(LevelNames.Level11);
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {
-        const path = new PathMaker(GAME_WIDTH / 4, 125)
-            .down(100)
-            .left(250)
-            .down(700)
-            .right(775)
-            .up(400)
-            .right(250)
-            .up(225)
+        const path = new PathMaker(100, 100)
+            .right(600)
+            .down(750)
+            .right(400)
+            .up(675)
+            .right(200)
+            .down(450)
             .create(this);
         return {first: path};
     }
@@ -52,6 +50,6 @@ export class Level4 extends Level {
     }
 
     nextScene(): string {
-        return getStoryName(LevelNames.Level6);
+        return getStoryName(LevelNames.Level12);
     }
 }

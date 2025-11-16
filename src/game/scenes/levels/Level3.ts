@@ -1,50 +1,25 @@
+import { Level } from '../lib/Level.ts';
+import { getStoryName, LevelNames } from '../lib/LevelNames.ts';
 import * as Phaser from 'phaser';
-import {Level} from '../lib/Level.ts';
-import {GAME_HEIGHT, GAME_WIDTH} from '../../scripts/Util.ts';
-import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
+import {PathMaker} from "../lib/PathMaker.ts";
+import {GAME_HEIGHT, GAME_WIDTH} from "../../scripts/Util.ts";
 
 export class Level3 extends Level {
     constructor() {
-        super(LevelNames.ThePhantom);
+        super(LevelNames.Level3);
     }
 
-    private firstPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(150, 150);
-        path.lineTo(GAME_WIDTH - 150, 150);
-        path.lineTo(GAME_WIDTH - 150, GAME_HEIGHT / 2);
-        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT / 2);
-        return path;
-    }
-
-    private secondPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(GAME_WIDTH - 150, GAME_HEIGHT - 150);
-        path.lineTo(150, GAME_HEIGHT - 150);
-        path.lineTo(150, GAME_HEIGHT / 2);
-        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT / 2);
-        return path;
-    }
-
-    private thirdPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(150, 350);
-        path.lineTo(GAME_WIDTH / 2, 350);
-        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT / 2);
-        return path;
-    }
-
-    private fourthPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(GAME_WIDTH - 150, GAME_HEIGHT - 350);
-        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT - 350);
-        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT / 2);
-        return path;
-    }
-
-    definePaths() {
-        return {
-            first: this.firstPath(),
-            second: this.secondPath(),
-            third: this.thirdPath(),
-            fourth: this.fourthPath(),
-        };
+    definePaths(): { [key: string]: Phaser.Curves.Path } {
+        const path = new PathMaker(GAME_WIDTH - 175, GAME_HEIGHT - 225)
+            .left(825)
+            .up(250)
+            .left(100)
+            .up(100)
+            .right(100)
+            .up(250)
+            .right(825)
+            .create(this);
+        return { first: path };
     }
 
     getWaveConfig(wave: number): {
@@ -64,76 +39,10 @@ export class Level3 extends Level {
                         type: 'enemy',
                         texture: 'enemy1',
                         count: 10,
-                        delay: 1000,
-                        health: 120,
-                        speed: 60,
-                        energyValue: 12,
-                        path: 'first',
-                    },
-                    {
-                        type: 'enemy',
-                        texture: 'enemy2',
-                        count: 5,
-                        delay: 800,
-                        health: 85,
-                        speed: 110,
-                        energyValue: 18,
-                        path: 'second',
-                    },
-                ];
-            case 2:
-                return [
-                    {
-                        type: 'enemy',
-                        texture: 'enemy3',
-                        count: 3,
-                        delay: 2000,
-                        health: 600,
-                        speed: 30,
-                        energyValue: 50,
-                        path: 'first',
-                    },
-                    {
-                        type: 'enemy',
-                        texture: 'enemy1',
-                        count: 10,
-                        delay: 1000,
-                        health: 120,
-                        speed: 60,
-                        energyValue: 12,
-                        path: 'second',
-                    },
-                ];
-            case 3:
-                return [
-                    {
-                        type: 'enemy',
-                        texture: 'enemy1',
-                        count: 10,
-                        delay: 1000,
-                        health: 130,
-                        speed: 65,
-                        energyValue: 15,
-                        path: 'first',
-                    },
-                    {
-                        type: 'enemy',
-                        texture: 'enemy2',
-                        count: 10,
-                        delay: 700,
-                        health: 90,
-                        speed: 120,
-                        energyValue: 20,
-                        path: 'second',
-                    },
-                    {
-                        type: 'specialEnemy',
-                        texture: 'specialEnemy',
-                        count: 1,
-                        delay: 5000,
-                        health: 200,
-                        speed: 70,
-                        energyValue: 100,
+                        delay: 1500,
+                        health: 100,
+                        speed: 50,
+                        energyValue: 10,
                         path: 'first',
                     },
                 ];
@@ -143,6 +52,6 @@ export class Level3 extends Level {
     }
 
     nextScene(): string {
-        return getStoryName(LevelNames.RiseOfStatic);
+        return getStoryName(LevelNames.Level4);
     }
 }

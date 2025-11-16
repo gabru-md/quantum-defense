@@ -1,32 +1,27 @@
+import { Level } from '../lib/Level.ts';
+import { getStoryName, LevelNames } from '../lib/LevelNames.ts';
 import * as Phaser from 'phaser';
-import {Level} from '../lib/Level.ts';
-import {GAME_HEIGHT, GAME_WIDTH} from '../../scripts/Util.ts';
-import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
+import {PathMaker} from "../lib/PathMaker.ts";
+import {GAME_HEIGHT} from "../../scripts/Util.ts";
 
 export class Level2 extends Level {
     constructor() {
-        super(LevelNames.TrustMe);
-    }
-
-    private firstPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(100, 100);
-        path.lineTo(100, GAME_HEIGHT / 2);
-        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT / 2);
-        path.lineTo(GAME_WIDTH - 100, GAME_HEIGHT - 100);
-        return path;
-    }
-
-    private secondPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(GAME_WIDTH / 2, 100);
-        path.lineTo(GAME_WIDTH / 2, GAME_HEIGHT - 100);
-        return path;
+        super(LevelNames.Level2);
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {
-        return {
-            first: this.firstPath(),
-            second: this.secondPath(),
-        };
+        const path = new PathMaker(150, GAME_HEIGHT - 150)
+            .up(200)
+            .right(500)
+            .down(75)
+            .right(300)
+            .up(600)
+            .left(300)
+            .down(75)
+            .left(500)
+            .up(200)
+            .create(this);
+        return { first: path };
     }
 
     getWaveConfig(wave: number): {
@@ -46,67 +41,11 @@ export class Level2 extends Level {
                         type: 'enemy',
                         texture: 'enemy1',
                         count: 10,
-                        delay: 1000,
-                        health: 110,
-                        speed: 55,
+                        delay: 1500,
+                        health: 100,
+                        speed: 50,
                         energyValue: 10,
                         path: 'first',
-                    },
-                    {
-                        type: 'enemy',
-                        texture: 'enemy2',
-                        count: 5,
-                        delay: 1500,
-                        health: 80,
-                        speed: 90,
-                        energyValue: 15,
-                        path: 'second',
-                    },
-                ];
-            case 2:
-                return [
-                    {
-                        type: 'enemy',
-                        texture: 'enemy2',
-                        count: 10,
-                        delay: 800,
-                        health: 80,
-                        speed: 100,
-                        energyValue: 15,
-                        path: 'first',
-                    },
-                    {
-                        type: 'enemy',
-                        texture: 'enemy1',
-                        count: 10,
-                        delay: 1200,
-                        health: 120,
-                        speed: 60,
-                        energyValue: 12,
-                        path: 'second',
-                    },
-                ];
-            case 3:
-                return [
-                    {
-                        type: 'enemy',
-                        texture: 'enemy1',
-                        count: 15,
-                        delay: 1000,
-                        health: 120,
-                        speed: 60,
-                        energyValue: 12,
-                        path: 'first',
-                    },
-                    {
-                        type: 'enemy',
-                        texture: 'enemy2',
-                        count: 10,
-                        delay: 800,
-                        health: 85,
-                        speed: 110,
-                        energyValue: 18,
-                        path: 'second',
                     },
                 ];
             default:
@@ -115,6 +54,6 @@ export class Level2 extends Level {
     }
 
     nextScene(): string {
-        return getStoryName(LevelNames.ThePhantom);
+        return getStoryName(LevelNames.Level3);
     }
 }

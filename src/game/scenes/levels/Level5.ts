@@ -1,34 +1,37 @@
 import * as Phaser from 'phaser';
-import { Level } from '../lib/Level.ts';
-import { GAME_HEIGHT, GAME_WIDTH } from '../../scripts/Util.ts';
+import {Level} from '../lib/Level.ts';
+import {GAME_HEIGHT, GAME_WIDTH} from '../../scripts/Util.ts';
 import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
+import {PathMaker} from "../lib/PathMaker.ts";
 
 export class Level5 extends Level {
     constructor() {
-        super(LevelNames.Breakthrough);
+        super(LevelNames.Level5);
     }
 
     private firstPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(100, 50);
-        path.lineTo(100, 200);
-        path.lineTo(GAME_WIDTH - 300, 200);
-        path.lineTo(GAME_WIDTH - 300, 400);
-        path.lineTo(100, 400);
-        path.lineTo(100, 600);
-        path.lineTo(GAME_WIDTH - 600, 600);
-        path.lineTo(GAME_WIDTH - 600, GAME_HEIGHT - 50); // End bottom-right
+        const path = new PathMaker(GAME_WIDTH / 2, GAME_HEIGHT / 2)
+            .down(200)
+            .right(500)
+            .up(600)
+            .left(1100)
+            .down(650)
+            .right(135)
+            .down(200)
+            .reverse()
+            .create(this)
         return path;
     }
 
     private secondPath(): Phaser.Curves.Path {
-        const path = new Phaser.Curves.Path(GAME_WIDTH - 100, 50);
-        path.lineTo(GAME_WIDTH - 100, 200);
-        path.lineTo(300, 200);
-        path.lineTo(300, 400);
-        path.lineTo(GAME_WIDTH - 100, 400);
-        path.lineTo(GAME_WIDTH - 100, 600);
-        path.lineTo(600, 600);
-        path.lineTo(600, GAME_HEIGHT - 50); // End bottom-left
+        const path = new PathMaker(GAME_WIDTH / 2, GAME_HEIGHT / 2)
+            .down(200)
+            .right(500)
+            .up(250)
+            .right(150)
+            .down(500)
+            .reverse()
+            .create(this);
         return path;
     }
 
