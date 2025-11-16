@@ -60,14 +60,6 @@ export abstract class Level extends Phaser.Scene {
 
     protected constructor(key: string) {
         super({ key });
-        this.hud = new HudManager(this);
-        this.waveManager = new WaveManager(this);
-        this.collisionManager = new CollisionManager(this);
-        this.towerManager = new TowerManager(this);
-        this.pathsManager = new PathsManager(this);
-        this.playerManager = new PlayerManager(this);
-        this.audioManager = new AudioManager(this);
-        this.backgroundEffectsManager = new BackgroundEffectsManager(this); // Initialize the new manager
     }
 
     init(): void {
@@ -76,6 +68,15 @@ export abstract class Level extends Phaser.Scene {
             this.state = new State(100, 350, this.scene.key);
             this.sys.registry.set('gameState', this.state);
         }
+
+        this.hud = new HudManager(this);
+        this.waveManager = new WaveManager(this);
+        this.collisionManager = new CollisionManager(this);
+        this.towerManager = new TowerManager(this);
+        this.pathsManager = new PathsManager(this);
+        this.playerManager = new PlayerManager(this);
+        this.audioManager = new AudioManager(this);
+        this.backgroundEffectsManager = new BackgroundEffectsManager(this);
 
         this.state.level = this.scene.key;
         this.state.baseHealth = 100;
@@ -88,6 +89,7 @@ export abstract class Level extends Phaser.Scene {
     }
 
     public create(): void {
+        this.physics.resume(); // Resume physics on scene creation
         this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
         this.backgroundEffectsManager.start(); // Start the background effects

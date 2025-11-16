@@ -11,6 +11,10 @@ export class Level1 extends Level {
 
     constructor() {
         super(LevelNames.HelloGenie);
+    }
+
+    init() {
+        super.init();
         this.glitchManager = new GlitchAnnihilationEffect(this);
     }
 
