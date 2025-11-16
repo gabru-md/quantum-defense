@@ -130,38 +130,32 @@ export class WaveManager extends Manager {
     }
 
     protected handleEnemyReachedEnd(enemy: Enemy | SpecialEnemy): void {
+        if (this.gameOver) return;
+    
         this.level.state.baseHealth -= 10;
         this.enemiesRemaining--;
-        this.level.events.emit('nexusHit', enemy.x, enemy.y); // Emit nexusHit event
+        this.level.events.emit('nexusHit', enemy.x, enemy.y);
         this.level.hud.update();
-        this.checkGameOver();
-        this.checkWaveCompletion();
-    }
-
-    protected checkGameOver(): void {
-        if (this.level.scene.key === LevelNames.Introduction) return;
+    
         if (this.level.state.baseHealth <= 0) {
-            this.level.state.baseHealth = 0;
-            this.level.hud.update();
-            this.level.hud.info('GAME OVER!', AppColors.UI_MESSAGE_ERROR);
-            this.gameOver = true;
-            this.level.physics.pause();
+            this.level.events.emit('gameOver');
+        } else {
+            this.checkWaveCompletion();
         }
     }
 
     protected checkWaveCompletion(): void {
-        if (this.gameOver) return;
+        if (this.gameOver || this.level.scene.key === LevelNames.Introduction) return;
+    
         if (this.enemiesSpawnedInWave >= this.maxEnemiesInWave && this.enemiesRemaining <= 0) {
-            // Emit event for the tutorial
             this.level.events.emit('waveCompleted');
-
+    
             if (this.noMoreWavesLeft()) {
-                if (this.level.scene.key === LevelNames.Introduction) return; // Tutorial handles its own completion
                 this.level.physics.pause();
-                this.level.hud.info('LEVEL COMPLETE!', AppColors.UI_MESSAGE_SUCCESS);
-                this.level.easeOutAndStartNextScene(this.level.fetchNextScene());
+                this.level.hud.info('LEVEL COMPLETE!', AppColors.UI_MESSAGE_SUCCESS, () => {
+                    this.level.easeOutAndStartNextScene(this.level.fetchNextScene());
+                });
             } else {
-                if (this.level.scene.key === LevelNames.Introduction) return; // Tutorial handles its own wave progression
                 this.level.hud.info('NEXT WAVE INCOMING!', AppColors.UI_MESSAGE_SUCCESS, () => {
                     this.currentWave++;
                     this.startWave(this.currentWave);

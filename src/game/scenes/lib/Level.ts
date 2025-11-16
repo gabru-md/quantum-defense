@@ -193,7 +193,7 @@ export abstract class Level extends Phaser.Scene {
     }
 
     public update(time: number, delta: number): void {
-        if (!this.isLoaded) return;
+        if (!this.isLoaded || this.waveManager.gameOver) return;
         if (this.scene.key !== LevelNames.Introduction) {
             this.waveManager.update(time, delta);
         }
@@ -203,6 +203,7 @@ export abstract class Level extends Phaser.Scene {
     }
 
     private handleGameOver(): void {
+        if (this.waveManager.gameOver) return; // Prevent multiple triggers
         this.waveManager.gameOver = true;
         this.physics.pause();
         this.hud.info('GAME OVER!', AppColors.UI_MESSAGE_ERROR, () => {
