@@ -1,11 +1,17 @@
 import * as Phaser from 'phaser';
-import { Level } from '../lib/Level.ts';
-import { GAME_HEIGHT, GAME_WIDTH } from '../../scripts/Util.ts';
-import { getStoryName, LevelNames } from '../lib/LevelNames.ts';
+import {Level} from '../lib/Level.ts';
+import {GAME_HEIGHT, GAME_WIDTH} from '../../scripts/Util.ts';
+import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
+import {GlitchAnnihilationEffect, RiftElements} from "../../effects/GlitchAnnihilationEffect.ts";
+import {AppColors, phaserColor} from "../../scripts/Colors.ts";
 
 export class Level1 extends Level {
+    private glitchManager: GlitchAnnihilationEffect;
+    public rifts: RiftElements[] = [];
+
     constructor() {
         super(LevelNames.HelloGenie);
+        this.glitchManager = new GlitchAnnihilationEffect(this);
     }
 
     private firstPath(): Phaser.Curves.Path {
@@ -20,7 +26,21 @@ export class Level1 extends Level {
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {
-        return { first: this.firstPath() };
+        return {first: this.firstPath()};
+    }
+
+    getLevelSpecificElements(): Phaser.GameObjects.GameObject[] {
+        const riftElements = this.glitchManager.drawRiftElements(GAME_WIDTH / 2, GAME_HEIGHT / 2, 3, Phaser.Math.FloatBetween(0.5, 0.87), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(0, Math.PI * 2));
+        this.glitchManager.animateRiftIdle(riftElements);
+        this.rifts.push(riftElements);
+
+        return [
+            riftElements.core,
+            riftElements.innerGlow,
+            riftElements.outerGlow,
+            ...riftElements.rays,
+            ...riftElements.fragments
+        ];
     }
 
     getWaveConfig(wave: number): {

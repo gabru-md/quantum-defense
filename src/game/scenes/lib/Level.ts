@@ -126,6 +126,8 @@ export abstract class Level extends Phaser.Scene {
         },
         player: Phaser.GameObjects.GameObject
     ) {
+        const levelSpecificElements = this.getLevelSpecificElements();
+
         this.levelElements = [
             ...hudElements.stats,
             ...hudElements.towers,
@@ -136,6 +138,7 @@ export abstract class Level extends Phaser.Scene {
             ...pathElements.end,   // Correctly spread the end graphics array
             player,
             ...hudElements.hudSeparators,
+            ...(levelSpecificElements || [])
         ];
 
         // @ts-ignore
@@ -143,6 +146,9 @@ export abstract class Level extends Phaser.Scene {
 
         let delay = 0;
         const fadeIn = (elements: Phaser.GameObjects.GameObject[] | Phaser.GameObjects.GameObject, duration = 250) => {
+            if (!elements || (Array.isArray(elements) && elements.length === 0)) {
+                return;
+            }
             this.time.delayedCall(delay, () => {
                 this.tweens.add({
                     targets: elements,
@@ -163,6 +169,8 @@ export abstract class Level extends Phaser.Scene {
         fadeIn(pathElements.start);
         fadeIn(pathElements.end);
         fadeIn(pathElements.path);
+        fadeIn(levelSpecificElements!);
+
 
         this.time.delayedCall(delay, () => {
             this.isLoaded = true;
@@ -174,6 +182,10 @@ export abstract class Level extends Phaser.Scene {
                 });
             }
         });
+    }
+
+    protected getLevelSpecificElements(): Phaser.GameObjects.GameObject[] | undefined {
+        return undefined;
     }
 
     public update(time: number, delta: number): void {
@@ -215,6 +227,8 @@ export abstract class Level extends Phaser.Scene {
             },
         });
     }
+
+
 
     protected shutdown(): void {
         this.waveManager.destroy();

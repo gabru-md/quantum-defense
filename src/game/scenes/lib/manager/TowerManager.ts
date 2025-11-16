@@ -13,7 +13,8 @@ import {Manager} from '../Manager.ts';
 import {Health} from '../../../components/Health.ts';
 import {AppColors} from '../../../scripts/Colors.ts';
 import {SlowingAura} from '../../../components/SlowingAura.ts';
-import {TowerConfigs, TowerConfigType} from '../../../config/TowerConfigs.ts'; // Import TowerConfigs
+import {TowerConfigs, TowerConfigType} from '../../../config/TowerConfigs.ts';
+import {Level1} from "../../levels/Level1.ts"; // Import TowerConfigs
 
 export class TowerManager extends Manager {
     towers!: Phaser.GameObjects.Group;
@@ -75,6 +76,18 @@ export class TowerManager extends Manager {
 
     protected tryPlaceTower(x: number, y: number, towerType: string): void {
         if (!towerType || towerType === 'none') return;
+
+        // Check if the tower is too close to any rift
+        if (this.level instanceof Level1) {
+            for (const rift of this.level.rifts) {
+                const distance = Phaser.Math.Distance.Between(x, y, rift.centerX, rift.centerY);
+                const minDistance = 100 * rift.scaleFactor;
+                if (distance < minDistance) {
+                    this.level.hud.alert('CANNOT PLACE TOWER:\nToo close to a rift!', AppColors.UI_MESSAGE_WARN, 1000);
+                    return;
+                }
+            }
+        }
 
         const energyCost = this.getTowerEnergyCost(towerType); // Renamed getTowerCost
         if (energyCost === -1) {

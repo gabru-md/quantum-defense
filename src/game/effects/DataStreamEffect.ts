@@ -50,7 +50,7 @@ export class DataStreamEffect {
                 angle: { min: 0, max: 360 },
                 scale: { start: 0.1, end: 0.4 },
                 alpha: { start: 0.15, end: 0.25, ease: 'Sine.easeInOut' },
-                quantity: 4,
+                quantity: 2,
                 blendMode: 'ADD',
                 // @ts-ignore
                 depth: -1,
