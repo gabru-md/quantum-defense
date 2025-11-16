@@ -294,28 +294,31 @@ export class HudManager extends Manager {
     }
 
     private updateRangePreview() {
-        this.rangePreview.clear(); // Always clear at the start of update
+        this.rangePreview.clear();
 
         const pointer = this.scene.input.activePointer;
         const selectedTower = this.scene.state.selectedTowerType;
 
-        if (selectedTower && selectedTower !== 'none') {
+        if (selectedTower && selectedTower !== 'none' && pointer.x < GAME_WIDTH && pointer.y < GAME_HEIGHT) {
             const range = this.scene.towerManager.getTowerRange(selectedTower);
-            const towerConfig = TowerConfigs[selectedTower];
-            const previewColor = towerConfig ? towerConfig.pulse.color : phaserColor(AppColors.UI_ACCENT); // Get color from config
+            const placementCheck = this.scene.towerManager.checkPlacementValidity(pointer.x, pointer.y, selectedTower);
 
-            let drawX = GAME_WIDTH / 2;
-            let drawY = GAME_HEIGHT / 2;
+            let previewColor: number;
+            let alpha: number;
 
-            // If pointer is within game area, follow pointer
-            if (pointer.x < GAME_WIDTH && pointer.y < GAME_HEIGHT) {
-                drawX = pointer.x;
-                drawY = pointer.y;
-                this.rangePreview.lineStyle(2, previewColor, 0.8); // Use tower-specific color
-                this.rangePreview.fillStyle(previewColor, 0.1); // Use tower-specific color
-                this.rangePreview.fillCircle(drawX, drawY, range);
-                this.rangePreview.strokeCircle(drawX, drawY, range);
+            if (placementCheck.valid) {
+                const towerConfig = TowerConfigs[selectedTower];
+                previewColor = towerConfig ? towerConfig.pulse.color : phaserColor(AppColors.UI_ACCENT);
+                alpha = 0.1;
+            } else {
+                previewColor = phaserColor(AppColors.UI_DISABLED);
+                alpha = 0.2;
             }
+
+            this.rangePreview.lineStyle(2, previewColor, alpha * 2);
+            this.rangePreview.fillStyle(previewColor, alpha);
+            this.rangePreview.fillCircle(pointer.x, pointer.y, range);
+            this.rangePreview.strokeCircle(pointer.x, pointer.y, range);
         }
     }
 

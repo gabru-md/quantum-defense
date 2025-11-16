@@ -14,13 +14,12 @@ import {Health} from '../../../components/Health.ts';
 import {AppColors} from '../../../scripts/Colors.ts';
 import {SlowingAura} from '../../../components/SlowingAura.ts';
 import {TowerConfigs, TowerConfigType} from '../../../config/TowerConfigs.ts';
-import {Level1} from "../../levels/Level1.ts"; // Import TowerConfigs
 
 export class TowerManager extends Manager {
     towers!: Phaser.GameObjects.Group;
     bullets!: Phaser.GameObjects.Group;
     bombs!: Phaser.GameObjects.Group;
-    private canPlaceTowers: boolean = true; // Control flag for tower placement
+    private canPlaceTowers: boolean = true;
 
     constructor(protected level: Level) {
         super(level);
@@ -74,46 +73,47 @@ export class TowerManager extends Manager {
         });
     }
 
-    protected tryPlaceTower(x: number, y: number, towerType: string): void {
-        if (!towerType || towerType === 'none') return;
-
-        // Check if the tower is too close to any rift
-        if (this.level instanceof Level1) {
-            for (const rift of this.level.rifts) {
-                const distance = Phaser.Math.Distance.Between(x, y, rift.centerX, rift.centerY);
-                const minDistance = 100 * rift.scaleFactor;
-                if (distance < minDistance) {
-                    this.level.hud.alert('CANNOT PLACE TOWER:\nToo close to a rift!', AppColors.UI_MESSAGE_WARN, 1000);
-                    return;
-                }
-            }
+    public checkPlacementValidity(x: number, y: number, towerType: string): { valid: boolean; reason?: string } {
+        if (!towerType || towerType === 'none') {
+            return { valid: false, reason: 'No tower selected.' };
         }
 
-        const energyCost = this.getTowerEnergyCost(towerType); // Renamed getTowerCost
-        if (energyCost === -1) {
-            this.level.hud.alert('TOWER ERROR:\nSomething went very wrong!', AppColors.UI_MESSAGE_ERROR);
-            return;
+        const buildableCheck = this.level.isPositionBuildable(x, y);
+        if (!buildableCheck.buildable) {
+            return { valid: false, reason: buildableCheck.reason };
         }
-        if (this.level.state.energy >= energyCost) { // Updated state.money to state.energy
-            const tower = this.placeSpecificTower(x, y, towerType, energyCost);
-            this.level.state.energy -= energyCost; // Updated state.money to state.energy
-            this.level.hud.update();
-            // this.level.state.selectedTowerType = 'none';
-            this.level.events.emit('towerPlaced', tower); // Pass tower object
-        } else {
-            const energyNeededToPlace = energyCost - this.level.state.energy; // Updated state.money to state.energy
-            this.level.hud.alert(`INSUFFICIENT ENERGY:\nNeed ${energyNeededToPlace} energy to place tower!`, AppColors.UI_MESSAGE_WARN, 1000); // Updated message
+
+        const energyCost = this.getTowerEnergyCost(towerType);
+        if (this.level.state.energy < energyCost) {
+            return { valid: false, reason: `Insufficient energy. Need ${energyCost}.` };
         }
+
+        return { valid: true };
     }
 
-    protected placeSpecificTower(x: number, y: number, towerType: string, energyCost: number): Tower { // Renamed cost to energyCost
+    protected tryPlaceTower(x: number, y: number, towerType: string): void {
+        const placementCheck = this.checkPlacementValidity(x, y, towerType);
+        if (!placementCheck.valid) {
+            if (placementCheck.reason) {
+                this.level.hud.alert(placementCheck.reason, AppColors.UI_MESSAGE_WARN, 1000);
+            }
+            return;
+        }
+
+        const energyCost = this.getTowerEnergyCost(towerType);
+        const tower = this.placeSpecificTower(x, y, towerType, energyCost);
+        this.level.state.energy -= energyCost;
+        this.level.hud.update();
+        this.level.events.emit('towerPlaced', tower);
+    }
+
+    protected placeSpecificTower(x: number, y: number, towerType: string, energyCost: number): Tower {
         const config: TowerConfigType = TowerConfigs[towerType];
         if (!config) {
             throw new Error(`Tower configuration not found for type: ${towerType}`);
         }
 
-        let tower: Tower;
-        tower = new Tower({scene: this.level, x, y, texture: config.texture, energyCost: energyCost}); // Updated cost to energyCost
+        const tower = new Tower({scene: this.level, x, y, texture: config.texture, energyCost: energyCost});
         this.towers.add(tower, true);
         tower.addComponent(new Health(config.health));
         tower.addComponent(new Targeting(config.range, [this.level.waveManager.enemies]));
@@ -135,7 +135,7 @@ export class TowerManager extends Manager {
                 config.pulse.color,
                 config.pulse.pulseDelay,
                 config.pulse.pulseDuration,
-                config.range, // Use tower's range as targetRadius
+                config.range,
                 config.pulse.pulseTotalPulses,
                 config.pulse.pulseLineWidth
             )
@@ -152,8 +152,8 @@ export class TowerManager extends Manager {
         return TowerConfigs[towerType]?.range || 0;
     }
 
-    getTowerEnergyCost(towerType: string): number { // Renamed getTowerCost
-        return TowerConfigs[towerType]?.energyCost || -1; // Updated to energyCost
+    getTowerEnergyCost(towerType: string): number {
+        return TowerConfigs[towerType]?.energyCost || -1;
     }
 
     public getTowerDescription(towerType: string): string {

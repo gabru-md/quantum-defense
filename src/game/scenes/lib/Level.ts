@@ -188,6 +188,10 @@ export abstract class Level extends Phaser.Scene {
         return undefined;
     }
 
+    public isPositionBuildable(_x: number, _y: number): { buildable: boolean; reason?: string } {
+        return { buildable: true };
+    }
+
     public update(time: number, delta: number): void {
         if (!this.isLoaded) return;
         if (this.scene.key !== LevelNames.Introduction) {

@@ -43,6 +43,16 @@ export class Level1 extends Level {
         ];
     }
 
+    isPositionBuildable(x: number, y: number): { buildable: boolean; reason?: string } {
+        for (const rift of this.rifts) {
+            const distance = Phaser.Math.Distance.Between(x, y, rift.centerX, rift.centerY);
+            if (distance < 100 * rift.scaleFactor) {
+                return { buildable: false, reason: 'Too close to a rift!' };
+            }
+        }
+        return { buildable: true };
+    }
+
     getWaveConfig(wave: number): {
         type: string;
         texture: string;
