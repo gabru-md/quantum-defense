@@ -31,7 +31,7 @@ export function getDeactivationWaveConfig(targetRadius: number): WaveEffectConfi
         ...DefaultWaveConfig,
         totalPulses: 2, // Fewer pulses for deactivation to differentiate
         duration: 800, // Shorter duration for enemy
-        color: phaserColor(AppColors.ENEMY_SPECIAL_IDLE),
+        color: phaserColor(AppColors.SPECIAL_ENEMY_WAVE_PULSE),
         targetRadius: targetRadius,
     };
 }

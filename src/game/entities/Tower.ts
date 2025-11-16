@@ -99,6 +99,7 @@ export class Tower extends GameObject {
     public setOriginalPulseColor(): void {
         this.visualPulseComponent = this.getComponent(VisualPulse) as VisualPulse;
         if (this.visualPulseComponent) {
+            this.visualPulseComponent.enabled = true;
             this.visualPulseComponent.setColor(this.originalPulseColor);
         }
     }
