@@ -1,14 +1,14 @@
 import * as Phaser from 'phaser';
-import { HudManager } from './manager/HudManager.ts';
-import { WaveManager } from './manager/WaveManager.ts';
-import { State } from './State.ts';
-import { CollisionManager } from './manager/CollisionManager.ts';
-import { TowerManager } from './manager/TowerManager.ts';
-import { PathsManager } from './manager/PathsManager.ts';
-import { PlayerManager } from './manager/PlayerManager.ts';
+import {HudManager} from './manager/HudManager.ts';
+import {WaveManager} from './manager/WaveManager.ts';
+import {State} from './State.ts';
+import {CollisionManager} from './manager/CollisionManager.ts';
+import {TowerManager} from './manager/TowerManager.ts';
+import {PathsManager} from './manager/PathsManager.ts';
+import {PlayerManager} from './manager/PlayerManager.ts';
 import {EXIT_TO_MENU, GAME_HEIGHT, GAME_WIDTH} from '../../scripts/Util.ts';
-import { AppColors } from '../../scripts/Colors.ts';
-import { AudioManager } from './manager/AudioManager.ts';
+import {AppColors} from '../../scripts/Colors.ts';
+import {AudioManager} from './manager/AudioManager.ts';
 import {
     createBombTexture,
     createBulletTexture,
@@ -19,12 +19,13 @@ import {
     createSpecialEnemyTexture,
     createTowerTexture,
 } from '../../scripts/TextureUtils';
-import { LevelNames } from './LevelNames.ts';
-import { BackgroundEffectsManager } from '../../effects/BackgroundEffectsManager.ts';
+import {LevelNames} from './LevelNames.ts';
+import {BackgroundEffectsManager} from '../../effects/BackgroundEffectsManager.ts';
 import {Rift, RiftType} from "../../entities/Rift.ts";
 import {RiftWave} from "../../entities/RiftWave.ts";
 import {QuantumEcho} from "../../entities/QuantumEcho.ts";
 import {GlitchAnnihilationEffect} from "../../effects/GlitchAnnihilationEffect.ts";
+import {Gameplay_Tutorial} from "../levels/Tutorial.ts";
 
 export abstract class Level extends Phaser.Scene {
     hud: HudManager;
@@ -60,14 +61,14 @@ export abstract class Level extends Phaser.Scene {
 
     public fetchNextScene(): LevelNames {
         let nextScene = this.nextScene();
-        if(EXIT_TO_MENU) {
+        if (EXIT_TO_MENU) {
             nextScene = LevelNames.MainMenu;
         }
         return nextScene;
     }
 
     isPositionBuildable(x: number, y: number): { buildable: boolean; reason?: string } {
-        if(this.rifts.getLength() > 0) {
+        if (this.rifts.getLength() > 0) {
             for (const rift of this.rifts.getChildren() as Rift[]) {
                 const distance = Phaser.Math.Distance.Between(x, y, rift.x, rift.y);
                 if (distance < 200 * rift.scaleFactor) { // Use scaleFactor from rift
@@ -79,7 +80,7 @@ export abstract class Level extends Phaser.Scene {
     }
 
     protected constructor(key: LevelNames) {
-        super({ key });
+        super({key});
     }
 
     init(): void {
@@ -115,9 +116,9 @@ export abstract class Level extends Phaser.Scene {
 
         this.backgroundEffectsManager.start();
 
-        this.rifts = this.add.group({ classType: Rift, runChildUpdate: true });
-        this.riftWaves = this.add.group({ classType: RiftWave, runChildUpdate: true });
-        this.quantumEchoes = this.add.group({ classType: QuantumEcho, runChildUpdate: true });
+        this.rifts = this.add.group({classType: Rift, runChildUpdate: true});
+        this.riftWaves = this.add.group({classType: RiftWave, runChildUpdate: true});
+        this.quantumEchoes = this.add.group({classType: QuantumEcho, runChildUpdate: true});
 
         const hudElements = this.hud.setup();
         const pathElements = this.pathsManager.setup();
@@ -180,8 +181,10 @@ export abstract class Level extends Phaser.Scene {
             ...(levelSpecificElements || [])
         ];
 
-        // @ts-ignore
-        this.levelElements.forEach((el) => (el as Phaser.GameObjects.GameObject).setAlpha(0));
+        this.levelElements.forEach((el) => {
+            // @ts-ignore
+            if (el) {(el as Phaser.GameObjects.GameObject).setAlpha(0)}
+        });
 
         let delay = 0;
         const fadeIn = (elements: Phaser.GameObjects.GameObject[] | Phaser.GameObjects.GameObject, duration = 250) => {
@@ -204,7 +207,12 @@ export abstract class Level extends Phaser.Scene {
         fadeIn(hudElements.stats, 0);
         fadeIn(hudElements.towers, 0);
         fadeIn(hudElements.help, 0);
-        fadeIn(player);
+
+        // Only fade in player if it's NOT the tutorial
+        if (this.scene.key !== LevelNames.Gameplay_Tutorial) {
+            fadeIn(player);
+        }
+
         fadeIn(pathElements.start);
         fadeIn(pathElements.end);
         fadeIn(pathElements.path);
@@ -219,6 +227,9 @@ export abstract class Level extends Phaser.Scene {
                         this.waveManager.startWave(1);
                     });
                 });
+            } else {
+                // If it's the tutorial, call a method to start the tutorial flow
+                (this as unknown as Gameplay_Tutorial).startTutorial(); // Cast to any to call the specific method
             }
         });
     }
@@ -271,7 +282,6 @@ export abstract class Level extends Phaser.Scene {
             },
         });
     }
-
 
 
     protected shutdown(): void {

@@ -4,7 +4,6 @@ import {GAME_HEIGHT, GAME_WIDTH, HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {LevelNames} from '../lib/LevelNames.ts';
 import Phaser from 'phaser';
 import {EnemyConfigs, SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
-import {Rift} from "../../entities/Rift.ts";
 
 type TutorialStep = {
     text: string;
@@ -120,38 +119,31 @@ export class Gameplay_Tutorial extends Level { // Renamed class
     }
 
     public create(): void {
-        this.physics.world.setBounds(0, 0, WIDTH, HEIGHT);
+        // Call super.create() first to get all base Level setup
+        super.create();
 
-        this.hudElements = this.hud.setup();
-        this.pathElements = this.pathsManager.setup();
-        this.playerManager.setup();
-        this.towerManager.setup();
-        this.waveManager.setup();
-        this.collisionManager.setup();
+        // After super.create(), the player is set up by PlayerManager.
+        // We need to immediately hide it and disable its physics for the tutorial start.
+        this.playerManager.player.setVisible(false);
+        this.playerManager.player.setActive(false);
 
-        this.hideAllElements();
+        // Create tutorial UI elements, but ensure they are initially invisible
+        // as animateGameElements will handle their fade-in.
         this.createTutorialUI();
-        this.runTutorialFlow().then(() => console.log("Tutorial Completed!"));
+
+        // The runTutorialFlow will now be called by the base Level's animateGameElements
+        // when the initial scene animations are complete.
 
         // @ts-ignore
         this.input.keyboard.on('keydown-ESC', () => {
-            this.easeOutAndStartNextScene(LevelNames.MainMenu); // Go to MainMenu on ESC
+            this.easeOutAndStartNextScene(LevelNames.MainMenu);
         });
 
         this.events.on('shutdown', this.shutdown, this);
-        this.rifts = this.add.group({ classType: Rift, runChildUpdate: true });
     }
 
-    private hideAllElements(): void {
-        // @ts-ignore
-        Object.values(this.hudElements).flat().forEach(el => el.setVisible(false));
-        Object.values(this.pathElements).flat().forEach(el => el.setVisible(false));
-        this.playerManager.player.setVisible(false);
-
-        // Remove the player from the physics world
-        // @ts-ignore
-        this.physics.world.disableBody(this.playerManager.player.body);
-    }
+    // Remove hideAllElements() as its functionality is now handled by Level's animateGameElements
+    // and specific tutorial steps.
 
     private createTutorialUI(): void {
         const textStyle: Phaser.Types.GameObjects.Text.TextStyle = {
@@ -162,7 +154,8 @@ export class Gameplay_Tutorial extends Level { // Renamed class
             align: 'center',
             wordWrap: {width: WIDTH / 2},
         };
-        this.tutorialText = this.add.text(WIDTH / 2, HEIGHT - 150, '', textStyle).setOrigin(0.5).setDepth(300).setVisible(false);
+        // Create elements with setVisible(false) and setAlpha(0)
+        this.tutorialText = this.add.text(WIDTH / 2, HEIGHT - 150, '', textStyle).setOrigin(0.5).setDepth(300).setVisible(false).setAlpha(0);
 
         const markerGraphic = this.add.graphics();
         const markerText = this.add.text(0, 0, '', {
@@ -171,17 +164,25 @@ export class Gameplay_Tutorial extends Level { // Renamed class
             backgroundColor: 'rgba(0,0,0,0.7)',
             padding: {x: 10, y: 5}
         }).setOrigin(0.5);
-        this.marker = this.add.container(0, 0, [markerGraphic, markerText]).setDepth(300).setVisible(false);
+        this.marker = this.add.container(0, 0, [markerGraphic, markerText]).setDepth(300).setVisible(false).setAlpha(0);
 
         this.spacebarText = this.add.text(WIDTH / 2, HEIGHT - 50, '[Press SPACE to continue]', {
             font: '16px',
             color: AppColors.UI_ACCENT,
             backgroundColor: 'rgba(0,0,0,0.5)',
             padding: {x: 10, y: 5}
-        }).setOrigin(0.5).setDepth(301).setVisible(false);
+        }).setOrigin(0.5).setDepth(301).setVisible(false).setAlpha(0);
     }
 
-    private async runTutorialFlow(): Promise<void> {
+    // Implement getLevelSpecificElements to provide tutorial UI to the base Level for animation
+    protected getLevelSpecificElements(): Phaser.GameObjects.GameObject[] | undefined {
+        return [this.tutorialText, this.marker, this.spacebarText];
+    }
+
+    // Rename runTutorialFlow to startTutorial to be called by the base Level
+    public async startTutorial(): Promise<void> {
+        console.log("Tutorial Started!"); // Add this to confirm it's called
+
         const hudX = GAME_WIDTH + 15;
         const hudPanelWidth = WIDTH - GAME_WIDTH - 30;
 
@@ -191,8 +192,9 @@ export class Gameplay_Tutorial extends Level { // Renamed class
         this.towerManager.disablePlacement();
         // ---
 
-        this.hudElements.separators.forEach(sep => sep.setVisible(true));
-        this.hudElements.hudSeparators.forEach(sep => sep.setVisible(true));
+        // The initial visibility of separators is now handled by Level.ts animateGameElements
+        // No need to set them visible here again.
+
         await this.showStep({
             text: "Welcome to the Quantum Realm, Observer. This is your battlefield.",
             markerConfig: {x1: 0, y1: 0, x2: GAME_WIDTH, y2: GAME_HEIGHT, text: "Battlefield"},
@@ -204,7 +206,7 @@ export class Gameplay_Tutorial extends Level { // Renamed class
             waitForSpacePress: true
         });
         // @ts-ignore
-        this.hudElements.stats.forEach(el => el.setVisible(true));
+        this.hudElements.stats.forEach(el => el.setVisible(true)); // These are now faded in by Level.ts, just ensure visibility
         await this.showStep({
             text: "This is where you can see your core stats:\nLevel, Nexus Health, Energy, and Wave Progress.",
             markerConfig: {x1: hudX, y1: 10, x2: hudX + hudPanelWidth, y2: 190, text: "Your Stats"},
@@ -241,7 +243,7 @@ export class Gameplay_Tutorial extends Level { // Renamed class
         });
 
         // @ts-ignore
-        this.hudElements.towers.forEach(el => el.setVisible(true));
+        this.hudElements.towers.forEach(el => el.setVisible(true)); // These are now faded in by Level.ts, just ensure visibility
         await this.showStep({
             text: "Now, let's examine your Tower Arsenal.",
             markerConfig: {x1: hudX, y1: 200, x2: hudX + hudPanelWidth, y2: 800, text: "Tower Arsenal"},
@@ -273,7 +275,7 @@ export class Gameplay_Tutorial extends Level { // Renamed class
 
         // Step 6: Show help text
         // @ts-ignore
-        this.hudElements.help.forEach(el => el.setVisible(true));
+        this.hudElements.help.forEach(el => el.setVisible(true)); // These are now faded in by Level.ts, just ensure visibility
         await this.showStep({
             text: "This section provides helpful reminders and tips to aid you in your defense!",
             markerConfig: {
@@ -288,9 +290,7 @@ export class Gameplay_Tutorial extends Level { // Renamed class
 
         // Step 7: Show player
         this.playerManager.player.setVisible(true);
-
-        //Re-enable the player to the physics world
-        // this.physics.world.enableBody(this.playerManager.player);
+        this.playerManager.player.setActive(true); // Activate physics for the player
 
         await this.showStep({
             text: "This is you, Guardian! The sentient protector of the Nexus.", isHudInfo: true,
@@ -303,7 +303,7 @@ export class Gameplay_Tutorial extends Level { // Renamed class
         });
         await this.waitForEvent('playerMoved');
 
-        this.pathElements.start.forEach(p => p.setVisible(true));
+        this.pathElements.start.forEach(p => p.setVisible(true)); // These are now faded in by Level.ts, just ensure visibility
         await this.showStep({
             text: "This is Static's Den, the source of the Glitch incursions.\nAll Glitches spawn from here.",
             markerConfig: {
@@ -315,7 +315,7 @@ export class Gameplay_Tutorial extends Level { // Renamed class
             },
             waitForSpacePress: true
         });
-        this.pathElements.end.forEach(p => p.setVisible(true));
+        this.pathElements.end.forEach(p => p.setVisible(true)); // These are now faded in by Level.ts, just ensure visibility
         await this.showStep({
             text: "This is the Nexus, the heart of the Quantum Realm.\nProtect it at all costs!",
             markerConfig: {
@@ -327,7 +327,7 @@ export class Gameplay_Tutorial extends Level { // Renamed class
             },
             waitForSpacePress: true
         });
-        this.pathElements.path.forEach(p => p.setVisible(true));
+        this.pathElements.path.forEach(p => p.setVisible(true)); // These are now faded in by Level.ts, just ensure visibility
         await this.showStep({
             text: "This is Static's Den, where Glitches spawn, and the Nexus you must protect.",
             waitForSpacePress: true
