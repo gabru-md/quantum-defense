@@ -77,7 +77,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         createSpecialEnemyTexture(this, 'specialEnemy', 32, AppColors.SPECIAL_ENEMY);
         // Preload new textures
         createPlayerTexture(this, 'quantum_echo_texture', 24, AppColors.PLAYER); // Assuming similar to player texture for now
-        createPlayerTexture(this, 'genie_texture', 24, AppColors.PLAYER); // Placeholder color
+        createPlayerTexture(this, 'genie_texture', 2, AppColors.PLAYER); // Placeholder color
         createTowerTexture(this, 'phantom_killer_tower_texture', 64, AppColors.ENEMY_FAST); // Placeholder color
         createPlayerTexture(this, 'upgrade_icon_texture', 24, AppColors.ENEMY_TANK); // Placeholder color
     }
@@ -336,6 +336,8 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         this.titleText = null as any;
         this.instructionText = null as any;
         this.continueText = null as any;
+        
+        this.backgroundEffectsManager.stop();
 
         // Remove textures to prevent memory leaks if they are not used elsewhere
         this.textures.remove('nexus');

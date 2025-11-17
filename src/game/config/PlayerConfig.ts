@@ -14,6 +14,10 @@ export interface PlayerConfigType {
         pulseTotalPulses: number;
         pulseLineWidth: number;
     };
+    genie: {
+        orbitRadius: number;
+        orbitSpeed: number;
+    };
 }
 
 export const PlayerConfig: PlayerConfigType = {
@@ -29,5 +33,9 @@ export const PlayerConfig: PlayerConfigType = {
         pulseDuration: 2000,
         pulseTotalPulses: 5,
         pulseLineWidth: 0.025,
+    },
+    genie: {
+        orbitRadius: 20,
+        orbitSpeed: 1.25,
     },
 };

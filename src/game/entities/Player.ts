@@ -3,6 +3,7 @@ import {PlayerController} from '../scripts/PlayerController';
 import * as Phaser from 'phaser';
 import {BreatheOnHover} from '../components/BreatheOnHover.ts';
 import {VisualPulse} from "../components/VisualPulse.ts"; // Import BreatheOnHover
+import {Genie} from "./Genie.ts";
 
 export interface PlayerConfig {
     scene: Phaser.Scene;
@@ -12,6 +13,8 @@ export interface PlayerConfig {
 }
 
 export class Player extends GameObject {
+    public genie: Genie;
+
     constructor(config: PlayerConfig) {
         super(config.scene, config.x, config.y, config.texture);
 
@@ -25,6 +28,10 @@ export class Player extends GameObject {
         // Add the PlayerController and BreatheOnHover
         this.addComponent(new PlayerController());
         this.addComponent(new BreatheOnHover(1.2, 1000)); // Add the breathing effect
+
+        // Create and add the Genie
+        this.genie = new Genie(config.scene, this);
+        config.scene.add.existing(this.genie);
     }
 
     public setVisible(value: boolean): this {
@@ -33,10 +40,16 @@ export class Player extends GameObject {
         if (visualPulse) {
             visualPulse.enabled = value;
         }
+        if (this.genie) {
+            this.genie.setVisible(value);
+        }
         return super.setVisible(value);
     }
 
     destroy(fromScene?: boolean) {
+        if (this.genie) {
+            this.genie.destroy(fromScene);
+        }
         for(let component of this.components) {
             component.enabled = false;
         }

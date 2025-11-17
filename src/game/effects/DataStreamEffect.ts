@@ -3,17 +3,16 @@ import {GAME_HEIGHT, WIDTH} from '../scripts/Util.ts';
 
 export class DataStreamEffect {
     private scene: Phaser.Scene;
-    private emitter!: Phaser.GameObjects.Particles.ParticleEmitter;
+    private emitter: Phaser.GameObjects.Particles.ParticleEmitter | null = null;
 
     constructor(scene: Phaser.Scene) {
         this.scene = scene;
     }
 
     public start(flowType: 'chaos' | 'laminar' = 'chaos'): void {
-        // If an emitter already exists, destroy it before creating a new one
         if (this.emitter) {
             this.emitter.destroy();
-            this.emitter = null as any; // Nullify the reference
+            this.emitter = null;
         }
 
         if (!this.scene.textures.exists('data-particle')) {
@@ -30,10 +29,8 @@ export class DataStreamEffect {
 
     public setFlow(flowType: 'chaos' | 'laminar'): void {
         if (!this.emitter) {
-            // If emitter is null, it means it was stopped or not started yet.
-            // We should not proceed with setting flow on a non-existent emitter.
-            // This case should ideally be handled by calling start() before setFlow().
             console.warn("DataStreamEffect: setFlow called on a non-existent emitter. Call start() first.");
+            this.start(flowType);
             return;
         }
 
@@ -71,7 +68,7 @@ export class DataStreamEffect {
     public stop(): void {
         if (this.emitter) {
             this.emitter.destroy();
-            this.emitter = null as any; // Nullify the reference after destroying
+            this.emitter = null;
         }
     }
 }
