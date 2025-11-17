@@ -37,9 +37,9 @@ export class Gameplay_VolatileInterference extends Level { // Renamed class
 
     create() {
         super.create();
-        this.createRift(425, GAME_HEIGHT / 2, 'gradient');
+        this.createRift(400, GAME_HEIGHT / 2, 'gradient');
         this.createRift(1080, GAME_HEIGHT - 100, 'static');
-        this.createRift(925, GAME_HEIGHT / 2 - 225, 'player');
+        this.createMiniRift(925, GAME_HEIGHT / 2 - 225, 'dormant');
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {

@@ -2,7 +2,7 @@ import {Level} from '../lib/Level.ts';
 import {LevelNames} from '../lib/LevelNames.ts';
 import * as Phaser from 'phaser';
 import {PathMaker} from "../lib/PathMaker.ts";
-import {GAME_HEIGHT} from "../../scripts/Util.ts";
+import {GAME_HEIGHT, GAME_WIDTH} from "../../scripts/Util.ts";
 
 export class Gameplay_TheFinalAssault extends Level { // Renamed class
     constructor() {
@@ -20,7 +20,7 @@ export class Gameplay_TheFinalAssault extends Level { // Renamed class
             .right(300)
             .down(325)
             .right(100)
-            .up(625)
+            .up(700)
             .create(this);
         return path
     }
@@ -54,6 +54,8 @@ export class Gameplay_TheFinalAssault extends Level { // Renamed class
         super.create();
         this.createRift(300, 200, 'gradient');
         this.createRift(1000, 430, 'static');
+        this.createMiniRift(GAME_WIDTH - 65, GAME_HEIGHT - 65, 'dormant');
+        this.createMiniRift(605, 595, 'dormant');
     }
 
     getWaveConfig(wave: number): {

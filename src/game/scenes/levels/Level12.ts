@@ -49,6 +49,7 @@ export class Gameplay_EchoesOfAncientLore extends Level { // Renamed class
     create() {
         super.create();
         this.createRift(600, 675, 'gradient');
+        this.createRift(1155, 35, 'dormant');
     }
 
     getWaveConfig(wave: number): {

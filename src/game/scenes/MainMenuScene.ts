@@ -18,8 +18,6 @@ export class MainMenuScene extends Phaser.Scene {
     private gameState!: State;
     private currentStoryLevelIndex: number = 0;
     private storyLevelDisplayText!: Phaser.GameObjects.Text;
-    private prevLevelButton!: Phaser.GameObjects.Text;
-    private nextLevelButton!: Phaser.GameObjects.Text;
     private sectionUnderlineGraphics!: Phaser.GameObjects.Graphics; // New property for the underline
 
     // Section containers
@@ -141,8 +139,10 @@ export class MainMenuScene extends Phaser.Scene {
             color: AppColors.UI_TEXT
         }).setOrigin(0.5);
         this.mainSectionContainer.add(this.storyLevelDisplayText);
-        this.prevLevelButton = this.createMenuButton('<', this.CONTENT_AREA_WIDTH / 2 - this.storyLevelDisplayText.width / 2 - 50, yOffsetMain, () => this.navigateStoryLevel(-1), this.mainSectionContainer);
-        this.nextLevelButton = this.createMenuButton('>', this.CONTENT_AREA_WIDTH / 2 + this.storyLevelDisplayText.width / 2 + 50, yOffsetMain, () => this.navigateStoryLevel(1), this.mainSectionContainer);
+        // Position buttons relative to the center of the content area, with fixed offsets
+        const buttonOffset = 300; // Adjust this value as needed for spacing
+        this.createMenuButton('<', this.CONTENT_AREA_WIDTH / 2 - buttonOffset, yOffsetMain, () => this.navigateStoryLevel(-1), this.mainSectionContainer);
+        this.createMenuButton('>', this.CONTENT_AREA_WIDTH / 2 + buttonOffset, yOffsetMain, () => this.navigateStoryLevel(1), this.mainSectionContainer);
 
         yOffsetMain += 50;
         this.createMenuButton('Watch Full Story', this.CONTENT_AREA_WIDTH / 2, yOffsetMain, () => {
@@ -492,6 +492,8 @@ export class MainMenuScene extends Phaser.Scene {
         // do circular loop
         if (this.currentStoryLevelIndex < 0) {
             this.currentStoryLevelIndex = STORY_LEVEL_ORDER.length - 1;
+        } else if (this.currentStoryLevelIndex >= STORY_LEVEL_ORDER.length) {
+            this.currentStoryLevelIndex = 0;
         }
         // Clamp the index to valid range
         this.currentStoryLevelIndex = Phaser.Math.Clamp(
@@ -506,11 +508,6 @@ export class MainMenuScene extends Phaser.Scene {
         const levelName = STORY_LEVEL_ORDER[this.currentStoryLevelIndex];
         const displayName = levelName.replace('Story_', '');
         this.storyLevelDisplayText.setText(`${this.currentStoryLevelIndex + 1}: ${displayName}`);
-
-        // Adjust button positions based on the new text width
-        // These buttons are children of selectLevelsSectionContainer, so their x is relative to the container
-        this.prevLevelButton.x = this.CONTENT_AREA_WIDTH / 2 - this.storyLevelDisplayText.width / 2 - 50;
-        this.nextLevelButton.x = this.CONTENT_AREA_WIDTH / 2 + this.storyLevelDisplayText.width / 2 + 50;
     }
 
     private toggleSound(): void {

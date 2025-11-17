@@ -2,6 +2,7 @@ import {Level} from '../lib/Level.ts';
 import {LevelNames} from '../lib/LevelNames.ts';
 import * as Phaser from 'phaser';
 import {PathMaker} from "../lib/PathMaker.ts";
+import {GAME_HEIGHT, GAME_WIDTH} from "../../scripts/Util.ts";
 
 export class Gameplay_InitialBreakthrough extends Level { // Renamed class
     constructor() {
@@ -39,6 +40,7 @@ export class Gameplay_InitialBreakthrough extends Level { // Renamed class
     create() {
         super.create();
         this.createRift(800, 575, 'gradient');
+        this.createMiniRift(GAME_WIDTH - 70, GAME_HEIGHT - 45, 'dormant');
     }
 
     getWaveConfig(wave: number): {

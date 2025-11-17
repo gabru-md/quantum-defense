@@ -1,6 +1,7 @@
 import {Level} from '../lib/Level.ts';
 import {LevelNames} from '../lib/LevelNames.ts';
 import {PathMaker} from "../lib/PathMaker.ts";
+import {GAME_WIDTH} from "../../scripts/Util.ts";
 
 export class Gameplay_AdvancedCountermeasures extends Level { // Renamed class
     constructor() {
@@ -24,6 +25,8 @@ export class Gameplay_AdvancedCountermeasures extends Level { // Renamed class
         this.createRift(350, 550, 'gradient');
         this.createRift(900, 375, 'static');
         this.createRift(1300, 850, 'player');
+        this.createMiniRift(275, 990, 'dormant');
+        this.createMiniRift(GAME_WIDTH - 65, 85, 'dormant');
     }
 
     getWaveConfig(wave: number): {

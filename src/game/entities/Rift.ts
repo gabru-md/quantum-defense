@@ -17,12 +17,12 @@ export class Rift extends GameObject {
     private riftElements: RiftElements;
     public scaleFactor: number;
 
-    constructor(scene: Level, x: number, y: number, type: RiftType) {
+    constructor(scene: Level, x: number, y: number, type: RiftType, scale: number = -1) {
         super(scene, x, y, ''); // No texture needed
 
         this.riftType = type;
         this.waveCooldown = 10000; // 10 seconds, can be configured
-        this.scaleFactor = Phaser.Math.FloatBetween(0.5, 0.87);
+        this.scaleFactor = scale === -1 ? Phaser.Math.FloatBetween(0.7, 1.0) : scale;
 
         switch (this.riftType) {
             case 'static':
@@ -40,7 +40,7 @@ export class Rift extends GameObject {
                 break;
         }
 
-        this.riftElements = scene.glitchManager.drawRiftElements(x, y, 3, this.scaleFactor, this.riftColor, this.secondaryColor, 0.8);
+        this.riftElements = scene.glitchManager.drawRiftElements(x, y, 3 * this.scaleFactor, this.scaleFactor, this.riftColor, this.secondaryColor, 0.8);
         scene.glitchManager.animateRiftIdle(this.riftElements);
     }
 

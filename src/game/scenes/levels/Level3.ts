@@ -24,8 +24,8 @@ export class Gameplay_TheDormantScars extends Level { // Renamed class
 
     create() {
         super.create();
-        this.createRift(GAME_WIDTH / 2 + 200, GAME_HEIGHT / 2, 'gradient');
-        this.createRift(150, GAME_HEIGHT / 2 + 225, 'player');
+        this.createRift(GAME_WIDTH / 2 + 200, GAME_HEIGHT / 2, 'dormant');
+        this.createMiniRift(150, GAME_HEIGHT / 2 + 225, 'dormant');
     }
 
     getWaveConfig(wave: number): {

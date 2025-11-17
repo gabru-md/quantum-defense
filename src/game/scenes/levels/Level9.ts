@@ -2,7 +2,7 @@ import {Level} from '../lib/Level.ts';
 import {LevelNames} from '../lib/LevelNames.ts';
 import * as Phaser from 'phaser';
 import {PathMaker} from "../lib/PathMaker.ts";
-import {GAME_WIDTH} from "../../scripts/Util.ts";
+import {GAME_HEIGHT, GAME_WIDTH} from "../../scripts/Util.ts";
 
 export class Gameplay_VolatileFrontierPart2 extends Level { // Renamed class
     constructor() {
@@ -23,7 +23,8 @@ export class Gameplay_VolatileFrontierPart2 extends Level { // Renamed class
     create() {
         super.create();
         this.createRift(1250, 350, 'gradient');
-        this.createRift(625, 550, 'static');
+        this.createMiniRift(555, 550, 'static');
+        this.createMiniRift(GAME_WIDTH/2, GAME_HEIGHT - 15, 'dormant');
     }
 
     getWaveConfig(wave: number): {

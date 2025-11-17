@@ -41,6 +41,7 @@ export class Gameplay_DesigningTheBane extends Level { // Renamed class
         super.create();
         this.createRift(600, 675, 'gradient');
         this.createRift(1050, 350, 'static');
+        this.createRift(GAME_WIDTH - 65, GAME_HEIGHT - 65, 'dormant');
     }
 
     getWaveConfig(wave: number): {

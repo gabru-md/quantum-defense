@@ -26,7 +26,7 @@ export class Gameplay_HelloGenie extends Level { // Renamed class
 
     create() {
         super.create();
-        this.createRift(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'gradient');
+        this.createRift(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'dormant');
     }
 
     getWaveConfig(wave: number): {
