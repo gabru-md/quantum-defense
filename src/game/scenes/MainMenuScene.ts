@@ -12,6 +12,8 @@ enum MenuSection {
 
 export class MainMenuScene extends Phaser.Scene {
     private soundButton!: Phaser.GameObjects.Text;
+    private sfxVolumeText!: Phaser.GameObjects.Text;
+    private musicVolumeText!: Phaser.GameObjects.Text;
     private difficultyText!: Phaser.GameObjects.Text;
     private gameState!: State;
     private currentStoryLevelIndex: number = 0;
@@ -168,7 +170,7 @@ export class MainMenuScene extends Phaser.Scene {
         this.updateStoryLevelDisplay(); // Initial display
 
         // Populate Settings Section
-        let yOffsetSettings = 100;
+        let yOffsetSettings = 75;
         this.soundButton = this.createMenuButton(
             `Sound: ${this.gameState.soundEnabled ? 'On' : 'Off'}`,
             this.CONTENT_AREA_WIDTH / 2,
@@ -177,6 +179,41 @@ export class MainMenuScene extends Phaser.Scene {
             this.settingsSectionContainer
         );
         yOffsetSettings += 50;
+
+        // SFX Volume Controls
+        const sfxLabel = this.add.text(this.CONTENT_AREA_WIDTH / 2 - 50, yOffsetSettings, 'SFX Volume:', {
+            fontSize: '24px',
+            color: AppColors.UI_TEXT,
+        }).setOrigin(0.5, 0.5);
+        this.settingsSectionContainer.add(sfxLabel);
+
+        this.createMenuButton('-', this.CONTENT_AREA_WIDTH / 2 + 70, yOffsetSettings, () => this.adjustSfxVolume(-0.1), this.settingsSectionContainer);
+        this.sfxVolumeText = this.add.text(this.CONTENT_AREA_WIDTH / 2 + 110, yOffsetSettings, '', {
+            fontSize: '24px',
+            color: AppColors.UI_TEXT,
+        }).setOrigin(0.5, 0.5);
+        this.settingsSectionContainer.add(this.sfxVolumeText);
+        this.createMenuButton('+', this.CONTENT_AREA_WIDTH / 2 + 150, yOffsetSettings, () => this.adjustSfxVolume(0.1), this.settingsSectionContainer);
+        this.updateSfxVolumeDisplay();
+        yOffsetSettings += 50;
+
+        // Music Volume Controls
+        const musicLabel = this.add.text(this.CONTENT_AREA_WIDTH / 2 - 50, yOffsetSettings, 'Music Volume:', {
+            fontSize: '24px',
+            color: AppColors.UI_TEXT,
+        }).setOrigin(0.5, 0.5);
+        this.settingsSectionContainer.add(musicLabel);
+
+        this.createMenuButton('-', this.CONTENT_AREA_WIDTH / 2 + 70, yOffsetSettings, () => this.adjustMusicVolume(-0.1), this.settingsSectionContainer);
+        this.musicVolumeText = this.add.text(this.CONTENT_AREA_WIDTH / 2 + 110, yOffsetSettings, '', {
+            fontSize: '24px',
+            color: AppColors.UI_TEXT,
+        }).setOrigin(0.5, 0.5);
+        this.settingsSectionContainer.add(this.musicVolumeText);
+        this.createMenuButton('+', this.CONTENT_AREA_WIDTH / 2 + 150, yOffsetSettings, () => this.adjustMusicVolume(0.1), this.settingsSectionContainer);
+        this.updateMusicVolumeDisplay();
+        yOffsetSettings += 50;
+
 
         this.difficultyText = this.createMenuButton(
             `Difficulty: ${this.gameState.difficulty.toUpperCase()}`,
@@ -480,6 +517,32 @@ export class MainMenuScene extends Phaser.Scene {
         this.gameState.soundEnabled = !this.gameState.soundEnabled;
         this.soundButton.setText(`Sound: ${this.gameState.soundEnabled ? 'On' : 'Off'}`);
         this.sound.mute = !this.gameState.soundEnabled;
+    }
+
+    private adjustSfxVolume(amount: number): void {
+        if (amount > 0) {
+            this.audioManager.increaseSfxVolume(amount);
+        } else {
+            this.audioManager.decreaseSfxVolume(Math.abs(amount));
+        }
+        this.updateSfxVolumeDisplay();
+    }
+
+    private updateSfxVolumeDisplay(): void {
+        this.sfxVolumeText.setText(`${Math.round(this.audioManager.sfxVolume * 100)}%`);
+    }
+
+    private adjustMusicVolume(amount: number): void {
+        if (amount > 0) {
+            this.audioManager.increaseMusicVolume(amount);
+        } else {
+            this.audioManager.decreaseMusicVolume(Math.abs(amount));
+        }
+        this.updateMusicVolumeDisplay();
+    }
+
+    private updateMusicVolumeDisplay(): void {
+        this.musicVolumeText.setText(`${Math.round(this.audioManager.musicVolume * 100)}%`);
     }
 
     private cycleDifficulty(): void {

@@ -145,6 +145,9 @@ export class Gameplay_Tutorial extends Level { // Renamed class
         Object.values(this.hudElements).flat().forEach(el => el.setVisible(false));
         Object.values(this.pathElements).flat().forEach(el => el.setVisible(false));
         this.playerManager.player.setVisible(false);
+        if (this.playerManager.player.body) {
+            this.playerManager.player.body.enable = false;
+        }
     }
 
     private createTutorialUI(): void {
@@ -282,6 +285,9 @@ export class Gameplay_Tutorial extends Level { // Renamed class
 
         // Step 7: Show player
         this.playerManager.player.setVisible(true);
+        if (this.playerManager.player.body) {
+            this.playerManager.player.body.enable = true;
+        }
         await this.showStep({
             text: "This is you, Guardian! The sentient protector of the Nexus.", isHudInfo: true,
             waitForSpacePress: true

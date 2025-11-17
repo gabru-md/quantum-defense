@@ -4,6 +4,8 @@ import {State} from '../State.ts';
 export class AudioManager extends Manager {
     private backgroundMusic: Phaser.Sound.BaseSound | null = null;
     private musicQueue: string[] = [];
+    private _sfxVolume: number = 1; // Default SFX volume
+    private _musicVolume: number = 1; // Default Music volume
 
     constructor(protected level: Phaser.Scene) {
         super(level);
@@ -62,6 +64,42 @@ export class AudioManager extends Manager {
         this.level.load.audio('Story_TheCliffhanger_1', 'assets/narration/Story_TheCliffhanger_Title.wav');
     }
 
+    public get sfxVolume(): number {
+        return this._sfxVolume;
+    }
+
+    public set sfxVolume(value: number) {
+        this._sfxVolume = Phaser.Math.Clamp(value, 0, 1);
+    }
+
+    public increaseSfxVolume(amount: number = 0.1): void {
+        this.sfxVolume += amount;
+    }
+
+    public decreaseSfxVolume(amount: number = 0.1): void {
+        this.sfxVolume -= amount;
+    }
+
+    public get musicVolume(): number {
+        return this._musicVolume;
+    }
+
+    public set musicVolume(value: number) {
+        this._musicVolume = Phaser.Math.Clamp(value, 0, 1);
+        if (this.backgroundMusic && this.backgroundMusic.isPlaying) {
+            // @ts-ignore
+            this.backgroundMusic.setVolume(this._musicVolume);
+        }
+    }
+
+    public increaseMusicVolume(amount: number = 0.1): void {
+        this.musicVolume += amount;
+    }
+
+    public decreaseMusicVolume(amount: number = 0.1): void {
+        this.musicVolume -= amount;
+    }
+
     public playSound(key: string, config?: { volume?: number; detune?: number; rate?: number}): void {
         const gameState = this.level.sys.registry.get('gameState');
         if ((gameState as State).soundEnabled) {
@@ -72,7 +110,7 @@ export class AudioManager extends Manager {
                 return;
             }
             this.level.sound.play(key, {
-                volume: config?.volume ?? 1,
+                volume: (config?.volume ?? 1) * this._sfxVolume,
                 detune: config?.detune ?? -600,
                 rate: config?.rate ?? 1
             });
@@ -94,7 +132,7 @@ export class AudioManager extends Manager {
                 this.backgroundMusic.stop();
             }
             this.backgroundMusic = this.level.sound.add(key, {loop});
-            this.backgroundMusic.play({volume: 0.6});
+            this.backgroundMusic.play({volume: this._musicVolume});
         }
     }
 
