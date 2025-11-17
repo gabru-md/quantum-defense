@@ -223,7 +223,7 @@ export class HudManager extends Manager {
         const buttonHeight = 90;
 
         const buttonPanel = this.scene.add.graphics();
-        buttonPanel.lineStyle(1, phaserColor(AppColors.UI_SEPARATOR), 0.5);
+        buttonPanel.lineStyle(0, phaserColor(AppColors.UI_SEPARATOR), 0.5);
         buttonPanel.strokeRect(x, y, buttonWidth, buttonHeight);
         buttonPanel.setDepth(95);
 
