@@ -107,7 +107,7 @@ export class Story_TheGlitchAnnihilation extends BaseStoryScene {
     }
 
     preload() {
-        this.backgroundEffectsManager.enableDataStreamEffect(this);
+        this.backgroundEffectsManager.enableDataStreamEffect(this, 'laminar');
         super.preload();
     }
 
