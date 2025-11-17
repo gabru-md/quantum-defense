@@ -1,10 +1,11 @@
 import * as Phaser from 'phaser';
-import { AppColors, phaserColor } from '../scripts/Colors';
-import { GAME_HEIGHT, WIDTH } from '../scripts/Util';
+import {AppColors, phaserColor} from '../scripts/Colors';
+import {GAME_HEIGHT, WIDTH} from '../scripts/Util';
+import {LevelNames} from "./lib/LevelNames.ts";
 
 export class CreditsScene extends Phaser.Scene {
     constructor() {
-        super({ key: 'CreditsScene' });
+        super({key: 'CreditsScene'});
     }
 
     preload(): void {
@@ -70,13 +71,13 @@ export class CreditsScene extends Phaser.Scene {
                 color: AppColors.UI_TEXT,
                 align: 'center',
                 lineSpacing: 15,
-                wordWrap: { width: panelWidth - 40 },
+                wordWrap: {width: panelWidth - 40},
             })
             .setOrigin(0.5);
 
         // --- Back Button ---
         this.createButton(WIDTH / 2, GAME_HEIGHT - 100, 'BACK TO MENU', () => {
-            this.scene.start('MenuScene');
+            this.scene.start(LevelNames.MainMenu);
         });
     }
 
@@ -85,7 +86,7 @@ export class CreditsScene extends Phaser.Scene {
             .text(x, y, text, {
                 font: '36px',
                 color: AppColors.UI_TEXT,
-                padding: { x: 20, y: 10 },
+                padding: {x: 20, y: 10},
             })
             .setOrigin(0.5)
             .setInteractive();
@@ -186,8 +187,8 @@ export class CreditsScene extends Phaser.Scene {
         // Simple scroll animation
         this.tweens.add({
             targets: gridGraphics,
-            x: { from: 0, to: -gridSize },
-            y: { from: 0, to: -gridSize },
+            x: {from: 0, to: -gridSize},
+            y: {from: 0, to: -gridSize},
             duration: 5000,
             ease: 'Linear',
             repeat: -1,
@@ -197,7 +198,7 @@ export class CreditsScene extends Phaser.Scene {
 
     // Helper functions to create textures for menu elements
     private createEnemyTexture(key: string, size: number, color: string): string {
-        const graphics = this.make.graphics({ x: 0, y: 0 });
+        const graphics = this.make.graphics({x: 0, y: 0});
         graphics.fillStyle(phaserColor(color));
         graphics.fillRect(0, 0, size, size); // Simple square for menu preview
         graphics.generateTexture(key, size, size);
@@ -206,7 +207,7 @@ export class CreditsScene extends Phaser.Scene {
     }
 
     private createTowerTexture(key: string, size: number, color: string): string {
-        const graphics = this.make.graphics({ x: 0, y: 0 });
+        const graphics = this.make.graphics({x: 0, y: 0});
         graphics.fillStyle(phaserColor(color));
         graphics.fillCircle(size / 2, size / 2, size / 2);
         graphics.fillStyle(phaserColor('0x000000'), 0.5);
@@ -217,7 +218,7 @@ export class CreditsScene extends Phaser.Scene {
     }
 
     private createPlayerTexture(key: string, size: number, color: string): string {
-        const graphics = this.make.graphics({ x: 0, y: 0 });
+        const graphics = this.make.graphics({x: 0, y: 0});
         graphics.fillStyle(phaserColor(color));
         graphics.fillCircle(size / 2, size / 2, size / 2);
         graphics.generateTexture(key, size, size);

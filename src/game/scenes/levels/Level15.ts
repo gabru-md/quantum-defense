@@ -1,12 +1,12 @@
 import {Level} from '../lib/Level.ts';
-import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
+import {LevelNames} from '../lib/LevelNames.ts';
 import * as Phaser from 'phaser';
 import {PathMaker} from "../lib/PathMaker.ts";
 import {GAME_WIDTH} from "../../scripts/Util.ts";
 
-export class Level15 extends Level {
+export class Gameplay_TheResonanceWave extends Level { // Renamed class
     constructor() {
-        super(LevelNames.Level15);
+        super(LevelNames.Gameplay_TheResonanceWave); // Updated super call
     }
 
     private firstPath(): Phaser.Curves.Path {
@@ -71,7 +71,7 @@ export class Level15 extends Level {
         }
     }
 
-    nextScene(): string {
-        return getStoryName(LevelNames.MenuScene);
+    nextScene(): LevelNames { // Changed return type to LevelNames
+        return LevelNames.MainMenu; // Next scene is the MainMenu after the final level
     }
 }

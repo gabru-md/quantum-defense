@@ -1,12 +1,12 @@
 import {Level} from '../lib/Level.ts';
-import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
+import {LevelNames} from '../lib/LevelNames.ts';
 import * as Phaser from 'phaser';
 import {PathMaker} from "../lib/PathMaker.ts";
 import {GAME_WIDTH} from "../../scripts/Util.ts";
 
-export class Level10 extends Level {
+export class Gameplay_StaticNewGlitches extends Level { // Renamed class
     constructor() {
-        super(LevelNames.Level10);
+        super(LevelNames.Gameplay_StaticNewGlitches); // Updated super call
     }
 
     private firstPath(): Phaser.Curves.Path {
@@ -70,7 +70,7 @@ export class Level10 extends Level {
         }
     }
 
-    nextScene(): string {
-        return getStoryName(LevelNames.Level11);
+    nextScene(): LevelNames { // Changed return type to LevelNames
+        return LevelNames.Story_AdvancedCountermeasures; // Next scene is the story for Advanced Countermeasures
     }
 }

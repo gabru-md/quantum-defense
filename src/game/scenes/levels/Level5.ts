@@ -1,12 +1,12 @@
 import * as Phaser from 'phaser';
 import {Level} from '../lib/Level.ts';
 import {GAME_HEIGHT, GAME_WIDTH} from '../../scripts/Util.ts';
-import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
+import {LevelNames} from '../lib/LevelNames.ts';
 import {PathMaker} from "../lib/PathMaker.ts";
 
-export class Level5 extends Level {
+export class Gameplay_VolatileInterference extends Level { // Renamed class
     constructor() {
-        super(LevelNames.Level5);
+        super(LevelNames.Gameplay_VolatileInterference); // Updated super call
     }
 
     private firstPath(): Phaser.Curves.Path {
@@ -157,7 +157,7 @@ export class Level5 extends Level {
         }
     }
 
-    nextScene(): string {
-        return getStoryName(LevelNames.TheCliffhanger);
+    nextScene(): LevelNames { // Changed return type to LevelNames
+        return LevelNames.Story_SamplingTheEchoes; // Next scene is the story for Sampling The Echoes
     }
 }

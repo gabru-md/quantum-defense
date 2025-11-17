@@ -1,11 +1,11 @@
 import {Level} from '../lib/Level.ts';
-import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
+import {LevelNames} from '../lib/LevelNames.ts';
 import * as Phaser from 'phaser';
 import {PathMaker} from "../lib/PathMaker.ts";
 
-export class Level11 extends Level {
+export class Gameplay_AdvancedCountermeasures extends Level { // Renamed class
     constructor() {
-        super(LevelNames.Level11);
+        super(LevelNames.Gameplay_AdvancedCountermeasures); // Updated super call
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {
@@ -49,7 +49,7 @@ export class Level11 extends Level {
         }
     }
 
-    nextScene(): string {
-        return getStoryName(LevelNames.Level12);
+    nextScene(): LevelNames { // Changed return type to LevelNames
+        return LevelNames.Story_EchoesOfAncientLore; // Next scene is the story for Echoes of Ancient Lore
     }
 }

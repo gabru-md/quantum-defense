@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import { AppColors, phaserColor } from '../scripts/Colors';
 import { GAME_HEIGHT, WIDTH } from '../scripts/Util';
+import {LevelNames} from "./lib/LevelNames.ts";
 
 export class WinScene extends Phaser.Scene {
     constructor() {
@@ -44,7 +45,7 @@ export class WinScene extends Phaser.Scene {
         backButton.on('pointerover', () => backButton.setColor(AppColors.UI_ACCENT));
         backButton.on('pointerout', () => backButton.setColor(AppColors.UI_TEXT));
         backButton.on('pointerdown', () => {
-            this.scene.start('MenuScene');
+            this.scene.start(LevelNames.MainMenu);
         });
     }
 }

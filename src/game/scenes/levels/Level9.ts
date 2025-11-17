@@ -1,12 +1,12 @@
 import {Level} from '../lib/Level.ts';
-import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
+import {LevelNames} from '../lib/LevelNames.ts';
 import * as Phaser from 'phaser';
 import {PathMaker} from "../lib/PathMaker.ts";
 import {GAME_WIDTH} from "../../scripts/Util.ts";
 
-export class Level9 extends Level {
+export class Gameplay_VolatileFrontierPart2 extends Level { // Renamed class
     constructor() {
-        super(LevelNames.Level9);
+        super(LevelNames.Gameplay_VolatileFrontierPart2); // Updated super call
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {
@@ -49,7 +49,7 @@ export class Level9 extends Level {
         }
     }
 
-    nextScene(): string {
-        return getStoryName(LevelNames.Level10);
+    nextScene(): LevelNames { // Changed return type to LevelNames
+        return LevelNames.Story_StaticNewGlitches; // Next scene is the story for Static's New Glitches
     }
 }

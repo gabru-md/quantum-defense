@@ -1,12 +1,12 @@
 import {Level} from '../lib/Level.ts';
-import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
+import {LevelNames} from '../lib/LevelNames.ts';
 import * as Phaser from 'phaser';
 import {PathMaker} from "../lib/PathMaker.ts";
 import {GAME_WIDTH} from "../../scripts/Util.ts";
 
-export class Level12 extends Level {
+export class Gameplay_EchoesOfAncientLore extends Level { // Renamed class
     constructor() {
-        super(LevelNames.Level12);
+        super(LevelNames.Gameplay_EchoesOfAncientLore); // Updated super call
     }
 
     private firstPath(): Phaser.Curves.Path {
@@ -76,7 +76,7 @@ export class Level12 extends Level {
         }
     }
 
-    nextScene(): string {
-        return getStoryName(LevelNames.Level13);
+    nextScene(): LevelNames { // Changed return type to LevelNames
+        return LevelNames.Story_DesigningTheBane; // Next scene is the story for Designing The Bane
     }
 }

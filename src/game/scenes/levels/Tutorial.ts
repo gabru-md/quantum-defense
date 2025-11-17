@@ -1,7 +1,7 @@
 import {Level} from '../lib/Level.ts';
 import {AppColors, phaserColor} from '../../scripts/Colors.ts';
 import {GAME_HEIGHT, GAME_WIDTH, HEIGHT, WIDTH} from '../../scripts/Util.ts';
-import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
+import {LevelNames} from '../lib/LevelNames.ts';
 import Phaser from 'phaser';
 import {EnemyConfigs, SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
 
@@ -13,7 +13,7 @@ type TutorialStep = {
     waitForSpacePress: boolean;
 };
 
-export class Tutorial extends Level {
+export class Gameplay_Tutorial extends Level { // Renamed class
     private tutorialText!: Phaser.GameObjects.Text;
     private marker!: Phaser.GameObjects.Container;
     private spacebarText!: Phaser.GameObjects.Text;
@@ -31,11 +31,11 @@ export class Tutorial extends Level {
     };
 
     constructor() {
-        super(LevelNames.Introduction);
+        super(LevelNames.Gameplay_Tutorial); // Updated super call
     }
 
-    nextScene(): string {
-        return getStoryName(LevelNames.HelloGenie);
+    nextScene(): LevelNames { // Changed return type to LevelNames
+        return LevelNames.MainMenu; // Tutorial now leads back to MainMenu
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {
@@ -134,7 +134,7 @@ export class Tutorial extends Level {
 
         // @ts-ignore
         this.input.keyboard.on('keydown-ESC', () => {
-            this.easeOutAndStartNextScene('MenuScene');
+            this.easeOutAndStartNextScene(LevelNames.MainMenu); // Go to MainMenu on ESC
         });
 
         this.events.on('shutdown', this.shutdown, this);
@@ -354,6 +354,10 @@ export class Tutorial extends Level {
         });
         this.towerManager.enablePlacement();
         await this.waitForEvent('towerPlaced');
+        await this.showStep({
+            text: "Here comes the most basic of Static's Glitches: the Square Glitch.", isHudInfo: true,
+            waitForSpacePress: false
+        });
         this.waveManager.startWave(2);
         await this.waitForEvent('waveCompleted');
 

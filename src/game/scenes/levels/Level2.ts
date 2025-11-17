@@ -1,12 +1,12 @@
 import { Level } from '../lib/Level.ts';
-import { getStoryName, LevelNames } from '../lib/LevelNames.ts';
+import { LevelNames } from '../lib/LevelNames.ts';
 import * as Phaser from 'phaser';
 import {PathMaker} from "../lib/PathMaker.ts";
 import {GAME_HEIGHT} from "../../scripts/Util.ts";
 
-export class Level2 extends Level {
+export class Gameplay_HelloGenie extends Level { // Renamed class
     constructor() {
-        super(LevelNames.Level2);
+        super(LevelNames.Gameplay_HelloGenie); // Updated super call
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {
@@ -53,7 +53,7 @@ export class Level2 extends Level {
         }
     }
 
-    nextScene(): string {
-        return getStoryName(LevelNames.Level3);
+    nextScene(): LevelNames { // Changed return type to LevelNames
+        return LevelNames.Story_TheDormantScars; // Next scene is the story for The Dormant Scars
     }
 }

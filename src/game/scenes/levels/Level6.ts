@@ -1,12 +1,12 @@
 import {Level} from '../lib/Level.ts';
-import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
+import {LevelNames} from '../lib/LevelNames.ts';
 import * as Phaser from 'phaser';
 import {PathMaker} from "../lib/PathMaker.ts";
 import {GAME_HEIGHT, GAME_WIDTH} from "../../scripts/Util.ts";
 
-export class Level6 extends Level {
+export class Gameplay_SamplingTheEchoes extends Level { // Renamed class
     constructor() {
-        super(LevelNames.Level6);
+        super(LevelNames.Gameplay_SamplingTheEchoes); // Updated super call
     }
 
     private getFirstPath(): Phaser.Curves.Path {
@@ -68,7 +68,7 @@ export class Level6 extends Level {
         }
     }
 
-    nextScene(): string {
-        return getStoryName(LevelNames.Level6);
+    nextScene(): LevelNames { // Changed return type to LevelNames
+        return LevelNames.Story_InitialBreakthrough; // Next scene is the story for Initial Breakthrough
     }
 }

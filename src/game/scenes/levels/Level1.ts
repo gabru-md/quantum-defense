@@ -1,17 +1,17 @@
 import * as Phaser from 'phaser';
 import {Level} from '../lib/Level.ts';
 import {GAME_HEIGHT, GAME_WIDTH} from '../../scripts/Util.ts';
-import {getStoryName, LevelNames} from '../lib/LevelNames.ts';
+import {LevelNames} from '../lib/LevelNames.ts';
 import {GlitchAnnihilationEffect, RiftElements} from "../../effects/GlitchAnnihilationEffect.ts";
 import {AppColors, phaserColor} from "../../scripts/Colors.ts";
 import {PathMaker} from "../lib/PathMaker.ts";
 
-export class Level1 extends Level {
+export class Gameplay_TheGlitchAnnihilation extends Level { // Renamed class
     private glitchManager: GlitchAnnihilationEffect;
     public rifts: RiftElements[] = [];
 
     constructor() {
-        super(LevelNames.HelloGenie);
+        super(LevelNames.Gameplay_TheGlitchAnnihilation); // Updated super call
     }
 
     init() {
@@ -118,7 +118,7 @@ export class Level1 extends Level {
         }
     }
 
-    nextScene(): string {
-        return getStoryName(LevelNames.TrustMe);
+    nextScene(): LevelNames { // Changed return type to LevelNames
+        return LevelNames.Story_HelloGenie; // Next scene is the story for Hello Genie
     }
 }

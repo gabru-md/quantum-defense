@@ -10,9 +10,10 @@ import {
     createSpecialEnemyTexture,
     createTowerTexture,
 } from '../../scripts/TextureUtils';
-import { getLevelNameKey, getStoryName, LevelNames} from "./LevelNames.ts";
+import {getLevelNameKey, getStoryName, LevelNames} from "./LevelNames.ts";
 import {AudioManager} from "./manager/AudioManager.ts";
-import {BackgroundEffectsManager} from "../../effects/BackgroundEffectsManager.ts"; // Import texture utility functions
+import {BackgroundEffectsManager} from "../../effects/BackgroundEffectsManager.ts";
+import {GlitchAnnihilationEffect} from "../../effects/GlitchAnnihilationEffect.ts"; // Import texture utility functions
 
 export interface StoryStep {
     text: string;
@@ -32,23 +33,32 @@ export abstract class BaseStoryScene extends Phaser.Scene {
     private underline: Phaser.GameObjects.Graphics;
     audioManager: AudioManager
     backgroundEffectsManager: BackgroundEffectsManager;
+    riftManager: GlitchAnnihilationEffect;
+    protected isPlaybackMode: boolean = false; // New property for full story playback
 
     constructor(key: string) {
         super(key);
         this.audioManager = new AudioManager(this);
         this.backgroundEffectsManager = new BackgroundEffectsManager(this);
+        this.riftManager = new GlitchAnnihilationEffect(this);
     }
 
     // Abstract methods to be implemented by subclasses
     abstract getStoryConfig(): {
         title?: string;
         steps: StoryStep[];
-        nextScene: string;
+        nextScene: LevelNames; // Changed to LevelNames enum
     };
 
     // Optional override for custom completion logic
     onStoryComplete(): void {
-        this.scene.start(this.getStoryConfig().nextScene);
+        if (this.isPlaybackMode) {
+            // In playback mode, emit an event for the orchestrator to handle the next scene
+            this.game.events.emit('storyPlaybackComplete', this.scene.key); // Emitting on global game events
+        } else {
+            // Otherwise, proceed to the next defined scene (gameplay or main menu)
+            this.scene.start(this.getStoryConfig().nextScene);
+        }
     }
 
     preload(): void {
@@ -65,9 +75,14 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         createTowerTexture(this, 'tower2', 64, AppColors.TOWER_BOMB);
         createTowerTexture(this, 'tower3', 64, AppColors.TOWER_SLOW);
         createSpecialEnemyTexture(this, 'specialEnemy', 32, AppColors.SPECIAL_ENEMY);
+        // Preload new textures
+        createPlayerTexture(this, 'quantum_echo_texture', 24, AppColors.PLAYER); // Assuming similar to player texture for now
+        createPlayerTexture(this, 'genie_texture', 24, AppColors.PLAYER); // Placeholder color
+        createTowerTexture(this, 'phantom_killer_tower_texture', 64, AppColors.ENEMY_FAST); // Placeholder color
+        createPlayerTexture(this, 'upgrade_icon_texture', 24, AppColors.ENEMY_TANK); // Placeholder color
     }
 
-    init(): void {
+    init(data?: { isPlaybackMode?: boolean }): void {
         this.currentStep = 0;
         this.steps = [];
         this.visuals = [];
@@ -77,6 +92,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
             this.typingTimer.remove();
             this.typingTimer = null;
         }
+        this.isPlaybackMode = data?.isPlaybackMode || false; // Initialize playback mode
     }
 
     create(): void {
@@ -111,14 +127,24 @@ export abstract class BaseStoryScene extends Phaser.Scene {
             this.handleSpacePress();
         });
 
-        const tildeKeyListener = this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.BACKTICK);
-        tildeKeyListener?.on('down', () => {
-            this.scene.start(this.getStoryConfig().nextScene);
-        });
+        // Only allow direct scene skip if not in playback mode
+        if (!this.isPlaybackMode) {
+            const tildeKeyListener = this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.BACKTICK);
+            tildeKeyListener?.on('down', () => {
+                this.scene.start(this.getStoryConfig().nextScene);
+            });
+        }
 
         const escapeKeyListener = this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         escapeKeyListener?.on('down', () => {
-            this.scene.start('MenuScene');
+            // If in playback mode, stop playback and go to MainMenu
+            if (this.isPlaybackMode) {
+                this.scene.stop(this.scene.key);
+                this.scene.start(LevelNames.MainMenu);
+            } else {
+                // Otherwise, go to MainMenu as usual
+                this.scene.start(LevelNames.MainMenu);
+            }
         });
     }
 
@@ -251,7 +277,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         } else {
             // All steps shown, fade out all elements and then complete story
             // skip animation for Introduction scene as it is handled differently
-            if (this.scene.key !== getStoryName(LevelNames.Introduction)) {
+            if (this.scene.key !== getStoryName(LevelNames.Tutorial)) { // Changed from Introduction to Tutorial
                 this.animateElementsOffScreen();
             }
             this.time.delayedCall(1500, () => {
@@ -283,7 +309,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
             },
             repeat: fullText.length // Repeat for each character
         });
-        if(this.scene.key === getStoryName(LevelNames.Introduction)) {
+        if (this.scene.key === getStoryName(LevelNames.Tutorial)) { // Changed from Introduction to Tutorial
             this.audioManager.playHeavySound(this.getCurrentStepAudio());
         } else {
             // Play light sound during narration always
@@ -322,6 +348,10 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         this.textures.remove('tower2');
         this.textures.remove('tower3');
         this.textures.remove('specialEnemy');
+        this.textures.remove('quantum_echo_texture');
+        this.textures.remove('genie_texture');
+        this.textures.remove('phantom_killer_tower_texture');
+        this.textures.remove('upgrade_icon_texture');
     }
 
     // Animation Related

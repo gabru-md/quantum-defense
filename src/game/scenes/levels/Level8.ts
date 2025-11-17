@@ -1,11 +1,11 @@
 import { Level } from '../lib/Level.ts';
-import { getStoryName, LevelNames } from '../lib/LevelNames.ts';
+import { LevelNames } from '../lib/LevelNames.ts';
 import * as Phaser from 'phaser';
 import {PathMaker} from "../lib/PathMaker.ts";
 
-export class Level8 extends Level {
+export class Gameplay_VolatileFrontierPart1 extends Level { // Renamed class
     constructor() {
-        super(LevelNames.Level8);
+        super(LevelNames.Gameplay_VolatileFrontierPart1); // Updated super call
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {
@@ -49,7 +49,7 @@ export class Level8 extends Level {
         }
     }
 
-    nextScene(): string {
-        return getStoryName(LevelNames.Level9);
+    nextScene(): LevelNames { // Changed return type to LevelNames
+        return LevelNames.Story_VolatileFrontierPart2; // Next scene is the story for Volatile Frontier (Part 2)
     }
 }

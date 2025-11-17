@@ -46,19 +46,17 @@ export abstract class Level extends Phaser.Scene {
         path: string;
     }[];
 
-    abstract nextScene(): string;
+    abstract nextScene(): LevelNames; // Changed return type to LevelNames
 
-    abstract definePaths(): { [key: string]: Phaser.Curves.Path };
-
-    public fetchNextScene(): string {
+    public fetchNextScene(): LevelNames { // Changed return type to LevelNames
         let nextScene = this.nextScene();
         if(EXIT_TO_MENU) {
-            nextScene = 'MenuScene';
+            nextScene = LevelNames.MainMenu; // Changed to LevelNames.MainMenu
         }
         return nextScene;
     }
 
-    protected constructor(key: string) {
+    protected constructor(key: LevelNames) { // Changed key type to LevelNames
         super({ key });
     }
 
@@ -80,7 +78,8 @@ export abstract class Level extends Phaser.Scene {
 
         this.state.level = this.scene.key;
         this.state.baseHealth = 100;
-        this.state.energy = this.scene.key === LevelNames.Introduction ? 1000 : 350; // Renamed: money to energy
+        // The tutorial now handles its own energy, so default to 350 for other levels
+        this.state.energy = 350;
     }
 
     public preload(): void {
@@ -106,7 +105,7 @@ export abstract class Level extends Phaser.Scene {
 
         // @ts-ignore
         this.input.keyboard.on('keydown-ESC', () => {
-            this.easeOutAndStartNextScene('MenuScene');
+            this.easeOutAndStartNextScene(LevelNames.MainMenu); // Changed to LevelNames.MainMenu
         });
 
         this.events.on('gameOver', this.handleGameOver, this);
@@ -176,7 +175,8 @@ export abstract class Level extends Phaser.Scene {
 
         this.time.delayedCall(delay, () => {
             this.isLoaded = true;
-            if (this.scene.key !== LevelNames.Introduction && this.scene.key !== LevelNames.Introduction) {
+            // Only start wave 1 automatically if it's not the tutorial level
+            if (this.scene.key !== LevelNames.Gameplay_Tutorial) {
                 this.time.delayedCall(2000, () => {
                     this.hud.info('Incoming First Wave', AppColors.UI_MESSAGE_ERROR, () => {
                         this.waveManager.startWave(1);
@@ -196,7 +196,8 @@ export abstract class Level extends Phaser.Scene {
 
     public update(time: number, delta: number): void {
         if (!this.isLoaded || this.waveManager.gameOver) return;
-        if (this.scene.key !== LevelNames.Introduction) {
+        // Only update wave manager if it's not the tutorial level (tutorial handles its own waves)
+        if (this.scene.key !== LevelNames.Gameplay_Tutorial) {
             this.waveManager.update(time, delta);
         }
         this.towerManager.update(time, delta);
@@ -209,11 +210,11 @@ export abstract class Level extends Phaser.Scene {
         this.waveManager.gameOver = true;
         this.physics.pause();
         this.hud.info('GAME OVER!', AppColors.UI_MESSAGE_ERROR, () => {
-            this.easeOutAndStartNextScene(this.scene.key);
+            this.easeOutAndStartNextScene(this.scene.key as LevelNames); // Cast to LevelNames
         });
     }
 
-    easeOutAndStartNextScene(sceneKey: string): void {
+    easeOutAndStartNextScene(sceneKey: LevelNames): void { // Changed sceneKey type to LevelNames
         const allActiveElements: Phaser.GameObjects.GameObject[] = [
             ...this.levelElements,
             ...this.towerManager.towers.getChildren(),
