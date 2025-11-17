@@ -155,7 +155,7 @@ export class WaveManager extends Manager {
     }
 
     protected checkWaveCompletion(): void {
-        if (this.gameOver || this.level.scene.key === LevelNames.Introduction) return;
+        if (this.gameOver || this.level.scene.key === LevelNames.Tutorial) return;
     
         if (this.enemiesSpawnedInWave >= this.maxEnemiesInWave && this.enemiesRemaining <= 0) {
             this.level.events.emit('waveCompleted');
@@ -173,11 +173,6 @@ export class WaveManager extends Manager {
             }
         }
     }
-
-    private noMoreWavesLeft() {
-        return this.level.getWaveConfig(this.currentWave + 1).length === 0;
-    }
-
     public update(time: number, delta: number) {
         if (!this.enabled) return;
         // @ts-ignore
