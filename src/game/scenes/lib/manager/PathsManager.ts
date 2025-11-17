@@ -1,7 +1,7 @@
-import { Level } from '../Level.ts';
+import {Level} from '../Level.ts';
 import Phaser from 'phaser';
-import { Manager } from '../Manager.ts';
-import { AppColors, phaserColor } from '../../../scripts/Colors.ts';
+import {Manager} from '../Manager.ts';
+import {AppColors, phaserColor} from '../../../scripts/Colors.ts';
 
 export class PathsManager extends Manager {
     paths!: { [key: string]: Phaser.Curves.Path };
@@ -46,6 +46,18 @@ export class PathsManager extends Manager {
         };
     }
 
+    showPath(show: boolean): void {
+        this.pathGraphics.forEach(g => g.setVisible(show));
+    }
+
+    showStart(show: boolean): void {
+        this.startZoneGraphics.forEach(g => g.setVisible(show));
+    }
+
+    showEnd(show: boolean): void {
+        this.endZoneGraphics.forEach(g => g.setVisible(show));
+    }
+
     private drawZone(point: Phaser.Math.Vector2, color: string): Phaser.GameObjects.Graphics {
         const zoneRadius = 40;
         const graphics = this.level.add.graphics();
@@ -53,7 +65,7 @@ export class PathsManager extends Manager {
 
         this.level.tweens.add({
             targets: graphics,
-            alpha: { from: 0.3, to: 0.7 },
+            alpha: {from: 0.3, to: 0.7},
             duration: 1500,
             ease: 'Sine.easeInOut',
             yoyo: true,
@@ -66,6 +78,12 @@ export class PathsManager extends Manager {
         graphics.strokeCircle(point.x, point.y, zoneRadius);
 
         return graphics;
+    }
+
+    hideAllElements(): void {
+        this.pathGraphics.forEach(g => g.setVisible(false));
+        this.startZoneGraphics.forEach(g => g.setVisible(false));
+        this.endZoneGraphics.forEach(g => g.setVisible(false));
     }
 
     destroy(): void {
