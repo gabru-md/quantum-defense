@@ -18,6 +18,7 @@ export class MainMenuScene extends Phaser.Scene {
     private storyLevelDisplayText!: Phaser.GameObjects.Text;
     private prevLevelButton!: Phaser.GameObjects.Text;
     private nextLevelButton!: Phaser.GameObjects.Text;
+    private sectionUnderlineGraphics!: Phaser.GameObjects.Graphics; // New property for the underline
 
     // Section containers
     private mainSectionContainer!: Phaser.GameObjects.Container;
@@ -115,6 +116,8 @@ export class MainMenuScene extends Phaser.Scene {
         this.selectLevelsSectionButton = this.createSectionButton(startX + buttonSpacing, this.SECTION_BUTTON_Y_POS, MenuSection.SelectLevels, () => this.showSection(MenuSection.SelectLevels));
         this.settingsSectionButton = this.createSectionButton(startX + 2 * buttonSpacing, this.SECTION_BUTTON_Y_POS, MenuSection.Settings, () => this.showSection(MenuSection.Settings));
 
+        this.sectionUnderlineGraphics = this.add.graphics(); // Initialize the underline graphics
+
         // --- Create Section Containers ---
         this.mainSectionContainer = this.add.container(this.CONTENT_AREA_X_PADDING, this.CONTENT_AREA_START_Y + 70);
         this.selectLevelsSectionContainer = this.add.container(this.CONTENT_AREA_X_PADDING, this.CONTENT_AREA_START_Y + 70);
@@ -131,12 +134,7 @@ export class MainMenuScene extends Phaser.Scene {
         }, this.mainSectionContainer);
 
         // Populate Select Levels Section
-        let yOffsetLevels = 100;
-        this.selectLevelsSectionContainer.add(this.add.text(this.CONTENT_AREA_WIDTH / 2, yOffsetLevels, '--- Select Level ---', {
-            fontSize: '24px',
-            color: AppColors.UI_ACCENT
-        }).setOrigin(0.5));
-        yOffsetLevels += 40;
+        let yOffsetLevels = 150;
 
         this.storyLevelDisplayText = this.add.text(this.CONTENT_AREA_WIDTH / 2, yOffsetLevels, '', {
             fontSize: '32px',
@@ -393,7 +391,7 @@ export class MainMenuScene extends Phaser.Scene {
             fontSize: '24px',
             color: AppColors.UI_TEXT,
         })
-            .setOrigin(0.5)
+            .setOrigin(0.75)
             .setInteractive({useHandCursor: true});
 
         button.on('pointerover', () => {
@@ -445,6 +443,15 @@ export class MainMenuScene extends Phaser.Scene {
                 this.settingsSectionButton.setColor(AppColors.UI_ACCENT).setData('active', true);
                 break;
         }
+
+        // Draw the underline
+        this.sectionUnderlineGraphics.clear();
+        this.sectionUnderlineGraphics.lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1);
+        this.sectionUnderlineGraphics.beginPath();
+        this.sectionUnderlineGraphics.moveTo(this.CONTENT_AREA_X_PADDING, this.CONTENT_AREA_START_Y + 50);
+        this.sectionUnderlineGraphics.lineTo(this.CONTENT_AREA_X_PADDING + this.CONTENT_AREA_WIDTH, this.CONTENT_AREA_START_Y + 50)
+        this.sectionUnderlineGraphics.closePath();
+        this.sectionUnderlineGraphics.stroke();
     }
 
     private navigateStoryLevel(direction: number): void {
@@ -461,7 +468,7 @@ export class MainMenuScene extends Phaser.Scene {
     private updateStoryLevelDisplay(): void {
         const levelName = STORY_LEVEL_ORDER[this.currentStoryLevelIndex];
         const displayName = levelName.replace('Story_', '');
-        this.storyLevelDisplayText.setText(`${displayName}`);
+        this.storyLevelDisplayText.setText(`${this.currentStoryLevelIndex + 1}: ${displayName}`);
 
         // Adjust button positions based on the new text width
         // These buttons are children of selectLevelsSectionContainer, so their x is relative to the container
