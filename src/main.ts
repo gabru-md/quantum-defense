@@ -25,23 +25,25 @@ import {
     Story_TheResonanceWave
 } from './game/scenes/Stories.ts';
 
-// Existing Gameplay Levels (will be renamed in their respective files)
-import {Gameplay_Tutorial} from './game/scenes/levels/Tutorial.ts'; // Renamed import
-import {Gameplay_TheGlitchAnnihilation} from './game/scenes/levels/Level1.ts'; // Renamed import
-import {Gameplay_HelloGenie} from './game/scenes/levels/Level2.ts'; // Renamed import
-import {Gameplay_TheDormantScars} from './game/scenes/levels/Level3.ts'; // Renamed import
-import {Gameplay_ThePhantomArrival} from './game/scenes/levels/Level4.ts'; // Renamed import
-import {Gameplay_VolatileInterference} from './game/scenes/levels/Level5.ts'; // Renamed import
-import {Gameplay_SamplingTheEchoes} from './game/scenes/levels/Level6.ts'; // Renamed import
-import {Gameplay_InitialBreakthrough} from './game/scenes/levels/Level7.ts'; // Renamed import
-import {Gameplay_VolatileFrontierPart1} from './game/scenes/levels/Level8.ts'; // Renamed import
-import {Gameplay_VolatileFrontierPart2} from './game/scenes/levels/Level9.ts'; // Renamed import
-import {Gameplay_StaticNewGlitches} from './game/scenes/levels/Level10.ts'; // Renamed import
-import {Gameplay_AdvancedCountermeasures} from './game/scenes/levels/Level11.ts'; // Renamed import
-import {Gameplay_EchoesOfAncientLore} from './game/scenes/levels/Level12.ts'; // Renamed import
-import {Gameplay_DesigningTheBane} from './game/scenes/levels/Level13.ts'; // Renamed import
-import {Gameplay_TheFinalAssault} from './game/scenes/levels/Level14.ts'; // Renamed import
-import {Gameplay_TheResonanceWave} from './game/scenes/levels/Level15.ts'; // Renamed import
+// New Interactive Tutorial Level
+import {InteractiveTutorial} from './game/scenes/levels/InteractiveTutorial.ts';
+
+// Existing Gameplay Levels
+import {Gameplay_TheGlitchAnnihilation} from './game/scenes/levels/Level1.ts';
+import {Gameplay_HelloGenie} from './game/scenes/levels/Level2.ts';
+import {Gameplay_TheDormantScars} from './game/scenes/levels/Level3.ts';
+import {Gameplay_ThePhantomArrival} from './game/scenes/levels/Level4.ts';
+import {Gameplay_VolatileInterference} from './game/scenes/levels/Level5.ts';
+import {Gameplay_SamplingTheEchoes} from './game/scenes/levels/Level6.ts';
+import {Gameplay_InitialBreakthrough} from './game/scenes/levels/Level7.ts';
+import {Gameplay_VolatileFrontierPart1} from './game/scenes/levels/Level8.ts';
+import {Gameplay_VolatileFrontierPart2} from './game/scenes/levels/Level9.ts';
+import {Gameplay_StaticNewGlitches} from './game/scenes/levels/Level10.ts';
+import {Gameplay_AdvancedCountermeasures} from './game/scenes/levels/Level11.ts';
+import {Gameplay_EchoesOfAncientLore} from './game/scenes/levels/Level12.ts';
+import {Gameplay_DesigningTheBane} from './game/scenes/levels/Level13.ts';
+import {Gameplay_TheFinalAssault} from './game/scenes/levels/Level14.ts';
+import {Gameplay_TheResonanceWave} from './game/scenes/levels/Level15.ts';
 
 
 // Other Scenes
@@ -81,7 +83,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
         Story_TheResonanceWave,
 
         // All Gameplay Levels
-        Gameplay_Tutorial,
+        InteractiveTutorial, // New tutorial level
         Gameplay_TheGlitchAnnihilation,
         Gameplay_HelloGenie,
         Gameplay_TheDormantScars,

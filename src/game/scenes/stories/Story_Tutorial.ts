@@ -13,14 +13,13 @@ export class Story_Tutorial extends BaseStoryScene {
     }
 
     preload() {
-        this.backgroundEffectsManager.enableDataStreamEffect(this);
         super.preload();
     }
 
     getStoryConfig(): { title?: string; steps: StoryStep[]; nextScene: LevelNames } {
         return {
             title: 'Tutorial',
-            nextScene: LevelNames.Gameplay_Tutorial,
+            nextScene: LevelNames.Gameplay_Tutorial, // Ensure this points to the new InteractiveTutorial
             steps: [
                 {
                     text: 'Welcome, Guardian, to the Quantum Realm!',

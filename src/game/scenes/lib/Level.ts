@@ -25,7 +25,6 @@ import {Rift, RiftType} from "../../entities/Rift.ts";
 import {RiftWave} from "../../entities/RiftWave.ts";
 import {QuantumEcho} from "../../entities/QuantumEcho.ts";
 import {GlitchAnnihilationEffect} from "../../effects/GlitchAnnihilationEffect.ts";
-import {Gameplay_Tutorial} from "../levels/Tutorial.ts";
 
 export abstract class Level extends Phaser.Scene {
     hud: HudManager;
@@ -182,8 +181,10 @@ export abstract class Level extends Phaser.Scene {
         ];
 
         this.levelElements.forEach((el) => {
-            // @ts-ignore
-            if (el) {(el as Phaser.GameObjects.GameObject).setAlpha(0)}
+            if (el) {
+                // @ts-ignore
+                (el as Phaser.GameObjects.GameObject).setAlpha(0)
+            }
         });
 
         let delay = 0;
@@ -221,16 +222,13 @@ export abstract class Level extends Phaser.Scene {
 
         this.time.delayedCall(delay, () => {
             this.isLoaded = true;
-            if (this.scene.key !== LevelNames.Gameplay_Tutorial) {
-                this.time.delayedCall(2000, () => {
-                    this.hud.info('Incoming First Wave', AppColors.UI_MESSAGE_ERROR, () => {
-                        this.waveManager.startWave(1);
-                    });
+
+            this.time.delayedCall(2000, () => {
+                this.hud.info('Incoming First Wave', AppColors.UI_MESSAGE_ERROR, () => {
+                    this.waveManager.startWave(1);
                 });
-            } else {
-                // If it's the tutorial, call a method to start the tutorial flow
-                (this as unknown as Gameplay_Tutorial).startTutorial(); // Cast to any to call the specific method
-            }
+            });
+
         });
     }
 
