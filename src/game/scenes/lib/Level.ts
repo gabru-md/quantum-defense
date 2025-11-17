@@ -20,7 +20,8 @@ import {
     createTowerTexture,
 } from '../../scripts/TextureUtils';
 import { LevelNames } from './LevelNames.ts';
-import { BackgroundEffectsManager } from '../../effects/BackgroundEffectsManager.ts'; // Import the new manager
+import { BackgroundEffectsManager } from '../../effects/BackgroundEffectsManager.ts';
+import {GlitchAnnihilationEffect, RiftElements} from "../../effects/GlitchAnnihilationEffect.ts"; // Import the new manager
 
 export abstract class Level extends Phaser.Scene {
     hud: HudManager;
@@ -34,6 +35,8 @@ export abstract class Level extends Phaser.Scene {
     backgroundEffectsManager: BackgroundEffectsManager; // Add the new manager
     isLoaded: boolean = false;
     protected levelElements: Phaser.GameObjects.GameObject[] = [];
+    glitchManager: GlitchAnnihilationEffect;
+    public rifts: RiftElements[] = [];
 
     abstract getWaveConfig(wave: number): {
         type: string;
@@ -46,6 +49,8 @@ export abstract class Level extends Phaser.Scene {
         path: string;
     }[];
 
+    abstract definePaths(): { [key: string]: Phaser.Curves.Path };
+
     abstract nextScene(): LevelNames; // Changed return type to LevelNames
 
     public fetchNextScene(): LevelNames { // Changed return type to LevelNames
@@ -54,6 +59,16 @@ export abstract class Level extends Phaser.Scene {
             nextScene = LevelNames.MainMenu; // Changed to LevelNames.MainMenu
         }
         return nextScene;
+    }
+
+    isPositionBuildable(x: number, y: number): { buildable: boolean; reason?: string } {
+        for (const rift of this.rifts) {
+            const distance = Phaser.Math.Distance.Between(x, y, rift.centerX, rift.centerY);
+            if (distance < 100 * rift.scaleFactor) {
+                return {buildable: false, reason: 'Too close to a rift!'};
+            }
+        }
+        return {buildable: true};
     }
 
     protected constructor(key: LevelNames) { // Changed key type to LevelNames
@@ -75,6 +90,7 @@ export abstract class Level extends Phaser.Scene {
         this.playerManager = new PlayerManager(this);
         this.audioManager = new AudioManager(this);
         this.backgroundEffectsManager = new BackgroundEffectsManager(this);
+        this.glitchManager = new GlitchAnnihilationEffect(this);
 
         this.state.level = this.scene.key;
         this.state.baseHealth = 100;
@@ -188,10 +204,6 @@ export abstract class Level extends Phaser.Scene {
 
     protected getLevelSpecificElements(): Phaser.GameObjects.GameObject[] | undefined {
         return undefined;
-    }
-
-    public isPositionBuildable(_x: number, _y: number): { buildable: boolean; reason?: string } {
-        return { buildable: true };
     }
 
     public update(time: number, delta: number): void {

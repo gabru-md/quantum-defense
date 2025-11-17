@@ -1,7 +1,7 @@
 import {Level} from '../lib/Level.ts';
 import {LevelNames} from '../lib/LevelNames.ts';
-import * as Phaser from 'phaser';
 import {PathMaker} from "../lib/PathMaker.ts";
+import {AppColors, phaserColor} from "../../scripts/Colors.ts";
 
 export class Gameplay_AdvancedCountermeasures extends Level { // Renamed class
     constructor() {
@@ -18,6 +18,39 @@ export class Gameplay_AdvancedCountermeasures extends Level { // Renamed class
             .down(450)
             .create(this);
         return {first: path};
+    }
+
+    getLevelSpecificElements() {
+        const riftElements = this.glitchManager.drawRiftElements(350, 550, 4.25, Phaser.Math.FloatBetween(0.3, 0.5), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(0, Math.PI * 2));
+        this.glitchManager.animateRiftIdle(riftElements);
+        this.rifts.push(riftElements);
+
+        const riftElements2 = this.glitchManager.drawRiftElements(900, 375, 1, Phaser.Math.FloatBetween(0.3, 0.5), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(0, Math.PI * 2));
+        this.glitchManager.animateRiftIdle(riftElements2);
+        this.rifts.push(riftElements2);
+
+
+        const riftElements3 = this.glitchManager.drawRiftElements(1300, 850, 1.2, Phaser.Math.FloatBetween(0.3, 0.5), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(0, Math.PI * 2));
+        this.glitchManager.animateRiftIdle(riftElements3);
+        this.rifts.push(riftElements3);
+
+        return [
+            riftElements.core,
+            riftElements.innerGlow,
+            riftElements.outerGlow,
+            ...riftElements.rays,
+            ...riftElements.fragments,
+            riftElements2.core,
+            riftElements2.innerGlow,
+            riftElements2.outerGlow,
+            ...riftElements2.rays,
+            ...riftElements2.fragments,
+            riftElements3.core,
+            riftElements3.innerGlow,
+            riftElements3.outerGlow,
+            ...riftElements3.rays,
+            ...riftElements3.fragments
+        ]
     }
 
     getWaveConfig(wave: number): {

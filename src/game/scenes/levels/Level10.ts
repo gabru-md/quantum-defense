@@ -3,6 +3,7 @@ import {LevelNames} from '../lib/LevelNames.ts';
 import * as Phaser from 'phaser';
 import {PathMaker} from "../lib/PathMaker.ts";
 import {GAME_WIDTH} from "../../scripts/Util.ts";
+import {AppColors, phaserColor} from "../../scripts/Colors.ts";
 
 export class Gameplay_StaticNewGlitches extends Level { // Renamed class
     constructor() {
@@ -32,6 +33,39 @@ export class Gameplay_StaticNewGlitches extends Level { // Renamed class
             .up(350)
             .create(this);
         return path;
+    }
+
+
+    getLevelSpecificElements(): Phaser.GameObjects.GameObject[] {
+        const riftElements = this.glitchManager.drawRiftElements(1080, 350, 2.25, Phaser.Math.FloatBetween(0.5, 0.87), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(0, Math.PI * 2));
+        this.glitchManager.animateRiftIdle(riftElements);
+        this.rifts.push(riftElements);
+
+        const riftElements2 = this.glitchManager.drawRiftElements(625, 550, 1, Phaser.Math.FloatBetween(0.5, 0.87), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(0, Math.PI * 2));
+        this.glitchManager.animateRiftIdle(riftElements2);
+        this.rifts.push(riftElements2);
+
+        const riftElements3 = this.glitchManager.drawRiftElements(500, 775, 0.75, Phaser.Math.FloatBetween(0.5, 0.87), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(0, Math.PI * 2));
+        this.glitchManager.animateRiftIdle(riftElements3);
+        this.rifts.push(riftElements3);
+
+        return [
+            riftElements.core,
+            riftElements.innerGlow,
+            riftElements.outerGlow,
+            ...riftElements.rays,
+            ...riftElements.fragments,
+            riftElements2.core,
+            riftElements2.innerGlow,
+            riftElements2.outerGlow,
+            ...riftElements2.rays,
+            ...riftElements2.fragments,
+            riftElements3.core,
+            riftElements3.innerGlow,
+            riftElements3.outerGlow,
+            ...riftElements3.rays,
+            ...riftElements3.fragments
+        ];
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {

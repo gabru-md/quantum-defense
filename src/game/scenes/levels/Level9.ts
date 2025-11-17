@@ -3,6 +3,7 @@ import {LevelNames} from '../lib/LevelNames.ts';
 import * as Phaser from 'phaser';
 import {PathMaker} from "../lib/PathMaker.ts";
 import {GAME_WIDTH} from "../../scripts/Util.ts";
+import {AppColors, phaserColor} from "../../scripts/Colors.ts";
 
 export class Gameplay_VolatileFrontierPart2 extends Level { // Renamed class
     constructor() {
@@ -18,6 +19,29 @@ export class Gameplay_VolatileFrontierPart2 extends Level { // Renamed class
             .up(500)
             .create(this);
         return {first: path};
+    }
+
+    getLevelSpecificElements(): Phaser.GameObjects.GameObject[] {
+        const riftElements = this.glitchManager.drawRiftElements(1250, 350, 3, Phaser.Math.FloatBetween(0.5, 0.87), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(0, Math.PI * 2));
+        this.glitchManager.animateRiftIdle(riftElements);
+        this.rifts.push(riftElements);
+
+        const riftElements2 = this.glitchManager.drawRiftElements(625, 550, 1.25, Phaser.Math.FloatBetween(0.3, 0.5), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(0, Math.PI * 2));
+        this.glitchManager.animateRiftIdle(riftElements2);
+        this.rifts.push(riftElements2);
+
+        return [
+            riftElements.core,
+            riftElements.innerGlow,
+            riftElements.outerGlow,
+            ...riftElements.rays,
+            ...riftElements.fragments,
+            riftElements2.core,
+            riftElements2.innerGlow,
+            riftElements2.outerGlow,
+            ...riftElements2.rays,
+            ...riftElements2.fragments
+        ];
     }
 
     getWaveConfig(wave: number): {

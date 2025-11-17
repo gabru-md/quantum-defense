@@ -3,6 +3,7 @@ import {Level} from '../lib/Level.ts';
 import {GAME_HEIGHT, GAME_WIDTH} from '../../scripts/Util.ts';
 import {LevelNames} from '../lib/LevelNames.ts';
 import {PathMaker} from "../lib/PathMaker.ts";
+import {AppColors, phaserColor} from "../../scripts/Colors.ts";
 
 export class Gameplay_VolatileInterference extends Level { // Renamed class
     constructor() {
@@ -35,6 +36,38 @@ export class Gameplay_VolatileInterference extends Level { // Renamed class
         return path;
     }
 
+    getLevelSpecificElements(): Phaser.GameObjects.GameObject[] {
+        const riftElements = this.glitchManager.drawRiftElements(425, GAME_HEIGHT / 2, 3.5, Phaser.Math.FloatBetween(0.5, 0.87), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(0, Math.PI * 2));
+        this.glitchManager.animateRiftIdle(riftElements);
+        this.rifts.push(riftElements);
+
+        const riftElements2 = this.glitchManager.drawRiftElements(1080, GAME_HEIGHT - 100, 1.5, Phaser.Math.FloatBetween(0.5, 0.87), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(Math.PI / 2, Math.PI * 2));
+        this.glitchManager.animateRiftIdle(riftElements2);
+        this.rifts.push(riftElements2);
+
+        const riftElements3 = this.glitchManager.drawRiftElements(925, GAME_HEIGHT / 2 - 225, 1.5, Phaser.Math.FloatBetween(0.5, 0.87), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(Math.PI / 2, Math.PI * 2));
+        this.glitchManager.animateRiftIdle(riftElements3);
+        this.rifts.push(riftElements3);
+
+        return [
+            riftElements.core,
+            riftElements.innerGlow,
+            riftElements.outerGlow,
+            ...riftElements.rays,
+            ...riftElements.fragments,
+            riftElements2.core,
+            riftElements2.innerGlow,
+            riftElements2.outerGlow,
+            ...riftElements2.rays,
+            ...riftElements2.fragments,
+            riftElements3.core,
+            riftElements3.innerGlow,
+            riftElements3.outerGlow,
+            ...riftElements3.rays,
+            ...riftElements3.fragments
+        ];
+    }
+
     definePaths(): { [key: string]: Phaser.Curves.Path } {
         return {
             first: this.firstPath(),
@@ -55,67 +88,373 @@ export class Gameplay_VolatileInterference extends Level { // Renamed class
         switch (wave) {
             case 1:
                 return [
-                    { type: 'enemy', texture: 'enemy1', count: 10, delay: 1500, health: 130, speed: 60, energyValue: 12, path: 'first' },
-                    { type: 'enemy', texture: 'enemy1', count: 10, delay: 1500, health: 130, speed: 60, energyValue: 12, path: 'second' },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 10,
+                        delay: 1500,
+                        health: 130,
+                        speed: 60,
+                        energyValue: 12,
+                        path: 'first'
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 10,
+                        delay: 1500,
+                        health: 130,
+                        speed: 60,
+                        energyValue: 12,
+                        path: 'second'
+                    },
                 ];
             case 2:
                 return [
-                    { type: 'enemy', texture: 'enemy1', count: 15, delay: 1200, health: 140, speed: 65, energyValue: 15, path: 'first' },
-                    { type: 'enemy', texture: 'enemy2', count: 5, delay: 1800, health: 100, speed: 80, energyValue: 18, path: 'second' },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 15,
+                        delay: 1200,
+                        health: 140,
+                        speed: 65,
+                        energyValue: 15,
+                        path: 'first'
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy2',
+                        count: 5,
+                        delay: 1800,
+                        health: 100,
+                        speed: 80,
+                        energyValue: 18,
+                        path: 'second'
+                    },
                 ];
             case 3:
                 return [
-                    { type: 'enemy', texture: 'enemy1', count: 12, delay: 1000, health: 150, speed: 70, energyValue: 15, path: 'first' },
-                    { type: 'enemy', texture: 'enemy2', count: 8, delay: 1600, health: 110, speed: 85, energyValue: 20, path: 'second' },
-                    { type: 'enemy', texture: 'enemy3', count: 3, delay: 2500, health: 200, speed: 50, energyValue: 25, path: 'first' },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 12,
+                        delay: 1000,
+                        health: 150,
+                        speed: 70,
+                        energyValue: 15,
+                        path: 'first'
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy2',
+                        count: 8,
+                        delay: 1600,
+                        health: 110,
+                        speed: 85,
+                        energyValue: 20,
+                        path: 'second'
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy3',
+                        count: 3,
+                        delay: 2500,
+                        health: 200,
+                        speed: 50,
+                        energyValue: 25,
+                        path: 'first'
+                    },
                 ];
             case 4:
                 return [
-                    { type: 'enemy', texture: 'enemy1', count: 18, delay: 900, health: 160, speed: 75, energyValue: 18, path: 'second' },
-                    { type: 'enemy', texture: 'enemy2', count: 10, delay: 1400, health: 120, speed: 90, energyValue: 22, path: 'first' },
-                    { type: 'enemy', texture: 'enemy3', count: 5, delay: 2200, health: 220, speed: 55, energyValue: 28, path: 'second' },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 18,
+                        delay: 900,
+                        health: 160,
+                        speed: 75,
+                        energyValue: 18,
+                        path: 'second'
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy2',
+                        count: 10,
+                        delay: 1400,
+                        health: 120,
+                        speed: 90,
+                        energyValue: 22,
+                        path: 'first'
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy3',
+                        count: 5,
+                        delay: 2200,
+                        health: 220,
+                        speed: 55,
+                        energyValue: 28,
+                        path: 'second'
+                    },
                 ];
             case 5:
                 return [
-                    { type: 'enemy', texture: 'enemy1', count: 15, delay: 800, health: 170, speed: 80, energyValue: 18, path: 'first' },
-                    { type: 'enemy', texture: 'enemy2', count: 12, delay: 1200, health: 130, speed: 95, energyValue: 25, path: 'second' },
-                    { type: 'enemy', texture: 'enemy3', count: 7, delay: 2000, health: 240, speed: 60, energyValue: 30, path: 'first' },
-                    { type: 'specialEnemy', texture: 'phantom', count: 1, delay: 3000, health: 600, speed: 40, energyValue: 60, path: 'second' },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 15,
+                        delay: 800,
+                        health: 170,
+                        speed: 80,
+                        energyValue: 18,
+                        path: 'first'
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy2',
+                        count: 12,
+                        delay: 1200,
+                        health: 130,
+                        speed: 95,
+                        energyValue: 25,
+                        path: 'second'
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy3',
+                        count: 7,
+                        delay: 2000,
+                        health: 240,
+                        speed: 60,
+                        energyValue: 30,
+                        path: 'first'
+                    },
+                    {
+                        type: 'specialEnemy',
+                        texture: 'phantom',
+                        count: 1,
+                        delay: 3000,
+                        health: 600,
+                        speed: 40,
+                        energyValue: 60,
+                        path: 'second'
+                    },
                 ];
             case 6:
                 return [
-                    { type: 'enemy', texture: 'enemy1', count: 20, delay: 700, health: 180, speed: 85, energyValue: 20, path: 'second' },
-                    { type: 'enemy', texture: 'enemy2', count: 15, delay: 1100, health: 140, speed: 100, energyValue: 28, path: 'first' },
-                    { type: 'enemy', texture: 'enemy3', count: 8, delay: 1800, health: 260, speed: 65, energyValue: 35, path: 'second' },
-                    { type: 'specialEnemy', texture: 'phantom', count: 1, delay: 3200, health: 650, speed: 42, energyValue: 65, path: 'first' },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 20,
+                        delay: 700,
+                        health: 180,
+                        speed: 85,
+                        energyValue: 20,
+                        path: 'second'
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy2',
+                        count: 15,
+                        delay: 1100,
+                        health: 140,
+                        speed: 100,
+                        energyValue: 28,
+                        path: 'first'
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy3',
+                        count: 8,
+                        delay: 1800,
+                        health: 260,
+                        speed: 65,
+                        energyValue: 35,
+                        path: 'second'
+                    },
+                    {
+                        type: 'specialEnemy',
+                        texture: 'phantom',
+                        count: 1,
+                        delay: 3200,
+                        health: 650,
+                        speed: 42,
+                        energyValue: 65,
+                        path: 'first'
+                    },
                 ];
             case 7:
                 return [
-                    { type: 'enemy', texture: 'enemy1', count: 18, delay: 600, health: 190, speed: 90, energyValue: 20, path: 'first' },
-                    { type: 'enemy', texture: 'enemy2', count: 18, delay: 1000, health: 150, speed: 105, energyValue: 30, path: 'second' },
-                    { type: 'enemy', texture: 'enemy3', count: 10, delay: 1600, health: 280, speed: 70, energyValue: 40, path: 'first' },
-                    { type: 'specialEnemy', texture: 'phantom', count: 2, delay: 2800, health: 700, speed: 45, energyValue: 70, path: 'second' },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 18,
+                        delay: 600,
+                        health: 190,
+                        speed: 90,
+                        energyValue: 20,
+                        path: 'first'
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy2',
+                        count: 18,
+                        delay: 1000,
+                        health: 150,
+                        speed: 105,
+                        energyValue: 30,
+                        path: 'second'
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy3',
+                        count: 10,
+                        delay: 1600,
+                        health: 280,
+                        speed: 70,
+                        energyValue: 40,
+                        path: 'first'
+                    },
+                    {
+                        type: 'specialEnemy',
+                        texture: 'phantom',
+                        count: 2,
+                        delay: 2800,
+                        health: 700,
+                        speed: 45,
+                        energyValue: 70,
+                        path: 'second'
+                    },
                 ];
             case 8:
                 return [
-                    { type: 'enemy', texture: 'enemy1', count: 22, delay: 550, health: 200, speed: 95, energyValue: 22, path: 'second' },
-                    { type: 'enemy', texture: 'enemy2', count: 20, delay: 900, health: 160, speed: 110, energyValue: 32, path: 'first' },
-                    { type: 'enemy', texture: 'enemy3', count: 12, delay: 1400, health: 300, speed: 75, energyValue: 45, path: 'second' },
-                    { type: 'specialEnemy', texture: 'phantom', count: 2, delay: 3000, health: 750, speed: 48, energyValue: 75, path: 'first' },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 22,
+                        delay: 550,
+                        health: 200,
+                        speed: 95,
+                        energyValue: 22,
+                        path: 'second'
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy2',
+                        count: 20,
+                        delay: 900,
+                        health: 160,
+                        speed: 110,
+                        energyValue: 32,
+                        path: 'first'
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy3',
+                        count: 12,
+                        delay: 1400,
+                        health: 300,
+                        speed: 75,
+                        energyValue: 45,
+                        path: 'second'
+                    },
+                    {
+                        type: 'specialEnemy',
+                        texture: 'phantom',
+                        count: 2,
+                        delay: 3000,
+                        health: 750,
+                        speed: 48,
+                        energyValue: 75,
+                        path: 'first'
+                    },
                 ];
             case 9:
                 return [
-                    { type: 'enemy', texture: 'enemy1', count: 25, delay: 500, health: 210, speed: 100, energyValue: 25, path: 'first' },
-                    { type: 'enemy', texture: 'enemy2', count: 22, delay: 800, health: 170, speed: 115, energyValue: 35, path: 'second' },
-                    { type: 'enemy', texture: 'enemy3', count: 15, delay: 1200, health: 320, speed: 80, energyValue: 50, path: 'first' },
-                    { type: 'specialEnemy', texture: 'phantom', count: 3, delay: 2800, health: 800, speed: 50, energyValue: 80, path: 'second' },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 25,
+                        delay: 500,
+                        health: 210,
+                        speed: 100,
+                        energyValue: 25,
+                        path: 'first'
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy2',
+                        count: 22,
+                        delay: 800,
+                        health: 170,
+                        speed: 115,
+                        energyValue: 35,
+                        path: 'second'
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy3',
+                        count: 15,
+                        delay: 1200,
+                        health: 320,
+                        speed: 80,
+                        energyValue: 50,
+                        path: 'first'
+                    },
+                    {
+                        type: 'specialEnemy',
+                        texture: 'phantom',
+                        count: 3,
+                        delay: 2800,
+                        health: 800,
+                        speed: 50,
+                        energyValue: 80,
+                        path: 'second'
+                    },
                 ];
             case 10:
                 return [
-                    { type: 'enemy', texture: 'enemy1', count: 30, delay: 400, health: 220, speed: 105, energyValue: 28, path: 'second' },
-                    { type: 'enemy', texture: 'enemy2', count: 25, delay: 700, health: 180, speed: 120, energyValue: 38, path: 'first' },
-                    { type: 'enemy', texture: 'enemy3', count: 18, delay: 1000, health: 350, speed: 85, energyValue: 55, path: 'second' },
-                    { type: 'specialEnemy', texture: 'phantom', count: 3, delay: 2500, health: 850, speed: 52, energyValue: 85, path: 'first' },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy1',
+                        count: 30,
+                        delay: 400,
+                        health: 220,
+                        speed: 105,
+                        energyValue: 28,
+                        path: 'second'
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy2',
+                        count: 25,
+                        delay: 700,
+                        health: 180,
+                        speed: 120,
+                        energyValue: 38,
+                        path: 'first'
+                    },
+                    {
+                        type: 'enemy',
+                        texture: 'enemy3',
+                        count: 18,
+                        delay: 1000,
+                        health: 350,
+                        speed: 85,
+                        energyValue: 55,
+                        path: 'second'
+                    },
+                    {
+                        type: 'specialEnemy',
+                        texture: 'phantom',
+                        count: 3,
+                        delay: 2500,
+                        health: 850,
+                        speed: 52,
+                        energyValue: 85,
+                        path: 'first'
+                    },
                 ];
             default:
                 return [];

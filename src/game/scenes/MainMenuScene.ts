@@ -443,6 +443,11 @@ export class MainMenuScene extends Phaser.Scene {
 
     private navigateStoryLevel(direction: number): void {
         this.currentStoryLevelIndex += direction;
+
+        // do circular loop
+        if (this.currentStoryLevelIndex < 0) {
+            this.currentStoryLevelIndex = STORY_LEVEL_ORDER.length - 1;
+        }
         // Clamp the index to valid range
         this.currentStoryLevelIndex = Phaser.Math.Clamp(
             this.currentStoryLevelIndex,
@@ -461,10 +466,6 @@ export class MainMenuScene extends Phaser.Scene {
         // These buttons are children of selectLevelsSectionContainer, so their x is relative to the container
         this.prevLevelButton.x = this.CONTENT_AREA_WIDTH / 2 - this.storyLevelDisplayText.width / 2 - 50;
         this.nextLevelButton.x = this.CONTENT_AREA_WIDTH / 2 + this.storyLevelDisplayText.width / 2 + 50;
-
-        // Enable/disable navigation buttons
-        this.prevLevelButton.setVisible(this.currentStoryLevelIndex > 0);
-        this.nextLevelButton.setVisible(this.currentStoryLevelIndex < STORY_LEVEL_ORDER.length - 1);
     }
 
     private toggleSound(): void {

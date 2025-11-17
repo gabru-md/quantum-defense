@@ -2,14 +2,11 @@ import * as Phaser from 'phaser';
 import {Level} from '../lib/Level.ts';
 import {GAME_HEIGHT, GAME_WIDTH} from '../../scripts/Util.ts';
 import {LevelNames} from '../lib/LevelNames.ts';
-import {GlitchAnnihilationEffect, RiftElements} from "../../effects/GlitchAnnihilationEffect.ts";
+import {GlitchAnnihilationEffect} from "../../effects/GlitchAnnihilationEffect.ts";
 import {AppColors, phaserColor} from "../../scripts/Colors.ts";
 import {PathMaker} from "../lib/PathMaker.ts";
 
 export class Gameplay_TheGlitchAnnihilation extends Level { // Renamed class
-    private glitchManager: GlitchAnnihilationEffect;
-    public rifts: RiftElements[] = [];
-
     constructor() {
         super(LevelNames.Gameplay_TheGlitchAnnihilation); // Updated super call
     }
@@ -41,16 +38,6 @@ export class Gameplay_TheGlitchAnnihilation extends Level { // Renamed class
             ...riftElements.rays,
             ...riftElements.fragments
         ];
-    }
-
-    isPositionBuildable(x: number, y: number): { buildable: boolean; reason?: string } {
-        for (const rift of this.rifts) {
-            const distance = Phaser.Math.Distance.Between(x, y, rift.centerX, rift.centerY);
-            if (distance < 100 * rift.scaleFactor) {
-                return {buildable: false, reason: 'Too close to a rift!'};
-            }
-        }
-        return {buildable: true};
     }
 
     getWaveConfig(wave: number): {
