@@ -148,6 +148,7 @@ export class ResonanceWave extends Component {
                         });
                         tower.reviveProgress = 0;
                         this.gameObject.scene.events.emit('towerRevived'); // Emit event for tutorial
+                        tower.enableVisualPulse()
                         tower.setOriginalPulseColor();
                         console.log(`[ResonanceWave] Tower fully revived: ${tower.texture.key}`);
                     } else {

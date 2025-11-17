@@ -6,7 +6,6 @@ import Phaser from 'phaser';
 import {GameObject} from '../../../core/GameObject.ts';
 import {Targeting} from '../../../components/Targeting.ts';
 import {LaserAttack} from '../../../components/LaserAttack.ts';
-import {VisualPulse} from '../../../components/VisualPulse.ts';
 import {GAME_HEIGHT, GAME_WIDTH} from '../../../scripts/Util.ts';
 import {BombAttack} from '../../../components/BombAttack.ts';
 import {Manager} from '../Manager.ts';
@@ -75,20 +74,20 @@ export class TowerManager extends Manager {
 
     public checkPlacementValidity(x: number, y: number, towerType: string): { valid: boolean; reason?: string } {
         if (!towerType || towerType === 'none') {
-            return { valid: false, reason: 'No tower selected.' };
+            return {valid: false, reason: 'No tower selected.'};
         }
 
         const buildableCheck = this.level.isPositionBuildable(x, y);
         if (!buildableCheck.buildable) {
-            return { valid: false, reason: buildableCheck.reason };
+            return {valid: false, reason: buildableCheck.reason};
         }
 
         const energyCost = this.getTowerEnergyCost(towerType);
         if (this.level.state.energy < energyCost) {
-            return { valid: false, reason: `Insufficient energy. Need ${energyCost}.` };
+            return {valid: false, reason: `Insufficient energy. Need ${energyCost}.`};
         }
 
-        return { valid: true };
+        return {valid: true};
     }
 
     protected tryPlaceTower(x: number, y: number, towerType: string): void {
@@ -129,17 +128,6 @@ export class TowerManager extends Manager {
         if (config.slowing) {
             tower.addComponent(new SlowingAura(config.range, config.slowing.slowFactor));
         }
-
-        tower.addComponent(
-            new VisualPulse(
-                config.pulse.color,
-                config.pulse.pulseDelay,
-                config.pulse.pulseDuration,
-                config.range,
-                config.pulse.pulseTotalPulses,
-                config.pulse.pulseLineWidth
-            )
-        );
 
         tower.on('died', () => tower.deactivateTower());
         tower.on('deactivate', () => this.deactivateTower(tower));

@@ -5,7 +5,7 @@ import { VisualPulse } from '../components/VisualPulse.ts';
 import { AppColors, phaserColor } from '../scripts/Colors.ts';
 import { LaserAttack } from '../components/LaserAttack.ts';
 import { BombAttack } from '../components/BombAttack.ts';
-import { TowerConfigs } from '../config/TowerConfigs.ts'; // Import TowerConfigs
+import {TowerConfigs, TowerConfigType} from '../config/TowerConfigs.ts'; // Import TowerConfigs
 
 export interface TowerConfig {
     scene: Phaser.Scene;
@@ -21,6 +21,7 @@ export class Tower extends GameObject {
     private healthComponent!: Health;
     private visualPulseComponent!: VisualPulse;
     private originalPulseColor: number;
+    private towerConfigType: TowerConfigType;
 
     constructor(config: TowerConfig) {
         super(config.scene, config.x, config.y, config.texture);
@@ -29,8 +30,8 @@ export class Tower extends GameObject {
         this.energyCost = config.energyCost; // Assign the energyCost
 
         // Store original color for revival using TowerConfigs
-        const towerConfig = TowerConfigs[config.texture];
-        this.originalPulseColor = towerConfig ? towerConfig.pulse.color : phaserColor(AppColors.UI_TEXT); // Fallback color
+        this.towerConfigType = TowerConfigs[config.texture];
+        this.originalPulseColor = this.towerConfigType ? this.towerConfigType.pulse.color : phaserColor(AppColors.UI_TEXT); // Fallback color
 
         this.setInteractive();
 
@@ -53,6 +54,8 @@ export class Tower extends GameObject {
             });
         });
         this.on('healthChanged', this.handleHealthChanged, this);
+
+        this.enableVisualPulse();
     }
 
     private handleHealthChanged(currentHealth: number): void {
@@ -94,6 +97,17 @@ export class Tower extends GameObject {
         attackComponents.forEach((c) => {
             if (c) c.enabled = false;
         });
+    }
+
+    public enableVisualPulse(): void {
+        this.addComponent(new VisualPulse(
+            this.towerConfigType.pulse.color,
+            this.towerConfigType.pulse.pulseDelay,
+            this.towerConfigType.pulse.pulseDuration,
+            this.towerConfigType.range,
+            this.towerConfigType.pulse.pulseTotalPulses,
+            this.towerConfigType.pulse.pulseLineWidth
+        ))
     }
 
     public setOriginalPulseColor(): void {
