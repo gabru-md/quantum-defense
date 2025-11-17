@@ -6,7 +6,6 @@ import {State} from "./lib/State.ts";
 
 enum MenuSection {
     Main = 'Menu',
-    SelectLevels = 'Levels',
     Settings = 'Settings',
 }
 
@@ -22,12 +21,10 @@ export class MainMenuScene extends Phaser.Scene {
 
     // Section containers
     private mainSectionContainer!: Phaser.GameObjects.Container;
-    private selectLevelsSectionContainer!: Phaser.GameObjects.Container;
     private settingsSectionContainer!: Phaser.GameObjects.Container;
 
     // Section navigation buttons
     private mainSectionButton!: Phaser.GameObjects.Text;
-    private selectLevelsSectionButton!: Phaser.GameObjects.Text;
     private settingsSectionButton!: Phaser.GameObjects.Text;
 
     // Constants for layout
@@ -113,18 +110,27 @@ export class MainMenuScene extends Phaser.Scene {
         const startX = WIDTH / 2 - buttonSpacing;
 
         this.mainSectionButton = this.createSectionButton(startX, this.SECTION_BUTTON_Y_POS, MenuSection.Main, () => this.showSection(MenuSection.Main));
-        this.selectLevelsSectionButton = this.createSectionButton(startX + buttonSpacing, this.SECTION_BUTTON_Y_POS, MenuSection.SelectLevels, () => this.showSection(MenuSection.SelectLevels));
         this.settingsSectionButton = this.createSectionButton(startX + 2 * buttonSpacing, this.SECTION_BUTTON_Y_POS, MenuSection.Settings, () => this.showSection(MenuSection.Settings));
 
         this.sectionUnderlineGraphics = this.add.graphics(); // Initialize the underline graphics
 
         // --- Create Section Containers ---
         this.mainSectionContainer = this.add.container(this.CONTENT_AREA_X_PADDING, this.CONTENT_AREA_START_Y + 70);
-        this.selectLevelsSectionContainer = this.add.container(this.CONTENT_AREA_X_PADDING, this.CONTENT_AREA_START_Y + 70);
         this.settingsSectionContainer = this.add.container(this.CONTENT_AREA_X_PADDING, this.CONTENT_AREA_START_Y + 70);
 
         // Populate Main Menu Section
         let yOffsetMain = 100;
+        // Populate Select Levels Section
+        this.storyLevelDisplayText = this.add.text(this.CONTENT_AREA_WIDTH / 2, yOffsetMain, '', {
+            fontSize: '32px',
+            color: AppColors.UI_TEXT
+        }).setOrigin(0.5);
+        this.mainSectionContainer.add(this.storyLevelDisplayText);
+
+        this.prevLevelButton = this.createMenuButton('<', this.CONTENT_AREA_WIDTH / 2 - this.storyLevelDisplayText.width / 2 - 50, yOffsetMain, () => this.navigateStoryLevel(-1), this.mainSectionContainer);
+        this.nextLevelButton = this.createMenuButton('>', this.CONTENT_AREA_WIDTH / 2 + this.storyLevelDisplayText.width / 2 + 50, yOffsetMain, () => this.navigateStoryLevel(1), this.mainSectionContainer);
+        yOffsetMain += 50;
+
         this.createMenuButton('Start Tutorial', this.CONTENT_AREA_WIDTH / 2, yOffsetMain, () => {
             this.scene.start(LevelNames.Tutorial);
         }, this.mainSectionContainer);
@@ -132,18 +138,8 @@ export class MainMenuScene extends Phaser.Scene {
         this.createMenuButton('Watch Full Story', this.CONTENT_AREA_WIDTH / 2, yOffsetMain, () => {
             this.scene.start(LevelNames.FullStoryPlayback);
         }, this.mainSectionContainer);
+        yOffsetMain += 50;
 
-        // Populate Select Levels Section
-        let yOffsetLevels = 150;
-
-        this.storyLevelDisplayText = this.add.text(this.CONTENT_AREA_WIDTH / 2, yOffsetLevels, '', {
-            fontSize: '32px',
-            color: AppColors.UI_TEXT
-        }).setOrigin(0.5);
-        this.selectLevelsSectionContainer.add(this.storyLevelDisplayText);
-
-        this.prevLevelButton = this.createMenuButton('<', this.CONTENT_AREA_WIDTH / 2 - this.storyLevelDisplayText.width / 2 - 50, yOffsetLevels, () => this.navigateStoryLevel(-1), this.selectLevelsSectionContainer);
-        this.nextLevelButton = this.createMenuButton('>', this.CONTENT_AREA_WIDTH / 2 + this.storyLevelDisplayText.width / 2 + 50, yOffsetLevels, () => this.navigateStoryLevel(1), this.selectLevelsSectionContainer);
 
         // Make the displayed level itself clickable
         this.storyLevelDisplayText.setInteractive({useHandCursor: true});
@@ -162,7 +158,6 @@ export class MainMenuScene extends Phaser.Scene {
         });
 
         this.updateStoryLevelDisplay(); // Initial display
-        yOffsetLevels += 50; // Space for the level display and buttons
 
         // Populate Settings Section
         let yOffsetSettings = 100;
@@ -418,12 +413,10 @@ export class MainMenuScene extends Phaser.Scene {
     private showSection(section: MenuSection): void {
         // Hide all containers
         this.mainSectionContainer.setVisible(false);
-        this.selectLevelsSectionContainer.setVisible(false);
         this.settingsSectionContainer.setVisible(false);
 
         // Reset all section buttons to inactive state
         this.mainSectionButton.setColor(AppColors.UI_TEXT).setData('active', false);
-        this.selectLevelsSectionButton.setColor(AppColors.UI_TEXT).setData('active', false);
         this.settingsSectionButton.setColor(AppColors.UI_TEXT).setData('active', false);
 
         // Show the selected container and set its button to active state
@@ -431,12 +424,6 @@ export class MainMenuScene extends Phaser.Scene {
             case MenuSection.Main:
                 this.mainSectionContainer.setVisible(true);
                 this.mainSectionButton.setColor(AppColors.UI_ACCENT).setData('active', true);
-                break;
-            case MenuSection.SelectLevels:
-                this.selectLevelsSectionContainer.setVisible(true);
-                this.selectLevelsSectionButton.setColor(AppColors.UI_ACCENT).setData('active', true);
-                // Ensure level display is updated when switching to this section
-                this.updateStoryLevelDisplay();
                 break;
             case MenuSection.Settings:
                 this.settingsSectionContainer.setVisible(true);
