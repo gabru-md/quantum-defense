@@ -8,7 +8,7 @@ export class PathMaker {
     private debugTextObjects: Phaser.GameObjects.Text[] = [];
     private reversePath: boolean = false;
 
-    constructor(startX: number, startY: number, debug: boolean = true) {
+    constructor(startX: number, startY: number, debug: boolean = false) {
         this.currentX = startX;
         this.currentY = startY;
         this.debug = debug;
