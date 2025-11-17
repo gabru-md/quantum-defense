@@ -14,54 +14,54 @@ export class AudioManager extends Manager {
     public setup(): void {
 
         this.level.load.audio('MainMenuMusic', 'assets/music/MainMenuMusic.mp3');
-
-        // Audio for Introduction
-        this.level.load.audio('Story_Introduction_1', 'assets/narration/Story_Introduction_Title.wav');
-        this.level.load.audio('Story_Introduction_2', 'assets/narration/Story_Introduction_1.wav');
-        this.level.load.audio('Story_Introduction_3', 'assets/narration/Story_Introduction_2.wav');
-        this.level.load.audio('Story_Introduction_4', 'assets/narration/Story_Introduction_3.wav');
-        this.level.load.audio('Story_Introduction_5', 'assets/narration/Story_Introduction_4.wav');
-        this.level.load.audio('Story_Introduction_6', 'assets/narration/Story_Introduction_5.wav');
-        this.level.load.audio('Story_Introduction_7', 'assets/narration/Story_Introduction_6.wav');
-        this.level.load.audio('Story_Introduction_8', 'assets/narration/Story_Introduction_7.wav');
-        this.level.load.audio('Story_Introduction_9', 'assets/narration/Story_Introduction_8.wav');
-        this.level.load.audio('Story_Introduction_10', 'assets/narration/Story_Introduction_9.wav');
-
-        // Audio for HelloGenie
-        this.level.load.audio('Story_HelloGenie_1', 'assets/narration/Story_HelloGenie_Title.wav');
-        this.level.load.audio('Story_HelloGenie_2', 'assets/narration/Story_HelloGenie_1.wav');
-        this.level.load.audio('Story_HelloGenie_3', 'assets/narration/Story_HelloGenie_2.wav');
-        this.level.load.audio('Story_HelloGenie_4', 'assets/narration/Story_HelloGenie_3.wav');
-
-        // Audio for TrustMe
-        this.level.load.audio('Story_TrustMe_1', 'assets/narration/Story_TrustMe_Title.wav');
-        this.level.load.audio('Story_TrustMe_2', 'assets/narration/Story_TrustMe_1.wav');
-        this.level.load.audio('Story_TrustMe_3', 'assets/narration/Story_TrustMe_2.wav');
-
-        // Audio for ThePhantom
-        this.level.load.audio('Story_ThePhantom_1', 'assets/narration/Story_ThePhantom_Title.wav');
-        this.level.load.audio('Story_ThePhantom_2', 'assets/narration/Story_ThePhantom_1.wav');
-        this.level.load.audio('Story_ThePhantom_3', 'assets/narration/Story_ThePhantom_2.wav');
-        this.level.load.audio('Story_ThePhantom_4', 'assets/narration/Story_ThePhantom_3.wav');
-        this.level.load.audio('Story_ThePhantom_5', 'assets/narration/Story_ThePhantom_4.wav');
-        this.level.load.audio('Story_ThePhantom_6', 'assets/narration/Story_ThePhantom_5.wav');
-
-        // Audio for RiseOfStatic
-        this.level.load.audio('Story_RiseOfStatic_1', 'assets/narration/Story_RiseOfStatic_Title.wav');
-        this.level.load.audio('Story_RiseOfStatic_2', 'assets/narration/Story_RiseOfStatic_1.wav');
-        this.level.load.audio('Story_RiseOfStatic_3', 'assets/narration/Story_RiseOfStatic_2.wav');
-        this.level.load.audio('Story_RiseOfStatic_4', 'assets/narration/Story_RiseOfStatic_3.wav');
-        this.level.load.audio('Story_RiseOfStatic_5', 'assets/narration/Story_RiseOfStatic_4.wav');
-        this.level.load.audio('Story_RiseOfStatic_6', 'assets/narration/Story_RiseOfStatic_5.wav');
-
-        // Audio for Breakthrough
-        this.level.load.audio('Story_Breakthrough_1', 'assets/narration/Story_Breakthrough_Title.wav');
-        this.level.load.audio('Story_Breakthrough_2', 'assets/narration/Story_Breakthrough_1.wav');
-        this.level.load.audio('Story_Breakthrough_3', 'assets/narration/Story_Breakthrough_2.wav');
-        this.level.load.audio('Story_Breakthrough_4', 'assets/narration/Story_Breakthrough_3.wav');
-
-        // Audio for TheCliffhanger
-        this.level.load.audio('Story_TheCliffhanger_1', 'assets/narration/Story_TheCliffhanger_Title.wav');
+        //
+        // // Audio for Introduction
+        // this.level.load.audio('Story_Introduction_1', 'assets/narration/Story_Introduction_Title.wav');
+        // this.level.load.audio('Story_Introduction_2', 'assets/narration/Story_Introduction_1.wav');
+        // this.level.load.audio('Story_Introduction_3', 'assets/narration/Story_Introduction_2.wav');
+        // this.level.load.audio('Story_Introduction_4', 'assets/narration/Story_Introduction_3.wav');
+        // this.level.load.audio('Story_Introduction_5', 'assets/narration/Story_Introduction_4.wav');
+        // this.level.load.audio('Story_Introduction_6', 'assets/narration/Story_Introduction_5.wav');
+        // this.level.load.audio('Story_Introduction_7', 'assets/narration/Story_Introduction_6.wav');
+        // this.level.load.audio('Story_Introduction_8', 'assets/narration/Story_Introduction_7.wav');
+        // this.level.load.audio('Story_Introduction_9', 'assets/narration/Story_Introduction_8.wav');
+        // this.level.load.audio('Story_Introduction_10', 'assets/narration/Story_Introduction_9.wav');
+        //
+        // // Audio for HelloGenie
+        // this.level.load.audio('Story_HelloGenie_1', 'assets/narration/Story_HelloGenie_Title.wav');
+        // this.level.load.audio('Story_HelloGenie_2', 'assets/narration/Story_HelloGenie_1.wav');
+        // this.level.load.audio('Story_HelloGenie_3', 'assets/narration/Story_HelloGenie_2.wav');
+        // this.level.load.audio('Story_HelloGenie_4', 'assets/narration/Story_HelloGenie_3.wav');
+        //
+        // // Audio for TrustMe
+        // this.level.load.audio('Story_TrustMe_1', 'assets/narration/Story_TrustMe_Title.wav');
+        // this.level.load.audio('Story_TrustMe_2', 'assets/narration/Story_TrustMe_1.wav');
+        // this.level.load.audio('Story_TrustMe_3', 'assets/narration/Story_TrustMe_2.wav');
+        //
+        // // Audio for ThePhantom
+        // this.level.load.audio('Story_ThePhantom_1', 'assets/narration/Story_ThePhantom_Title.wav');
+        // this.level.load.audio('Story_ThePhantom_2', 'assets/narration/Story_ThePhantom_1.wav');
+        // this.level.load.audio('Story_ThePhantom_3', 'assets/narration/Story_ThePhantom_2.wav');
+        // this.level.load.audio('Story_ThePhantom_4', 'assets/narration/Story_ThePhantom_3.wav');
+        // this.level.load.audio('Story_ThePhantom_5', 'assets/narration/Story_ThePhantom_4.wav');
+        // this.level.load.audio('Story_ThePhantom_6', 'assets/narration/Story_ThePhantom_5.wav');
+        //
+        // // Audio for RiseOfStatic
+        // this.level.load.audio('Story_RiseOfStatic_1', 'assets/narration/Story_RiseOfStatic_Title.wav');
+        // this.level.load.audio('Story_RiseOfStatic_2', 'assets/narration/Story_RiseOfStatic_1.wav');
+        // this.level.load.audio('Story_RiseOfStatic_3', 'assets/narration/Story_RiseOfStatic_2.wav');
+        // this.level.load.audio('Story_RiseOfStatic_4', 'assets/narration/Story_RiseOfStatic_3.wav');
+        // this.level.load.audio('Story_RiseOfStatic_5', 'assets/narration/Story_RiseOfStatic_4.wav');
+        // this.level.load.audio('Story_RiseOfStatic_6', 'assets/narration/Story_RiseOfStatic_5.wav');
+        //
+        // // Audio for Breakthrough
+        // this.level.load.audio('Story_Breakthrough_1', 'assets/narration/Story_Breakthrough_Title.wav');
+        // this.level.load.audio('Story_Breakthrough_2', 'assets/narration/Story_Breakthrough_1.wav');
+        // this.level.load.audio('Story_Breakthrough_3', 'assets/narration/Story_Breakthrough_2.wav');
+        // this.level.load.audio('Story_Breakthrough_4', 'assets/narration/Story_Breakthrough_3.wav');
+        //
+        // // Audio for TheCliffhanger
+        // this.level.load.audio('Story_TheCliffhanger_1', 'assets/narration/Story_TheCliffhanger_Title.wav');
     }
 
     public get sfxVolume(): number {
