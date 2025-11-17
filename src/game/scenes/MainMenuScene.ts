@@ -149,6 +149,9 @@ export class MainMenuScene extends Phaser.Scene {
             this.scene.start(LevelNames.FullStoryPlayback);
         }, this.mainSectionContainer);
         yOffsetMain += 50;
+        this.createMenuButton('Credits', this.CONTENT_AREA_WIDTH / 2, yOffsetMain, () => {
+            this.scene.start('CreditsScene');
+        }, this.mainSectionContainer);
 
 
         // Make the displayed level itself clickable
@@ -222,11 +225,6 @@ export class MainMenuScene extends Phaser.Scene {
             () => this.cycleDifficulty(),
             this.settingsSectionContainer
         );
-        yOffsetSettings += 50;
-
-        this.createMenuButton('Credits', this.CONTENT_AREA_WIDTH / 2, yOffsetSettings, () => {
-            this.scene.start('CreditsScene');
-        }, this.settingsSectionContainer);
 
         // Show initial section
         this.showSection(MenuSection.Main);

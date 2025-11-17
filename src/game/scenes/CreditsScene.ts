@@ -63,10 +63,10 @@ export class CreditsScene extends Phaser.Scene {
         panelGraphics.lineStyle(2, phaserColor(AppColors.UI_ACCENT), 1);
         panelGraphics.strokeRect(panelX - panelWidth / 2, panelY - panelHeight / 2, panelWidth, panelHeight);
 
-        const creditsText = 'Game Design & Development:\nManish Devgan\n\n' + 'https://github.com/gabru-md';
+        const creditsText = 'Game Design & Development:\nManish Devgan\nhttps://github.com/gabru-md\n\nMusic & Sound Design:\nPedro Coutinho' ;
 
         this.add
-            .text(panelX, panelY - panelHeight / 2 + 200, creditsText, {
+            .text(panelX, panelY - panelHeight / 2 + 250, creditsText, {
                 font: '32px',
                 color: AppColors.UI_TEXT,
                 align: 'center',
