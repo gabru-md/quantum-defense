@@ -10,6 +10,9 @@ export class AudioManager extends Manager {
     }
 
     public setup(): void {
+
+        this.level.load.audio('MainMenuMusic', 'assets/music/MainMenuMusic.mp3');
+
         // Audio for Introduction
         this.level.load.audio('Story_Introduction_1', 'assets/narration/Story_Introduction_Title.wav');
         this.level.load.audio('Story_Introduction_2', 'assets/narration/Story_Introduction_1.wav');
@@ -91,7 +94,7 @@ export class AudioManager extends Manager {
                 this.backgroundMusic.stop();
             }
             this.backgroundMusic = this.level.sound.add(key, {loop});
-            this.backgroundMusic.play();
+            this.backgroundMusic.play({volume: 0.6});
         }
     }
 

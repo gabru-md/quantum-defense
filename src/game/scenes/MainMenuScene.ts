@@ -3,6 +3,7 @@ import {LevelNames, STORY_LEVEL_ORDER} from './lib/LevelNames';
 import {WIDTH, HEIGHT} from '../scripts/Util';
 import {AppColors, phaserColor} from '../scripts/Colors';
 import {State} from "./lib/State.ts";
+import {AudioManager} from "./lib/manager/AudioManager.ts";
 
 enum MenuSection {
     Main = 'Menu',
@@ -26,6 +27,7 @@ export class MainMenuScene extends Phaser.Scene {
     // Section navigation buttons
     private mainSectionButton!: Phaser.GameObjects.Text;
     private settingsSectionButton!: Phaser.GameObjects.Text;
+    private audioManager: AudioManager;
 
     // Constants for layout
     private readonly BORDER_THICKNESS = 8;
@@ -39,6 +41,7 @@ export class MainMenuScene extends Phaser.Scene {
 
     constructor() {
         super(LevelNames.MainMenu);
+        this.audioManager = new AudioManager(this);
     }
 
     preload() {
@@ -55,6 +58,8 @@ export class MainMenuScene extends Phaser.Scene {
         this.load.image('tower2_menu', this.createTowerTexture('tower2_menu', 32, AppColors.TOWER_BOMB));
         this.load.image('tower3_menu', this.createTowerTexture('tower3_menu', 32, AppColors.TOWER_SLOW));
         this.load.image('player_menu', this.createPlayerTexture('player_menu', 24, AppColors.PLAYER));
+
+        this.audioManager.setup()
     }
 
     init(): void {
@@ -63,9 +68,11 @@ export class MainMenuScene extends Phaser.Scene {
             this.gameState = new State(100, 350, LevelNames.MainMenu);
             this.sys.registry.set('gameState', this.gameState);
         }
+
     }
 
     create() {
+        this.audioManager.playMusic('MainMenuMusic')
         this.cameras.main.setBackgroundColor(AppColors.GAME_BACKGROUND);
 
         this.createAnimatedGridBackground();
@@ -120,20 +127,21 @@ export class MainMenuScene extends Phaser.Scene {
 
         // Populate Main Menu Section
         let yOffsetMain = 100;
+
+
+        this.createMenuButton('Start Tutorial', this.CONTENT_AREA_WIDTH / 2, yOffsetMain, () => {
+            this.scene.start(LevelNames.Tutorial);
+        }, this.mainSectionContainer);
+        yOffsetMain += 50;
         // Populate Select Levels Section
         this.storyLevelDisplayText = this.add.text(this.CONTENT_AREA_WIDTH / 2, yOffsetMain, '', {
             fontSize: '32px',
             color: AppColors.UI_TEXT
         }).setOrigin(0.5);
         this.mainSectionContainer.add(this.storyLevelDisplayText);
-
         this.prevLevelButton = this.createMenuButton('<', this.CONTENT_AREA_WIDTH / 2 - this.storyLevelDisplayText.width / 2 - 50, yOffsetMain, () => this.navigateStoryLevel(-1), this.mainSectionContainer);
         this.nextLevelButton = this.createMenuButton('>', this.CONTENT_AREA_WIDTH / 2 + this.storyLevelDisplayText.width / 2 + 50, yOffsetMain, () => this.navigateStoryLevel(1), this.mainSectionContainer);
-        yOffsetMain += 50;
 
-        this.createMenuButton('Start Tutorial', this.CONTENT_AREA_WIDTH / 2, yOffsetMain, () => {
-            this.scene.start(LevelNames.Tutorial);
-        }, this.mainSectionContainer);
         yOffsetMain += 50;
         this.createMenuButton('Watch Full Story', this.CONTENT_AREA_WIDTH / 2, yOffsetMain, () => {
             this.scene.start(LevelNames.FullStoryPlayback);
