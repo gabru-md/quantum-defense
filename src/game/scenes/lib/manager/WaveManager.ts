@@ -16,6 +16,7 @@ export class WaveManager extends Manager {
     constructor(
         protected level: Level,
         public currentWave: number = 1,
+        public totalWaves: number = 0, // Added totalWaves property
         protected enemiesRemaining: number = 0,
         public enemiesSpawnedInWave: number = 0,
         public maxEnemiesInWave: number = 20,
@@ -29,6 +30,7 @@ export class WaveManager extends Manager {
         this.specialEnemies = this.level.add.group({ classType: SpecialEnemy, runChildUpdate: false });
         this.level.events.on('enemyDied', this.handleEnemyDied, this);
         this.level.events.on('specialEnemyKilledByPlayer', this.handleSpecialEnemyKilledByPlayer, this);
+        this.calculateTotalWaves(); // Calculate total waves during setup
         return { enemies: this.enemies, specialEnemies: this.specialEnemies };
     }
 
@@ -103,6 +105,14 @@ export class WaveManager extends Manager {
         });
     }
 
+    private calculateTotalWaves(): void {
+        let waveCount = 1;
+        while (this.level.getWaveConfig(waveCount).length > 0) {
+            waveCount++;
+        }
+        this.totalWaves = waveCount - 1; // Subtract 1 because the loop increments one extra time
+    }
+
     private getDifficultyMultiplier(): { healthMultiplier: number; speedMultiplier: number } {
         switch (this.level.state.difficulty) {
             case 'easy':
@@ -150,7 +160,7 @@ export class WaveManager extends Manager {
         if (this.enemiesSpawnedInWave >= this.maxEnemiesInWave && this.enemiesRemaining <= 0) {
             this.level.events.emit('waveCompleted');
     
-            if (this.noMoreWavesLeft()) {
+            if (this.currentWave >= this.totalWaves) { // Changed condition to use totalWaves
                 this.level.physics.pause();
                 this.level.hud.info('LEVEL COMPLETE!', AppColors.UI_MESSAGE_SUCCESS, () => {
                     this.level.easeOutAndStartNextScene(this.level.fetchNextScene());

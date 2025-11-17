@@ -14,6 +14,7 @@ export class HudManager extends Manager {
     protected levelText!: Phaser.GameObjects.Text;
     protected baseHealthText!: Phaser.GameObjects.Text;
     protected energyText!: Phaser.GameObjects.Text; // Renamed: moneyText to energyText
+    protected waveNumberText!: Phaser.GameObjects.Text; // Added for wave number
     protected waveProgressText!: Phaser.GameObjects.Text;
     protected messageText!: Phaser.GameObjects.Text;
     private rangePreview!: Phaser.GameObjects.Graphics; // Changed from Sprite to Graphics
@@ -62,6 +63,7 @@ export class HudManager extends Manager {
         this.levelText.destroy();
         this.baseHealthText.destroy();
         this.energyText.destroy(); // Renamed: moneyText to energyText
+        this.waveNumberText.destroy(); // Destroy wave number text
         this.waveProgressText.destroy();
         this.messageText.destroy();
         this.rangePreview.destroy(); // Still destroy the graphics object
@@ -134,7 +136,7 @@ export class HudManager extends Manager {
     private createMainStatsPanel(): Phaser.GameObjects.GameObject[] {
         const hudX = GAME_WIDTH + 15;
         const panelWidth = WIDTH - GAME_WIDTH - 30;
-        const panelHeight = 180;
+        const panelHeight = 210; // Increased height to accommodate new text
         const startY = 10;
 
         const panel = this.scene.add.graphics();
@@ -158,14 +160,18 @@ export class HudManager extends Manager {
         this.energyText = this.scene.add.text(textX, currentY, `Energy: ${this.scene.state.energy}`, { font: '20px', color: AppColors.UI_TEXT }).setDepth(100).setName('energyText'); // Renamed and updated
         currentY += textSpacing;
 
-        this.waveProgressText = this.scene.add.text(textX, currentY, `Wave: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`, { font: '20px', color: AppColors.UI_TEXT }).setDepth(100).setName('waveProgressText');
+        // Added wave number text
+        this.waveNumberText = this.scene.add.text(textX, currentY, `Wave: ${this.scene.waveManager.currentWave}/${this.scene.waveManager.totalWaves}`, { font: '20px', color: AppColors.UI_TEXT }).setDepth(100).setName('waveNumberText');
+        currentY += textSpacing;
 
-        return [panel, this.gameName, this.levelText, this.baseHealthText, this.energyText, this.waveProgressText]; // Updated return
+        this.waveProgressText = this.scene.add.text(textX, currentY, `Enemies: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`, { font: '20px', color: AppColors.UI_TEXT }).setDepth(100).setName('waveProgressText');
+
+        return [panel, this.gameName, this.levelText, this.baseHealthText, this.energyText, this.waveNumberText, this.waveProgressText]; // Updated return
     }
 
     private createTowerSelectionPanel(): Phaser.GameObjects.GameObject[] {
         const hudX = GAME_WIDTH + 15;
-        const startY = 200;
+        const startY = 230; // Adjusted startY to account for increased main stats panel height
         const panelWidth = WIDTH - GAME_WIDTH - 30;
         const panelHeight = 600;
 
@@ -263,7 +269,8 @@ export class HudManager extends Manager {
         this.levelText.setText(`Level: ${this.scene.scene.key}`);
         this.baseHealthText.setText(`Health: ${this.scene.state.baseHealth}`);
         this.energyText.setText(`Energy: ${this.scene.state.energy}`); // Updated text
-        this.waveProgressText.setText(`Wave: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`);
+        this.waveNumberText.setText(`Wave: ${this.scene.waveManager.currentWave}/${this.scene.waveManager.totalWaves}`); // Update wave number
+        this.waveProgressText.setText(`Enemies: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`);
     }
 
     private updateTowerSelectionUI() {
