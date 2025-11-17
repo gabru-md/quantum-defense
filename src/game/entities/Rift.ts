@@ -6,7 +6,7 @@ import {AppColors, phaserColor} from '../scripts/Colors.ts';
 import {RiftElements} from "../effects/GlitchAnnihilationEffect.ts";
 import {Level} from "../scenes/lib/Level.ts";
 
-export type RiftType = 'static' | 'player' | 'gradient';
+export type RiftType = 'static' | 'player' | 'gradient' | 'dormant';
 
 export class Rift extends GameObject {
     public riftType: RiftType;
@@ -34,6 +34,9 @@ export class Rift extends GameObject {
             case 'gradient':
                 this.riftColor = phaserColor(AppColors.PLAYER);
                 this.secondaryColor = phaserColor(AppColors.SPECIAL_ENEMY);
+                break;
+            case 'dormant':
+                this.riftColor = phaserColor(AppColors.UI_DISABLED);
                 break;
         }
 
