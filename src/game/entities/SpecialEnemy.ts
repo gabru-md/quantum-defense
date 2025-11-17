@@ -44,6 +44,10 @@ export class SpecialEnemy extends GameObject {
         });
     }
 
+    public takeDamage(amount: number): void {
+        this.healthComponent.takeDamage(amount);
+    }
+
     destroy(fromScene?: boolean) {
         console.log(`[SpecialEnemy] ${this.texture.key} destroyed.`);
         this.removeListener('healthChanged', this.handleHealthChanged);

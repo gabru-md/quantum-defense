@@ -4,6 +4,7 @@ import * as Phaser from 'phaser';
 import {BreatheOnHover} from '../components/BreatheOnHover.ts';
 import {VisualPulse} from "../components/VisualPulse.ts"; // Import BreatheOnHover
 import {Genie} from "./Genie.ts";
+import {Health} from "../components/Health.ts";
 
 export interface PlayerConfig {
     scene: Phaser.Scene;
@@ -14,6 +15,7 @@ export interface PlayerConfig {
 
 export class Player extends GameObject {
     public genie: Genie;
+    private healthComponent: Health;
 
     constructor(config: PlayerConfig) {
         super(config.scene, config.x, config.y, config.texture);
@@ -25,9 +27,11 @@ export class Player extends GameObject {
         body.setDrag(350); // Add some drag for smoother movement
         this.setAlpha(0.8);
 
-        // Add the PlayerController and BreatheOnHover
+        // Add components
         this.addComponent(new PlayerController());
-        this.addComponent(new BreatheOnHover(1.2, 1000)); // Add the breathing effect
+        this.addComponent(new BreatheOnHover(1.2, 1000));
+        this.healthComponent = new Health(100); // Player has 100 health
+        this.addComponent(this.healthComponent);
 
         // Create and add the Genie
         this.genie = new Genie(config.scene, this);
@@ -44,6 +48,12 @@ export class Player extends GameObject {
             this.genie.setVisible(value);
         }
         return super.setVisible(value);
+    }
+
+    public takeDamage(amount: number): void {
+        this.healthComponent.takeDamage(amount);
+        // You can add visual feedback here, like a screen flash or a sound effect
+        this.scene.cameras.main.flash(250, 255, 0, 0);
     }
 
     destroy(fromScene?: boolean) {

@@ -1,4 +1,4 @@
-import { GameObject } from '../core/GameObject';
+import { GameObject } from '../core/GameObject.ts';
 import * as Phaser from 'phaser';
 import { Health } from '../components/Health.ts';
 import { VisualPulse } from '../components/VisualPulse.ts';
@@ -22,6 +22,7 @@ export class Tower extends GameObject {
     private visualPulseComponent!: VisualPulse;
     private originalPulseColor: number;
     private towerConfigType: TowerConfigType;
+    private isDisabled: boolean = false;
 
     constructor(config: TowerConfig) {
         super(config.scene, config.x, config.y, config.texture);
@@ -126,5 +127,17 @@ export class Tower extends GameObject {
     public isNotFullHealth() {
         const healthComponent = this.getComponent(Health);
         return healthComponent && healthComponent.currentHealth < healthComponent.maxHealth;
+    }
+
+    public enable(): void {
+        if (!this.isDisabled) return;
+        this.isDisabled = false;
+        this.setAlpha(1);
+        const attackComponents = [this.getComponent(LaserAttack), this.getComponent(BombAttack)];
+        attackComponents.forEach((c) => {
+            if (c) c.enabled = true;
+        });
+        this.enableVisualPulse()
+        this.setOriginalPulseColor();
     }
 }

@@ -2,7 +2,6 @@ import {Level} from '../lib/Level.ts';
 import {LevelNames} from '../lib/LevelNames.ts';
 import * as Phaser from 'phaser';
 import {PathMaker} from "../lib/PathMaker.ts";
-import {AppColors, phaserColor} from "../../scripts/Colors.ts";
 
 export class Gameplay_InitialBreakthrough extends Level { // Renamed class
     constructor() {
@@ -37,18 +36,9 @@ export class Gameplay_InitialBreakthrough extends Level { // Renamed class
         };
     }
 
-    getLevelSpecificElements(): Phaser.GameObjects.GameObject[] {
-        const riftElements = this.glitchManager.drawRiftElements(800, 575, 3, Phaser.Math.FloatBetween(0.25, 0.55), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(0, Math.PI * 2));
-        this.glitchManager.animateRiftIdle(riftElements);
-        this.rifts.push(riftElements);
-
-        return [
-            riftElements.core,
-            riftElements.innerGlow,
-            riftElements.outerGlow,
-            ...riftElements.rays,
-            ...riftElements.fragments
-        ];
+    create() {
+        super.create();
+        this.createRift(800, 575, 'gradient');
     }
 
     getWaveConfig(wave: number): {

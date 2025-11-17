@@ -2,7 +2,6 @@ import {Level} from '../lib/Level.ts';
 import {LevelNames} from '../lib/LevelNames.ts';
 import {PathMaker} from "../lib/PathMaker.ts";
 import {GAME_WIDTH} from "../../scripts/Util.ts";
-import {AppColors, phaserColor} from "../../scripts/Colors.ts";
 
 export class Gameplay_EchoesOfAncientLore extends Level { // Renamed class
     constructor() {
@@ -47,18 +46,9 @@ export class Gameplay_EchoesOfAncientLore extends Level { // Renamed class
         };
     }
 
-    protected getLevelSpecificElements() {
-        const riftElements = this.glitchManager.drawRiftElements(600, 675, 2.85, Phaser.Math.FloatBetween(0.3, 0.7), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(0, Math.PI * 2));
-        this.glitchManager.animateRiftIdle(riftElements);
-        this.rifts.push(riftElements);
-
-        return [
-            riftElements.core,
-            riftElements.innerGlow,
-            riftElements.outerGlow,
-            ...riftElements.rays,
-            ...riftElements.fragments
-        ]
+    create() {
+        super.create();
+        this.createRift(600, 675, 'gradient');
     }
 
     getWaveConfig(wave: number): {

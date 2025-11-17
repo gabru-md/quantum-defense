@@ -21,7 +21,10 @@ import {
 } from '../../scripts/TextureUtils';
 import { LevelNames } from './LevelNames.ts';
 import { BackgroundEffectsManager } from '../../effects/BackgroundEffectsManager.ts';
-import {GlitchAnnihilationEffect, RiftElements} from "../../effects/GlitchAnnihilationEffect.ts"; // Import the new manager
+import {Rift, RiftType} from "../../entities/Rift.ts";
+import {RiftWave} from "../../entities/RiftWave.ts";
+import {QuantumEcho} from "../../entities/QuantumEcho.ts";
+import {GlitchAnnihilationEffect} from "../../effects/GlitchAnnihilationEffect.ts";
 
 export abstract class Level extends Phaser.Scene {
     hud: HudManager;
@@ -32,11 +35,13 @@ export abstract class Level extends Phaser.Scene {
     pathsManager: PathsManager;
     playerManager: PlayerManager;
     audioManager: AudioManager;
-    backgroundEffectsManager: BackgroundEffectsManager; // Add the new manager
+    backgroundEffectsManager: BackgroundEffectsManager;
+    glitchManager: GlitchAnnihilationEffect;
     isLoaded: boolean = false;
     protected levelElements: Phaser.GameObjects.GameObject[] = [];
-    glitchManager: GlitchAnnihilationEffect;
-    public rifts: RiftElements[] = [];
+    public rifts!: Phaser.GameObjects.Group;
+    public riftWaves!: Phaser.GameObjects.Group;
+    public quantumEchoes!: Phaser.GameObjects.Group;
 
     abstract getWaveConfig(wave: number): {
         type: string;
@@ -51,27 +56,27 @@ export abstract class Level extends Phaser.Scene {
 
     abstract definePaths(): { [key: string]: Phaser.Curves.Path };
 
-    abstract nextScene(): LevelNames; // Changed return type to LevelNames
+    abstract nextScene(): LevelNames;
 
-    public fetchNextScene(): LevelNames { // Changed return type to LevelNames
+    public fetchNextScene(): LevelNames {
         let nextScene = this.nextScene();
         if(EXIT_TO_MENU) {
-            nextScene = LevelNames.MainMenu; // Changed to LevelNames.MainMenu
+            nextScene = LevelNames.MainMenu;
         }
         return nextScene;
     }
 
     isPositionBuildable(x: number, y: number): { buildable: boolean; reason?: string } {
-        for (const rift of this.rifts) {
-            const distance = Phaser.Math.Distance.Between(x, y, rift.centerX, rift.centerY);
-            if (distance < 100 * rift.scaleFactor) {
+        for (const rift of this.rifts.getChildren() as Rift[]) {
+            const distance = Phaser.Math.Distance.Between(x, y, rift.x, rift.y);
+            if (distance < 100 * rift.scaleFactor) { // Use scaleFactor from rift
                 return {buildable: false, reason: 'Too close to a rift!'};
             }
         }
         return {buildable: true};
     }
 
-    protected constructor(key: LevelNames) { // Changed key type to LevelNames
+    protected constructor(key: LevelNames) {
         super({ key });
     }
 
@@ -94,7 +99,6 @@ export abstract class Level extends Phaser.Scene {
 
         this.state.level = this.scene.key;
         this.state.baseHealth = 100;
-        // The tutorial now handles its own energy, so default to 350 for other levels
         this.state.energy = 350;
     }
 
@@ -104,10 +108,14 @@ export abstract class Level extends Phaser.Scene {
     }
 
     public create(): void {
-        this.physics.resume(); // Resume physics on scene creation
+        this.physics.resume();
         this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
-        this.backgroundEffectsManager.start(); // Start the background effects
+        this.backgroundEffectsManager.start();
+
+        this.rifts = this.add.group({ classType: Rift, runChildUpdate: true });
+        this.riftWaves = this.add.group({ classType: RiftWave, runChildUpdate: true });
+        this.quantumEchoes = this.add.group({ classType: QuantumEcho, runChildUpdate: true });
 
         const hudElements = this.hud.setup();
         const pathElements = this.pathsManager.setup();
@@ -121,11 +129,17 @@ export abstract class Level extends Phaser.Scene {
 
         // @ts-ignore
         this.input.keyboard.on('keydown-ESC', () => {
-            this.easeOutAndStartNextScene(LevelNames.MainMenu); // Changed to LevelNames.MainMenu
+            this.easeOutAndStartNextScene(LevelNames.MainMenu);
         });
 
         this.events.on('gameOver', this.handleGameOver, this);
         this.events.on('shutdown', this.shutdown, this);
+    }
+
+    protected createRift(x: number, y: number, type: RiftType): Rift {
+        const rift = new Rift(this, x, y, type);
+        this.rifts.add(rift);
+        return rift;
     }
 
     private animateGameElements(
@@ -150,9 +164,9 @@ export abstract class Level extends Phaser.Scene {
             ...hudElements.towers,
             ...hudElements.help,
             ...hudElements.separators,
-            ...pathElements.path,   // Correctly spread the path graphics array
-            ...pathElements.start, // Correctly spread the start graphics array
-            ...pathElements.end,   // Correctly spread the end graphics array
+            ...pathElements.path,
+            ...pathElements.start,
+            ...pathElements.end,
             player,
             ...hudElements.hudSeparators,
             ...(levelSpecificElements || [])
@@ -191,7 +205,6 @@ export abstract class Level extends Phaser.Scene {
 
         this.time.delayedCall(delay, () => {
             this.isLoaded = true;
-            // Only start wave 1 automatically if it's not the tutorial level
             if (this.scene.key !== LevelNames.Gameplay_Tutorial) {
                 this.time.delayedCall(2000, () => {
                     this.hud.info('Incoming First Wave', AppColors.UI_MESSAGE_ERROR, () => {
@@ -208,25 +221,25 @@ export abstract class Level extends Phaser.Scene {
 
     public update(time: number, delta: number): void {
         if (!this.isLoaded || this.waveManager.gameOver) return;
-        // Only update wave manager if it's not the tutorial level (tutorial handles its own waves)
         if (this.scene.key !== LevelNames.Gameplay_Tutorial) {
             this.waveManager.update(time, delta);
         }
         this.towerManager.update(time, delta);
         this.playerManager.update(time, delta);
         this.hud.update();
+        this.rifts.getChildren().forEach(rift => rift.update(time, delta));
     }
 
     private handleGameOver(): void {
-        if (this.waveManager.gameOver) return; // Prevent multiple triggers
+        if (this.waveManager.gameOver) return;
         this.waveManager.gameOver = true;
         this.physics.pause();
         this.hud.info('GAME OVER!', AppColors.UI_MESSAGE_ERROR, () => {
-            this.easeOutAndStartNextScene(this.scene.key as LevelNames); // Cast to LevelNames
+            this.easeOutAndStartNextScene(this.scene.key as LevelNames);
         });
     }
 
-    easeOutAndStartNextScene(sceneKey: LevelNames): void { // Changed sceneKey type to LevelNames
+    easeOutAndStartNextScene(sceneKey: LevelNames): void {
         const allActiveElements: Phaser.GameObjects.GameObject[] = [
             ...this.levelElements,
             ...this.towerManager.towers.getChildren(),
@@ -234,6 +247,9 @@ export abstract class Level extends Phaser.Scene {
             ...this.towerManager.bombs.getChildren(),
             ...this.waveManager.enemies.getChildren(),
             ...this.waveManager.specialEnemies.getChildren(),
+            ...this.rifts.getChildren(),
+            ...this.riftWaves.getChildren(),
+            ...this.quantumEchoes.getChildren(),
         ];
 
         this.tweens.add({
@@ -255,7 +271,7 @@ export abstract class Level extends Phaser.Scene {
         this.towerManager.destroy();
         this.hud.destroy();
         this.audioManager.destroy();
-        this.backgroundEffectsManager.stop(); // Stop the background effects
+        this.backgroundEffectsManager.stop();
     }
 
     private createTextures(): void {

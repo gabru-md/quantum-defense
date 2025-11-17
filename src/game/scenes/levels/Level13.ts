@@ -2,8 +2,6 @@ import {Level} from '../lib/Level.ts';
 import {LevelNames} from '../lib/LevelNames.ts';
 import {PathMaker} from "../lib/PathMaker.ts";
 import {GAME_HEIGHT, GAME_WIDTH} from "../../scripts/Util.ts";
-import Phaser from "phaser";
-import {AppColors, phaserColor} from "../../scripts/Colors.ts";
 
 export class Gameplay_DesigningTheBane extends Level { // Renamed class
     constructor() {
@@ -39,27 +37,10 @@ export class Gameplay_DesigningTheBane extends Level { // Renamed class
         };
     }
 
-    protected getLevelSpecificElements() {
-        const riftElements = this.glitchManager.drawRiftElements(600, 675, 2.85, Phaser.Math.FloatBetween(0.3, 0.7), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(0, Math.PI * 2));
-        this.glitchManager.animateRiftIdle(riftElements);
-        this.rifts.push(riftElements);
-
-        const riftElements2 = this.glitchManager.drawRiftElements(1050, 350, 1.5, Phaser.Math.FloatBetween(0.3, 0.5), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(0, Math.PI * 2));
-        this.glitchManager.animateRiftIdle(riftElements2);
-        this.rifts.push(riftElements2);
-
-        return [
-            riftElements.core,
-            riftElements.innerGlow,
-            riftElements.outerGlow,
-            ...riftElements.rays,
-            ...riftElements.fragments,
-            riftElements2.core,
-            riftElements2.innerGlow,
-            riftElements2.outerGlow,
-            ...riftElements2.rays,
-            ...riftElements2.fragments
-        ]
+    create() {
+        super.create();
+        this.createRift(600, 675, 'gradient');
+        this.createRift(1050, 350, 'static');
     }
 
     getWaveConfig(wave: number): {

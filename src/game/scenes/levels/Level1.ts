@@ -2,18 +2,11 @@ import * as Phaser from 'phaser';
 import {Level} from '../lib/Level.ts';
 import {GAME_HEIGHT, GAME_WIDTH} from '../../scripts/Util.ts';
 import {LevelNames} from '../lib/LevelNames.ts';
-import {GlitchAnnihilationEffect} from "../../effects/GlitchAnnihilationEffect.ts";
-import {AppColors, phaserColor} from "../../scripts/Colors.ts";
 import {PathMaker} from "../lib/PathMaker.ts";
 
 export class Gameplay_TheGlitchAnnihilation extends Level { // Renamed class
     constructor() {
         super(LevelNames.Gameplay_TheGlitchAnnihilation); // Updated super call
-    }
-
-    init() {
-        super.init();
-        this.glitchManager = new GlitchAnnihilationEffect(this);
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {
@@ -26,18 +19,9 @@ export class Gameplay_TheGlitchAnnihilation extends Level { // Renamed class
         return {first: path};
     }
 
-    getLevelSpecificElements(): Phaser.GameObjects.GameObject[] {
-        const riftElements = this.glitchManager.drawRiftElements(GAME_WIDTH / 2, GAME_HEIGHT / 2, 3, Phaser.Math.FloatBetween(0.5, 0.87), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(0, Math.PI * 2));
-        this.glitchManager.animateRiftIdle(riftElements);
-        this.rifts.push(riftElements);
-
-        return [
-            riftElements.core,
-            riftElements.innerGlow,
-            riftElements.outerGlow,
-            ...riftElements.rays,
-            ...riftElements.fragments
-        ];
+    create() {
+        super.create();
+        this.createRift(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'gradient');
     }
 
     getWaveConfig(wave: number): {

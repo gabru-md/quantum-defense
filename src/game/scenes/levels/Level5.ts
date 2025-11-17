@@ -3,7 +3,6 @@ import {Level} from '../lib/Level.ts';
 import {GAME_HEIGHT, GAME_WIDTH} from '../../scripts/Util.ts';
 import {LevelNames} from '../lib/LevelNames.ts';
 import {PathMaker} from "../lib/PathMaker.ts";
-import {AppColors, phaserColor} from "../../scripts/Colors.ts";
 
 export class Gameplay_VolatileInterference extends Level { // Renamed class
     constructor() {
@@ -36,36 +35,11 @@ export class Gameplay_VolatileInterference extends Level { // Renamed class
         return path;
     }
 
-    getLevelSpecificElements(): Phaser.GameObjects.GameObject[] {
-        const riftElements = this.glitchManager.drawRiftElements(425, GAME_HEIGHT / 2, 3.5, Phaser.Math.FloatBetween(0.5, 0.87), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(0, Math.PI * 2));
-        this.glitchManager.animateRiftIdle(riftElements);
-        this.rifts.push(riftElements);
-
-        const riftElements2 = this.glitchManager.drawRiftElements(1080, GAME_HEIGHT - 100, 1.5, Phaser.Math.FloatBetween(0.5, 0.87), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(Math.PI / 2, Math.PI * 2));
-        this.glitchManager.animateRiftIdle(riftElements2);
-        this.rifts.push(riftElements2);
-
-        const riftElements3 = this.glitchManager.drawRiftElements(925, GAME_HEIGHT / 2 - 225, 1.5, Phaser.Math.FloatBetween(0.5, 0.87), phaserColor(AppColors.PLAYER), phaserColor(AppColors.SPECIAL_ENEMY), Phaser.Math.FloatBetween(Math.PI / 2, Math.PI * 2));
-        this.glitchManager.animateRiftIdle(riftElements3);
-        this.rifts.push(riftElements3);
-
-        return [
-            riftElements.core,
-            riftElements.innerGlow,
-            riftElements.outerGlow,
-            ...riftElements.rays,
-            ...riftElements.fragments,
-            riftElements2.core,
-            riftElements2.innerGlow,
-            riftElements2.outerGlow,
-            ...riftElements2.rays,
-            ...riftElements2.fragments,
-            riftElements3.core,
-            riftElements3.innerGlow,
-            riftElements3.outerGlow,
-            ...riftElements3.rays,
-            ...riftElements3.fragments
-        ];
+    create() {
+        super.create();
+        this.createRift(425, GAME_HEIGHT / 2, 'gradient');
+        this.createRift(1080, GAME_HEIGHT - 100, 'static');
+        this.createRift(925, GAME_HEIGHT / 2 - 225, 'player');
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {
