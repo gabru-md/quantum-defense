@@ -4,6 +4,7 @@ import {GAME_HEIGHT, GAME_WIDTH, HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {LevelNames} from '../lib/LevelNames.ts';
 import Phaser from 'phaser';
 import {EnemyConfigs, SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
+import {Rift} from "../../entities/Rift.ts";
 
 type TutorialStep = {
     text: string;
@@ -138,6 +139,7 @@ export class Gameplay_Tutorial extends Level { // Renamed class
         });
 
         this.events.on('shutdown', this.shutdown, this);
+        this.rifts = this.add.group({ classType: Rift, runChildUpdate: true });
     }
 
     private hideAllElements(): void {
@@ -145,9 +147,10 @@ export class Gameplay_Tutorial extends Level { // Renamed class
         Object.values(this.hudElements).flat().forEach(el => el.setVisible(false));
         Object.values(this.pathElements).flat().forEach(el => el.setVisible(false));
         this.playerManager.player.setVisible(false);
-        if (this.playerManager.player.body) {
-            this.playerManager.player.body.enable = false;
-        }
+
+        // Remove the player from the physics world
+        // @ts-ignore
+        this.physics.world.disableBody(this.playerManager.player.body);
     }
 
     private createTutorialUI(): void {
@@ -285,9 +288,10 @@ export class Gameplay_Tutorial extends Level { // Renamed class
 
         // Step 7: Show player
         this.playerManager.player.setVisible(true);
-        if (this.playerManager.player.body) {
-            this.playerManager.player.body.enable = true;
-        }
+
+        //Re-enable the player to the physics world
+        // this.physics.world.enableBody(this.playerManager.player);
+
         await this.showStep({
             text: "This is you, Guardian! The sentient protector of the Nexus.", isHudInfo: true,
             waitForSpacePress: true

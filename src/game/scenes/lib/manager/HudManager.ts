@@ -136,7 +136,7 @@ export class HudManager extends Manager {
     private createMainStatsPanel(): Phaser.GameObjects.GameObject[] {
         const hudX = GAME_WIDTH + 15;
         const panelWidth = WIDTH - GAME_WIDTH - 30;
-        const panelHeight = 210; // Increased height to accommodate new text
+        const panelHeight = 180; // Increased height to accommodate new text
         const startY = 10;
 
         const panel = this.scene.add.graphics();
@@ -171,7 +171,7 @@ export class HudManager extends Manager {
 
     private createTowerSelectionPanel(): Phaser.GameObjects.GameObject[] {
         const hudX = GAME_WIDTH + 15;
-        const startY = 230; // Adjusted startY to account for increased main stats panel height
+        const startY = 200; // Adjusted startY to account for increased main stats panel height
         const panelWidth = WIDTH - GAME_WIDTH - 30;
         const panelHeight = 600;
 

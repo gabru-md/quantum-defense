@@ -67,13 +67,12 @@ export abstract class Level extends Phaser.Scene {
     }
 
     isPositionBuildable(x: number, y: number): { buildable: boolean; reason?: string } {
-        for (const rift of this.rifts.getChildren() as Rift[]) {
-            // if(rift.riftType === 'dormant') {
-            //     continue;
-            // }
-            const distance = Phaser.Math.Distance.Between(x, y, rift.x, rift.y);
-            if (distance < 200 * rift.scaleFactor) { // Use scaleFactor from rift
-                return {buildable: false, reason: 'Too close to a rift!'};
+        if(this.rifts.getLength() > 0) {
+            for (const rift of this.rifts.getChildren() as Rift[]) {
+                const distance = Phaser.Math.Distance.Between(x, y, rift.x, rift.y);
+                if (distance < 200 * rift.scaleFactor) { // Use scaleFactor from rift
+                    return {buildable: false, reason: 'Too close to a rift!'};
+                }
             }
         }
         return {buildable: true};
