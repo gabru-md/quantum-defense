@@ -1,8 +1,8 @@
-import { GameObject } from '../core/GameObject.ts';
+import {GameObject} from '../core/GameObject.ts';
 import * as Phaser from 'phaser';
-import { RiftWave } from './RiftWave.ts';
-import { QuantumEcho } from './QuantumEcho.ts';
-import { AppColors, phaserColor } from '../scripts/Colors.ts';
+import {RiftWave} from './RiftWave.ts';
+import {QuantumEcho} from './QuantumEcho.ts';
+import {AppColors, phaserColor} from '../scripts/Colors.ts';
 import {RiftElements} from "../effects/GlitchAnnihilationEffect.ts";
 import {Level} from "../scenes/lib/Level.ts";
 
@@ -51,14 +51,22 @@ export class Rift extends GameObject {
 
     private emitWave(): void {
         let waveType = this.riftType;
+        let waveColor = this.riftColor;
+
         if (this.riftType === 'gradient') {
-            waveType = Math.random() < 0.5 ? 'static' : 'player';
+            if (Math.random() < 0.5) {
+                waveType = 'static';
+                waveColor = phaserColor(AppColors.SPECIAL_ENEMY);
+            } else {
+                waveType = 'player';
+                waveColor = phaserColor(AppColors.PLAYER);
+            }
         }
 
-        const wave = new RiftWave(this.scene, this.x, this.y, waveType, 300, 100, this.riftColor);
+        const wave = new RiftWave(this.scene, this.x, this.y, waveType, 300 * this.scaleFactor, 125 * this.scaleFactor, waveColor);
         (this.scene as Level).riftWaves.add(wave);
 
-        const echo = new QuantumEcho(this.scene, this.x, this.y, this.riftColor);
+        const echo = new QuantumEcho(this.scene, this.x, this.y, waveColor);
         (this.scene as Level).quantumEchoes.add(echo);
     }
 

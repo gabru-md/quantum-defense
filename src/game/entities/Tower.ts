@@ -1,10 +1,10 @@
-import { GameObject } from '../core/GameObject.ts';
+import {GameObject} from '../core/GameObject.ts';
 import * as Phaser from 'phaser';
-import { Health } from '../components/Health.ts';
-import { VisualPulse } from '../components/VisualPulse.ts';
-import { AppColors, phaserColor } from '../scripts/Colors.ts';
-import { LaserAttack } from '../components/LaserAttack.ts';
-import { BombAttack } from '../components/BombAttack.ts';
+import {Health} from '../components/Health.ts';
+import {VisualPulse} from '../components/VisualPulse.ts';
+import {AppColors, phaserColor} from '../scripts/Colors.ts';
+import {LaserAttack} from '../components/LaserAttack.ts';
+import {BombAttack} from '../components/BombAttack.ts';
 import {TowerConfigs, TowerConfigType} from '../config/TowerConfigs.ts'; // Import TowerConfigs
 
 export interface TowerConfig {
@@ -22,7 +22,6 @@ export class Tower extends GameObject {
     private visualPulseComponent!: VisualPulse;
     private originalPulseColor: number;
     private towerConfigType: TowerConfigType;
-    private isDisabled: boolean = false;
 
     constructor(config: TowerConfig) {
         super(config.scene, config.x, config.y, config.texture);
@@ -89,6 +88,9 @@ export class Tower extends GameObject {
 
     // add a deactivate function to deactivate the tower
     public deactivateTower(): void {
+        if (!this.active) {
+            return;
+        }
         this.healthComponent = this.getComponent(Health) as Health;
         this.healthComponent.takeDamage(this.healthComponent.maxHealth); // Ensure health is 0
         this.setActive(false);
@@ -101,7 +103,7 @@ export class Tower extends GameObject {
     }
 
     public enableVisualPulse(): void {
-        this.addComponent(new VisualPulse(
+        this.addComponentOverriding(new VisualPulse(
             this.towerConfigType.pulse.color,
             this.towerConfigType.pulse.pulseDelay,
             this.towerConfigType.pulse.pulseDuration,
@@ -129,14 +131,21 @@ export class Tower extends GameObject {
         return healthComponent && healthComponent.currentHealth < healthComponent.maxHealth;
     }
 
-    public enable(): void {
-        if (!this.isDisabled) return;
-        this.isDisabled = false;
+    public revive(): void {
+        if (this.active) {
+            return;
+        }
+        this.healthComponent._currentHealth = this.healthComponent.maxHealth;
+        this.setActive(true);
         this.setAlpha(1);
-        const attackComponents = [this.getComponent(LaserAttack), this.getComponent(BombAttack)];
+        const attackComponents = [
+            this.getComponent(LaserAttack),
+            this.getComponent(BombAttack),
+        ];
         attackComponents.forEach((c) => {
             if (c) c.enabled = true;
         });
+        this.reviveProgress = 0;
         this.enableVisualPulse()
         this.setOriginalPulseColor();
     }

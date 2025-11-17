@@ -3,8 +3,6 @@ import * as Phaser from 'phaser';
 import { FindNearestTower } from './FindNearestTower.ts';
 import { Tower } from '../entities/Tower.ts';
 import { Health } from './Health.ts';
-import { LaserAttack } from './LaserAttack.ts';
-import { BombAttack } from './BombAttack.ts';
 import { AppColors } from '../scripts/Colors.ts';
 import { SpecialEnemy } from '../entities/SpecialEnemy.ts';
 import { createWaveEffect } from '../utils/WaveEffectHelper.ts';
@@ -136,20 +134,8 @@ export class ResonanceWave extends Component {
                     tower.setAlpha(newAlpha);
 
                     if (tower.reviveProgress >= 3) {
-                        healthComponent._currentHealth = healthComponent.maxHealth;
-                        tower.setActive(true);
-                        tower.setAlpha(1);
-                        const attackComponents = [
-                            tower.getComponent(LaserAttack),
-                            tower.getComponent(BombAttack),
-                        ];
-                        attackComponents.forEach((c) => {
-                            if (c) c.enabled = true;
-                        });
-                        tower.reviveProgress = 0;
+                        tower.revive();
                         this.gameObject.scene.events.emit('towerRevived'); // Emit event for tutorial
-                        tower.enableVisualPulse()
-                        tower.setOriginalPulseColor();
                         console.log(`[ResonanceWave] Tower fully revived: ${tower.texture.key}`);
                     } else {
                         console.log(`[ResonanceWave] Tower partially revived. Progress: ${tower.reviveProgress}`);

@@ -35,6 +35,15 @@ export class GameObject extends Phaser.GameObjects.Sprite {
         }
     }
 
+
+    public addComponentOverriding(component: Component): void {
+        const existingComponent = this.components.find((c) => c instanceof component.constructor);
+        if (existingComponent) {
+            this.deleteComponent(existingComponent);
+        }
+        this.addComponent(component);
+    }
+
     /**
      * Gets a component of the specified type from the GameObject.
      * @param type The type of the component to retrieve.

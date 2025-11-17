@@ -113,6 +113,7 @@ export class VisualPulse extends Component {
     }
 
     public destroy(): void {
+        this.enabled = false;
         this.pulseTweenList.forEach((tween) => {
             tween.stop();
         });

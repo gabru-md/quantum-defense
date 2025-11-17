@@ -112,13 +112,12 @@ export class CollisionManager extends Manager {
     }
 
     protected handleRiftWaveTowerCollision(wave: RiftWave, tower: Tower): void {
-        console.log(wave.riftType);
         if (wave.riftType === 'static') {
             console.log(1);
             tower.deactivateTower();
         } else if (wave.riftType === 'player') {
             console.log(2);
-            tower.enable();
+            tower.revive();
         } else {
             console.log(3);
         }
