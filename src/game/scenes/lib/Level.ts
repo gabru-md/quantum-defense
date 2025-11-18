@@ -209,10 +209,7 @@ export abstract class Level extends Phaser.Scene {
         fadeIn(hudElements.towers, 0);
         fadeIn(hudElements.help, 0);
 
-        // Only fade in player if it's NOT the tutorial
-        if (this.scene.key !== LevelNames.Gameplay_Tutorial) {
-            fadeIn(player);
-        }
+        fadeIn(player);
 
         fadeIn(pathElements.start);
         fadeIn(pathElements.end);
@@ -224,9 +221,11 @@ export abstract class Level extends Phaser.Scene {
             this.isLoaded = true;
 
             this.time.delayedCall(2000, () => {
-                this.hud.info('Incoming First Wave', AppColors.UI_MESSAGE_ERROR, () => {
-                    this.waveManager.startWave(1);
-                });
+                if(this.scene.key !== LevelNames.Gameplay_Tutorial) {
+                    this.hud.info('Incoming First Wave', AppColors.UI_MESSAGE_ERROR, () => {
+                        this.waveManager.startWave(1);
+                    });
+                }
             });
 
         });
@@ -303,5 +302,6 @@ export abstract class Level extends Phaser.Scene {
         createSpecialEnemyTexture(this, 'specialEnemy', 24, AppColors.SPECIAL_ENEMY);
         createPlaceholderTexture(this, 'towerSlot', 32, 32, AppColors.UI_DISABLED);
         createRangePreviewTexture(this, 'rangePreview', 300, 'rgba(255, 255, 255, 0.05)');
+        createPlayerTexture(this, 'genie_texture', 2, AppColors.PLAYER);
     }
 }

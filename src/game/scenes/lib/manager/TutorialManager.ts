@@ -88,7 +88,7 @@ export class TutorialManager {
     private async executeStep(): Promise<void> {
         this.level.hud.hideInfo(); // Clear previous info messages
         this.level.hud.hideMarker(); // Hide any active markers
-        this.level.physics.pause(); // Pause physics by default for instructional steps
+        // this.level.physics.pause(); // Pause physics by default for instructional steps
         this.level.hud.showSpacebarPrompt(false); // Hide spacebar prompt by default
 
         const hudX = GAME_WIDTH + 15;
@@ -96,14 +96,17 @@ export class TutorialManager {
 
         switch (this.currentStep) {
             case TutorialStep.Start:
-                this.level.hud.info('Welcome, Guardian, to the Quantum Realm!', AppColors.UI_MESSAGE_INFO);
+                this.level.waveManager.pause();
+                this.level.hud.showGameBoundary(true);
+                this.level.hud.persistedInfo('Welcome, Guardian, to the Quantum Realm!', AppColors.UI_MESSAGE_INFO);
                 await this.waitForSpacePress();
                 this.currentStep = TutorialStep.ExplainHUD;
                 await this.executeStep();
                 break;
 
             case TutorialStep.ExplainHUD:
-                this.level.hud.info('On the right is your Genie-powered HUD. It provides vital information.', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.showHudBoundary(true);
+                this.level.hud.persistedInfo('On the right is your Genie-powered HUD. It provides vital information.', AppColors.UI_MESSAGE_INFO);
                 this.level.hud.showMarker(GAME_WIDTH, 0, WIDTH, GAME_HEIGHT, "HUD");
                 await this.waitForSpacePress();
                 this.level.hud.showStats(true); // Show stats section
@@ -112,7 +115,7 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.ExplainStats:
-                this.level.hud.info('This is where you can see your core stats: Level, Nexus Health, Energy, and Wave Progress.', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.persistedInfo('This is where you can see your core stats: Level, Nexus Health, Energy, and Wave Progress.', AppColors.UI_MESSAGE_INFO);
                 this.level.hud.showMarker(hudX, 10, hudX + hudPanelWidth, 190, "Your Stats");
                 await this.waitForSpacePress();
                 this.currentStep = TutorialStep.ExplainLevel;
@@ -120,7 +123,7 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.ExplainLevel:
-                this.level.hud.info('This is your current level. As you progress, the glitches become more formidable.', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.persistedInfo('This is your current level. As you progress, the glitches become more formidable.', AppColors.UI_MESSAGE_INFO);
                 this.level.hud.showMarker(hudX + 5, 58, hudX + hudPanelWidth - 5, 83, "Level");
                 await this.waitForSpacePress();
                 this.currentStep = TutorialStep.ExplainNexusHealth;
@@ -128,7 +131,7 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.ExplainNexusHealth:
-                this.level.hud.info('This is your Nexus\'s health, representing its structural integrity. If it reaches zero, the Nexus collapses, and the game is over.', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.persistedInfo('This is your Nexus\'s health, representing its structural integrity. If it reaches zero, the Nexus collapses, and the game is over.', AppColors.UI_MESSAGE_INFO);
                 this.level.hud.showMarker(hudX + 5, 83, hudX + hudPanelWidth - 5, 108, "Nexus Health");
                 await this.waitForSpacePress();
                 this.currentStep = TutorialStep.ExplainEnergy;
@@ -136,7 +139,7 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.ExplainEnergy:
-                this.level.hud.info('This is your Energy. It\'s the lifeblood of your defense. Gain Energy by eliminating Glitches. Use it to construct and repair your towers.', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.persistedInfo('This is your Energy. It\'s the lifeblood of your defense. Gain Energy by eliminating Glitches. Use it to construct and repair your towers.', AppColors.UI_MESSAGE_INFO);
                 this.level.hud.showMarker(hudX + 5, 108, hudX + hudPanelWidth - 5, 133, "Energy");
                 await this.waitForSpacePress();
                 this.currentStep = TutorialStep.ExplainWave;
@@ -144,7 +147,7 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.ExplainWave:
-                this.level.hud.info('This displays the current wave of Glitches. Each wave brings new challenges. Prepare accordingly!', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.persistedInfo('This displays the current wave of Glitches. Each wave brings new challenges. Prepare accordingly!', AppColors.UI_MESSAGE_INFO);
                 this.level.hud.showMarker(hudX + 5, 133, hudX + hudPanelWidth - 5, 158, "Wave");
                 await this.waitForSpacePress();
                 this.level.hud.showTowers(true); // Show towers section
@@ -153,7 +156,7 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.ExplainTowerArsenal:
-                this.level.hud.info('Now, let\'s examine your Tower Arsenal.', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.persistedInfo('Now, let\'s examine your Tower Arsenal.', AppColors.UI_MESSAGE_INFO);
                 this.level.hud.showMarker(hudX, 200, hudX + hudPanelWidth, 800, "Tower Arsenal");
                 await this.waitForSpacePress();
                 this.currentStep = TutorialStep.ExplainLaserTower;
@@ -161,7 +164,7 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.ExplainLaserTower:
-                this.level.hud.info('The Laser Tower projects concentrated particle beams. These beams travel in a straight line, dealing precise damage.', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.persistedInfo('The Laser Tower projects concentrated particle beams. These beams travel in a straight line, dealing precise damage.', AppColors.UI_MESSAGE_INFO);
                 this.level.hud.showMarker(hudX + 15, 250, hudX + hudPanelWidth - 15, 340, "Laser Tower");
                 await this.waitForSpacePress();
                 this.currentStep = TutorialStep.ExplainBombTower;
@@ -169,7 +172,7 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.ExplainBombTower:
-                this.level.hud.info('The Bomb Tower charges and releases a volatile particle explosion. Effective against groups of Glitches.', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.persistedInfo('The Bomb Tower charges and releases a volatile particle explosion. Effective against groups of Glitches.', AppColors.UI_MESSAGE_INFO);
                 this.level.hud.showMarker(hudX + 15, 350, hudX + hudPanelWidth - 15, 440, "Bomb Tower");
                 await this.waitForSpacePress();
                 this.currentStep = TutorialStep.ExplainSlowTower;
@@ -177,7 +180,7 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.ExplainSlowTower:
-                this.level.hud.info('The Slow Tower emits a continuous, disruptive wave that significantly reduces the speed of Glitches within its radius.', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.persistedInfo('The Slow Tower emits a continuous, disruptive wave that significantly reduces the speed of Glitches within its radius.', AppColors.UI_MESSAGE_INFO);
                 this.level.hud.showMarker(hudX + 15, 450, hudX + hudPanelWidth - 15, 540, "Slow Tower");
                 await this.waitForSpacePress();
                 this.currentStep = TutorialStep.ExplainDeselect;
@@ -185,7 +188,7 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.ExplainDeselect:
-                this.level.hud.info('Should you wish to deselect a tower, simply click on this button.', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.persistedInfo('Should you wish to deselect a tower, simply click on this button.', AppColors.UI_MESSAGE_INFO);
                 this.level.hud.showMarker(hudX + 40, 560, hudX + hudPanelWidth - 50, 615, "Deselect");
                 await this.waitForSpacePress();
                 this.level.hud.showHelp(true); // Show help section
@@ -194,24 +197,23 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.ExplainHelp:
-                this.level.hud.info('This section provides helpful reminders and tips to aid you in your defense!', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.persistedInfo('This section provides helpful reminders and tips to aid you in your defense!', AppColors.UI_MESSAGE_INFO);
                 this.level.hud.showMarker(hudX, GAME_HEIGHT - 270, hudX + hudPanelWidth, GAME_HEIGHT - 20, "Help");
                 await this.waitForSpacePress();
-                this.level.hud.hideAllElements(); // Hide HUD elements for game area explanation
                 this.player.setVisible(true);
                 this.currentStep = TutorialStep.ExplainPlayer;
                 await this.executeStep();
                 break;
 
             case TutorialStep.ExplainPlayer:
-                this.level.hud.info('This is you, Guardian! The sentient protector of the Nexus.', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.persistedInfo('This is you, Guardian! The sentient protector of the Nexus.', AppColors.UI_MESSAGE_INFO);
                 await this.waitForSpacePress();
                 this.currentStep = TutorialStep.ExplainPlayerMovement;
                 await this.executeStep();
                 break;
 
             case TutorialStep.ExplainPlayerMovement:
-                this.level.hud.info('Navigate the battlefield using the WASD keys.', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.persistedInfo('Navigate the battlefield using the WASD keys.', AppColors.UI_MESSAGE_INFO);
                 this.level.physics.resume(); // Allow player movement
                 await this.waitForEvent('playerMoved');
                 this.level.physics.pause();
@@ -221,7 +223,7 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.ExplainStaticDen:
-                this.level.hud.info('This is Static\'s Den, the source of the Glitch incursions. All Glitches spawn from here.', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.persistedInfo('This is Static\'s Den, the source of the Glitch incursions. All Glitches spawn from here.', AppColors.UI_MESSAGE_INFO);
                 this.level.hud.showMarker(5, GAME_HEIGHT / 2 - 48, 95, GAME_HEIGHT / 2 + 48, "Static's Den");
                 await this.waitForSpacePress();
                 this.level.pathsManager.showEnd(true);
@@ -230,7 +232,7 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.ExplainNexus:
-                this.level.hud.info('This is the Nexus, the heart of the Quantum Realm. Protect it at all costs!', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.persistedInfo('This is the Nexus, the heart of the Quantum Realm. Protect it at all costs!', AppColors.UI_MESSAGE_INFO);
                 this.level.hud.showMarker(GAME_WIDTH - 95, GAME_HEIGHT / 2 - 48, GAME_WIDTH - 5, GAME_HEIGHT / 2 + 48, "The Nexus");
                 await this.waitForSpacePress();
                 this.level.pathsManager.showPath(true);
@@ -239,16 +241,15 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.ExplainPath:
-                this.level.hud.info('This is the path Glitches will take from Static\'s Den to the Nexus.', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.persistedInfo('This is the path Glitches will take from Static\'s Den to the Nexus.', AppColors.UI_MESSAGE_INFO);
                 await this.waitForSpacePress();
                 this.level.hud.hideMarker();
-                this.level.hud.showAllElements(); // Show HUD elements again
                 this.currentStep = TutorialStep.SelectLaserTower; // Re-use this step for actual gameplay
                 await this.executeStep();
                 break;
 
             case TutorialStep.SelectLaserTower: // Actual gameplay starts here
-                this.level.hud.info('Select the Laser Tower from the menu on the right.', AppColors.UI_MESSAGE_INFO, undefined, false);
+                this.level.hud.persistedInfo('Select the Laser Tower from the menu on the right.', AppColors.UI_MESSAGE_INFO);
                 this.level.hud.enableTowerSelection();
                 await this.waitForEvent('towerSelected');
                 this.currentStep = TutorialStep.PlaceFirstTower;
@@ -256,7 +257,7 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.PlaceFirstTower:
-                this.level.hud.info('Now, place the tower near the path to defend against the first wave.', AppColors.UI_MESSAGE_INFO, undefined, false);
+                this.level.hud.persistedInfo('Now, place the tower near the path to defend against the first wave.', AppColors.UI_MESSAGE_INFO);
                 this.level.towerManager.enablePlacement();
                 await this.waitForEvent('towerPlaced');
                 this.level.hud.disableTowerSelection();
@@ -266,16 +267,18 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.FirstWave:
-                this.level.hud.info('Here come the Glitches! Your tower will attack automatically.', AppColors.UI_MESSAGE_SUCCESS);
+                this.level.hud.persistedInfo('Here come the Glitches! Your tower will attack automatically.', AppColors.UI_MESSAGE_SUCCESS);
                 this.level.physics.resume();
+                this.level.waveManager.resume();
                 this.level.waveManager.startWave(1);
                 await this.waitForEvent('waveCompleted');
+                this.level.waveManager.pause();
                 this.currentStep = TutorialStep.IntroduceFastEnemy;
                 await this.executeStep();
                 break;
 
             case TutorialStep.IntroduceFastEnemy:
-                this.level.hud.info('Faster enemies are approaching! Select another tower to help.', AppColors.UI_MESSAGE_INFO, undefined, false);
+                this.level.hud.persistedInfo('Faster enemies are approaching! Select another tower to help.', AppColors.UI_MESSAGE_INFO);
                 this.level.hud.enableTowerSelection();
                 await this.waitForEvent('towerSelected');
                 this.currentStep = TutorialStep.PlaceSecondTower;
@@ -283,7 +286,7 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.PlaceSecondTower:
-                this.level.hud.info('Place your second tower strategically.', AppColors.UI_MESSAGE_INFO, undefined, false);
+                this.level.hud.persistedInfo('Place your second tower strategically.', AppColors.UI_MESSAGE_INFO);
                 this.level.towerManager.enablePlacement();
                 await this.waitForEvent('towerPlaced');
                 this.level.hud.disableTowerSelection();
@@ -293,35 +296,49 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.SecondWave:
-                this.level.hud.info('Excellent! Let\'s see how your defenses hold up.', AppColors.UI_MESSAGE_SUCCESS);
+                this.level.hud.persistedInfo('Excellent! Let\'s see how your defenses hold up.', AppColors.UI_MESSAGE_SUCCESS);
                 this.level.physics.resume();
+                this.level.waveManager.resume();
+                this.level.hud.enableTowerSelection();
+                this.level.towerManager.enablePlacement();
                 this.level.waveManager.startWave(2);
                 await this.waitForEvent('waveCompleted');
+                this.level.waveManager.pause();
+                this.level.hud.disableTowerSelection();
+                this.level.towerManager.disablePlacement();
                 this.currentStep = TutorialStep.IntroduceTankEnemy;
                 await this.executeStep();
                 break;
 
             case TutorialStep.IntroduceTankEnemy:
-                this.level.hud.info('These are Tank Glitches. They are slow but have high health. Prepare for them!', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.persistedInfo('These are Tank Glitches. They are slow but have high health. Prepare for them!', AppColors.UI_MESSAGE_INFO);
                 this.level.physics.resume();
+                this.level.waveManager.resume();
+                this.level.hud.enableTowerSelection();
+                this.level.towerManager.enablePlacement();
                 this.level.waveManager.startWave(3);
                 await this.waitForEvent('waveCompleted');
+                this.level.waveManager.pause();
+                this.level.hud.disableTowerSelection();
+                this.level.towerManager.disablePlacement();
                 this.currentStep = TutorialStep.IntroducePhantom;
                 await this.executeStep();
                 break;
 
             case TutorialStep.IntroducePhantom:
-                this.level.hud.info('Watch out! A Phantom is on the move. It disables towers! Destroy it quickly!', AppColors.UI_MESSAGE_ERROR);
+                this.level.hud.persistedInfo('Watch out! A Phantom is on the move. It disables towers! Destroy it quickly!', AppColors.UI_MESSAGE_ERROR);
                 this.level.physics.resume();
+                this.level.waveManager.resume();
                 this.level.waveManager.startWave(4);
                 await this.waitForEvent('towerDeactivated'); // Wait for a tower to be deactivated
+                this.level.waveManager.pause();
                 this.currentStep = TutorialStep.TowerDeactivated;
                 await this.executeStep();
                 break;
 
             case TutorialStep.TowerDeactivated:
                 this.level.waveManager.pause(); // Pause wave manager
-                this.level.hud.info('A tower has been disabled! Approach it and press "E" to revive it.', AppColors.UI_MESSAGE_ERROR, undefined, false);
+                this.level.hud.persistedInfo('A tower has been disabled! Approach it and press "E" to revive it.', AppColors.UI_MESSAGE_ERROR);
                 this.level.physics.resume(); // Allow player movement
                 await this.waitForEvent('towerRevived');
                 this.currentStep = TutorialStep.TowerRevived;
@@ -330,24 +347,29 @@ export class TutorialManager {
 
             case TutorialStep.TowerRevived:
                 this.level.waveManager.resume();
-                this.level.hud.info('Tower revived! Great job, Guardian!', AppColors.UI_MESSAGE_SUCCESS);
-                this.level.time.delayedCall(2000, () => {
-                    this.currentStep = TutorialStep.FinalWave;
-                    this.executeStep();
-                });
+                this.level.hud.persistedInfo('Tower revived! Great job, Guardian!', AppColors.UI_MESSAGE_SUCCESS);
+                this.level.waveManager.pause();
+                this.currentStep = TutorialStep.FinalWave;
+                await this.executeStep();
                 break;
 
             case TutorialStep.FinalWave:
-                this.level.hud.info('Clear this final wave to complete your training!', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.persistedInfo('Clear this final wave to complete your training!', AppColors.UI_MESSAGE_INFO);
                 this.level.physics.resume();
+                this.level.hud.enableTowerSelection();
+                this.level.towerManager.enablePlacement();
+                this.level.waveManager.resume();
                 this.level.waveManager.startWave(5);
                 await this.waitForEvent('waveCompleted');
+                this.level.waveManager.pause();
+                this.level.hud.disableTowerSelection();
+                this.level.towerManager.disablePlacement();
                 this.currentStep = TutorialStep.Complete;
                 await this.executeStep();
                 break;
 
             case TutorialStep.Complete:
-                this.level.hud.info('Tutorial Complete! The Quantum Realm is in your hands.', AppColors.UI_MESSAGE_SUCCESS);
+                this.level.hud.persistedInfo('Tutorial Complete! The Quantum Realm is in your hands.', AppColors.UI_MESSAGE_SUCCESS);
                 this.level.time.delayedCall(3000, () => {
                     this.level.easeOutAndStartNextScene(this.level.nextScene());
                 });
@@ -374,21 +396,11 @@ export class TutorialManager {
 
     // --- Event Handlers ---
     private onTowerSelected(): void {
-        if (this.currentStep === TutorialStep.SelectLaserTower) {
-            this.currentStep = TutorialStep.PlaceFirstTower;
-            this.executeStep();
-        } else if (this.currentStep === TutorialStep.IntroduceFastEnemy) {
-            this.currentStep = TutorialStep.PlaceSecondTower;
-            this.executeStep();
-        }
+        // Handled by executeStep after waitForEvent
     }
 
     private onTowerPlaced(): void {
-        if (this.currentStep === TutorialStep.PlaceFirstTower) {
-            // Handled by executeStep after waitForEvent
-        } else if (this.currentStep === TutorialStep.PlaceSecondTower) {
-            // Handled by executeStep after waitForEvent
-        }
+        // Handled by executeStep after waitForEvent
     }
 
     private onWaveCompleted(): void {

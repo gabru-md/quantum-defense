@@ -166,10 +166,12 @@ export class WaveManager extends Manager {
                     this.level.easeOutAndStartNextScene(this.level.fetchNextScene());
                 });
             } else {
-                this.level.hud.info('NEXT WAVE INCOMING!', AppColors.UI_MESSAGE_SUCCESS, () => {
-                    this.currentWave++;
-                    this.startWave(this.currentWave);
-                });
+                if(this.level.scene.key !== LevelNames.Gameplay_Tutorial) {
+                    this.level.hud.info('NEXT WAVE INCOMING!', AppColors.UI_MESSAGE_SUCCESS, () => {
+                        this.currentWave++;
+                        this.startWave(this.currentWave);
+                    });
+                }
             }
         }
     }

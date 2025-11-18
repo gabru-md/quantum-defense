@@ -22,13 +22,12 @@ export class InteractiveTutorial extends Level {
 
     create(): void {
         super.create(); // Call the base Level's create method
-
-        this.tutorialManager = new TutorialManager(this); // Create an instance
-        this.tutorialManager.startTutorial(); // Start the tutorial flow
-
         // Override default wave starting behavior for tutorial
         this.isLoaded = true; // Mark as loaded to allow update loop
         this.hud.hideInfo(); // Hide initial "Incoming First Wave" message
+
+        this.tutorialManager = new TutorialManager(this); // Create an instance
+        this.tutorialManager.startTutorial(); // Start the tutorial flow
     }
 
     getWaveConfig(wave: number): {
