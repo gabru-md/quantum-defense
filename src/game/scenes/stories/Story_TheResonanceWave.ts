@@ -20,7 +20,7 @@ export class Story_TheResonanceWave extends BaseStoryScene {
     getStoryConfig(): { title?: string; steps: StoryStep[]; nextScene: LevelNames } {
         return {
             title: 'The Resonance Wave',
-            nextScene: LevelNames.Gameplay_TheResonanceWave, // Return to menu after final story
+            nextScene: LevelNames.Gameplay_ResonanceWave, // Return to menu after final story
             steps: [
                 {
                     text: 'Genie: The last Phantom falls! Static\'s core is exposed – a raw, pulsating mass!',

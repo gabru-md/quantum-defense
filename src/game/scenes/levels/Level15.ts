@@ -6,7 +6,7 @@ import {GAME_WIDTH} from "../../scripts/Util.ts";
 
 export class Gameplay_TheResonanceWave extends Level { // Renamed class
     constructor() {
-        super(LevelNames.Gameplay_TheResonanceWave); // Updated super call
+        super(LevelNames.Gameplay_ResonanceWave); // Updated super call
     }
 
     private firstPath(): Phaser.Curves.Path {

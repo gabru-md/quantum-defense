@@ -6,7 +6,7 @@ import {GAME_HEIGHT, GAME_WIDTH} from "../../scripts/Util.ts";
 
 export class Gameplay_TheFinalAssault extends Level { // Renamed class
     constructor() {
-        super(LevelNames.Gameplay_TheFinalAssault); // Updated super call
+        super(LevelNames.Gameplay_FinalAssault); // Updated super call
     }
 
     private firstPath(): Phaser.Curves.Path {

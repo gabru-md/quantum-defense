@@ -6,7 +6,7 @@ import {PathMaker} from "../lib/PathMaker.ts";
 
 export class Gameplay_TheGlitchAnnihilation extends Level { // Renamed class
     constructor() {
-        super(LevelNames.Gameplay_TheGlitchAnnihilation); // Updated super call
+        super(LevelNames.Gameplay_GlitchAnnihilation); // Updated super call
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {

@@ -6,7 +6,7 @@ import {GAME_HEIGHT, GAME_WIDTH} from "../../scripts/Util.ts";
 
 export class Gameplay_ThePhantomArrival extends Level { // Renamed class
     constructor() {
-        super(LevelNames.Gameplay_ThePhantomArrival); // Updated super call
+        super(LevelNames.Gameplay_PhantomArrival); // Updated super call
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {

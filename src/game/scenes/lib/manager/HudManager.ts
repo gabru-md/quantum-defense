@@ -235,7 +235,7 @@ export class HudManager extends Manager {
         }).setDepth(100);
         currentY += 40;
 
-        this.levelText = this.scene.add.text(textX, currentY, `Level: ${this.scene.scene.key}`, {
+        this.levelText = this.scene.add.text(textX, currentY, `Level: ${this.getLevelName()}`, {
             font: '20px',
             color: AppColors.UI_TEXT
         }).setDepth(100).setName('levelText');
@@ -421,7 +421,7 @@ export class HudManager extends Manager {
     }
 
     private updateMainStats() {
-        this.levelText.setText(`Level: ${this.scene.scene.key}`);
+        this.levelText.setText(`Level: ${this.getLevelName()}`);
         this.baseHealthText.setText(`Health: ${this.scene.state.baseHealth}`);
         this.energyText.setText(`Energy: ${this.scene.state.energy}`);
         this.waveNumberText.setText(`Wave: ${this.scene.waveManager.currentWave}/${this.scene.waveManager.totalWaves}`);
@@ -498,5 +498,9 @@ export class HudManager extends Manager {
         const g3 = this.scene.add.graphics().lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1).beginPath().moveTo(GAME_WIDTH, 0).lineTo(WIDTH, 0).closePath().stroke().setScrollFactor(0).setDepth(1500);
         const g4 = this.scene.add.graphics().lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1).beginPath().moveTo(GAME_WIDTH, GAME_HEIGHT).lineTo(WIDTH, GAME_HEIGHT).closePath().stroke().setScrollFactor(0).setDepth(1500);
         return [g1, g2, g3, g4];
+    }
+
+    private getLevelName(): string {
+        return this.scene.scene.key.replace('Gameplay_', '');
     }
 }
