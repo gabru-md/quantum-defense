@@ -137,6 +137,8 @@ export abstract class Level extends Phaser.Scene {
 
         this.events.on('gameOver', this.handleGameOver, this);
         this.events.on('shutdown', this.shutdown, this);
+
+        this.audioManager.playMusic('MainMenuMusic');
     }
 
     protected createRift(x: number, y: number, type: RiftType): Rift {
