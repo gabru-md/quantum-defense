@@ -193,6 +193,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
             fontStyle: 'bold',
         }).setOrigin(0.5).setDepth(200).setAlpha(0);
         // These are the title sounds
+        this.audioManager.playMusic('MainMenuMusic')
         this.audioManager.playHeavySound(this.getCurrentStepAudio());
 
 
@@ -330,6 +331,8 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         this.typingTimer?.remove();
         this.typingTimer = null;
         this.isTyping = false;
+
+        this.audioManager.destroy();
 
         // Destroy temporary elements
         this.titleText?.destroy();

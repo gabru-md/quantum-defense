@@ -5,13 +5,19 @@ export class AudioManager extends Manager {
     private backgroundMusic: Phaser.Sound.BaseSound | null = null;
     private musicQueue: string[] = [];
     private _sfxVolume: number = 1; // Default SFX volume
-    private _musicVolume: number = 0; // Default Music volume
+    private _musicVolume: number = 1; // Default Music volume
 
     constructor(protected level: Phaser.Scene) {
         super(level);
     }
 
     public setup(): void {
+
+        const gameState: State = this.level.sys.registry.get('gameState');
+        if (gameState) {
+            this._musicVolume = gameState.musicVolume;
+            this._sfxVolume = gameState.sfxVolume;
+        }
 
         this.level.load.audio('MainMenuMusic', 'assets/music/MainMenuMusic.mp3');
         //
@@ -73,10 +79,18 @@ export class AudioManager extends Manager {
     }
 
     public increaseSfxVolume(amount: number = 0.1): void {
+        const gameState: State = this.level.sys.registry.get('gameState');
+        if (gameState) {
+            gameState.sfxVolume += amount;
+        }
         this.sfxVolume += amount;
     }
 
     public decreaseSfxVolume(amount: number = 0.1): void {
+        const gameState: State = this.level.sys.registry.get('gameState');
+        if (gameState) {
+            gameState.sfxVolume -= amount;
+        }
         this.sfxVolume -= amount;
     }
 
@@ -93,16 +107,24 @@ export class AudioManager extends Manager {
     }
 
     public increaseMusicVolume(amount: number = 0.1): void {
+        const gameState: State = this.level.sys.registry.get('gameState');
+        if (gameState) {
+            gameState.musicVolume += amount;
+        }
         this.musicVolume += amount;
     }
 
     public decreaseMusicVolume(amount: number = 0.1): void {
+        const gameState: State = this.level.sys.registry.get('gameState');
+        if (gameState) {
+            gameState.musicVolume -= amount;
+        }
         this.musicVolume -= amount;
     }
 
-    public playSound(key: string, config?: { volume?: number; detune?: number; rate?: number}): void {
+    public playSound(key: string, config?: { volume?: number; detune?: number; rate?: number }): void {
         const gameState = this.level.sys.registry.get('gameState');
-        if ((gameState as State).soundEnabled) {
+        if (!(gameState as State).soundEnabled) {
             // clear any playing sound
             this.level.sound.stopAll();
             if (!this.level.cache.audio.exists(key)) {
@@ -118,11 +140,11 @@ export class AudioManager extends Manager {
     }
 
     public playHeavySound(key: string) {
-        return this.playSound(key, {volume:0.5, detune: -600, rate: 1.4});
+        return this.playSound(key, {volume: 0.5, detune: -600, rate: 1.4});
     }
 
     public playLightSound(key: string) {
-        return this.playSound(key, {volume:0.4, detune: 200, rate: 1});
+        return this.playSound(key, {volume: 0.4, detune: 200, rate: 1});
     }
 
     public playMusic(key: string, loop: boolean = true): void {
@@ -131,6 +153,8 @@ export class AudioManager extends Manager {
             if (this.backgroundMusic) {
                 this.backgroundMusic.stop();
             }
+            console.log(`Playing music: ${key} at volume: ${this._musicVolume}`)
+            console.log(gameState)
             this.backgroundMusic = this.level.sound.add(key, {loop});
             this.backgroundMusic.play({volume: this._musicVolume});
         }

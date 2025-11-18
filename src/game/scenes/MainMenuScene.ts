@@ -228,6 +228,9 @@ export class MainMenuScene extends Phaser.Scene {
 
         // Show initial section
         this.showSection(MenuSection.Main);
+
+
+        this.events.on('shutdown', this.shutdown, this);
     }
 
     private drawFullScreenBorder(): void {
@@ -546,5 +549,9 @@ export class MainMenuScene extends Phaser.Scene {
         currentIndex = (currentIndex + 1) % difficulties.length;
         this.gameState.difficulty = difficulties[currentIndex];
         this.difficultyText.setText(`Difficulty: ${this.gameState.difficulty.toUpperCase()}`);
+    }
+
+    private shutdown() {
+        this.audioManager.destroy();
     }
 }
