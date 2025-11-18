@@ -58,6 +58,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
             this.game.events.emit('storyPlaybackComplete', this.scene.key); // Emitting on global game events
         } else {
             // Otherwise, proceed to the next defined scene (gameplay or main menu)
+            this.scene.stop(this.scene.key);
             this.scene.start(this.getStoryConfig().nextScene);
         }
     }
@@ -117,6 +118,8 @@ export abstract class BaseStoryScene extends Phaser.Scene {
                 this.setupInput();
             }
         });
+
+        this.events.on('shutdown', this.shutdown, this);
     }
 
     update(time: number, delta: number): void {

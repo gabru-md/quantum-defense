@@ -14,8 +14,12 @@ export class Story_TheGlitchAnnihilation extends BaseStoryScene {
     }
 
     preload() {
-        this.backgroundEffectsManager.enableDataStreamEffect(this, 'laminar');
         super.preload();
+    }
+
+    create() {
+        this.backgroundEffectsManager.enableDataStreamEffect(this, 'laminar');
+        super.create();
     }
 
     getStoryConfig(): { title?: string; steps: StoryStep[]; nextScene: LevelNames } {
