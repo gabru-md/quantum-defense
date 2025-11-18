@@ -3,6 +3,7 @@
 ## GitHub Game Off 2025 Entry
 
 **Game Design & Development: Manish Devgan**
+**Music & Sound Design: Pedro Coutinho**
 
 ---
 
