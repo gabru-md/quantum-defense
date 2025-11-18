@@ -129,7 +129,7 @@ export class MainMenuScene extends Phaser.Scene {
         let yOffsetMain = 100;
 
 
-        this.createMenuButton('Start Tutorial', this.CONTENT_AREA_WIDTH / 2, yOffsetMain, () => {
+        this.createMenuButton('Introduction', this.CONTENT_AREA_WIDTH / 2, yOffsetMain, () => {
             this.scene.start(LevelNames.Tutorial);
         }, this.mainSectionContainer);
         yOffsetMain += 50;

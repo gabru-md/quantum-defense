@@ -14,8 +14,6 @@ import {getLevelNameKey, getStoryName, LevelNames} from "./LevelNames.ts";
 import {AudioManager} from "./manager/AudioManager.ts";
 import {BackgroundEffectsManager} from "../../effects/BackgroundEffectsManager.ts";
 import {GlitchAnnihilationEffect} from "../../effects/GlitchAnnihilationEffect.ts";
-import Line = Phaser.GameObjects.Line; // Import texture utility functions
-
 export interface StoryStep {
     text: string;
     action?: (scene: BaseStoryScene) => Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[] | void;
@@ -383,25 +381,15 @@ export abstract class BaseStoryScene extends Phaser.Scene {
     };
 
     animateOut(v: Phaser.GameObjects.GameObject) {
-        if (v instanceof Line) {
-            this.fadeOut(v);
-        } else {
-            this.tweens.add({
-                targets: v,
-                // @ts-ignore
-                y: v.y < HEIGHT / 2 ? -200 : HEIGHT + 200,
-                duration: 500,
-                ease: 'Power2',
-                onComplete: () => v.destroy(),
-            });
-        }
+        // Fade out is simply better for overall consistency
+        this.fadeOut(v);
     }
 
     fadeOut(v: Phaser.GameObjects.GameObject) {
         this.tweens.add({
             targets: v,
             alpha: 0,
-            duration: 500,
+            duration: 1000,
             ease: 'Power2',
             onComplete: () => v.destroy(),
         });
