@@ -24,7 +24,7 @@ export class Gameplay_AdvancedCountermeasures extends Level { // Renamed class
         super.create();
         this.createRift(350, 550, 'gradient');
         this.createRift(900, 375, 'static');
-        this.createRift(1300, 850, 'player');
+        this.createRift(1300, 850, 'guardian');
         this.createMiniRift(275, 990, 'dormant');
         this.createMiniRift(GAME_WIDTH - 65, 85, 'dormant');
     }

@@ -35,7 +35,7 @@ export class Gameplay_SamplingTheEchoes extends Level { // Renamed class
     create() {
         super.create();
         this.createRift(950, 850, 'gradient');
-        this.createRift(375, 150, 'player');
+        this.createRift(375, 150, 'guardian');
         this.createMiniRift(GAME_WIDTH - 75, 235, 'dormant');
     }
 

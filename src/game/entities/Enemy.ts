@@ -1,9 +1,9 @@
-import { GameObject } from '../core/GameObject';
-import { Health } from '../components/Health';
-import { PathFollower } from '../components/PathFollower';
-import { ContinuousBreathing } from '../components/ContinuousBreathing.ts'; // Import ContinuousBreathing
+import {GameObject} from '../core/GameObject';
+import {Health} from '../components/Health';
+import {PathFollower} from '../components/PathFollower';
+import {ContinuousBreathing} from '../components/ContinuousBreathing.ts'; // Import ContinuousBreathing
 import * as Phaser from 'phaser';
-import { EnemyConfigType } from '../config/EnemyConfigs.ts'; // Import EnemyConfigType
+import {EnemyConfigType} from '../config/EnemyConfigs.ts'; // Import EnemyConfigType
 
 export interface EnemyConfig {
     scene: Phaser.Scene;
@@ -36,6 +36,11 @@ export class Enemy extends GameObject {
             this.scene.events.emit('enemyDied', this.energyValue); // Updated to energyValue
             this.destroy();
         });
+
+        this.on('pointerover', () =>
+            this.level.hud.setHelpText(this.getEnemyDescription(config))
+        );
+        this.on('pointerout', () => this.level.hud.setHelpText(''));
     }
 
     private handleHealthChanged(currentHealth: number): void {
@@ -43,5 +48,19 @@ export class Enemy extends GameObject {
         // Max health is available from the healthComponent
         const healthPercentage = currentHealth / this.healthComponent.maxHealth;
         this.setAlpha(0.2 + 0.8 * healthPercentage); // Alpha ranges from 0.2 (almost dead) to 1.0 (full health)
+    }
+
+    private getEnemyDescription(config: EnemyConfig) {
+        switch (config.type) {
+            case 'enemy1':
+                return 'Stutters:\nNormal speed enemy'
+            case 'enemy2':
+                return 'Surges:\nFast enemy'
+            case 'enemy3':
+                return 'Brutes:\nSlow but tanky.'
+            case 'upgradedEnemy':
+                return 'Unnamed:\nThis is a problem!'
+        }
+        return '';
     }
 }

@@ -42,6 +42,11 @@ export class SpecialEnemy extends GameObject {
             this.scene.events.emit('specialEnemyKilledByPlayer', this.energyValue); // Updated to energyValue
             this.destroy();
         });
+
+        this.on('pointerover', () =>
+            this.level.hud.setHelpText('Phantom:\nTowers do not attack him.\nIt can deactivate the towers.')
+        );
+        this.on('pointerout', () => this.level.hud.setHelpText(''));
     }
 
     public takeDamage(amount: number): void {

@@ -46,7 +46,7 @@ export class Gameplay_TheResonanceWave extends Level { // Renamed class
         super.create();
         this.createRift(1080, 775, 'gradient');
         this.createRift(350, 875, 'static');
-        this.createRift(1100, 150, 'player');
+        this.createRift(1100, 150, 'guardian');
         this.createMiniRift(365, 265, 'dormant');
         this.createMiniRift(720, 520, 'dormant');
     }

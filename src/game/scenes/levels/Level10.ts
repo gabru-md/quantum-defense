@@ -38,7 +38,7 @@ export class Gameplay_StaticNewGlitches extends Level { // Renamed class
         super.create();
         this.createRift(1080, 350, 'gradient');
         this.createRift(625, 550, 'static');
-        this.createRift(500, 775, 'player');
+        this.createRift(500, 775, 'guardian');
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {

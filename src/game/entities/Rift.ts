@@ -5,8 +5,9 @@ import {QuantumEcho} from './QuantumEcho.ts';
 import {AppColors, phaserColor} from '../scripts/Colors.ts';
 import {RiftElements} from "../effects/GlitchAnnihilationEffect.ts";
 import {Level} from "../scenes/lib/Level.ts";
+import {capitalize} from "../scripts/Util.ts";
 
-export type RiftType = 'static' | 'player' | 'gradient' | 'dormant';
+export type RiftType = 'static' | 'guardian' | 'gradient' | 'dormant';
 
 export class Rift extends GameObject {
     public riftType: RiftType;
@@ -28,7 +29,7 @@ export class Rift extends GameObject {
             case 'static':
                 this.riftColor = phaserColor(AppColors.SPECIAL_ENEMY);
                 break;
-            case 'player':
+            case 'guardian':
                 this.riftColor = phaserColor(AppColors.PLAYER);
                 break;
             case 'gradient':
@@ -42,6 +43,15 @@ export class Rift extends GameObject {
 
         this.riftElements = scene.glitchManager.drawRiftElements(x, y, 3 * this.scaleFactor, this.scaleFactor, this.riftColor, this.secondaryColor, 0.8);
         scene.glitchManager.animateRiftIdle(this.riftElements);
+
+        const hitAreaRadius = 100 * this.scaleFactor;
+        this.setInteractive(new Phaser.Geom.Circle(0, 0, hitAreaRadius), Phaser.Geom.Circle.Contains);
+
+        this.on('pointerover', () => {
+            console.log('Pointer on Rift')
+            this.level.hud.setHelpText(`${capitalize(this.riftType)} Rift:\n${this.getRiftDescription()} `)
+        });
+        this.on('pointerout', () => this.level.hud.setHelpText(''));
     }
 
     update(time: number, delta: number): void {
@@ -63,7 +73,7 @@ export class Rift extends GameObject {
                 waveType = 'static';
                 waveColor = phaserColor(AppColors.SPECIAL_ENEMY);
             } else {
-                waveType = 'player';
+                waveType = 'guardian';
                 waveColor = phaserColor(AppColors.PLAYER);
             }
         }
@@ -71,7 +81,7 @@ export class Rift extends GameObject {
         const wave = new RiftWave(this.scene, this.x, this.y, waveType, 300 * this.scaleFactor, 125 * this.scaleFactor, waveColor);
         (this.scene as Level).riftWaves.add(wave);
 
-        if(this.riftType === 'dormant') {
+        if (this.riftType === 'dormant') {
             // dormant rifts do not spawn the echoes
             return;
         }
@@ -91,5 +101,18 @@ export class Rift extends GameObject {
         this.riftElements.rays.forEach(ray => ray.destroy());
         this.riftElements.fragments.forEach(fragment => fragment.destroy());
         super.destroy(fromScene);
+    }
+
+    getRiftDescription() {
+        switch (this.riftType) {
+            case 'static':
+                return 'Emits static energy wave that disables towers\nDrops quantum echoes on every wave.';
+            case 'guardian':
+                return 'Emits nexus energy wave that revives towers\nPhantoms hit by the wave die instantly\nDrops quantum echoes on every wave.';
+            case 'gradient':
+                return 'Emits nexus and static energy randomly\nDrops quantum echoes on every wave.';
+            case 'dormant':
+                return 'Emits dormant energy waves\nDoes not drop quantum echoes.';
+        }
     }
 }
