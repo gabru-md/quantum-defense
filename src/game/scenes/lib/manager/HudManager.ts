@@ -119,8 +119,8 @@ export class HudManager extends Manager {
         this.updateSelectionIndicator(this.scene.state.selectedTowerType);
     }
 
-    public persistedInfo(message: string, color: string) {
-        this.messageText.setText(message).setColor(color).setVisible(true).setDepth(200).setPosition(GAME_WIDTH / 2, GAME_HEIGHT / 4);
+    public persistedInfo(message: string, color: string, centre: boolean = true) {
+        this.messageText.setText(message).setColor(color).setVisible(true).setDepth(200).setPosition(centre ? WIDTH / 2 : GAME_WIDTH / 2, GAME_HEIGHT / 8);
     }
 
     public info(message: string, color: string, callback?: () => void, autoHide: boolean = true) {
@@ -286,7 +286,7 @@ export class HudManager extends Manager {
         let currentTowerY = startY + 50;
         for (const towerKey in TowerConfigs) {
             const config: TowerConfigType = TowerConfigs[towerKey];
-            if(towerKey === 'specialTower') {
+            if (towerKey === 'specialTower') {
                 // we will allow special tower after a certain level only
                 // and this will require collecting the quantum echoes
                 continue;
@@ -400,7 +400,8 @@ export class HudManager extends Manager {
             font: '32px',
             color: AppColors.UI_MESSAGE_ERROR,
             backgroundColor: AppColors.UI_MESSAGE_BACKGROUND,
-            padding: {x: 30, y: 20}
+            padding: {x: 30, y: 20},
+            align: 'center'
         }).setOrigin(0.5).setScrollFactor(0).setVisible(false).setDepth(200).setName('messageText').setScale(0.75);
     }
 

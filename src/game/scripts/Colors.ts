@@ -19,7 +19,7 @@ export const AppColors = {
     UI_MESSAGE_ERROR: '#ff0000',
     UI_MESSAGE_WARN: '#ffff00',
     UI_MESSAGE_SUCCESS: '#00ff00',
-    UI_MESSAGE_BACKGROUND: 'rgba(0,0,0,0.40)',
+    UI_MESSAGE_BACKGROUND: 'rgba(0,0,0,0.30)',
     UI_SEPARATOR: '#ffffff',
 
     // Game Background
