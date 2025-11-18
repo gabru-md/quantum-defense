@@ -6,6 +6,7 @@ import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
 import {PlayerConfig} from "../../config/PlayerConfig.ts";
 import {SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
+import {Genie} from "../../entities/Genie.ts";
 
 export class Story_ThePhantomArrival extends BaseStoryScene {
     constructor() {
@@ -29,6 +30,8 @@ export class Story_ThePhantomArrival extends BaseStoryScene {
                         const player = new GameObject(scene, WIDTH / 2 - 100, HEIGHT / 2 - 100, PlayerConfig.texture);
                         scene.add.existing(player);
                         scene.animateIn(player);
+                        const genie = new Genie(this, player);
+                        scene.add.existing(genie);
                         player.addComponent(
                             new VisualPulse(
                                 PlayerConfig.resonanceWave.pulseColor,
@@ -43,7 +46,7 @@ export class Story_ThePhantomArrival extends BaseStoryScene {
                     },
                 },
                 {
-                    text: 'The Phantom is on the move! Its presence activates a new, dangerous rift!',
+                    text: 'The Phantom is on the move!\nIts presence activates a new, dangerous rift!',
                     action: scene => {
                         this.backgroundEffectsManager.enableGlitchAnnihilationEffect(scene);
                         const phantom = new GameObject(scene, WIDTH / 2 + 100, HEIGHT / 2 - 100, SpecialEnemyConfig.texture).setAlpha(0.8);
@@ -59,12 +62,15 @@ export class Story_ThePhantomArrival extends BaseStoryScene {
                                 PlayerConfig.resonanceWave.pulseLineWidth
                             )
                         );
-                        const phantomRift = drawRift(scene, WIDTH / 2, HEIGHT / 2 + 100, SpecialEnemyConfig.pulseColor);
-                        return [phantom, ...phantomRift];
+                        return [phantom];
                     },
                 },
                 {
                     text: 'This active rift is highly volatile and dangerous to approach.',
+                    action: scene => {
+                        const phantomRift = drawRift(scene, WIDTH / 2, HEIGHT / 2 + 300, SpecialEnemyConfig.pulseColor);
+                        return [...phantomRift];
+                    }
                 },
             ],
         };

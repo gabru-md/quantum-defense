@@ -19,9 +19,9 @@ export class Story_AdvancedCountermeasures extends BaseStoryScene {
             nextScene: STORY_TO_GAMEPLAY_MAP[LevelNames.Story_AdvancedCountermeasures],
             steps: [
                 {
-                    text: 'Genie: I\'m working tirelessly on countermeasures, Guardian. But I need more Echoes!',
+                    text: 'I\'m working tirelessly on countermeasures, Guardian.\nBut I need more Echoes!',
                     action: scene => {
-                        const quantumEcho = scene.add.sprite(WIDTH / 2, HEIGHT / 2, 'quantum_echo_texture').setAlpha(0.8);
+                        const quantumEcho = scene.add.sprite(WIDTH / 2, HEIGHT / 2 + 100, 'quantum_echo_texture').setAlpha(0.8);
                         scene.animateIn(quantumEcho);
                         scene.tweens.add({
                             targets: quantumEcho,
@@ -34,7 +34,7 @@ export class Story_AdvancedCountermeasures extends BaseStoryScene {
                     },
                 },
                 {
-                    text: 'We need specialized tower upgrades, including stronger rift-resistance modules.',
+                    text: 'We need specialized tower upgrades, including stronger phantom-killing towers.',
                     action: scene => {
                         const tower = scene.add.sprite(WIDTH / 2 - 100, HEIGHT / 2, TowerConfigs.tower3.texture).setAlpha(0.5);
                         scene.animateIn(tower);
@@ -44,20 +44,10 @@ export class Story_AdvancedCountermeasures extends BaseStoryScene {
                     },
                 },
                 {
-                    text: 'Third tier of tower upgrades available, including specialized counter-Glitches!',
-                    action: scene => {
-                        const tower = scene.add.sprite(WIDTH / 2, HEIGHT / 2, TowerConfigs.tower3.texture).setAlpha(0.5);
-                        scene.animateIn(tower);
-                        scene.tweens.add({
-                            targets: tower,
-                            scale: 1.2,
-                            alpha: 1,
-                            duration: 500,
-                            yoyo: true,
-                            repeat: 1,
-                        });
-                        return tower;
-                    },
+                    text: 'The samples you gather can be groundbreaking for our war!'
+                },
+                {
+                    text: 'Let\s go Guardian!'
                 },
             ],
         };

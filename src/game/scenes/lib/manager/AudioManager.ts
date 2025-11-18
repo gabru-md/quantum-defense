@@ -5,7 +5,7 @@ export class AudioManager extends Manager {
     private backgroundMusic: Phaser.Sound.BaseSound | null = null;
     private musicQueue: string[] = [];
     private _sfxVolume: number = 1; // Default SFX volume
-    private _musicVolume: number = 1; // Default Music volume
+    private _musicVolume: number = 0; // Default Music volume
 
     constructor(protected level: Phaser.Scene) {
         super(level);

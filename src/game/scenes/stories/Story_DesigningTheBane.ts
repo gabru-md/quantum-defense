@@ -5,6 +5,8 @@ import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
 import {SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
 import {PlayerConfig} from "../../config/PlayerConfig.ts";
+import {Genie} from "../../entities/Genie.ts";
+import {VisualPulse} from "../../components/VisualPulse.ts";
 
 export class Story_DesigningTheBane extends BaseStoryScene {
     constructor() {
@@ -24,47 +26,60 @@ export class Story_DesigningTheBane extends BaseStoryScene {
                 {
                     text: 'Genie: Armed with this knowledge, Guardian, I\'ve designed the ultimate weapon!',
                     action: scene => {
-                        const genie = scene.add.sprite(WIDTH / 2, HEIGHT * 3 / 4, 'genie_texture').setAlpha(0.8);
-                        scene.animateIn(genie);
-                        return genie;
+                        this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(this, 850);
+                        const player = new GameObject(scene, WIDTH / 2, HEIGHT * 3 / 4, PlayerConfig.texture);
+                        scene.add.existing(player);
+                        scene.animateIn(player);
+                        const genie = new Genie(this, player);
+                        scene.add.existing(genie);
+                        player.addComponent(
+                            new VisualPulse(
+                                PlayerConfig.resonanceWave.pulseColor,
+                                PlayerConfig.resonanceWave.pulseDelay,
+                                PlayerConfig.resonanceWave.pulseDuration,
+                                PlayerConfig.resonanceWave.activationRange,
+                                PlayerConfig.resonanceWave.pulseTotalPulses,
+                                PlayerConfig.resonanceWave.pulseLineWidth
+                            )
+                        );
+                        return [genie, player];
                     },
                 },
                 {
-                    text: 'The Phantom Killer tower! It disrupts their connection to Static, rendering them vulnerable.',
+                    text: 'The Phantom Killer tower!\nIt disrupts their connection to Static, rendering them vulnerable.',
                     action: scene => {
-                        const phantomKiller = scene.add.sprite(WIDTH / 2, HEIGHT / 2, 'phantom_killer_tower_texture').setAlpha(0.8);
+                        const phantomKiller = scene.add.sprite(WIDTH / 2, HEIGHT / 2 + 150, 'specialTower').setAlpha(0.8);
                         scene.animateIn(phantomKiller);
-                        const phantom = new GameObject(scene, WIDTH / 2 + 150, HEIGHT / 2, SpecialEnemyConfig.texture).setAlpha(0.8);
+                        const phantom = new GameObject(scene, WIDTH / 2, HEIGHT / 2 - 150, SpecialEnemyConfig.texture).setAlpha(0.8);
                         scene.add.existing(phantom);
                         scene.animateIn(phantom);
                         scene.tweens.add({
-                            targets: phantom,
-                            alpha: 0.2,
-                            duration: 500,
+                            targets: [phantom, phantomKiller],
+                            scale: 1.2,
+                            alpha: 1,
+                            duration: 1000,
                             yoyo: true,
                             repeat: -1,
                         });
+
                         return [phantomKiller, phantom];
                     },
                 },
                 {
-                    text: 'But building the prototype requires a massive amount of Quantum Echoes!',
+                    text: 'But building the prototype requires a massive amount of Quantum Echoes and Energy!',
                     action: scene => {
-                        const quantumEcho1 = scene.add.sprite(WIDTH / 2 - 100, HEIGHT / 2, 'quantum_echo_texture').setAlpha(0.8);
-                        const quantumEcho2 = scene.add.sprite(WIDTH / 2, HEIGHT / 2, 'quantum_echo_texture').setAlpha(0.8);
-                        const quantumEcho3 = scene.add.sprite(WIDTH / 2 + 100, HEIGHT / 2, 'quantum_echo_texture').setAlpha(0.8);
+                        const quantumEcho1 = scene.add.sprite(WIDTH / 2 - 100, HEIGHT / 2 - 50, 'quantum_echo_texture').setAlpha(0.8);
+                        const quantumEcho2 = scene.add.sprite(WIDTH / 2, HEIGHT / 2 - 50, 'quantum_echo_texture').setAlpha(0.8);
+                        const quantumEcho3 = scene.add.sprite(WIDTH / 2 + 100, HEIGHT / 2 - 50, 'quantum_echo_texture').setAlpha(0.8);
                         [quantumEcho1, quantumEcho2, quantumEcho3].forEach(t => scene.animateIn(t));
                         return [quantumEcho1, quantumEcho2, quantumEcho3];
                     },
                 },
                 {
-                    text: 'Obtainable only from the most dangerous, Phantom-dominated rifts. A perilous mission awaits!',
+                    text: 'Obtainable only from the most dangerous, Phantom-dominated rifts.\nA perilous mission awaits!',
                     action: scene => {
-                        const phantomRift = drawRift(scene, WIDTH / 2, HEIGHT / 2, SpecialEnemyConfig.pulseColor, null, 0.8);
-                        const player = new GameObject(scene, WIDTH / 2, HEIGHT * 3 / 4, PlayerConfig.texture);
-                        scene.add.existing(player);
-                        scene.animateIn(player);
-                        return [...phantomRift, player];
+                        const phantomRift = drawRift(scene, WIDTH - 275, HEIGHT / 4, SpecialEnemyConfig.pulseColor, null, 0.8);
+                        return [...phantomRift];
                     },
                 },
             ],

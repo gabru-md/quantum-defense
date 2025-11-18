@@ -46,9 +46,11 @@ export class Rift extends GameObject {
 
     update(time: number, delta: number): void {
         super.update(time, delta);
-        if (time > this.lastWaveTime + this.waveCooldown) {
-            this.emitWave();
-            this.lastWaveTime = time;
+        if (this.active) {
+            if (time > this.lastWaveTime + this.waveCooldown) {
+                this.emitWave();
+                this.lastWaveTime = time;
+            }
         }
     }
 
@@ -69,8 +71,17 @@ export class Rift extends GameObject {
         const wave = new RiftWave(this.scene, this.x, this.y, waveType, 300 * this.scaleFactor, 125 * this.scaleFactor, waveColor);
         (this.scene as Level).riftWaves.add(wave);
 
-        const echo = new QuantumEcho(this.scene, this.x, this.y, waveColor);
-        (this.scene as Level).quantumEchoes.add(echo);
+        if(this.riftType === 'dormant') {
+            // dormant rifts do not spawn the echoes
+            return;
+        }
+
+        for (let i = 0; i < Phaser.Math.Between(3, 5); i++) {
+            let offsetX = Phaser.Math.Between(-15, 15);
+            let offsetY = Phaser.Math.Between(-15, 15);
+            const echo = new QuantumEcho(this.scene, this.x + offsetX, this.y + offsetY, waveColor);
+            (this.scene as Level).quantumEchoes.add(echo);
+        }
     }
 
     destroy(fromScene?: boolean) {

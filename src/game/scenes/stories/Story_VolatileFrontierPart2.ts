@@ -4,9 +4,9 @@ import {VisualPulse} from '../../components/VisualPulse.ts';
 import {HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
 import {PlayerConfig} from "../../config/PlayerConfig.ts";
-import {TowerConfigs} from "../../config/TowerConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
 import {SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
+import {Genie} from "../../entities/Genie.ts";
 
 export class Story_VolatileFrontierPart2 extends BaseStoryScene {
     constructor() {
@@ -27,6 +27,8 @@ export class Story_VolatileFrontierPart2 extends BaseStoryScene {
                     text: 'Genie: Guardian, you must master navigating these volatile zones.',
                     action: scene => {
                         const player = new GameObject(scene, WIDTH / 2, HEIGHT * 3 / 4, PlayerConfig.texture);
+                        const genie = new Genie(this, player)
+                        scene.add.existing(genie);
                         scene.add.existing(player);
                         scene.animateIn(player);
                         player.addComponent(
@@ -39,35 +41,22 @@ export class Story_VolatileFrontierPart2 extends BaseStoryScene {
                                 PlayerConfig.resonanceWave.pulseLineWidth
                             )
                         );
-                        const phantomRift = drawRift(scene, WIDTH / 2, HEIGHT / 2, SpecialEnemyConfig.pulseColor);
-                        return [player, ...phantomRift];
+                        return [player];
                     },
                 },
                 {
-                    text: 'Collect increasing amounts of Quantum Echoes for higher-tier upgrades.',
+                    text: 'Collect increasing amounts of Quantum Echoes for faster tower upgrades.',
                     action: scene => {
-                        const quantumEcho1 = scene.add.sprite(WIDTH / 2 - 100, HEIGHT / 2, 'quantum_echo_texture').setAlpha(0.8);
-                        const quantumEcho2 = scene.add.sprite(WIDTH / 2 + 100, HEIGHT / 2, 'quantum_echo_texture').setAlpha(0.8);
-                        [quantumEcho1, quantumEcho2].forEach(t => scene.animateIn(t));
-                        return [quantumEcho1, quantumEcho2];
+                        const phantomRift = drawRift(scene, WIDTH / 2, HEIGHT / 2 - 200, SpecialEnemyConfig.pulseColor);
+                        const quantumEcho1 = scene.add.sprite(WIDTH / 2 - 100, HEIGHT / 2 - 200, 'quantum_echo_texture').setAlpha(0.8);
+                        const quantumEcho2 = scene.add.sprite(WIDTH / 2 + 100, HEIGHT / 2 - 200, 'quantum_echo_texture').setAlpha(0.8);
+                        [quantumEcho1, quantumEcho2].forEach(t => scene.fadeIn(t));
+                        return [...phantomRift, quantumEcho1, quantumEcho2];
                     },
                 },
                 {
-                    text: 'Second tier of tower upgrades available, including early "rift-resistant" modules!',
-                    action: scene => {
-                        const tower = scene.add.sprite(WIDTH / 2, HEIGHT / 2, TowerConfigs.tower2.texture).setAlpha(0.5);
-                        scene.animateIn(tower);
-                        scene.tweens.add({
-                            targets: tower,
-                            scale: 1.2,
-                            alpha: 1,
-                            duration: 500,
-                            yoyo: true,
-                            repeat: 1,
-                        });
-                        return tower;
-                    },
-                },
+                    text: 'Buckle up, Guardian!',
+                }
             ],
         };
     }

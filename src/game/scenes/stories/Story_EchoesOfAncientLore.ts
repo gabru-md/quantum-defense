@@ -24,16 +24,17 @@ export class Story_EchoesOfAncientLore extends BaseStoryScene {
                 {
                     text: 'Genie: Through extensive analysis of Echoes from ancient Guardian-colored rifts...',
                     action: scene => {
-                        const playerRift = drawRift(scene, WIDTH / 2, HEIGHT / 2, PlayerConfig.resonanceWave.pulseColor);
-                        const quantumEcho = scene.add.sprite(WIDTH / 2, HEIGHT / 2, 'quantum_echo_texture').setAlpha(0.8);
+                        const playerRift = drawRift(scene, WIDTH / 2 - 300, 250, PlayerConfig.resonanceWave.pulseColor);
+                        const gradientRift = drawRift(scene, WIDTH / 2 + 300, 250, PlayerConfig.resonanceWave.pulseColor, SpecialEnemyConfig.pulseColor);
+                        const quantumEcho = scene.add.sprite(WIDTH / 2, HEIGHT / 2 - 75, 'quantum_echo_texture').setAlpha(0.8);
                         scene.animateIn(quantumEcho);
-                        return [...playerRift, quantumEcho];
+                        return [...playerRift, ...gradientRift, quantumEcho];
                     },
                 },
                 {
                     text: 'I\'ve uncovered fragments of forgotten lore. Phantoms are not just Glitches!',
                     action: scene => {
-                        const phantom = new GameObject(scene, WIDTH / 2, HEIGHT / 2, SpecialEnemyConfig.texture).setAlpha(0.8);
+                        const phantom = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 200, SpecialEnemyConfig.texture).setAlpha(0.8);
                         scene.add.existing(phantom);
                         scene.animateIn(phantom);
                         return phantom;
@@ -42,21 +43,16 @@ export class Story_EchoesOfAncientLore extends BaseStoryScene {
                 {
                     text: 'They are direct manifestations of Static\'s core essence – "mini-Statics"!',
                     action: scene => {
-                        const staticEnemy = scene.add.sprite(WIDTH / 2 - 100, HEIGHT / 2, 'static').setAlpha(0.3);
-                        const phantom = new GameObject(scene, WIDTH / 2 + 100, HEIGHT / 2, SpecialEnemyConfig.texture).setAlpha(0.8);
-                        scene.add.existing(phantom);
-                        scene.animateIn(phantom);
-                        return [staticEnemy, phantom];
+                        const staticEnemy = scene.add.sprite(WIDTH / 2, HEIGHT / 2 + 200, 'static').setAlpha(0.3);
+                        scene.animateIn(staticEnemy);
+                        return [staticEnemy];
                     },
                 },
                 {
                     text: 'This explains their immunity, disruptive power, and why they amplify rift chaos.',
                     action: scene => {
-                        const phantomRift = drawRift(scene, WIDTH / 2, HEIGHT / 2, SpecialEnemyConfig.pulseColor);
-                        const phantom = new GameObject(scene, WIDTH / 2, HEIGHT / 2, SpecialEnemyConfig.texture).setAlpha(0.8);
-                        scene.add.existing(phantom);
-                        scene.animateIn(phantom);
-                        return [...phantomRift, phantom];
+                        const phantomRift = drawRift(scene, WIDTH / 2, 250, SpecialEnemyConfig.pulseColor);
+                        return [...phantomRift];
                     },
                 },
             ],

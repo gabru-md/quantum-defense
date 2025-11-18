@@ -3,7 +3,6 @@ import {HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
 import {PlayerConfig} from "../../config/PlayerConfig.ts";
 import {SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
-import {TowerConfigs} from "../../config/TowerConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
 
 export class Story_VolatileFrontierPart1 extends BaseStoryScene {
@@ -22,40 +21,35 @@ export class Story_VolatileFrontierPart1 extends BaseStoryScene {
             nextScene: STORY_TO_GAMEPLAY_MAP[LevelNames.Story_VolatileFrontierPart1],
             steps: [
                 {
-                    text: 'Genie: My research confirms, rifts are battle scars. Their colors tell tales.',
-                    action: scene => {
-                        const playerRift = drawRift(scene, WIDTH / 2 - 150, HEIGHT / 2, PlayerConfig.resonanceWave.pulseColor);
-                        const phantomRift = drawRift(scene, WIDTH / 2, HEIGHT / 2, SpecialEnemyConfig.pulseColor);
-                        const gradientRift = drawRift(scene, WIDTH / 2 + 150, HEIGHT / 2, PlayerConfig.resonanceWave.pulseColor, SpecialEnemyConfig.pulseColor);
-                        return [...playerRift, ...phantomRift, ...gradientRift];
-                    },
-                },
-                {
-                    text: 'New maps feature complex, dangerous active rift layouts. Plan your placements!',
+                    text: 'My research confirms, rifts are battle scars with energy.\nTheir colors tell tales of the battle.',
                     action: scene => {
                         this.backgroundEffectsManager.enableGlitchAnnihilationEffect(scene);
-                        const tower = scene.add.sprite(WIDTH / 2, HEIGHT * 3 / 4, TowerConfigs.tower1.texture).setAlpha(0.5);
-                        scene.animateIn(tower);
-                        const phantomRift = drawRift(scene, WIDTH / 2, HEIGHT / 2, SpecialEnemyConfig.pulseColor);
-                        return [tower, ...phantomRift];
+                        return [];
                     },
                 },
                 {
-                    text: 'Rift malfunctions are a primary tactical challenge. Avoid severe stat penalties.',
+                    text: 'Some rifts have large amount of Nexus energy.\nSignalling to the power of the Guardian that fought the war\nIt\'s waves can kill Phantom!',
                     action: scene => {
-                        const tower = scene.add.sprite(WIDTH / 2, HEIGHT * 3 / 4, TowerConfigs.tower1.texture).setAlpha(0.5);
-                        scene.animateIn(tower);
-                        const phantomRift = drawRift(scene, WIDTH / 2, HEIGHT / 2, SpecialEnemyConfig.pulseColor);
-                        scene.tweens.add({
-                            targets: tower,
-                            alpha: 0.1,
-                            scale: 0.8,
-                            duration: 300,
-                            yoyo: true,
-                            repeat: -1,
-                        });
-                        return [tower, ...phantomRift];
+                        const playerRift = drawRift(scene, WIDTH / 2 - 400, HEIGHT / 2 + 300, PlayerConfig.resonanceWave.pulseColor);
+                        return [...playerRift];
                     },
+                },
+                {
+                    text: 'Sometimes the rift is flowing with Static Energy\nThey cause disruptions to the towers nearby.',
+                    action: scene => {
+                        const phantomRift = drawRift(scene, WIDTH / 2 + 400, HEIGHT / 2 + 300, SpecialEnemyConfig.pulseColor);
+                        return [...phantomRift];
+                    },
+                },
+                {
+                    text: 'An evenly fought battle creates a Gradient Rift\nThe energy inside it changes with time\nIt really must be close battle.',
+                    action: scene => {
+                        const gradientRift = drawRift(scene, WIDTH / 2, HEIGHT / 2 + 300, PlayerConfig.resonanceWave.pulseColor, SpecialEnemyConfig.pulseColor);
+                        return [...gradientRift];
+                    },
+                },
+                {
+                    text: 'Rift malfunctions are a primary tactical challenge.\nBeware of the rifts when placing towers!'
                 },
             ],
         };

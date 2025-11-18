@@ -36,6 +36,13 @@ export const EnemyConfigs: { [key: string]: EnemyConfigType } = {
         energyValue: 25,
         color: phaserColor(AppColors.ENEMY_TANK),
     },
+    upgradedEnemy: {
+        texture: 'upgradedEnemy',
+        health: 200,
+        speed: 80,
+        energyValue: 30,
+        color: phaserColor(AppColors.ENEMY_FAST_TANK),
+    },
 };
 
 export const SpecialEnemyConfig: SpecialEnemyConfigType = {

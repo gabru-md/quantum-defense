@@ -6,14 +6,15 @@ import {
     createBigGlitchTexture,
     createBigTowerTexture,
     createEnemyTexture,
-    createPlayerTexture,
+    createPlayerTexture, createQuantumEchoTexture,
     createSpecialEnemyTexture,
     createTowerTexture,
 } from '../../scripts/TextureUtils';
 import {getLevelNameKey, getStoryName, LevelNames} from "./LevelNames.ts";
 import {AudioManager} from "./manager/AudioManager.ts";
 import {BackgroundEffectsManager} from "../../effects/BackgroundEffectsManager.ts";
-import {GlitchAnnihilationEffect} from "../../effects/GlitchAnnihilationEffect.ts"; // Import texture utility functions
+import {GlitchAnnihilationEffect} from "../../effects/GlitchAnnihilationEffect.ts";
+import Line = Phaser.GameObjects.Line; // Import texture utility functions
 
 export interface StoryStep {
     text: string;
@@ -24,7 +25,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
     protected steps: StoryStep[] = [];
     protected currentStep = 0;
     protected instructionText!: Phaser.GameObjects.Text;
-    protected visuals: Phaser.GameObjects.GameObject[] = [];
+    public visuals: Phaser.GameObjects.GameObject[] = [];
     protected titleText!: Phaser.GameObjects.Text;
     protected continueText!: Phaser.GameObjects.Text;
     protected storyElements: Phaser.GameObjects.GameObject[] = []; // Stores elements for overall scene fade in/out (border, continue text, and persistent visuals)
@@ -72,12 +73,18 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         createEnemyTexture(this, 'enemy2', 32, AppColors.ENEMY_FAST);
         createEnemyTexture(this, 'enemy3', 32, AppColors.ENEMY_TANK);
         createTowerTexture(this, 'tower1', 64, AppColors.TOWER_LASER);
+        createBigTowerTexture(this, 'tower1_upgraded', 64, AppColors.TOWER_LASER);
         createTowerTexture(this, 'tower2', 64, AppColors.TOWER_BOMB);
+        createBigTowerTexture(this, 'tower2_upgraded', 64, AppColors.TOWER_BOMB);
         createTowerTexture(this, 'tower3', 64, AppColors.TOWER_SLOW);
+        createBigTowerTexture(this, 'tower3_upgraded', 64, AppColors.TOWER_SLOW);
+        createTowerTexture(this, 'specialTower', 64, AppColors.TOWER_SPECIAL);
         createSpecialEnemyTexture(this, 'specialEnemy', 32, AppColors.SPECIAL_ENEMY);
+        createEnemyTexture(this, 'upgradedEnemy', 40, AppColors.ENEMY_FAST_TANK);
         // Preload new textures
-        createPlayerTexture(this, 'quantum_echo_texture', 24, AppColors.PLAYER); // Assuming similar to player texture for now
-        createPlayerTexture(this, 'genie_texture', 2, AppColors.PLAYER); // Placeholder color
+        createQuantumEchoTexture(this, 'quantum_echo_texture', 18, AppColors.PLAYER, AppColors.SPECIAL_ENEMY); // There is a gradient
+        createPlayerTexture(this, 'genie_texture', 3, AppColors.PLAYER); // Placeholder color
+        createPlayerTexture(this, 'phantom_genie_texture', 3, AppColors.SPECIAL_ENEMY); // Placeholder color
         createTowerTexture(this, 'phantom_killer_tower_texture', 64, AppColors.ENEMY_FAST); // Placeholder color
         createPlayerTexture(this, 'upgrade_icon_texture', 24, AppColors.ENEMY_TANK); // Placeholder color
     }
@@ -97,7 +104,6 @@ export abstract class BaseStoryScene extends Phaser.Scene {
 
     create(): void {
         this.cameras.main.setBackgroundColor(AppColors.GAME_BACKGROUND);
-
         // Create initial elements (title, border, initial continue text) with alpha 0
         this.createInitialDisplay();
 
@@ -183,7 +189,6 @@ export abstract class BaseStoryScene extends Phaser.Scene {
             wordWrap: {width: WIDTH - 100},
             fontStyle: 'bold',
         }).setOrigin(0.5).setDepth(200).setAlpha(0);
-
         // These are the title sounds
         this.audioManager.playHeavySound(this.getCurrentStepAudio());
 
@@ -336,7 +341,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         this.titleText = null as any;
         this.instructionText = null as any;
         this.continueText = null as any;
-        
+
         this.backgroundEffectsManager.stop();
 
         // Remove textures to prevent memory leaks if they are not used elsewhere
@@ -372,13 +377,36 @@ export abstract class BaseStoryScene extends Phaser.Scene {
     };
 
     animateOut(v: Phaser.GameObjects.GameObject) {
+        if (v instanceof Line) {
+            this.fadeOut(v);
+        } else {
+            this.tweens.add({
+                targets: v,
+                // @ts-ignore
+                y: v.y < HEIGHT / 2 ? -200 : HEIGHT + 200,
+                duration: 500,
+                ease: 'Power2',
+                onComplete: () => v.destroy(),
+            });
+        }
+    }
+
+    fadeOut(v: Phaser.GameObjects.GameObject) {
         this.tweens.add({
             targets: v,
-            // @ts-ignore
-            y: v.y < HEIGHT / 2 ? -200 : HEIGHT + 200,
+            alpha: 0,
             duration: 500,
             ease: 'Power2',
             onComplete: () => v.destroy(),
+        });
+    }
+
+    fadeIn(v: Phaser.GameObjects.GameObject, targetAlpha: number = 1) {
+        this.tweens.add({
+            targets: v,
+            alpha: targetAlpha,
+            duration: 2500,
+            ease: 'Sine.easeInOut',
         });
     }
 

@@ -39,6 +39,18 @@ export class BackgroundEffectsManager {
         }
     }
 
+    public configureAndStartGlitchAnnihilationEffect(scene: Phaser.Scene, delay: number = 0) {
+        const existingEffect = this.activeEffects.find(effect => effect instanceof GlitchAnnihilationEffect);
+        if (existingEffect && existingEffect instanceof GlitchAnnihilationEffect) {
+            existingEffect.setDelay(delay);
+        } else {
+            const newEffect = new GlitchAnnihilationEffect(scene);
+            newEffect.setDelay(delay);
+            newEffect.start();
+            this.activeEffects.push(newEffect);
+        }
+    }
+
     public enableGlitchAnnihilationEffect(scene: Phaser.Scene) {
         const effect = new GlitchAnnihilationEffect(scene);
         effect.start();

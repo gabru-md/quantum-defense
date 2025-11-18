@@ -69,6 +69,7 @@ export class Gameplay_StaticNewGlitches extends Level { // Renamed class
                     { type: 'enemy', texture: 'enemy1', count: 25, delay: 850, health: 190, speed: 90, energyValue: 22, path: 'second' },
                     { type: 'enemy', texture: 'enemy2', count: 10, delay: 1500, health: 150, speed: 105, energyValue: 28, path: 'first' },
                     { type: 'enemy', texture: 'enemy3', count: 5, delay: 2300, health: 250, speed: 70, energyValue: 35, path: 'second' },
+                    { type: 'enemy', texture: 'upgradedEnemy', count: 5, delay: 500, health: 250, speed: 105, energyValue: 35, path: 'second' },
                 ];
             case 3:
                 return [

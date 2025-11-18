@@ -34,15 +34,17 @@ export const AppColors = {
     ENEMY_NORMAL: '#3498db', // Blue (Square)
     ENEMY_FAST: '#e74c3c', // Red (Triangle)
     ENEMY_TANK: '#f1c40f', // Yellow (Hexagon)
+    ENEMY_FAST_TANK: '#e67e22', // Orange (Hexagon)
 
     // Tower Colors
     TOWER_LASER: '#2ecc71',
-    TOWER_BOMB: '#9b59b6',
+    TOWER_BOMB: '#f1c40f', // Changed to yellow
     TOWER_SLOW: '#e67e22',
+    TOWER_SPECIAL: '#9b59b6', // same as the phantom
 
     // Projectile Colors
     BULLET_LASER: '#2ecc71',
-    BULLET_BOMB: '#9b59b6',
+    BULLET_BOMB: '#f1c40f',
 
     // --- Revised Palette ---
 
@@ -62,5 +64,5 @@ export const AppColors = {
 
     // Visual Pulse Colors
     PULSE_LASER_TOWER: 'rgba(46,204,113,0.7)',
-    PULSE_BOMB_TOWER: 'rgba(155,89,182,0.7)',
+    PULSE_BOMB_TOWER: 'rgba(241,196,15,0.7)',
 };

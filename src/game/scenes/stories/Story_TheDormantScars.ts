@@ -7,6 +7,7 @@ import {PlayerConfig} from "../../config/PlayerConfig.ts";
 import {EnemyConfigs} from "../../config/EnemyConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
 import {AppColors, phaserColor} from "../../scripts/Colors.ts";
+import {Genie} from "../../entities/Genie.ts";
 
 export class Story_TheDormantScars extends BaseStoryScene {
     constructor() {
@@ -26,7 +27,7 @@ export class Story_TheDormantScars extends BaseStoryScene {
                 {
                     text: "The Glitches have identified more paths to the nexus\nIt's not looking good.",
                     action: scene => {
-                        this.backgroundEffectsManager.enableGlitchAnnihilationEffect(scene);
+                        this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(scene, 1250);
                         const nexus = scene.add.sprite(WIDTH / 2, HEIGHT / 4, 'nexus').setAlpha(0.3);
                         scene.animateIn(nexus);
                         scene.tweens.add({
@@ -49,11 +50,13 @@ export class Story_TheDormantScars extends BaseStoryScene {
                     },
                 },
                 {
-                    text: "These dormant rifts block tower deployment. Too unstable for construction.",
+                    text: "These dormant rifts block tower deployment.\nToo unstable for construction.",
                     action: scene => {
-                        const dormantRift1 = drawRift(scene, WIDTH / 2 - 150, HEIGHT / 2, phaserColor(AppColors.UI_DISABLED));
-                        const dormantRift2 = drawRift(scene, WIDTH / 2, HEIGHT / 2, phaserColor(AppColors.UI_DISABLED));
-                        const dormantRift3 = drawRift(scene, WIDTH / 2 + 150, HEIGHT / 2, phaserColor(AppColors.UI_DISABLED));
+
+                        this.visuals.forEach(v => scene.fadeOut(v));
+                        const dormantRift1 = drawRift(scene, WIDTH / 2 - 550, HEIGHT / 2, phaserColor(AppColors.UI_DISABLED));
+                        const dormantRift2 = drawRift(scene, WIDTH / 2, HEIGHT / 2 + 300, phaserColor(AppColors.UI_DISABLED));
+                        const dormantRift3 = drawRift(scene, WIDTH / 2 + 550, HEIGHT / 2, phaserColor(AppColors.UI_DISABLED));
                         return [...dormantRift1, ...dormantRift2, ...dormantRift3];
                     },
                 },
@@ -63,6 +66,8 @@ export class Story_TheDormantScars extends BaseStoryScene {
                         const player = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 100, PlayerConfig.texture);
                         scene.add.existing(player);
                         scene.animateIn(player);
+                        const genie = new Genie(this, player);
+                        scene.add.existing(genie);
                         player.addComponent(
                             new VisualPulse(
                                 PlayerConfig.resonanceWave.pulseColor,

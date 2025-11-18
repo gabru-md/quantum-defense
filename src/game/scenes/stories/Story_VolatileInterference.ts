@@ -50,9 +50,10 @@ export class Story_VolatileInterference extends BaseStoryScene {
                     text: 'Towers placed too close malfunction, losing effectiveness. Adapt your strategy!',
                 },
                 {
-                    text: 'These rifts also emit Quantum Echoes. Collect them, but beware the risk!',
+                    text: 'These rifts also emit Quantum Echoes.\nCollect them if you can!',
                     action: scene => {
                         const quantumEcho = scene.add.sprite(WIDTH / 2, HEIGHT / 2 + 100, 'quantum_echo_texture').setAlpha(0.8); // Placeholder texture
+                        scene.add.existing(quantumEcho);
                         scene.animateIn(quantumEcho);
                         scene.tweens.add({
                             targets: quantumEcho,

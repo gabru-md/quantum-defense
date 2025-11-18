@@ -24,8 +24,8 @@ export class Gameplay_ThePhantomArrival extends Level { // Renamed class
 
     create() {
         super.create();
-        this.createMiniRift(550, GAME_HEIGHT / 2, 'dormant');
-        this.createRift(1200, GAME_HEIGHT * 3 / 4, 'static');
+        this.createRift(550, GAME_HEIGHT / 2, 'dormant');
+        this.createRift(1200, GAME_HEIGHT * 3 / 4, 'dormant');
     }
 
     getWaveConfig(wave: number): {

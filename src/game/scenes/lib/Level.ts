@@ -10,11 +10,12 @@ import {EXIT_TO_MENU, GAME_HEIGHT, GAME_WIDTH} from '../../scripts/Util.ts';
 import {AppColors} from '../../scripts/Colors.ts';
 import {AudioManager} from './manager/AudioManager.ts';
 import {
+    createBigTowerTexture,
     createBombTexture,
     createBulletTexture,
     createEnemyTexture,
     createPlaceholderTexture,
-    createPlayerTexture,
+    createPlayerTexture, createQuantumEchoTexture,
     createRangePreviewTexture,
     createSpecialEnemyTexture,
     createTowerTexture,
@@ -221,7 +222,7 @@ export abstract class Level extends Phaser.Scene {
             this.isLoaded = true;
 
             this.time.delayedCall(2000, () => {
-                if(this.scene.key !== LevelNames.Gameplay_Tutorial) {
+                if (this.scene.key !== LevelNames.Gameplay_Tutorial) {
                     this.hud.info('Incoming First Wave', AppColors.UI_MESSAGE_ERROR, () => {
                         this.waveManager.startWave(1);
                     });
@@ -293,15 +294,21 @@ export abstract class Level extends Phaser.Scene {
         createEnemyTexture(this, 'enemy1', 32, AppColors.ENEMY_NORMAL);
         createEnemyTexture(this, 'enemy2', 24, AppColors.ENEMY_FAST);
         createEnemyTexture(this, 'enemy3', 40, AppColors.ENEMY_TANK);
+        createEnemyTexture(this, 'upgradedEnemy', 40, AppColors.ENEMY_FAST_TANK);
         createTowerTexture(this, 'tower1', 32, AppColors.TOWER_LASER);
+        createBigTowerTexture(this, 'tower1_upgraded', 32, AppColors.TOWER_LASER);
         createTowerTexture(this, 'tower2', 32, AppColors.TOWER_BOMB);
+        createBigTowerTexture(this, 'tower2_upgraded', 32, AppColors.TOWER_BOMB);
         createTowerTexture(this, 'tower3', 32, AppColors.TOWER_SLOW);
+        createBigTowerTexture(this, 'tower3_upgraded', 32, AppColors.TOWER_SLOW);
+        createTowerTexture(this, 'specialTower', 64, AppColors.TOWER_SPECIAL);
         createBulletTexture(this, 'bullet', 10, AppColors.BULLET_LASER);
         createBombTexture(this, 'bomb', 16, AppColors.BULLET_BOMB);
         createPlayerTexture(this, 'player', 24, AppColors.PLAYER);
         createSpecialEnemyTexture(this, 'specialEnemy', 24, AppColors.SPECIAL_ENEMY);
         createPlaceholderTexture(this, 'towerSlot', 32, 32, AppColors.UI_DISABLED);
         createRangePreviewTexture(this, 'rangePreview', 300, 'rgba(255, 255, 255, 0.05)');
-        createPlayerTexture(this, 'genie_texture', 2, AppColors.PLAYER);
+        createPlayerTexture(this, 'genie_texture', 3, AppColors.PLAYER);
+        createQuantumEchoTexture(this, 'quantum_echo_texture', 18, AppColors.PLAYER, AppColors.SPECIAL_ENEMY);
     }
 }

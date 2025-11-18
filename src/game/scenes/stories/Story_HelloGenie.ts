@@ -7,6 +7,7 @@ import {PlayerConfig} from "../../config/PlayerConfig.ts";
 import {EnemyConfigs} from "../../config/EnemyConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
 import {AppColors, phaserColor} from "../../scripts/Colors.ts";
+import {Genie} from "../../entities/Genie.ts";
 
 export class Story_HelloGenie extends BaseStoryScene {
     constructor() {
@@ -16,6 +17,11 @@ export class Story_HelloGenie extends BaseStoryScene {
     preload() {
         this.backgroundEffectsManager.enableDataStreamEffect(this);
         super.preload();
+    }
+
+    create() {
+        super.create();
+        this.audioManager.playMusic('MainMenuMusic')
     }
 
     getStoryConfig(): { title?: string; steps: StoryStep[]; nextScene: LevelNames } {
@@ -28,6 +34,8 @@ export class Story_HelloGenie extends BaseStoryScene {
                     action: scene => {
                         const player = new GameObject(scene, WIDTH / 2, HEIGHT * 3 / 4, PlayerConfig.texture);
                         scene.add.existing(player);
+                        const genie = new Genie(this, player);
+                        scene.add.existing(genie);
                         scene.animateIn(player);
                         player.addComponent(
                             new VisualPulse(
@@ -39,24 +47,13 @@ export class Story_HelloGenie extends BaseStoryScene {
                                 PlayerConfig.resonanceWave.pulseLineWidth
                             )
                         );
-
-                        const nexus = scene.add.sprite(WIDTH / 2, HEIGHT * 7 / 8, 'nexus').setAlpha(0.3).setScale(0.75, 0.75);
-                        scene.animateIn(nexus);
-                        scene.tweens.add({
-                            targets: nexus,
-                            scaleX: 0.8,
-                            scaleY: 0.8,
-                            duration: 2000,
-                            yoyo: true,
-                            repeat: -1,
-                        });
-                        return [player, nexus];
+                        return [player];
                     },
                 },
                 {
                     text: "Static's operations are rising rapidly,\nHe is sending out fleet of Glitches.",
                     action: scene => {
-                        this.backgroundEffectsManager.enableGlitchAnnihilationEffect(scene);
+                        this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(scene, 1500);
                         const staticEnemy = scene.add.sprite(WIDTH / 2, HEIGHT / 4, 'static').setAlpha(0.3).setScale(1.25, 1.25);
                         scene.animateIn(staticEnemy);
                         scene.tweens.add({
@@ -76,10 +73,10 @@ export class Story_HelloGenie extends BaseStoryScene {
                     },
                 },
                 {
-                    text: 'These "scars" are residual energy from past battles. Currently dormant, but unstable.',
+                    text: 'These "scars" are residual energy from past battles.\nCurrently dormant, but unstable.',
                     action: scene => {
-                        const playerRift = drawRift(scene, WIDTH / 2 - 100, HEIGHT / 2, PlayerConfig.resonanceWave.pulseColor);
-                        const dormantRift = drawRift(scene, WIDTH / 2 + 100, HEIGHT / 2, phaserColor(AppColors.UI_DISABLED));
+                        const playerRift = drawRift(scene, WIDTH / 4, HEIGHT / 4, phaserColor(AppColors.UI_DISABLED));
+                        const dormantRift = drawRift(scene, WIDTH * 3 / 4, HEIGHT * 3 / 4, phaserColor(AppColors.UI_DISABLED));
                         return [...playerRift, ...dormantRift];
                     },
                 },

@@ -12,7 +12,7 @@ export class CircularMovement extends Component {
         super();
     }
 
-    update(time: number, delta: number): void {
+    update(_time: number, delta: number): void {
         this.angle += this.speed * (delta / 1000);
 
         if (this.gameObject) {

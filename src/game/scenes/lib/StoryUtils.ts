@@ -1,8 +1,5 @@
 import {GlitchAnnihilationEffect} from "../../effects/GlitchAnnihilationEffect.ts";
 import {BaseStoryScene} from "./BaseStoryScene.ts";
-import {PlayerConfig} from "../../config/PlayerConfig.ts";
-import {SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
-import {AppColors, phaserColor} from "../../scripts/Colors.ts";
 import Phaser from "phaser";
 
 // Helper to draw rifts with specific colors

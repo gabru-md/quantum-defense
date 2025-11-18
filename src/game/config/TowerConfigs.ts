@@ -1,7 +1,8 @@
-import { AppColors, phaserColor } from '../scripts/Colors.ts';
+import {AppColors, phaserColor} from '../scripts/Colors.ts';
 
 export interface TowerConfigType {
     texture: string;
+    upgradedTexture: string;
     energyCost: number; // Renamed: Cost to build the tower
     health: number;
     range: number;
@@ -27,6 +28,7 @@ export interface TowerConfigType {
 export const TowerConfigs: { [key: string]: TowerConfigType } = {
     tower1: {
         texture: 'tower1',
+        upgradedTexture: 'tower1_upgraded',
         energyCost: 100,
         health: 200,
         range: 100,
@@ -46,6 +48,7 @@ export const TowerConfigs: { [key: string]: TowerConfigType } = {
     },
     tower2: {
         texture: 'tower2',
+        upgradedTexture: 'tower2_upgraded',
         energyCost: 250,
         health: 200,
         range: 80,
@@ -65,6 +68,7 @@ export const TowerConfigs: { [key: string]: TowerConfigType } = {
     },
     tower3: {
         texture: 'tower3',
+        upgradedTexture: 'tower3_upgraded',
         energyCost: 350,
         health: 200,
         range: 150,
@@ -80,4 +84,22 @@ export const TowerConfigs: { [key: string]: TowerConfigType } = {
             slowFactor: 0.5,
         },
     },
-};
+    specialTower: {
+        texture: 'specialTower',
+        upgradedTexture: 'specialTower',
+        energyCost: 350,
+        health: 200,
+        range: 150,
+        description: 'Special Tower:\nFinds and nukes the Phantoms',
+        pulse: {
+            color: phaserColor(AppColors.TOWER_SLOW),
+            pulseDelay: 300,
+            pulseDuration: 1500,
+            pulseTotalPulses: 10,
+            pulseLineWidth: 0.5,
+        },
+        slowing: {
+            slowFactor: 0.5,
+        },
+    }
+}

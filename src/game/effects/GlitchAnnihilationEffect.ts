@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser';
-import { AppColors, phaserColor } from '../scripts/Colors.ts';
-import { GAME_HEIGHT, GAME_WIDTH } from '../scripts/Util.ts';
+import {AppColors, phaserColor} from '../scripts/Colors.ts';
+import {GAME_HEIGHT, GAME_WIDTH} from '../scripts/Util.ts';
 
 export type RiftOptions = {
     x?: number;
@@ -24,14 +24,20 @@ export type RiftElements = {
 export class GlitchAnnihilationEffect {
     private scene: Phaser.Scene;
     private interferenceTimer!: Phaser.Time.TimerEvent;
+    private delay: number;
 
     constructor(scene: Phaser.Scene) {
         this.scene = scene;
+        this.delay = 0;
+    }
+
+    public setDelay(delay: number) {
+        this.delay = delay;
     }
 
     public start(): void {
         this.interferenceTimer = this.scene.time.addEvent({
-            delay: Phaser.Math.Between(3000, 8000),
+            delay: this.delay == 0 ? Phaser.Math.Between(3000, 8000) : this.delay,
             callback: () => this.createDistantRift(),
             callbackScope: this,
             loop: true,
@@ -49,7 +55,7 @@ export class GlitchAnnihilationEffect {
      * The rift's appearance (colors, size, position) can be customized via the `options` parameter.
      */
     public createDistantRift(options: RiftOptions = {}): void {
-        let { outcome, x, y, scale, rotation } = options;
+        let {outcome, x, y, scale, rotation} = options;
 
         if (!outcome) {
             const rand = Phaser.Math.Between(0, 2);
@@ -137,7 +143,7 @@ export class GlitchAnnihilationEffect {
             fragments.push(fragment);
         }
 
-        return { core, innerGlow, outerGlow, rays, fragments, centerX, centerY, scaleFactor };
+        return {core, innerGlow, outerGlow, rays, fragments, centerX, centerY, scaleFactor};
     }
 
     /**
@@ -145,13 +151,34 @@ export class GlitchAnnihilationEffect {
      * @param elements The object containing the Phaser GameObjects of the rift to animate.
      */
     private animateRiftElements(elements: RiftElements): void {
-        const { core, innerGlow, outerGlow, rays, fragments, centerX, centerY, scaleFactor } = elements;
+        const {core, innerGlow, outerGlow, rays, fragments, centerX, centerY, scaleFactor} = elements;
         const duration = Phaser.Math.Between(2500, 4000);
 
         // Animate core and glows
-        this.scene.tweens.add({ targets: core, radius: Phaser.Math.FloatBetween(6, 12) * scaleFactor, alpha: 0, duration: duration, ease: 'Cubic.easeOut', onComplete: () => core.destroy() });
-        this.scene.tweens.add({ targets: innerGlow, radius: Phaser.Math.FloatBetween(20, 35) * scaleFactor, alpha: 0, duration: duration, ease: 'Cubic.easeOut', onComplete: () => innerGlow.destroy() });
-        this.scene.tweens.add({ targets: outerGlow, radius: Phaser.Math.FloatBetween(45, 70) * scaleFactor, alpha: 0, duration: duration * Phaser.Math.FloatBetween(1.1, 1.3), ease: 'Cubic.easeOut', onComplete: () => outerGlow.destroy() });
+        this.scene.tweens.add({
+            targets: core,
+            radius: Phaser.Math.FloatBetween(6, 12) * scaleFactor,
+            alpha: 0,
+            duration: duration,
+            ease: 'Cubic.easeOut',
+            onComplete: () => core.destroy()
+        });
+        this.scene.tweens.add({
+            targets: innerGlow,
+            radius: Phaser.Math.FloatBetween(20, 35) * scaleFactor,
+            alpha: 0,
+            duration: duration,
+            ease: 'Cubic.easeOut',
+            onComplete: () => innerGlow.destroy()
+        });
+        this.scene.tweens.add({
+            targets: outerGlow,
+            radius: Phaser.Math.FloatBetween(45, 70) * scaleFactor,
+            alpha: 0,
+            duration: duration * Phaser.Math.FloatBetween(1.1, 1.3),
+            ease: 'Cubic.easeOut',
+            onComplete: () => outerGlow.destroy()
+        });
 
         // Animate rays
         rays.forEach((ray, index) => {
@@ -163,7 +190,16 @@ export class GlitchAnnihilationEffect {
             const finalLength = Phaser.Math.Between(70, 180) * scaleFactor;
             const finalX = centerX + Math.cos(angle) * finalLength;
             const finalY = centerY + Math.sin(angle) * finalLength;
-            this.scene.tweens.add({ targets: ray, x2: finalX, y2: finalY, alpha: 0, duration: duration * Phaser.Math.FloatBetween(0.7, 0.9), ease: Phaser.Math.RND.pick(['Sine.easeOut', 'Cubic.easeOut', 'Quad.easeOut']), delay: index * Phaser.Math.Between(20, 50), onComplete: () => ray.destroy() });
+            this.scene.tweens.add({
+                targets: ray,
+                x2: finalX,
+                y2: finalY,
+                alpha: 0,
+                duration: duration * Phaser.Math.FloatBetween(0.7, 0.9),
+                ease: Phaser.Math.RND.pick(['Sine.easeOut', 'Cubic.easeOut', 'Quad.easeOut']),
+                delay: index * Phaser.Math.Between(20, 50),
+                onComplete: () => ray.destroy()
+            });
         });
 
         // Animate fragments
@@ -172,7 +208,17 @@ export class GlitchAnnihilationEffect {
             const scatterDistance = Phaser.Math.Between(50, 150) * scaleFactor;
             const targetX = centerX + Math.cos(currentAngle) * scatterDistance;
             const targetY = centerY + Math.sin(currentAngle) * scatterDistance;
-            this.scene.tweens.add({ targets: fragment, x: targetX, y: targetY, alpha: 0, angle: Phaser.Math.Between(-180, 180), duration: duration * Phaser.Math.FloatBetween(0.9, 1.1), ease: 'Cubic.easeOut', delay: index * Phaser.Math.Between(30, 60), onComplete: () => fragment.destroy() });
+            this.scene.tweens.add({
+                targets: fragment,
+                x: targetX,
+                y: targetY,
+                alpha: 0,
+                angle: Phaser.Math.Between(-180, 180),
+                duration: duration * Phaser.Math.FloatBetween(0.9, 1.1),
+                ease: 'Cubic.easeOut',
+                delay: index * Phaser.Math.Between(30, 60),
+                onComplete: () => fragment.destroy()
+            });
         });
     }
 
@@ -182,7 +228,7 @@ export class GlitchAnnihilationEffect {
      * @param elements The object containing the Phaser GameObjects of the rift to animate.
      */
     public animateRiftIdle(elements: RiftElements): void {
-        const { innerGlow, outerGlow, rays, fragments, core } = elements;
+        const {innerGlow, outerGlow, rays, fragments, core} = elements;
 
         // Animate glows for a pulsing effect
         this.scene.tweens.add({
@@ -196,7 +242,7 @@ export class GlitchAnnihilationEffect {
 
         // animate core movement
         this.scene.tweens.add({
-           targets: [core],
+            targets: [core],
             x: core.x + Phaser.Math.FloatBetween(-5, 5),
             y: core.y + Phaser.Math.FloatBetween(-5, 5),
             duration: Phaser.Math.Between(1000, 2000),

@@ -6,6 +6,7 @@ import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
 import {PlayerConfig} from "../../config/PlayerConfig.ts";
 import {SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
+import {Genie} from "../../entities/Genie.ts";
 
 export class Story_SamplingTheEchoes extends BaseStoryScene {
     constructor() {
@@ -23,7 +24,7 @@ export class Story_SamplingTheEchoes extends BaseStoryScene {
             nextScene: STORY_TO_GAMEPLAY_MAP[LevelNames.Story_SamplingTheEchoes],
             steps: [
                 {
-                    text: "Genie: We need to understand Static's power. Collect Phantom remains and Quantum Echoes.",
+                    text: "Genie: We need to understand Static's power.",
                     action: scene => {
                         this.backgroundEffectsManager.enableGhostlyClashEffect(scene);
                         const phantom = new GameObject(scene, WIDTH / 2 - 100, HEIGHT / 2 - 100, SpecialEnemyConfig.texture).setAlpha(0.8);
@@ -39,18 +40,17 @@ export class Story_SamplingTheEchoes extends BaseStoryScene {
                                 PlayerConfig.resonanceWave.pulseLineWidth
                             )
                         );
-                        const quantumEcho = scene.add.sprite(WIDTH / 2 + 100, HEIGHT / 2 + 100, 'quantum_echo_texture').setAlpha(0.8);
-                        scene.animateIn(quantumEcho);
-                        return [phantom, quantumEcho];
+                        return [phantom];
                     },
                 },
                 {
                     text: 'Guardian, you must actively seek out echoes from dangerous rift zones.',
                     action: scene => {
-                        const phantomRift = drawRift(scene, WIDTH / 2, HEIGHT / 2, SpecialEnemyConfig.pulseColor);
-                        const player = new GameObject(scene, WIDTH / 2, HEIGHT * 3 / 4, PlayerConfig.texture);
-                        scene.add.existing(player);
+                        const player = new GameObject(scene, WIDTH / 2 + 100, HEIGHT / 2 - 100, PlayerConfig.texture);
                         scene.animateIn(player);
+                        scene.add.existing(player);
+                        const genie = new Genie(this, player);
+                        scene.add.existing(genie);
                         player.addComponent(
                             new VisualPulse(
                                 PlayerConfig.resonanceWave.pulseColor,
@@ -61,11 +61,18 @@ export class Story_SamplingTheEchoes extends BaseStoryScene {
                                 PlayerConfig.resonanceWave.pulseLineWidth
                             )
                         );
-                        return [...phantomRift, player];
+
+                        return [player];
                     },
                 },
                 {
                     text: 'Carefully navigate around the malfunctioning fields of active rifts.',
+                    action: scene => {
+                        const quantumEcho = scene.add.sprite(WIDTH / 2, HEIGHT / 2 - 100, 'quantum_echo_texture').setAlpha(0.8);
+                        scene.fadeIn(quantumEcho);
+                        const phantomRift = drawRift(scene, WIDTH / 2, HEIGHT / 2 + 300, SpecialEnemyConfig.pulseColor);
+                        return [...phantomRift, quantumEcho];
+                    }
                 },
             ],
         };

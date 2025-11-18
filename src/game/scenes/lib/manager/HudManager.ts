@@ -286,6 +286,11 @@ export class HudManager extends Manager {
         let currentTowerY = startY + 50;
         for (const towerKey in TowerConfigs) {
             const config: TowerConfigType = TowerConfigs[towerKey];
+            if(towerKey === 'specialTower') {
+                // we will allow special tower after a certain level only
+                // and this will require collecting the quantum echoes
+                continue;
+            }
             let statsString = '';
             if (config.attack) {
                 statsString = `DMG: ${config.attack.damage} | FR: ${(1000 / config.attack.fireRate).toFixed(2)}/s | R: ${config.range}`;
