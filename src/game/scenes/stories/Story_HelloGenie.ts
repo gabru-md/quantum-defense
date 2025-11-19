@@ -1,13 +1,10 @@
 import {LevelNames, STORY_TO_GAMEPLAY_MAP} from '../lib/LevelNames.ts';
-import {GameObject} from '../../core/GameObject.ts';
-import {VisualPulse} from '../../components/VisualPulse.ts';
 import {HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
-import {PlayerConfig} from "../../config/PlayerConfig.ts";
 import {EnemyConfigs} from "../../config/EnemyConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
 import {AppColors, phaserColor} from "../../scripts/Colors.ts";
-import {Genie} from "../../entities/Genie.ts";
+import {createPlayer, createStatic} from "../../scripts/EntityMaker.ts";
 
 export class Story_HelloGenie extends BaseStoryScene {
     constructor() {
@@ -32,29 +29,16 @@ export class Story_HelloGenie extends BaseStoryScene {
                 {
                     text: 'Hi! I am Genie.\nEven a Guardian needs a guide!',
                     action: scene => {
-                        const player = new GameObject(scene, WIDTH / 2, HEIGHT * 3 / 4, PlayerConfig.texture);
-                        scene.add.existing(player);
-                        const genie = new Genie(this, player);
-                        scene.add.existing(genie);
+                        const [player, genie] = createPlayer(scene, WIDTH / 2, HEIGHT * 3 / 4);
                         scene.animateIn(player);
-                        player.addComponent(
-                            new VisualPulse(
-                                PlayerConfig.resonanceWave.pulseColor,
-                                PlayerConfig.resonanceWave.pulseDelay,
-                                PlayerConfig.resonanceWave.pulseDuration,
-                                PlayerConfig.resonanceWave.activationRange,
-                                PlayerConfig.resonanceWave.pulseTotalPulses,
-                                PlayerConfig.resonanceWave.pulseLineWidth
-                            )
-                        );
-                        return [player];
+                        return [player, genie];
                     },
                 },
                 {
                     text: "Static's operations are rising rapidly,\nHe is sending out fleet of Glitches.",
                     action: scene => {
                         this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(scene, 1500);
-                        const staticEnemy = scene.add.sprite(WIDTH / 2, HEIGHT / 4, 'static').setAlpha(0.3).setScale(1.25, 1.25);
+                        const [staticEnemy, ...genies] = createStatic(scene, WIDTH / 2, HEIGHT / 4);
                         scene.animateIn(staticEnemy);
                         scene.tweens.add({
                             targets: staticEnemy,
@@ -69,7 +53,7 @@ export class Story_HelloGenie extends BaseStoryScene {
                         const enemy2 = scene.add.sprite(WIDTH / 2, (HEIGHT * 5) / 8, EnemyConfigs.enemy2.texture).setAlpha(0.4);
                         const enemy3 = scene.add.sprite(WIDTH / 2 + 100, (HEIGHT * 5) / 8, EnemyConfigs.enemy3.texture).setAlpha(0.4);
                         [enemy1, enemy2, enemy3].forEach(t => scene.animateIn(t));
-                        return [staticEnemy, enemy1, enemy2, enemy3];
+                        return [staticEnemy, enemy1, enemy2, enemy3, ...genies];
                     },
                 },
                 {

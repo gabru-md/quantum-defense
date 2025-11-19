@@ -3,7 +3,6 @@ import {AppColors, phaserColor} from '../../scripts/Colors';
 import {HEIGHT, WIDTH} from '../../scripts/Util';
 import {GameObject} from '../../core/GameObject';
 import {
-    createBigGlitchTexture,
     createBigTowerTexture,
     createEnemyTexture,
     createPlayerTexture, createQuantumEchoTexture,
@@ -14,6 +13,7 @@ import {getLevelNameKey, getStoryName, LevelNames} from "./LevelNames.ts";
 import {AudioManager} from "./manager/AudioManager.ts";
 import {BackgroundEffectsManager} from "../../effects/BackgroundEffectsManager.ts";
 import {GlitchAnnihilationEffect} from "../../effects/GlitchAnnihilationEffect.ts";
+import {VisualPulse} from "../../components/VisualPulse.ts";
 export interface StoryStep {
     text: string;
     action?: (scene: BaseStoryScene) => Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[] | void;
@@ -65,8 +65,8 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         this.steps = this.getStoryConfig().steps;
         this.audioManager.setup();
         // Preload common textures for all story scenes
-        createBigTowerTexture(this, 'nexus', 256, AppColors.NEXUS_OUTER);
-        createBigGlitchTexture(this, 'static', 256, AppColors.STATIC_OUTER);
+        createPlayerTexture(this, 'nexus', 128, AppColors.NEXUS_OUTER);
+        createPlayerTexture(this, 'static', 128, AppColors.STATIC_OUTER);
         createPlayerTexture(this, 'player', 24, AppColors.PLAYER);
         createEnemyTexture(this, 'enemy1', 32, AppColors.ENEMY_NORMAL);
         createEnemyTexture(this, 'enemy2', 32, AppColors.ENEMY_FAST);
@@ -83,6 +83,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         // Preload new textures
         createQuantumEchoTexture(this, 'quantum_echo_texture', 18, AppColors.PLAYER, AppColors.SPECIAL_ENEMY); // There is a gradient
         createPlayerTexture(this, 'genie_texture', 3, AppColors.PLAYER); // Placeholder color
+        createPlayerTexture(this, 'static_genie_texture', 3, AppColors.SPECIAL_ENEMY); // Placeholder color
         createPlayerTexture(this, 'phantom_genie_texture', 3, AppColors.SPECIAL_ENEMY); // Placeholder color
         createTowerTexture(this, 'phantom_killer_tower_texture', 64, AppColors.ENEMY_FAST); // Placeholder color
         createPlayerTexture(this, 'upgrade_icon_texture', 24, AppColors.ENEMY_TANK); // Placeholder color
@@ -386,6 +387,13 @@ export abstract class BaseStoryScene extends Phaser.Scene {
     }
 
     fadeOut(v: Phaser.GameObjects.GameObject) {
+        // check if gameobject has visual component then fade it out
+
+        if(v instanceof GameObject) {
+            let y = v as GameObject;
+            y.getComponent(VisualPulse)?.destroy();
+        }
+
         this.tweens.add({
             targets: v,
             alpha: 0,

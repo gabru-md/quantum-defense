@@ -1,13 +1,10 @@
 import {LevelNames, STORY_TO_GAMEPLAY_MAP} from '../lib/LevelNames.ts';
-import {GameObject} from '../../core/GameObject.ts';
-import {VisualPulse} from '../../components/VisualPulse.ts';
 import {HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
-import {PlayerConfig} from "../../config/PlayerConfig.ts";
 import {EnemyConfigs} from "../../config/EnemyConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
 import {AppColors, phaserColor} from "../../scripts/Colors.ts";
-import {Genie} from "../../entities/Genie.ts";
+import {createNexusObject, createPlayer} from "../../scripts/EntityMaker.ts";
 
 export class Story_TheDormantScars extends BaseStoryScene {
     constructor() {
@@ -28,7 +25,7 @@ export class Story_TheDormantScars extends BaseStoryScene {
                     text: "The Glitches have identified more paths to the nexus\nIt's not looking good.",
                     action: scene => {
                         this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(scene, 1250);
-                        const nexus = scene.add.sprite(WIDTH / 2, HEIGHT / 4, 'nexus').setAlpha(0.3);
+                        const [nexus, ...genies] = createNexusObject(scene, WIDTH / 2, HEIGHT / 4);
                         scene.animateIn(nexus);
                         scene.tweens.add({
                             targets: nexus,
@@ -46,7 +43,7 @@ export class Story_TheDormantScars extends BaseStoryScene {
                         const enemy3 = scene.add.sprite(WIDTH / 2 + 100, (HEIGHT * 3) / 4, EnemyConfigs.enemy3.texture).setAlpha(0.8);
                         const enemy3_2 = scene.add.sprite(WIDTH / 2 + 150, (HEIGHT * 3) / 4, EnemyConfigs.enemy3.texture).setAlpha(0.8);
                         [enemy1, enemy1_2, enemy2, enemy2_2, enemy3, enemy3_2].forEach(t => scene.animateIn(t));
-                        return [nexus, enemy1, enemy1_2, enemy2, enemy2_2, enemy3, enemy3_2];
+                        return [nexus, enemy1, enemy1_2, enemy2, enemy2_2, enemy3, enemy3_2, ...genies];
                     },
                 },
                 {
@@ -63,22 +60,9 @@ export class Story_TheDormantScars extends BaseStoryScene {
                 {
                     text: "But I can still count on you, right?",
                     action: scene => {
-                        const player = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 100, PlayerConfig.texture);
-                        scene.add.existing(player);
+                        const [player, genie] = createPlayer(scene, WIDTH / 2, HEIGHT / 2 + 100);
                         scene.animateIn(player);
-                        const genie = new Genie(this, player);
-                        scene.add.existing(genie);
-                        player.addComponent(
-                            new VisualPulse(
-                                PlayerConfig.resonanceWave.pulseColor,
-                                PlayerConfig.resonanceWave.pulseDelay,
-                                PlayerConfig.resonanceWave.pulseDuration,
-                                PlayerConfig.resonanceWave.activationRange,
-                                PlayerConfig.resonanceWave.pulseTotalPulses,
-                                PlayerConfig.resonanceWave.pulseLineWidth
-                            )
-                        );
-                        return player;
+                        return [player, genie];
                     },
                 },
             ],

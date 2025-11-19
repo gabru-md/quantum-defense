@@ -6,7 +6,7 @@ import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
 import {PlayerConfig} from "../../config/PlayerConfig.ts";
 import {SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
-import {Genie} from "../../entities/Genie.ts";
+import {createPlayer, createStatic} from "../../scripts/EntityMaker.ts";
 
 export class Story_TheResonanceWave extends BaseStoryScene {
     constructor() {
@@ -27,7 +27,7 @@ export class Story_TheResonanceWave extends BaseStoryScene {
                     text: 'Genie: The last Phantom falls!\nStatic\'s core is exposed – a raw, pulsating mass!',
                     action: scene => {
                         this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(scene, 550);
-                        const staticCore = scene.add.sprite(WIDTH / 2, HEIGHT / 4, 'static').setAlpha(0.8).setScale(1.25, 1.25);
+                        const [staticCore, ...genies] = createStatic(scene, WIDTH / 2, HEIGHT / 4);
                         scene.animateIn(staticCore);
                         scene.tweens.add({
                             targets: staticCore,
@@ -37,7 +37,7 @@ export class Story_TheResonanceWave extends BaseStoryScene {
                             yoyo: true,
                             repeat: -1,
                         });
-                        return staticCore;
+                        return [staticCore, ...genies];
                     },
                 },
                 {
@@ -59,22 +59,9 @@ export class Story_TheResonanceWave extends BaseStoryScene {
                 {
                     text: 'Only your pure Resonance Wave,\namplified by a final surge of Quantum Echoes, can destroy it!',
                     action: scene => {
-                        const player = new GameObject(scene, WIDTH / 2, HEIGHT * 3 / 4, PlayerConfig.texture);
-                        const genie = new Genie(this, player)
-                        scene.add.existing(genie);
-                        scene.add.existing(player);
+                        const [player, genie] = createPlayer(scene, WIDTH / 2, HEIGHT * 3 / 4);
                         scene.animateIn(player);
-                        player.addComponent(
-                            new VisualPulse(
-                                PlayerConfig.resonanceWave.pulseColor,
-                                PlayerConfig.resonanceWave.pulseDelay,
-                                PlayerConfig.resonanceWave.pulseDuration,
-                                PlayerConfig.resonanceWave.activationRange,
-                                PlayerConfig.resonanceWave.pulseTotalPulses,
-                                PlayerConfig.resonanceWave.pulseLineWidth
-                            )
-                        );
-                        return [player];
+                        return [player, genie];
                     },
                 },
                 {

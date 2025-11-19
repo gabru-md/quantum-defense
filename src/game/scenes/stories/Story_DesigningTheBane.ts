@@ -1,12 +1,9 @@
 import {LevelNames, STORY_TO_GAMEPLAY_MAP} from '../lib/LevelNames.ts';
-import {GameObject} from '../../core/GameObject.ts';
 import {HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
 import {SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
-import {PlayerConfig} from "../../config/PlayerConfig.ts";
-import {Genie} from "../../entities/Genie.ts";
-import {VisualPulse} from "../../components/VisualPulse.ts";
+import {createPhantom, createPlayer} from "../../scripts/EntityMaker.ts";
 
 export class Story_DesigningTheBane extends BaseStoryScene {
     constructor() {
@@ -27,22 +24,9 @@ export class Story_DesigningTheBane extends BaseStoryScene {
                     text: 'Genie: Armed with this knowledge, Guardian, I\'ve designed the ultimate weapon!',
                     action: scene => {
                         this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(this, 850);
-                        const player = new GameObject(scene, WIDTH / 2, HEIGHT * 3 / 4, PlayerConfig.texture);
-                        scene.add.existing(player);
+                        const player = createPlayer(scene, WIDTH / 2, HEIGHT * 3 / 4);
                         scene.animateIn(player);
-                        const genie = new Genie(this, player);
-                        scene.add.existing(genie);
-                        player.addComponent(
-                            new VisualPulse(
-                                PlayerConfig.resonanceWave.pulseColor,
-                                PlayerConfig.resonanceWave.pulseDelay,
-                                PlayerConfig.resonanceWave.pulseDuration,
-                                PlayerConfig.resonanceWave.activationRange,
-                                PlayerConfig.resonanceWave.pulseTotalPulses,
-                                PlayerConfig.resonanceWave.pulseLineWidth
-                            )
-                        );
-                        return [genie, player];
+                        return [player];
                     },
                 },
                 {
@@ -50,8 +34,7 @@ export class Story_DesigningTheBane extends BaseStoryScene {
                     action: scene => {
                         const phantomKiller = scene.add.sprite(WIDTH / 2, HEIGHT / 2 + 150, 'specialTower').setAlpha(0.8);
                         scene.animateIn(phantomKiller);
-                        const phantom = new GameObject(scene, WIDTH / 2, HEIGHT / 2 - 150, SpecialEnemyConfig.texture).setAlpha(0.8);
-                        scene.add.existing(phantom);
+                        const phantom = createPhantom(scene, WIDTH / 2, HEIGHT / 2 - 150);
                         scene.animateIn(phantom);
                         scene.tweens.add({
                             targets: [phantom, phantomKiller],

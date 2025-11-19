@@ -1,12 +1,9 @@
 import {LevelNames, STORY_TO_GAMEPLAY_MAP} from '../lib/LevelNames.ts';
-import {GameObject} from '../../core/GameObject.ts';
-import {VisualPulse} from '../../components/VisualPulse.ts';
 import {HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
-import {PlayerConfig} from "../../config/PlayerConfig.ts";
 import {SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
-import {Genie} from "../../entities/Genie.ts";
+import {createPhantom, createPlayer} from "../../scripts/EntityMaker.ts";
 
 export class Story_SamplingTheEchoes extends BaseStoryScene {
     constructor() {
@@ -27,41 +24,16 @@ export class Story_SamplingTheEchoes extends BaseStoryScene {
                     text: "Genie: We need to understand Static's power.",
                     action: scene => {
                         this.backgroundEffectsManager.enableGhostlyClashEffect(scene);
-                        const phantom = new GameObject(scene, WIDTH / 2 - 100, HEIGHT / 2 - 100, SpecialEnemyConfig.texture).setAlpha(0.8);
-                        scene.add.existing(phantom);
+                        const phantom = createPhantom(scene, WIDTH / 2 - 100, HEIGHT / 2 - 100);
                         scene.animateIn(phantom);
-                        phantom.addComponent(
-                            new VisualPulse(
-                                SpecialEnemyConfig.pulseColor,
-                                PlayerConfig.resonanceWave.pulseDelay,
-                                PlayerConfig.resonanceWave.pulseDuration,
-                                SpecialEnemyConfig.deactivationRadius,
-                                PlayerConfig.resonanceWave.pulseTotalPulses,
-                                PlayerConfig.resonanceWave.pulseLineWidth
-                            )
-                        );
                         return [phantom];
                     },
                 },
                 {
                     text: 'Guardian, you must actively seek out echoes from dangerous rift zones.',
                     action: scene => {
-                        const player = new GameObject(scene, WIDTH / 2 + 100, HEIGHT / 2 - 100, PlayerConfig.texture);
+                        const player = createPlayer(scene, WIDTH / 2 + 100, HEIGHT / 2 - 100);
                         scene.animateIn(player);
-                        scene.add.existing(player);
-                        const genie = new Genie(this, player);
-                        scene.add.existing(genie);
-                        player.addComponent(
-                            new VisualPulse(
-                                PlayerConfig.resonanceWave.pulseColor,
-                                PlayerConfig.resonanceWave.pulseDelay,
-                                PlayerConfig.resonanceWave.pulseDuration,
-                                PlayerConfig.resonanceWave.activationRange,
-                                PlayerConfig.resonanceWave.pulseTotalPulses,
-                                PlayerConfig.resonanceWave.pulseLineWidth
-                            )
-                        );
-
                         return [player];
                     },
                 },

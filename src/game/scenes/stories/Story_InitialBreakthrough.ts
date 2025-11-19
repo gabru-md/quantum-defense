@@ -1,11 +1,8 @@
 import {LevelNames, STORY_TO_GAMEPLAY_MAP} from '../lib/LevelNames.ts';
-import {GameObject} from '../../core/GameObject.ts';
-import {VisualPulse} from '../../components/VisualPulse.ts';
 import {HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
-import {PlayerConfig} from "../../config/PlayerConfig.ts";
 import {TowerConfigs} from "../../config/TowerConfigs.ts";
-import {Genie} from "../../entities/Genie.ts";
+import {createPlayer} from "../../scripts/EntityMaker.ts";
 export class Story_InitialBreakthrough extends BaseStoryScene {
     constructor() {
         super(LevelNames.Story_InitialBreakthrough); // Corrected: Use LevelNames.Story_InitialBreakthrough directly
@@ -24,21 +21,8 @@ export class Story_InitialBreakthrough extends BaseStoryScene {
                 {
                     text: 'Genie: Amazing work, Guardian!\nYour collected samples are yielding results!',
                     action: scene => {
-                        const player = new GameObject(scene, WIDTH / 2, HEIGHT / 2 - 100, PlayerConfig.texture);
+                        const player = createPlayer(scene, WIDTH / 2, HEIGHT / 2 - 100);
                         scene.animateIn(player);
-                        const genie = new Genie(this, player);
-                        scene.add.existing(genie);
-                        scene.add.existing(player);
-                        player.addComponent(
-                            new VisualPulse(
-                                PlayerConfig.resonanceWave.pulseColor,
-                                PlayerConfig.resonanceWave.pulseDelay,
-                                PlayerConfig.resonanceWave.pulseDuration,
-                                PlayerConfig.resonanceWave.activationRange,
-                                PlayerConfig.resonanceWave.pulseTotalPulses,
-                                PlayerConfig.resonanceWave.pulseLineWidth
-                            )
-                        );
                         return player;
                     },
                 },

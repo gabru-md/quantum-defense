@@ -1,5 +1,5 @@
-import { Component } from '../core/Component.ts';
-import { GameObject } from '../core/GameObject.ts';
+import {Component} from '../core/Component.ts';
+import {GameObject} from '../core/GameObject.ts';
 
 export class CircularMovement extends Component {
     private angle: number = 0;
@@ -10,6 +10,7 @@ export class CircularMovement extends Component {
         private speed: number
     ) {
         super();
+        this.angle = Phaser.Math.FloatBetween(0, 2 * Math.PI);
     }
 
     update(_time: number, delta: number): void {
@@ -20,5 +21,13 @@ export class CircularMovement extends Component {
             const newY = this.target.y + this.radius * Math.sin(this.angle);
             this.gameObject.setPosition(newX, newY);
         }
+    }
+
+    public setRadius(radius: number) {
+        this.radius = radius;
+    }
+
+    public setSpeed(speed: number) {
+        this.speed = speed;
     }
 }

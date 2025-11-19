@@ -1,12 +1,10 @@
 import {LevelNames, STORY_TO_GAMEPLAY_MAP} from '../lib/LevelNames.ts';
-import {GameObject} from '../../core/GameObject.ts';
 import {HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
 import {EnemyConfigs, SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
-import {VisualPulse} from "../../components/VisualPulse.ts";
 import {PlayerConfig} from "../../config/PlayerConfig.ts";
-import {Genie} from "../../entities/Genie.ts";
+import {createPhantom, createPlayer, createStatic} from "../../scripts/EntityMaker.ts";
 
 export class Story_TheFinalAssault extends BaseStoryScene {
     constructor() {
@@ -27,7 +25,7 @@ export class Story_TheFinalAssault extends BaseStoryScene {
                     text: 'Genie: Static is enraged! It launches an all-out, desperate assault!',
                     action: scene => {
                         this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(scene, 800);
-                        const staticEnemy = scene.add.sprite(WIDTH / 2, HEIGHT / 4, 'static').setAlpha(0.3).setScale(1.15, 1.15);
+                        const [staticEnemy, ...genies] = createStatic(scene, WIDTH / 2, HEIGHT / 4);
                         scene.animateIn(staticEnemy);
                         scene.tweens.add({
                             targets: staticEnemy,
@@ -42,41 +40,17 @@ export class Story_TheFinalAssault extends BaseStoryScene {
                         const enemy3 = scene.add.sprite(WIDTH / 2 + 25, HEIGHT / 2 + 100, EnemyConfigs.enemy3.texture).setAlpha(0.4);
                         const upgradedEnemy = scene.add.sprite(WIDTH / 2 + 75, HEIGHT / 2 + 100, EnemyConfigs.upgradedEnemy.texture).setAlpha(0.4);
                         [enemy1, enemy2, enemy3, upgradedEnemy].forEach(t => scene.animateIn(t));
-                        return [staticEnemy, enemy1, enemy2, enemy3, upgradedEnemy];
+                        return [staticEnemy, enemy1, enemy2, enemy3, upgradedEnemy, ...genies];
                     },
                 },
                 {
                     text: 'A colossal wave of every Glitch type, including unprecedented numbers of Phantoms!',
                     action: scene => {
-                        const phantom = new GameObject(scene, WIDTH / 2, HEIGHT / 2 - 75, SpecialEnemyConfig.texture).setAlpha(0.8);
-                        scene.add.existing(phantom);
+                        const phantom = createPhantom(scene, WIDTH / 2, HEIGHT / 2 - 75);
                         scene.animateIn(phantom);
-                        phantom.addComponent(
-                            new VisualPulse(
-                                SpecialEnemyConfig.pulseColor,
-                                PlayerConfig.resonanceWave.pulseDelay,
-                                PlayerConfig.resonanceWave.pulseDuration,
-                                SpecialEnemyConfig.deactivationRadius,
-                                PlayerConfig.resonanceWave.pulseTotalPulses,
-                                PlayerConfig.resonanceWave.pulseLineWidth
-                            )
-                        );
-                        const player = new GameObject(scene, WIDTH / 2, HEIGHT * 3 / 4, PlayerConfig.texture);
-                        scene.add.existing(player);
+                        const [player, genie] = createPlayer(scene, WIDTH / 2, HEIGHT * 3 / 4);
                         scene.animateIn(player);
-                        const genie = new Genie(this, player);
-                        scene.add.existing(genie);
-                        player.addComponent(
-                            new VisualPulse(
-                                PlayerConfig.resonanceWave.pulseColor,
-                                PlayerConfig.resonanceWave.pulseDelay,
-                                PlayerConfig.resonanceWave.pulseDuration,
-                                PlayerConfig.resonanceWave.activationRange,
-                                PlayerConfig.resonanceWave.pulseTotalPulses,
-                                PlayerConfig.resonanceWave.pulseLineWidth
-                            )
-                        );
-                        return [phantom, player];
+                        return [phantom, player, genie];
                     },
                 },
                 {

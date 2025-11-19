@@ -1,16 +1,13 @@
 import {LevelNames, STORY_TO_GAMEPLAY_MAP} from '../lib/LevelNames.ts';
-import {GameObject} from '../../core/GameObject.ts';
-import {VisualPulse} from '../../components/VisualPulse.ts';
 import {HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
-import {PlayerConfig} from "../../config/PlayerConfig.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
 import {SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
-import {Genie} from "../../entities/Genie.ts";
+import {createPlayer} from "../../scripts/EntityMaker.ts";
 
 export class Story_VolatileFrontierPart2 extends BaseStoryScene {
     constructor() {
-        super(LevelNames.Story_VolatileFrontierPart2); // Corrected: Use LevelNames.Story_VolatileFrontierPart2 directly
+        super(LevelNames.Story_VolatileFrontierPart2);
     }
 
     preload() {
@@ -26,22 +23,9 @@ export class Story_VolatileFrontierPart2 extends BaseStoryScene {
                 {
                     text: 'Genie: Guardian, you must master navigating these volatile zones.',
                     action: scene => {
-                        const player = new GameObject(scene, WIDTH / 2, HEIGHT * 3 / 4, PlayerConfig.texture);
-                        const genie = new Genie(this, player)
-                        scene.add.existing(genie);
-                        scene.add.existing(player);
+                        const [player, genie] = createPlayer(scene, WIDTH / 2, HEIGHT * 3 / 4);
                         scene.animateIn(player);
-                        player.addComponent(
-                            new VisualPulse(
-                                PlayerConfig.resonanceWave.pulseColor,
-                                PlayerConfig.resonanceWave.pulseDelay,
-                                PlayerConfig.resonanceWave.pulseDuration,
-                                PlayerConfig.resonanceWave.activationRange,
-                                PlayerConfig.resonanceWave.pulseTotalPulses,
-                                PlayerConfig.resonanceWave.pulseLineWidth
-                            )
-                        );
-                        return [player];
+                        return [player, genie];
                     },
                 },
                 {

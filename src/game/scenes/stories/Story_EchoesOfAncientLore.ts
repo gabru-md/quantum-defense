@@ -1,10 +1,10 @@
 import {LevelNames, STORY_TO_GAMEPLAY_MAP} from '../lib/LevelNames.ts';
-import {GameObject} from '../../core/GameObject.ts';
 import {HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
 import {PlayerConfig} from "../../config/PlayerConfig.ts";
 import {SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
+import {createPhantom, createStatic} from "../../scripts/EntityMaker.ts";
 
 export class Story_EchoesOfAncientLore extends BaseStoryScene {
     constructor() {
@@ -34,8 +34,7 @@ export class Story_EchoesOfAncientLore extends BaseStoryScene {
                 {
                     text: 'I\'ve uncovered fragments of forgotten lore. Phantoms are not just Glitches!',
                     action: scene => {
-                        const phantom = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 200, SpecialEnemyConfig.texture).setAlpha(0.8);
-                        scene.add.existing(phantom);
+                        const phantom = createPhantom(scene, WIDTH / 2, HEIGHT / 2 + 200);
                         scene.animateIn(phantom);
                         return phantom;
                     },
@@ -43,7 +42,7 @@ export class Story_EchoesOfAncientLore extends BaseStoryScene {
                 {
                     text: 'They are direct manifestations of Static\'s core essence – "mini-Statics"!',
                     action: scene => {
-                        const staticEnemy = scene.add.sprite(WIDTH / 2, HEIGHT / 2 + 200, 'static').setAlpha(0.3);
+                        const staticEnemy = createStatic(scene, WIDTH / 2, HEIGHT / 2 + 200);
                         scene.animateIn(staticEnemy);
                         return [staticEnemy];
                     },
