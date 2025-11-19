@@ -23,7 +23,7 @@ export class Story_StaticNewGlitches extends BaseStoryScene {
                     text: 'Genie: Static senses your growing strength, Guardian.\nIt has unleashed a new Glitch!',
                     action: scene => {
                         this.backgroundEffectsManager.enableGlitchAnnihilationEffect(scene);
-                        const staticEnemy = createStatic(scene,WIDTH / 2, HEIGHT / 4);
+                        const [staticEnemy, ...genies] = createStatic(scene,WIDTH / 2, HEIGHT / 4);
                         scene.animateIn(staticEnemy);
                         scene.tweens.add({
                             targets: staticEnemy,
@@ -34,7 +34,7 @@ export class Story_StaticNewGlitches extends BaseStoryScene {
                             repeat: -1,
                         });
 
-                        return [staticEnemy];
+                        return [staticEnemy, ...genies];
                     },
                 },
                 {

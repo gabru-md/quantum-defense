@@ -42,9 +42,9 @@ export class Story_EchoesOfAncientLore extends BaseStoryScene {
                 {
                     text: 'They are direct manifestations of Static\'s core essence – "mini-Statics"!',
                     action: scene => {
-                        const staticEnemy = createStatic(scene, WIDTH / 2, HEIGHT / 2 + 200);
+                        const [staticEnemy, ...genies] = createStatic(scene, WIDTH / 2, HEIGHT / 2 + 200);
                         scene.animateIn(staticEnemy);
-                        return [staticEnemy];
+                        return [staticEnemy, ...genies];
                     },
                 },
                 {
