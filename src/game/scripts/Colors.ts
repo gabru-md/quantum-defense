@@ -23,7 +23,8 @@ export const AppColors = {
     UI_SEPARATOR: '#ffffff',
 
     // Game Background
-    GAME_BACKGROUND: '#2d2d2d',
+    // GAME_BACKGROUND: '#2d2d2d',
+    GAME_BACKGROUND: '#1c1c1c',
 
     // Path Colors
     PATH_LINE: '#888888',

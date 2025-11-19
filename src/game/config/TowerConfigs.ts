@@ -63,7 +63,7 @@ export const TowerConfigs: { [key: string]: TowerConfigType } = {
         attack: {
             damage: 100,
             fireRate: 1500, // ms
-            aoeRadius: 75,
+            aoeRadius: 50,
         },
     },
     tower3: {

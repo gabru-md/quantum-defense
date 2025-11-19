@@ -4,6 +4,7 @@ import { Enemy } from './Enemy';
 import { SpecialEnemy } from './SpecialEnemy'; // Import SpecialEnemy
 import * as Phaser from 'phaser';
 import { GAME_HEIGHT, GAME_WIDTH } from '../scripts/Util.ts';
+import {AppColors, phaserColor} from "../scripts/Colors.ts";
 
 /**
  * Represents a bomb projectile that deals Area of Effect (AoE) damage.
@@ -43,9 +44,9 @@ export class Bomb extends GameObject {
     }
 
     public explode(): void {
-        const graphics = this.scene.add.graphics({ fillStyle: { color: 0x9b59b6, alpha: 0.2 } });
+        const graphics = this.scene.add.graphics({ fillStyle: { color: phaserColor(AppColors.BULLET_BOMB), alpha: 0.1 } });
         graphics.fillCircle(this.x, this.y, this.explosionRadius);
-        this.scene.time.delayedCall(100, () => graphics.destroy());
+        this.scene.time.delayedCall(250, () => graphics.destroy());
 
         for (let i = 0; i < this.targetableGroups.length; i++) {
             const targetableGroup = this.targetableGroups[i];
