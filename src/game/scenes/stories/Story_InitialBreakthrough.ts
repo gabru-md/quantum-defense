@@ -21,9 +21,9 @@ export class Story_InitialBreakthrough extends BaseStoryScene {
                 {
                     text: 'Genie: Amazing work, Guardian!\nYour collected samples are yielding results!',
                     action: scene => {
-                        const player = createPlayer(scene, WIDTH / 2, HEIGHT / 2 - 100);
+                        const [player, genie] = createPlayer(scene, WIDTH / 2, HEIGHT / 2 - 100);
                         scene.animateIn(player);
-                        return player;
+                        return [player, genie];
                     },
                 },
                 {

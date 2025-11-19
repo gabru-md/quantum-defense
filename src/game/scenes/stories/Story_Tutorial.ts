@@ -25,15 +25,15 @@ export class Story_Tutorial extends BaseStoryScene {
                         this.backgroundEffectsManager.enableDataStreamEffect(scene);
                         this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(scene, 1250);
                         this.backgroundEffectsManager.enableGhostlyClashEffect(scene);
-                        const player = createPlayer(scene, WIDTH / 2, HEIGHT / 2 + 100);
+                        const [player, genie] = createPlayer(scene, WIDTH / 2, HEIGHT / 2 + 100);
                         scene.animateIn(player);
-                        return player;
+                        return [player, genie];
                     },
                 },
                 {
                     text: 'Your mission is to defend the Nexus from incoming Glitches.',
                     action: scene => {
-                        const nexus = createNexusObject(this, WIDTH / 2, HEIGHT / 4);
+                        const [nexus, ...genies] = createNexusObject(this, WIDTH / 2, HEIGHT / 4);
                         scene.animateIn(nexus);
                         const padding = 100;
                         const phantom = createPhantom(this, WIDTH / 2, HEIGHT / 2 + 200 + padding);
@@ -43,7 +43,7 @@ export class Story_Tutorial extends BaseStoryScene {
                         const enemy3 = scene.add.sprite(WIDTH / 2 - 70, HEIGHT / 2 + 300 + padding, EnemyConfigs.enemy3.texture).setAlpha(0.8);
                         const upgradedEnemy = scene.add.sprite(WIDTH / 2 + 70, HEIGHT / 2 + 300 + padding, EnemyConfigs.upgradedEnemy.texture).setAlpha(0.8);
                         [enemy1, enemy2, enemy3, upgradedEnemy].forEach(e => scene.animateIn(e));
-                        return [nexus, phantom, enemy1, enemy2, enemy3, upgradedEnemy];
+                        return [nexus, phantom, enemy1, enemy2, enemy3, upgradedEnemy, ...genies];
                     },
                 },
                 {

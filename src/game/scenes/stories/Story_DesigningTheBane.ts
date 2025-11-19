@@ -24,9 +24,9 @@ export class Story_DesigningTheBane extends BaseStoryScene {
                     text: 'Genie: Armed with this knowledge, Guardian, I\'ve designed the ultimate weapon!',
                     action: scene => {
                         this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(this, 850);
-                        const player = createPlayer(scene, WIDTH / 2, HEIGHT * 3 / 4);
+                        const [player, genie] = createPlayer(scene, WIDTH / 2, HEIGHT * 3 / 4);
                         scene.animateIn(player);
-                        return [player];
+                        return [player, genie];
                     },
                 },
                 {

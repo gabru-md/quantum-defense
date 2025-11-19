@@ -32,9 +32,9 @@ export class Story_SamplingTheEchoes extends BaseStoryScene {
                 {
                     text: 'Guardian, you must actively seek out echoes from dangerous rift zones.',
                     action: scene => {
-                        const player = createPlayer(scene, WIDTH / 2 + 100, HEIGHT / 2 - 100);
+                        const [player, genie] = createPlayer(scene, WIDTH / 2 + 100, HEIGHT / 2 - 100);
                         scene.animateIn(player);
-                        return [player];
+                        return [player, genie];
                     },
                 },
                 {
