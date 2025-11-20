@@ -168,6 +168,7 @@ export class WaveManager extends Manager {
             } else {
                 if(this.level.scene.key !== LevelNames.Gameplay_Tutorial) {
                     this.level.hud.info('NEXT WAVE INCOMING!', AppColors.UI_MESSAGE_SUCCESS, () => {
+                        this.level.playerManager.player.info("Incoming Next Wave!");
                         this.currentWave++;
                         this.startWave(this.currentWave);
                     });

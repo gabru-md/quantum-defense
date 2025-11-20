@@ -84,7 +84,7 @@ export class TowerManager extends Manager {
 
         const energyCost = this.getTowerEnergyCost(towerType);
         if (this.level.state.energy < energyCost) {
-            return {valid: false, reason: `Insufficient energy. Need ${energyCost}.`};
+            return {valid: false, reason: `Insufficient Energy\n${this.level.state.energy}/${energyCost}`};
         }
 
         return {valid: true};
@@ -95,6 +95,7 @@ export class TowerManager extends Manager {
         if (!placementCheck.valid) {
             if (placementCheck.reason) {
                 this.level.hud.alert(placementCheck.reason, AppColors.UI_MESSAGE_WARN, 1000);
+                this.level.playerManager.player.warn(placementCheck.reason);
             }
             return;
         }
@@ -152,6 +153,7 @@ export class TowerManager extends Manager {
         if (!tower.active) return;
         tower.deactivateTower();
         this.level.hud.alert('TOWER DEACTIVATED:\nA Tower has been deactivated!');
+        this.level.playerManager.player.danger('A Tower has been deactivated!');
         this.level.events.emit('towerDeactivated', tower);
     }
 }

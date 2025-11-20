@@ -68,14 +68,14 @@ export class Player extends GameObject {
         if (text) {
             this.genieText(text, '#FFFF00');
         }
-        this.showNotification('#FFFF00');
+        // this.showNotification('#FFFF00');
     }
 
     public danger(text?: string): void {
         if (text) {
             this.genieText(text, '#FF0000');
         }
-        this.showNotification('#FF0000');
+        // this.showNotification('#FF0000');
     }
 
     public genieText(text: string, color?: string): void {
@@ -110,35 +110,35 @@ export class Player extends GameObject {
         });
     }
 
-    private showNotification(color: string): void {
-        // Stop any existing tween
-        if (this.notificationTween) {
-            this.notificationTween.stop();
-            this.notificationTween = undefined;
-        }
-
-        // Reset the notification to its initial state
-        this.notificationText.setY(this.y - 30);
-        this.notificationText.setAlpha(1);
-
-        // Set color and make visible
-        this.notificationText.setColor(color).setVisible(true);
-
-        // Create new tween
-        this.notificationTween = this.scene.tweens.add({
-            targets: this.notificationText,
-            y: this.y - 50,
-            alpha: 0,
-            duration: 1500,
-            ease: 'Power2',
-            onComplete: () => {
-                this.notificationText.setVisible(false);
-                this.notificationText.setAlpha(1);
-                this.notificationText.setY(this.y - 30);
-                this.notificationTween = undefined;
-            }
-        });
-    }
+    // private showNotification(color: string): void {
+    //     // Stop any existing tween
+    //     if (this.notificationTween) {
+    //         this.notificationTween.stop();
+    //         this.notificationTween = undefined;
+    //     }
+    //
+    //     // Reset the notification to its initial state
+    //     this.notificationText.setY(this.y - 30);
+    //     this.notificationText.setAlpha(1);
+    //
+    //     // Set color and make visible
+    //     this.notificationText.setColor(color).setVisible(true);
+    //
+    //     // Create new tween
+    //     this.notificationTween = this.scene.tweens.add({
+    //         targets: this.notificationText,
+    //         y: this.y - 50,
+    //         alpha: 0,
+    //         duration: 1500,
+    //         ease: 'Power2',
+    //         onComplete: () => {
+    //             this.notificationText.setVisible(false);
+    //             this.notificationText.setAlpha(1);
+    //             this.notificationText.setY(this.y - 30);
+    //             this.notificationTween = undefined;
+    //         }
+    //     });
+    // }
 
     public update(time: number, delta: number): void {
         super.update(time, delta);

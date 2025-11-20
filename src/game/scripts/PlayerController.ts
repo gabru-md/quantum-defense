@@ -15,7 +15,7 @@ export class PlayerController extends Component {
         d: Phaser.Input.Keyboard.Key;
     };
     private inactivityTimer: number = 0;
-    private readonly inactivityThreshold: number = 5000; // 5 seconds
+    private readonly inactivityThreshold: number = 10000; // 5 seconds
 
     public start(): void {
         if (this.gameObject.scene.input.keyboard) {

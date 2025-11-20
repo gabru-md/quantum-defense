@@ -8,6 +8,7 @@ import { SpecialEnemy } from '../entities/SpecialEnemy.ts';
 import { createWaveEffect } from '../utils/WaveEffectHelper.ts';
 import { getResonanceWaveConfig } from '../config/WaveConfig.ts';
 import { PlayerConfig } from '../config/PlayerConfig.ts';
+import {Player} from "../entities/Player.ts";
 
 /**
  * A component that allows the player to activate a wave to revive deactivated towers or damage special enemies.
@@ -49,6 +50,7 @@ export class ResonanceWave extends Component {
             console.log(`[ResonanceWave] E pressed at time: ${time}`);
             if (this.isOnCooldown(time)) {
                 console.log(`[ResonanceWave] On cooldown. Last activated: ${this.lastActivated}, Cooldown time: ${this.cooldownTime}`);
+                (this.gameObject as Player).warn(`Resonance Wave is on cooldown!`);
                 this.gameObject.level.hud.alert(
                     'ABILITY COOLDOWN:\nResonance Wave is on cooldown!', // Updated message
                     AppColors.UI_MESSAGE_WARN
@@ -59,6 +61,7 @@ export class ResonanceWave extends Component {
             // Check for base activation energy
             if (this.gameObject.level.state.energy < this.baseActivationEnergy) {
                 console.log(`[ResonanceWave] Insufficient energy. Current: ${this.gameObject.level.state.energy}, Needed: ${this.baseActivationEnergy}`);
+                (this.gameObject as Player).warn(`Need ${this.baseActivationEnergy} energy to activate Resonance Wave!`);
                 this.gameObject.level.hud.alert(
                     `INSUFFICIENT ENERGY:\nNeed ${this.baseActivationEnergy} energy to activate Resonance Wave!`,
                     AppColors.UI_MESSAGE_WARN,
@@ -143,6 +146,7 @@ export class ResonanceWave extends Component {
                 }
             } else {
                 const energyNeededToRevive = reviveEnergyCost - this.gameObject.level.state.energy; // Renamed
+                (this.gameObject as Player).warn(`Need ${this.gameObject.level.state.energy}/${reviveEnergyCost} energy to fully revive tower!`);
                 this.gameObject.level.hud.alert(
                     `INSUFFICIENT ENERGY:\nNeed ${energyNeededToRevive} energy to fully revive tower!`, // Updated message
                     AppColors.UI_MESSAGE_WARN,

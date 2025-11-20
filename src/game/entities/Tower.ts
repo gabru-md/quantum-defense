@@ -101,6 +101,7 @@ export class Tower extends GameObject {
         attackComponents.forEach((c) => {
             if (c) c.enabled = false;
         });
+        this.level.playerManager.player.danger('A Tower has been deactivated!');
     }
 
     public enableVisualPulse(): void {
