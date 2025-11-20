@@ -5,6 +5,8 @@ import {EnemyConfigs, SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
 import {PlayerConfig} from "../../config/PlayerConfig.ts";
 import {createPhantom, createPlayer, createStatic} from "../../scripts/EntityMaker.ts";
+import {GameObject} from "../../core/GameObject.ts";
+import {TowerConfigs} from "../../config/TowerConfigs.ts";
 
 export class Story_TheFinalAssault extends BaseStoryScene {
     constructor() {
@@ -27,6 +29,7 @@ export class Story_TheFinalAssault extends BaseStoryScene {
                         this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(scene, 800);
                         const [staticEnemy, ...genies] = createStatic(scene, WIDTH / 2, HEIGHT / 4);
                         scene.animateIn(staticEnemy);
+                        this.onHover(staticEnemy, "Static");
                         scene.tweens.add({
                             targets: staticEnemy,
                             scaleX: 1.1,
@@ -35,10 +38,18 @@ export class Story_TheFinalAssault extends BaseStoryScene {
                             yoyo: true,
                             repeat: -1,
                         });
-                        const enemy1 = scene.add.sprite(WIDTH / 2 - 75, HEIGHT / 2 + 100, EnemyConfigs.enemy1.texture).setAlpha(0.4);
-                        const enemy2 = scene.add.sprite(WIDTH / 2 - 25, HEIGHT / 2 + 100, EnemyConfigs.enemy2.texture).setAlpha(0.4);
-                        const enemy3 = scene.add.sprite(WIDTH / 2 + 25, HEIGHT / 2 + 100, EnemyConfigs.enemy3.texture).setAlpha(0.4);
-                        const upgradedEnemy = scene.add.sprite(WIDTH / 2 + 75, HEIGHT / 2 + 100, EnemyConfigs.upgradedEnemy.texture).setAlpha(0.4);
+                        const enemy1 = new GameObject(scene, WIDTH / 2 - 75, HEIGHT / 2 + 100, EnemyConfigs.enemy1.texture).setAlpha(0.4);
+                        scene.add.existing(enemy1);
+                        this.onHover(enemy1, EnemyConfigs.enemy1.name);
+                        const enemy2 = new GameObject(scene, WIDTH / 2 - 25, HEIGHT / 2 + 100, EnemyConfigs.enemy2.texture).setAlpha(0.4);
+                        scene.add.existing(enemy2);
+                        this.onHover(enemy2, EnemyConfigs.enemy2.name);
+                        const enemy3 = new GameObject(scene, WIDTH / 2 + 25, HEIGHT / 2 + 100, EnemyConfigs.enemy3.texture).setAlpha(0.4);
+                        scene.add.existing(enemy3);
+                        this.onHover(enemy3, EnemyConfigs.enemy3.name);
+                        const upgradedEnemy = new GameObject(scene, WIDTH / 2 + 75, HEIGHT / 2 + 100, EnemyConfigs.upgradedEnemy.texture).setAlpha(0.4);
+                        scene.add.existing(upgradedEnemy);
+                        this.onHover(upgradedEnemy, EnemyConfigs.upgradedEnemy.name);
                         [enemy1, enemy2, enemy3, upgradedEnemy].forEach(t => scene.animateIn(t));
                         return [staticEnemy, enemy1, enemy2, enemy3, upgradedEnemy, ...genies];
                     },
@@ -48,16 +59,22 @@ export class Story_TheFinalAssault extends BaseStoryScene {
                     action: scene => {
                         const phantom = createPhantom(scene, WIDTH / 2, HEIGHT / 2 - 75);
                         scene.animateIn(phantom);
+                        this.onHover(phantom, "Phantom");
                         const [player, genie] = createPlayer(scene, WIDTH / 2, HEIGHT * 3 / 4);
                         scene.animateIn(player);
+                        this.onHover(player, "You");
                         return [phantom, player, genie];
                     },
                 },
                 {
                     text: 'Strategically deploy Phantom Killer towers to neutralize the Phantom threat.',
                     action: scene => {
-                        const phantomKiller1 = scene.add.sprite(WIDTH / 2 - 50, HEIGHT / 2 + 200, 'specialTower').setAlpha(0.8);
-                        const phantomKiller2 = scene.add.sprite(WIDTH / 2 + 50, HEIGHT / 2 + 200, 'specialTower').setAlpha(0.8);
+                        const phantomKiller1 = new GameObject(scene, WIDTH / 2 - 50, HEIGHT / 2 + 200, 'specialTower').setAlpha(0.8);
+                        scene.add.existing(phantomKiller1);
+                        this.onHover(phantomKiller1, TowerConfigs.specialTower.name);
+                        const phantomKiller2 = new GameObject(scene, WIDTH / 2 + 50, HEIGHT / 2 + 200, 'specialTower').setAlpha(0.8);
+                        scene.add.existing(phantomKiller2);
+                        this.onHover(phantomKiller2, TowerConfigs.specialTower.name);
                         [phantomKiller1, phantomKiller2].forEach(t => scene.animateIn(t));
                         return [phantomKiller1, phantomKiller2];
                     },

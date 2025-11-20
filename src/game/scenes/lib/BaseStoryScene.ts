@@ -425,7 +425,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         return `Story_${levelNameKey}_${this.currentStep + 1}`;
     }
 
-    protected onHover(gameObject: GameObject, helpText: string): void {
+    onHover(gameObject: GameObject, helpText: string): void {
         gameObject.addComponent(new Hoverable(helpText));
     }
 }

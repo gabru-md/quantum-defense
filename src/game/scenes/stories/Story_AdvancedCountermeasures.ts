@@ -2,6 +2,7 @@ import {LevelNames, STORY_TO_GAMEPLAY_MAP} from '../lib/LevelNames.ts';
 import {HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
 import {TowerConfigs} from "../../config/TowerConfigs.ts";
+import {GameObject} from "../../core/GameObject.ts";
 
 export class Story_AdvancedCountermeasures extends BaseStoryScene {
     constructor() {
@@ -21,7 +22,9 @@ export class Story_AdvancedCountermeasures extends BaseStoryScene {
                 {
                     text: 'I\'m working tirelessly on countermeasures, Guardian.\nBut I need more Echoes!',
                     action: scene => {
-                        const quantumEcho = scene.add.sprite(WIDTH / 2, HEIGHT / 2 + 100, 'quantum_echo_texture').setAlpha(0.8);
+                        const quantumEcho = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 100, 'quantum_echo_texture').setAlpha(0.8);
+                        scene.add.existing(quantumEcho);
+                        this.onHover(quantumEcho, "Quantum Echo");
                         scene.animateIn(quantumEcho);
                         scene.tweens.add({
                             targets: quantumEcho,
@@ -36,9 +39,13 @@ export class Story_AdvancedCountermeasures extends BaseStoryScene {
                 {
                     text: 'We need specialized tower upgrades, including stronger phantom-killing towers.',
                     action: scene => {
-                        const tower = scene.add.sprite(WIDTH / 2 - 100, HEIGHT / 2, TowerConfigs.tower3.texture).setAlpha(0.5);
+                        const tower = new GameObject(scene, WIDTH / 2 - 100, HEIGHT / 2, TowerConfigs.tower3.texture).setAlpha(0.5);
+                        scene.add.existing(tower);
+                        this.onHover(tower, TowerConfigs.tower3.name);
                         scene.animateIn(tower);
-                        const upgradeIcon = scene.add.sprite(WIDTH / 2 + 100, HEIGHT / 2, 'upgrade_icon_texture').setAlpha(0.8);
+                        const upgradeIcon = new GameObject(scene, WIDTH / 2 + 100, HEIGHT / 2, 'upgrade_icon_texture').setAlpha(0.8);
+                        scene.add.existing(upgradeIcon);
+                        this.onHover(upgradeIcon, "Upgrade");
                         scene.animateIn(upgradeIcon);
                         return [tower, upgradeIcon];
                     },

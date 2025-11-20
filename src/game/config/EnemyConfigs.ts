@@ -1,6 +1,7 @@
-import { AppColors, phaserColor } from '../scripts/Colors.ts';
+import {AppColors, phaserColor} from '../scripts/Colors.ts';
 
 export interface EnemyConfigType {
+    name: string;
     texture: string;
     health: number;
     speed: number;
@@ -16,6 +17,7 @@ export interface SpecialEnemyConfigType extends EnemyConfigType {
 
 export const EnemyConfigs: { [key: string]: EnemyConfigType } = {
     enemy1: {
+        name: 'Stutters',
         texture: 'enemy1',
         health: 50,
         speed: 50,
@@ -23,6 +25,7 @@ export const EnemyConfigs: { [key: string]: EnemyConfigType } = {
         color: phaserColor(AppColors.ENEMY_NORMAL),
     },
     enemy2: {
+        name: 'Surges',
         texture: 'enemy2',
         health: 40,
         speed: 80,
@@ -30,6 +33,7 @@ export const EnemyConfigs: { [key: string]: EnemyConfigType } = {
         color: phaserColor(AppColors.ENEMY_FAST),
     },
     enemy3: {
+        name: 'Brutes',
         texture: 'enemy3',
         health: 200,
         speed: 40,
@@ -37,6 +41,7 @@ export const EnemyConfigs: { [key: string]: EnemyConfigType } = {
         color: phaserColor(AppColors.ENEMY_TANK),
     },
     upgradedEnemy: {
+        name: 'Brutus',
         texture: 'upgradedEnemy',
         health: 200,
         speed: 80,
@@ -46,6 +51,7 @@ export const EnemyConfigs: { [key: string]: EnemyConfigType } = {
 };
 
 export const SpecialEnemyConfig: SpecialEnemyConfigType = {
+    name: 'Phantom',
     texture: 'specialEnemy',
     health: 50,
     speed: 60,

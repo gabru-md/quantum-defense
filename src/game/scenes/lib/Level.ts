@@ -144,7 +144,7 @@ export abstract class Level extends Phaser.Scene {
         this.audioManager.playMusic('MainMenuMusic');
     }
 
-    protected onHover(gameObject: GameObject, helpText: string): void {
+    onHover(gameObject: GameObject, helpText: string): void {
         gameObject.addComponent(new Hoverable(helpText));
     }
 

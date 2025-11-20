@@ -6,6 +6,7 @@ import {AppColors, phaserColor} from '../scripts/Colors.ts';
 import {RiftElements} from "../effects/GlitchAnnihilationEffect.ts";
 import {Level} from "../scenes/lib/Level.ts";
 import {capitalize} from "../scripts/Util.ts";
+import {Hoverable} from "../components/Hoverable.ts";
 
 export type RiftType = 'static' | 'guardian' | 'gradient' | 'dormant';
 
@@ -52,6 +53,8 @@ export class Rift extends GameObject {
             this.level.hud.setHelpText(`${capitalize(this.riftType)} Rift:\n${this.getRiftDescription()} `)
         });
         this.on('pointerout', () => this.level.hud.setHelpText(''));
+
+        this.addComponent(new Hoverable(`${capitalize(this.riftType)} Rift`));
     }
 
     update(time: number, delta: number): void {

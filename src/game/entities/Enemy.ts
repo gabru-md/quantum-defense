@@ -42,6 +42,8 @@ export class Enemy extends GameObject {
             this.level.hud.setHelpText(this.getEnemyDescription(config))
         );
         this.on('pointerout', () => this.level.hud.setHelpText(''));
+
+        this.level.onHover(this, enemyConfigData.name);
     }
 
     private handleHealthChanged(currentHealth: number): void {

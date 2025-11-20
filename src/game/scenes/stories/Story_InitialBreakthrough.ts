@@ -3,6 +3,7 @@ import {HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
 import {TowerConfigs} from "../../config/TowerConfigs.ts";
 import {createPlayer} from "../../scripts/EntityMaker.ts";
+import {GameObject} from "../../core/GameObject.ts";
 export class Story_InitialBreakthrough extends BaseStoryScene {
     constructor() {
         super(LevelNames.Story_InitialBreakthrough); // Corrected: Use LevelNames.Story_InitialBreakthrough directly
@@ -23,13 +24,16 @@ export class Story_InitialBreakthrough extends BaseStoryScene {
                     action: scene => {
                         const [player, genie] = createPlayer(scene, WIDTH / 2, HEIGHT / 2 - 100);
                         scene.animateIn(player);
+                        this.onHover(player, "You");
                         return [player, genie];
                     },
                 },
                 {
                     text: 'The Quantum Echoes hold the key to enhancing tower capabilities!',
                     action: scene => {
-                        const quantumEcho = scene.add.sprite(WIDTH / 2, HEIGHT / 2 + 60, 'quantum_echo_texture').setAlpha(0.7);
+                        const quantumEcho = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 60, 'quantum_echo_texture').setAlpha(0.7);
+                        scene.add.existing(quantumEcho);
+                        this.onHover(quantumEcho, "Quantum Echo");
                         scene.animateIn(quantumEcho);
                         return quantumEcho;
                     },
@@ -40,8 +44,12 @@ export class Story_InitialBreakthrough extends BaseStoryScene {
                         let el = [];
                         let padding = 75;
                         for(let towerConfig of [TowerConfigs.tower1, TowerConfigs.tower2, TowerConfigs.tower3]) {
-                            const tower = scene.add.sprite(WIDTH / 2 - 50, HEIGHT / 2 + 100 + padding, towerConfig.texture).setAlpha(0.5);
-                            const tower_upgraded = scene.add.sprite(WIDTH / 2 + 50, HEIGHT / 2 + 100 + padding, towerConfig.upgradedTexture).setAlpha(0.5);
+                            const tower = new GameObject(scene, WIDTH / 2 - 50, HEIGHT / 2 + 100 + padding, towerConfig.texture).setAlpha(0.5);
+                            scene.add.existing(tower);
+                            this.onHover(tower, towerConfig.name);
+                            const tower_upgraded = new GameObject(scene, WIDTH / 2 + 50, HEIGHT / 2 + 100 + padding, towerConfig.upgradedTexture).setAlpha(0.5);
+                            scene.add.existing(tower_upgraded);
+                            this.onHover(tower_upgraded, towerConfig.upgradedName);
                             scene.animateIn(tower);
                             scene.animateIn(tower_upgraded);
                             scene.tweens.add({

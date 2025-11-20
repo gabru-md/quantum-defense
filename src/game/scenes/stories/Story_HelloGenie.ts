@@ -5,6 +5,7 @@ import {EnemyConfigs} from "../../config/EnemyConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
 import {AppColors, phaserColor} from "../../scripts/Colors.ts";
 import {createPlayer, createStatic} from "../../scripts/EntityMaker.ts";
+import {GameObject} from "../../core/GameObject.ts";
 
 export class Story_HelloGenie extends BaseStoryScene {
     constructor() {
@@ -31,6 +32,7 @@ export class Story_HelloGenie extends BaseStoryScene {
                     action: scene => {
                         const [player, genie] = createPlayer(scene, WIDTH / 2, HEIGHT * 3 / 4);
                         scene.animateIn(player);
+                        this.onHover(player, "This is you, Guardian!");
                         return [player, genie];
                     },
                 },
@@ -40,6 +42,7 @@ export class Story_HelloGenie extends BaseStoryScene {
                         this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(scene, 1500);
                         const [staticEnemy, ...genies] = createStatic(scene, WIDTH / 2, HEIGHT / 4);
                         scene.animateIn(staticEnemy);
+                        this.onHover(staticEnemy, "The Static!");
                         scene.tweens.add({
                             targets: staticEnemy,
                             scaleX: 1.1,
@@ -49,9 +52,18 @@ export class Story_HelloGenie extends BaseStoryScene {
                             repeat: -1,
                         });
 
-                        const enemy1 = scene.add.sprite(WIDTH / 2 - 100, (HEIGHT * 5) / 8, EnemyConfigs.enemy1.texture).setAlpha(0.4);
-                        const enemy2 = scene.add.sprite(WIDTH / 2, (HEIGHT * 5) / 8, EnemyConfigs.enemy2.texture).setAlpha(0.4);
-                        const enemy3 = scene.add.sprite(WIDTH / 2 + 100, (HEIGHT * 5) / 8, EnemyConfigs.enemy3.texture).setAlpha(0.4);
+                        const enemy1 = new GameObject(scene, WIDTH / 2 - 100, (HEIGHT * 5) / 8, EnemyConfigs.enemy1.texture).setAlpha(0.4);
+                        scene.add.existing(enemy1);
+                        this.onHover(enemy1, EnemyConfigs.enemy1.name);
+
+                        const enemy2 = new GameObject(scene, WIDTH / 2, (HEIGHT * 5) / 8, EnemyConfigs.enemy2.texture).setAlpha(0.4);
+                        scene.add.existing(enemy2);
+                        this.onHover(enemy2, EnemyConfigs.enemy2.name);
+
+                        const enemy3 = new GameObject(scene, WIDTH / 2 + 100, (HEIGHT * 5) / 8, EnemyConfigs.enemy3.texture).setAlpha(0.4);
+                        scene.add.existing(enemy3);
+                        this.onHover(enemy3, EnemyConfigs.enemy3.name);
+
                         [enemy1, enemy2, enemy3].forEach(t => scene.animateIn(t));
                         return [staticEnemy, enemy1, enemy2, enemy3, ...genies];
                     },

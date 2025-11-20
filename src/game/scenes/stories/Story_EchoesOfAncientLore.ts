@@ -5,6 +5,7 @@ import {PlayerConfig} from "../../config/PlayerConfig.ts";
 import {SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
 import {createPhantom, createStatic} from "../../scripts/EntityMaker.ts";
+import {GameObject} from "../../core/GameObject.ts";
 
 export class Story_EchoesOfAncientLore extends BaseStoryScene {
     constructor() {
@@ -26,7 +27,9 @@ export class Story_EchoesOfAncientLore extends BaseStoryScene {
                     action: scene => {
                         const playerRift = drawRift(scene, WIDTH / 2 - 300, 250, PlayerConfig.resonanceWave.pulseColor);
                         const gradientRift = drawRift(scene, WIDTH / 2 + 300, 250, PlayerConfig.resonanceWave.pulseColor, SpecialEnemyConfig.pulseColor);
-                        const quantumEcho = scene.add.sprite(WIDTH / 2, HEIGHT / 2 - 75, 'quantum_echo_texture').setAlpha(0.8);
+                        const quantumEcho = new GameObject(scene, WIDTH / 2, HEIGHT / 2 - 75, 'quantum_echo_texture').setAlpha(0.8);
+                        scene.add.existing(quantumEcho);
+                        this.onHover(quantumEcho, "Quantum Echo");
                         scene.animateIn(quantumEcho);
                         return [...playerRift, ...gradientRift, quantumEcho];
                     },
@@ -36,6 +39,7 @@ export class Story_EchoesOfAncientLore extends BaseStoryScene {
                     action: scene => {
                         const phantom = createPhantom(scene, WIDTH / 2, HEIGHT / 2 + 200);
                         scene.animateIn(phantom);
+                        this.onHover(phantom, "Phantom");
                         return phantom;
                     },
                 },
@@ -44,6 +48,7 @@ export class Story_EchoesOfAncientLore extends BaseStoryScene {
                     action: scene => {
                         const [staticEnemy, ...genies] = createStatic(scene, WIDTH / 2, HEIGHT / 2 + 200);
                         scene.animateIn(staticEnemy);
+                        this.onHover(staticEnemy, "Static");
                         return [staticEnemy, ...genies];
                     },
                 },

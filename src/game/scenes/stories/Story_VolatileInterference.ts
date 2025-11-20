@@ -4,6 +4,7 @@ import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
 import {SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
 import {TowerConfigs} from "../../config/TowerConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
+import {GameObject} from "../../core/GameObject.ts";
 
 export class Story_VolatileInterference extends BaseStoryScene {
     constructor() {
@@ -31,9 +32,15 @@ export class Story_VolatileInterference extends BaseStoryScene {
                 {
                     text: 'The chaotic energy from active rifts interferes with tower functions!',
                     action: scene => {
-                        const tower1 = scene.add.sprite(WIDTH / 2 - 100, (HEIGHT * 3) / 4 - 100, TowerConfigs.tower1.texture).setAlpha(0.3);
-                        const tower2 = scene.add.sprite(WIDTH / 2, (HEIGHT * 3) / 4 - 100, TowerConfigs.tower2.texture).setAlpha(0.3);
-                        const tower3 = scene.add.sprite(WIDTH / 2 + 100, (HEIGHT * 3) / 4 - 100, TowerConfigs.tower3.texture).setAlpha(0.3);
+                        const tower1 = new GameObject(scene, WIDTH / 2 - 100, (HEIGHT * 3) / 4 - 100, TowerConfigs.tower1.texture).setAlpha(0.3);
+                        scene.add.existing(tower1);
+                        this.onHover(tower1, TowerConfigs.tower1.name);
+                        const tower2 = new GameObject(scene, WIDTH / 2, (HEIGHT * 3) / 4 - 100, TowerConfigs.tower2.texture).setAlpha(0.3);
+                        scene.add.existing(tower2);
+                        this.onHover(tower2, TowerConfigs.tower2.name);
+                        const tower3 = new GameObject(scene, WIDTH / 2 + 100, (HEIGHT * 3) / 4 - 100, TowerConfigs.tower3.texture).setAlpha(0.3);
+                        scene.add.existing(tower3);
+                        this.onHover(tower3, TowerConfigs.tower3.name);
                         [tower1, tower2, tower3].forEach(t => scene.animateIn(t));
                         // Simulate malfunction visually
                         scene.tweens.add({
@@ -52,8 +59,9 @@ export class Story_VolatileInterference extends BaseStoryScene {
                 {
                     text: 'These rifts also emit Quantum Echoes.\nCollect them if you can!',
                     action: scene => {
-                        const quantumEcho = scene.add.sprite(WIDTH / 2, HEIGHT / 2 + 100, 'quantum_echo_texture').setAlpha(0.8); // Placeholder texture
+                        const quantumEcho = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 100, 'quantum_echo_texture').setAlpha(0.8); // Placeholder texture
                         scene.add.existing(quantumEcho);
+                        this.onHover(quantumEcho, "Quantum Echo");
                         scene.animateIn(quantumEcho);
                         scene.tweens.add({
                             targets: quantumEcho,

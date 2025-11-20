@@ -26,6 +26,7 @@ export class Story_ThePhantomArrival extends BaseStoryScene {
                         this.backgroundEffectsManager.enableGhostlyClashEffect(scene);
                         const [player, genie] = createPlayer(scene, WIDTH / 2 - 100, HEIGHT / 2 - 100);
                         scene.animateIn(player);
+                        this.onHover(player, "You");
                         return [player, genie];
                     },
                 },
@@ -35,6 +36,7 @@ export class Story_ThePhantomArrival extends BaseStoryScene {
                         this.backgroundEffectsManager.enableGlitchAnnihilationEffect(scene);
                         const phantom = createPhantom(scene, WIDTH / 2 + 100, HEIGHT / 2 - 100);
                         scene.animateIn(phantom);
+                        this.onHover(phantom, "Phantom");
                         return [phantom];
                     },
                 },

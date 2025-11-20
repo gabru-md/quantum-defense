@@ -5,6 +5,7 @@ import {EnemyConfigs} from "../../config/EnemyConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
 import {AppColors, phaserColor} from "../../scripts/Colors.ts";
 import {createNexusObject, createPlayer} from "../../scripts/EntityMaker.ts";
+import {GameObject} from "../../core/GameObject.ts";
 
 export class Story_TheDormantScars extends BaseStoryScene {
     constructor() {
@@ -27,6 +28,7 @@ export class Story_TheDormantScars extends BaseStoryScene {
                         this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(scene, 1250);
                         const [nexus, ...genies] = createNexusObject(scene, WIDTH / 2, HEIGHT / 4);
                         scene.animateIn(nexus);
+                        this.onHover(nexus, "The Nexus!");
                         scene.tweens.add({
                             targets: nexus,
                             scaleX: 1.1,
@@ -36,12 +38,24 @@ export class Story_TheDormantScars extends BaseStoryScene {
                             repeat: -1,
                         });
 
-                        const enemy1 = scene.add.sprite(WIDTH / 2 - 100, (HEIGHT * 3) / 4, EnemyConfigs.enemy1.texture).setAlpha(0.8);
-                        const enemy1_2 = scene.add.sprite(WIDTH / 2 - 50, (HEIGHT * 3) / 4, EnemyConfigs.enemy1.texture).setAlpha(0.8);
-                        const enemy2 = scene.add.sprite(WIDTH / 2, (HEIGHT * 3) / 4, EnemyConfigs.enemy2.texture).setAlpha(0.8);
-                        const enemy2_2 = scene.add.sprite(WIDTH / 2 + 50, (HEIGHT * 3) / 4, EnemyConfigs.enemy2.texture).setAlpha(0.8);
-                        const enemy3 = scene.add.sprite(WIDTH / 2 + 100, (HEIGHT * 3) / 4, EnemyConfigs.enemy3.texture).setAlpha(0.8);
-                        const enemy3_2 = scene.add.sprite(WIDTH / 2 + 150, (HEIGHT * 3) / 4, EnemyConfigs.enemy3.texture).setAlpha(0.8);
+                        const enemy1 = new GameObject(scene, WIDTH / 2 - 100, (HEIGHT * 3) / 4, EnemyConfigs.enemy1.texture).setAlpha(0.8);
+                        scene.add.existing(enemy1);
+                        this.onHover(enemy1, EnemyConfigs.enemy1.name);
+                        const enemy1_2 = new GameObject(scene, WIDTH / 2 - 50, (HEIGHT * 3) / 4, EnemyConfigs.enemy1.texture).setAlpha(0.8);
+                        scene.add.existing(enemy1_2);
+                        this.onHover(enemy1_2, EnemyConfigs.enemy1.name);
+                        const enemy2 = new GameObject(scene, WIDTH / 2, (HEIGHT * 3) / 4, EnemyConfigs.enemy2.texture).setAlpha(0.8);
+                        scene.add.existing(enemy2);
+                        this.onHover(enemy2, EnemyConfigs.enemy2.name);
+                        const enemy2_2 = new GameObject(scene, WIDTH / 2 + 50, (HEIGHT * 3) / 4, EnemyConfigs.enemy2.texture).setAlpha(0.8);
+                        scene.add.existing(enemy2_2);
+                        this.onHover(enemy2_2, EnemyConfigs.enemy2.name);
+                        const enemy3 = new GameObject(scene, WIDTH / 2 + 100, (HEIGHT * 3) / 4, EnemyConfigs.enemy3.texture).setAlpha(0.8);
+                        scene.add.existing(enemy3);
+                        this.onHover(enemy3, EnemyConfigs.enemy3.name);
+                        const enemy3_2 = new GameObject(scene, WIDTH / 2 + 150, (HEIGHT * 3) / 4, EnemyConfigs.enemy3.texture).setAlpha(0.8);
+                        scene.add.existing(enemy3_2);
+                        this.onHover(enemy3_2, EnemyConfigs.enemy3.name);
                         [enemy1, enemy1_2, enemy2, enemy2_2, enemy3, enemy3_2].forEach(t => scene.animateIn(t));
                         return [nexus, enemy1, enemy1_2, enemy2, enemy2_2, enemy3, enemy3_2, ...genies];
                     },
@@ -62,6 +76,7 @@ export class Story_TheDormantScars extends BaseStoryScene {
                     action: scene => {
                         const [player, genie] = createPlayer(scene, WIDTH / 2, HEIGHT / 2 + 100);
                         scene.animateIn(player);
+                        this.onHover(player, "This is you, Guardian!");
                         return [player, genie];
                     },
                 },

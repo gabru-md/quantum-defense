@@ -7,6 +7,7 @@ import {PlayerConfig} from "../../config/PlayerConfig.ts";
 import {SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
 import {createPlayer, createStatic} from "../../scripts/EntityMaker.ts";
+import {TowerConfigs} from "../../config/TowerConfigs.ts";
 
 export class Story_TheResonanceWave extends BaseStoryScene {
     constructor() {
@@ -29,6 +30,7 @@ export class Story_TheResonanceWave extends BaseStoryScene {
                         this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(scene, 550);
                         const [staticCore, ...genies] = createStatic(scene, WIDTH / 2, HEIGHT / 4);
                         scene.animateIn(staticCore);
+                        this.onHover(staticCore, "Static's Core");
                         scene.tweens.add({
                             targets: staticCore,
                             scaleX: 1,
@@ -43,7 +45,9 @@ export class Story_TheResonanceWave extends BaseStoryScene {
                 {
                     text: 'It\'s invulnerable to Phantom Killer towers.\nThey were for its extensions, not the source!',
                     action: scene => {
-                        const phantomKiller = scene.add.sprite(WIDTH / 2, HEIGHT * 3 / 4 - 100, 'specialTower').setAlpha(0.8);
+                        const phantomKiller = new GameObject(scene, WIDTH / 2, HEIGHT * 3 / 4 - 100, 'specialTower').setAlpha(0.8);
+                        scene.add.existing(phantomKiller);
+                        this.onHover(phantomKiller, TowerConfigs.specialTower.name);
                         scene.animateIn(phantomKiller);
                         scene.tweens.add({
                             targets: phantomKiller,
@@ -61,6 +65,7 @@ export class Story_TheResonanceWave extends BaseStoryScene {
                     action: scene => {
                         const [player, genie] = createPlayer(scene, WIDTH / 2, HEIGHT * 3 / 4);
                         scene.animateIn(player);
+                        this.onHover(player, "You");
                         return [player, genie];
                     },
                 },

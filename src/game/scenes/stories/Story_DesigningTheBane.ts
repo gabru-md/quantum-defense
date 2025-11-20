@@ -4,6 +4,8 @@ import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
 import {SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
 import {drawRift} from "../lib/StoryUtils.ts";
 import {createPhantom, createPlayer} from "../../scripts/EntityMaker.ts";
+import {GameObject} from "../../core/GameObject.ts";
+import {TowerConfigs} from "../../config/TowerConfigs.ts";
 
 export class Story_DesigningTheBane extends BaseStoryScene {
     constructor() {
@@ -26,16 +28,20 @@ export class Story_DesigningTheBane extends BaseStoryScene {
                         this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(this, 850);
                         const [player, genie] = createPlayer(scene, WIDTH / 2, HEIGHT * 3 / 4);
                         scene.animateIn(player);
+                        this.onHover(player, "You");
                         return [player, genie];
                     },
                 },
                 {
                     text: 'The Phantom Killer tower!\nIt disrupts their connection to Static, rendering them vulnerable.',
                     action: scene => {
-                        const phantomKiller = scene.add.sprite(WIDTH / 2, HEIGHT / 2 + 150, 'specialTower').setAlpha(0.8);
+                        const phantomKiller = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 150, 'specialTower').setAlpha(0.8);
+                        scene.add.existing(phantomKiller);
+                        this.onHover(phantomKiller, TowerConfigs.specialTower.name);
                         scene.animateIn(phantomKiller);
                         const phantom = createPhantom(scene, WIDTH / 2, HEIGHT / 2 - 150);
                         scene.animateIn(phantom);
+                        this.onHover(phantom, "Phantom");
                         scene.tweens.add({
                             targets: [phantom, phantomKiller],
                             scale: 1.2,
@@ -51,9 +57,15 @@ export class Story_DesigningTheBane extends BaseStoryScene {
                 {
                     text: 'But building the prototype requires a massive amount of Quantum Echoes and Energy!',
                     action: scene => {
-                        const quantumEcho1 = scene.add.sprite(WIDTH / 2 - 100, HEIGHT / 2 - 50, 'quantum_echo_texture').setAlpha(0.8);
-                        const quantumEcho2 = scene.add.sprite(WIDTH / 2, HEIGHT / 2 - 50, 'quantum_echo_texture').setAlpha(0.8);
-                        const quantumEcho3 = scene.add.sprite(WIDTH / 2 + 100, HEIGHT / 2 - 50, 'quantum_echo_texture').setAlpha(0.8);
+                        const quantumEcho1 = new GameObject(scene, WIDTH / 2 - 100, HEIGHT / 2 - 50, 'quantum_echo_texture').setAlpha(0.8);
+                        scene.add.existing(quantumEcho1);
+                        this.onHover(quantumEcho1, "Quantum Echo");
+                        const quantumEcho2 = new GameObject(scene, WIDTH / 2, HEIGHT / 2 - 50, 'quantum_echo_texture').setAlpha(0.8);
+                        scene.add.existing(quantumEcho2);
+                        this.onHover(quantumEcho2, "Quantum Echo");
+                        const quantumEcho3 = new GameObject(scene, WIDTH / 2 + 100, HEIGHT / 2 - 50, 'quantum_echo_texture').setAlpha(0.8);
+                        scene.add.existing(quantumEcho3);
+                        this.onHover(quantumEcho3, "Quantum Echo");
                         [quantumEcho1, quantumEcho2, quantumEcho3].forEach(t => scene.animateIn(t));
                         return [quantumEcho1, quantumEcho2, quantumEcho3];
                     },

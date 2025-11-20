@@ -55,6 +55,15 @@ export class Player extends GameObject {
             color: '#ffffff',
             align: 'center'
         }).setOrigin(0.5).setVisible(false);
+
+        this.level.onHover(this, "This is you, Guardian!");
+    }
+
+    public text(text?: string): void {
+        if (text) {
+            this.genieText(text, AppColors.UI_TEXT);
+        }
+        // this.showNotification(AppColors.UI_ACCENT);
     }
 
     public info(text?: string): void {

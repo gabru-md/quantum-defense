@@ -3,6 +3,7 @@ import {HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
 import {EnemyConfigs} from "../../config/EnemyConfigs.ts";
 import {createStatic} from "../../scripts/EntityMaker.ts";
+import {GameObject} from "../../core/GameObject.ts";
 
 export class Story_StaticNewGlitches extends BaseStoryScene {
     constructor() {
@@ -25,6 +26,7 @@ export class Story_StaticNewGlitches extends BaseStoryScene {
                         this.backgroundEffectsManager.enableGlitchAnnihilationEffect(scene);
                         const [staticEnemy, ...genies] = createStatic(scene,WIDTH / 2, HEIGHT / 4);
                         scene.animateIn(staticEnemy);
+                        this.onHover(staticEnemy, "Static");
                         scene.tweens.add({
                             targets: staticEnemy,
                             scaleX: 1.1,
@@ -40,7 +42,9 @@ export class Story_StaticNewGlitches extends BaseStoryScene {
                 {
                     text: 'This one is tanky and faster than the others!',
                     action: scene => {
-                        const newGlitch = scene.add.sprite(WIDTH / 2, HEIGHT / 2 + 150, EnemyConfigs.upgradedEnemy.texture).setAlpha(0.65);
+                        const newGlitch = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 150, EnemyConfigs.upgradedEnemy.texture).setAlpha(0.65);
+                        scene.add.existing(newGlitch);
+                        this.onHover(newGlitch, EnemyConfigs.upgradedEnemy.name);
                         scene.animateIn(newGlitch);
                         return [newGlitch];
                     }
