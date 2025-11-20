@@ -26,6 +26,8 @@ import {Rift, RiftType} from "../../entities/Rift.ts";
 import {RiftWave} from "../../entities/RiftWave.ts";
 import {QuantumEcho} from "../../entities/QuantumEcho.ts";
 import {GlitchAnnihilationEffect} from "../../effects/GlitchAnnihilationEffect.ts";
+import { GameObject } from '../../core/GameObject.ts';
+import { Hoverable } from '../../components/Hoverable.ts';
 
 export abstract class Level extends Phaser.Scene {
     hud: HudManager;
@@ -140,6 +142,10 @@ export abstract class Level extends Phaser.Scene {
         this.events.on('shutdown', this.shutdown, this);
 
         this.audioManager.playMusic('MainMenuMusic');
+    }
+
+    protected onHover(gameObject: GameObject, helpText: string): void {
+        gameObject.addComponent(new Hoverable(helpText));
     }
 
     protected createRift(x: number, y: number, type: RiftType): Rift {

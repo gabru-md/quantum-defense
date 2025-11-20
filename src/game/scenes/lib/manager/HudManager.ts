@@ -266,7 +266,7 @@ export class HudManager extends Manager {
             color: AppColors.UI_TEXT
         }).setDepth(100).setName('waveProgressText');
 
-        return [panel, this.gameName, this.levelText, this.baseHealthText, this.energyText, this.waveNumberText, this.waveProgressText, this.speedButton];
+        return [panel, this.gameName, this.levelText, this.baseHealthText, this.energyText, this.waveNumberText, this.waveProgressText];
     }
 
     private createTowerSelectionPanel(): Phaser.GameObjects.GameObject[] {
@@ -348,7 +348,7 @@ export class HudManager extends Manager {
         for (const key in this.towerSelectionButtons) {
             elements.push(this.towerSelectionButtons[key].button, this.towerSelectionButtons[key].panel, ...this.towerSelectionButtons[key].textObjects);
         }
-        return [...elements, this.deselectButton];
+        return [...elements, this.deselectButton, this.speedButton];
     }
 
     private createTowerButton(x: number, y: number, towerKey: string, energyCost: number, stats: string, name: string) {

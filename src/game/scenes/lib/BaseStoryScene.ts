@@ -14,6 +14,8 @@ import {AudioManager} from "./manager/AudioManager.ts";
 import {BackgroundEffectsManager} from "../../effects/BackgroundEffectsManager.ts";
 import {GlitchAnnihilationEffect} from "../../effects/GlitchAnnihilationEffect.ts";
 import {VisualPulse} from "../../components/VisualPulse.ts";
+import {Hoverable} from "../../components/Hoverable.ts";
+
 export interface StoryStep {
     text: string;
     action?: (scene: BaseStoryScene) => Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[] | void;
@@ -389,7 +391,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
     fadeOut(v: Phaser.GameObjects.GameObject) {
         // check if gameobject has visual component then fade it out
 
-        if(v instanceof GameObject) {
+        if (v instanceof GameObject) {
             let y = v as GameObject;
             y.getComponent(VisualPulse)?.destroy();
         }
@@ -421,5 +423,9 @@ export abstract class BaseStoryScene extends Phaser.Scene {
     private getCurrentStepAudio(): string {
         const levelNameKey: string = getLevelNameKey(this.scene.key);
         return `Story_${levelNameKey}_${this.currentStep + 1}`;
+    }
+
+    protected onHover(gameObject: GameObject, helpText: string): void {
+        gameObject.addComponent(new Hoverable(helpText));
     }
 }

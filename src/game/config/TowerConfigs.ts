@@ -1,6 +1,7 @@
 import {AppColors, phaserColor} from '../scripts/Colors.ts';
 
 export interface TowerConfigType {
+    name: string;
     texture: string;
     upgradedTexture: string;
     energyCost: number; // Renamed: Cost to build the tower
@@ -27,6 +28,7 @@ export interface TowerConfigType {
 
 export const TowerConfigs: { [key: string]: TowerConfigType } = {
     tower1: {
+        name: 'Laser Tower',
         texture: 'tower1',
         upgradedTexture: 'tower1_upgraded',
         energyCost: 100,
@@ -47,6 +49,7 @@ export const TowerConfigs: { [key: string]: TowerConfigType } = {
         },
     },
     tower2: {
+        name: 'Bomb Tower',
         texture: 'tower2',
         upgradedTexture: 'tower2_upgraded',
         energyCost: 250,
@@ -67,6 +70,7 @@ export const TowerConfigs: { [key: string]: TowerConfigType } = {
         },
     },
     tower3: {
+        name: 'Slow Tower',
         texture: 'tower3',
         upgradedTexture: 'tower3_upgraded',
         energyCost: 350,
@@ -85,6 +89,7 @@ export const TowerConfigs: { [key: string]: TowerConfigType } = {
         },
     },
     specialTower: {
+        name: 'Phantom Killer',
         texture: 'specialTower',
         upgradedTexture: 'specialTower',
         energyCost: 350,

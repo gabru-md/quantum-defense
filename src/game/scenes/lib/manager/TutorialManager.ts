@@ -150,6 +150,8 @@ export class TutorialManager {
                 this.level.hud.persistedInfo('This displays the current wave of Glitches.\nEach wave brings new challenges. Prepare accordingly!', AppColors.UI_MESSAGE_INFO);
                 this.level.hud.showMarker(hudX + 5, 133, hudX + hudPanelWidth - 5, 158, "Wave");
                 await this.waitForSpacePress();
+                this.level.hud.showMarker(hudX + 5, 158, hudX + hudPanelWidth - 5, 183, "Enemies Spawned");
+                await this.waitForSpacePress();
                 this.level.hud.showTowers(true); // Show towers section
                 this.currentStep = TutorialStep.ExplainTowerArsenal;
                 await this.executeStep();
