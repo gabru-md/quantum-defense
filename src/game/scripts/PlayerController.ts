@@ -1,6 +1,7 @@
 import { Component } from '../core/Component';
 import * as Phaser from 'phaser';
 import { GAME_HEIGHT, GAME_WIDTH } from './Util.ts';
+import { Player } from '../entities/Player.ts';
 
 /**
  * A script that moves a GameObject based on WASD keyboard input.
@@ -13,6 +14,8 @@ export class PlayerController extends Component {
         s: Phaser.Input.Keyboard.Key;
         d: Phaser.Input.Keyboard.Key;
     };
+    private inactivityTimer: number = 0;
+    private readonly inactivityThreshold: number = 5000; // 5 seconds
 
     public start(): void {
         if (this.gameObject.scene.input.keyboard) {
@@ -30,29 +33,42 @@ export class PlayerController extends Component {
         }
     }
 
-    public update(_time: number = 0, _deltaTime: number): void {
+    public update(_time: number, deltaTime: number): void {
         const speed = this.speed * this.gameObject.scene.time.timeScale;
         const body = this.gameObject.body as Phaser.Physics.Arcade.Body;
         if (!this.keys || !body) {
             return;
         }
 
+        let moved = false;
         body.setVelocity(0);
 
         if (this.keys.a.isDown) {
             body.setVelocityX(-speed);
-            this.gameObject.scene.events.emit('playerMoved');
+            moved = true;
         } else if (this.keys.d.isDown) {
             body.setVelocityX(speed);
-            this.gameObject.scene.events.emit('playerMoved');
+            moved = true;
         }
 
         if (this.keys.w.isDown) {
             body.setVelocityY(-speed);
-            this.gameObject.scene.events.emit('playerMoved');
+            moved = true;
         } else if (this.keys.s.isDown) {
             body.setVelocityY(speed);
+            moved = true;
+        }
+
+        if (moved) {
+            this.inactivityTimer = 0;
             this.gameObject.scene.events.emit('playerMoved');
+        } else {
+            this.inactivityTimer += deltaTime;
+            if (this.inactivityTimer >= this.inactivityThreshold) {
+                let player = this.gameObject as Player;
+                player.warn("Hey, Guardian! Are you there?")
+                this.inactivityTimer = 0; // Reset timer to avoid continuous alerts
+            }
         }
 
         // Normalize the velocity to prevent faster diagonal movement

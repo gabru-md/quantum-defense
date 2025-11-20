@@ -47,6 +47,7 @@ export class WaveManager extends Manager {
             console.warn(`No wave config found for wave ${waveNumber}`);
             return;
         }
+        this.level.playerManager.player.info("Incoming Wave!");
         this.currentWave = waveNumber;
         this.maxEnemiesInWave = waveConfig.reduce((sum, config) => sum + config.count, 0);
         this.enemiesRemaining = this.maxEnemiesInWave;
@@ -141,13 +142,14 @@ export class WaveManager extends Manager {
 
     protected handleEnemyReachedEnd(enemy: Enemy | SpecialEnemy): void {
         if (this.gameOver) return;
-    
+        this.level.playerManager.player.danger("Don't let enemies through!");
         this.level.state.baseHealth -= 10;
         this.enemiesRemaining--;
         this.level.events.emit('nexusHit', enemy.x, enemy.y);
         this.level.hud.update();
     
         if (this.level.state.baseHealth <= 0) {
+            // this.level.playerManager.player.danger();
             this.level.events.emit('gameOver');
         } else {
             this.checkWaveCompletion();

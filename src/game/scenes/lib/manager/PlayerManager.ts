@@ -15,7 +15,7 @@ export class PlayerManager extends Manager {
     }
 
     setup(): Player {
-        this.player = new Player({ scene: this.level, x: GAME_WIDTH / 2, y: GAME_HEIGHT - 150, texture: PlayerConfig.texture });
+        this.player = new Player({ scene: this.level, x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2, texture: PlayerConfig.texture });
         this.player.addComponent(new FindNearestTower());
         const resonanceWave = new ResonanceWave(this.level.waveManager.specialEnemies);
         this.player.addComponent(resonanceWave); // Pass specialEnemies
@@ -36,6 +36,7 @@ export class PlayerManager extends Manager {
             this.level.hud.setHelpText('Player:\nHelp the towers and protect the base')
         );
         this.player.on('pointerout', () => this.level.hud.setHelpText(''));
+        this.player.info("Hey, Guardian!");
         return this.player;
     }
 
