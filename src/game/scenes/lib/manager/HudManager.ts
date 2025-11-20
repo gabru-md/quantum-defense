@@ -33,6 +33,7 @@ export class HudManager extends Manager {
     private markerGraphics!: Phaser.GameObjects.Graphics; // For highlighting sections
     private markerText!: Phaser.GameObjects.Text; // Text for the marker
     private spacebarPrompt!: Phaser.GameObjects.Text; // "Press SPACE to continue" prompt
+    private speedButton!: Phaser.GameObjects.Text;
 
     // Group elements by section for easy visibility toggling
     private statsElements: Phaser.GameObjects.GameObject[] = [];
@@ -90,6 +91,7 @@ export class HudManager extends Manager {
         this.markerGraphics.destroy();
         this.markerText.destroy();
         this.spacebarPrompt.destroy();
+        this.speedButton.destroy();
 
         for (const key in this.towerSelectionButtons) {
             this.towerSelectionButtons[key].button.destroy();
@@ -264,7 +266,7 @@ export class HudManager extends Manager {
             color: AppColors.UI_TEXT
         }).setDepth(100).setName('waveProgressText');
 
-        return [panel, this.gameName, this.levelText, this.baseHealthText, this.energyText, this.waveNumberText, this.waveProgressText];
+        return [panel, this.gameName, this.levelText, this.baseHealthText, this.energyText, this.waveNumberText, this.waveProgressText, this.speedButton];
     }
 
     private createTowerSelectionPanel(): Phaser.GameObjects.GameObject[] {
@@ -312,6 +314,24 @@ export class HudManager extends Manager {
             this.scene.state.selectedTowerType = 'none';
             this.scene.events.emit('towerSelected', 'none');
         });
+
+        this.speedButton = this.scene.add.text(hudX + 115, currentTowerY + 75, 'Speed: 1x', {
+            font: '18px',
+            color: AppColors.GAME_BACKGROUND,
+            backgroundColor: AppColors.UI_ACCENT,
+            padding: {x: 10, y: 5}
+        }).setDepth(100).setInteractive({useHandCursor: true});
+
+        this.speedButton.on('pointerdown', () => {
+            if (this.scene.gameSpeed === 1) {
+                this.scene.setGameSpeed(2);
+                this.speedButton.setText('Speed: 2x');
+            } else {
+                this.scene.setGameSpeed(1);
+                this.speedButton.setText('Speed: 1x');
+            }
+        });
+
 
         this.selectionIndicator = this.scene.add.graphics().setDepth(101);
         this.updateSelectionIndicator('tower1');

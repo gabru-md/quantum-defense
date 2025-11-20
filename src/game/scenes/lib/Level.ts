@@ -43,6 +43,7 @@ export abstract class Level extends Phaser.Scene {
     public rifts!: Phaser.GameObjects.Group;
     public riftWaves!: Phaser.GameObjects.Group;
     public quantumEchoes!: Phaser.GameObjects.Group;
+    public gameSpeed: number = 1;
 
     abstract getWaveConfig(wave: number): {
         type: string;
@@ -253,12 +254,16 @@ export abstract class Level extends Phaser.Scene {
         if (this.waveManager.gameOver) return;
         this.waveManager.gameOver = true;
         this.physics.pause();
-        this.hud.info('GAME OVER!', AppColors.UI_MESSAGE_ERROR, () => {
-            this.easeOutAndStartNextScene(this.scene.key as LevelNames);
-        });
+        this.easeOutAndStartNextScene(LevelNames.EndScene, { win: false });
     }
 
-    easeOutAndStartNextScene(sceneKey: LevelNames): void {
+    public setGameSpeed(speed: number): void {
+        this.gameSpeed = speed;
+        this.physics.world.timeScale = speed;
+        this.time.timeScale = speed;
+    }
+
+    easeOutAndStartNextScene(sceneKey: LevelNames | string, data?: object): void {
         const allActiveElements: Phaser.GameObjects.GameObject[] = [
             ...this.levelElements,
             ...this.towerManager.towers.getChildren(),
@@ -278,7 +283,7 @@ export abstract class Level extends Phaser.Scene {
             duration: 500,
             onComplete: () => {
                 this.scene.stop(this.scene.key);
-                this.scene.start(sceneKey);
+                this.scene.start(sceneKey, data);
             },
         });
     }

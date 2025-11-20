@@ -23,6 +23,7 @@ export class Bullet extends GameObject {
 
         const direction = new Phaser.Math.Vector2(targetX - x, targetY - y).normalize();
         const body = this.body as Phaser.Physics.Arcade.Body;
+        speed = speed * this.scene.time.timeScale;
         body.setVelocity(direction.x * speed, direction.y * speed);
     }
 

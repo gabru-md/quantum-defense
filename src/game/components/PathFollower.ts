@@ -1,7 +1,7 @@
-import { Component } from '../core/Component';
+import {Component} from '../core/Component';
 import * as Phaser from 'phaser';
-import { WaveManager } from '../scenes/lib/manager/WaveManager.ts';
-import { Level } from '../scenes/lib/Level.ts';
+import {WaveManager} from '../scenes/lib/manager/WaveManager.ts';
+import {Level} from '../scenes/lib/Level.ts';
 import {Enemy} from "../entities/Enemy.ts";
 
 export class PathFollower extends Component {
@@ -25,7 +25,7 @@ export class PathFollower extends Component {
             return;
         }
 
-        if(_time - this.lastSoundPlayed > this.playSoundAtRandomInterval) {
+        if (_time - this.lastSoundPlayed > this.playSoundAtRandomInterval) {
             let enemy = this.gameObject as Enemy;
             let soundFxName = enemy.type === 'enemy1' ? 'Enemy1' : enemy.type === 'enemy2' ? 'Enemy2' : 'Enemy3';
             this.lastSoundPlayed = _time;
@@ -66,7 +66,7 @@ export class PathFollower extends Component {
                 finalModifier = modifier;
             }
         });
-        return this.baseSpeed * finalModifier;
+        return this.baseSpeed * finalModifier * this.gameObject.scene.time.timeScale;
     }
 
     private isWaveManagerStopped() {

@@ -49,6 +49,7 @@ import {Gameplay_TheResonanceWave} from './game/scenes/levels/Level15.ts';
 // Other Scenes
 import {CreditsScene} from './game/scenes/CreditsScene.ts';
 import {WinScene} from './game/scenes/WinScene.ts';
+import {EndScene} from "./game/scenes/EndScene.ts";
 
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
@@ -63,6 +64,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
         FullStoryPlaybackScene,
         CreditsScene,
         WinScene,
+        EndScene,
 
         // All Story Scenes
         Story_Tutorial,

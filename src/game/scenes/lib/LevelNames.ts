@@ -2,6 +2,9 @@ export enum LevelNames {
     // Main Menu
     MainMenu = 'MainMenu',
 
+    // End Scene
+    EndScene = 'EndScene',
+
     // Tutorial
     Tutorial = 'Tutorial', // Story scene for the tutorial
     Gameplay_Tutorial = 'Gameplay_Tutorial', // Actual playable tutorial level
@@ -112,6 +115,7 @@ export const STORY_TO_GAMEPLAY_MAP: Record<LevelNames, LevelNames> = {
 
     // Add other non-story levels to avoid TypeScript errors, mapping them to themselves or a default
     [LevelNames.MainMenu]: LevelNames.MainMenu,
+    [LevelNames.EndScene]: LevelNames.EndScene,
     [LevelNames.Tutorial]: LevelNames.Gameplay_Tutorial, // Tutorial story leads to gameplay tutorial
     [LevelNames.Gameplay_Tutorial]: LevelNames.Gameplay_Tutorial,
     [LevelNames.FullStoryPlayback]: LevelNames.FullStoryPlayback,
