@@ -1,9 +1,9 @@
-import { GameObject } from '../core/GameObject';
-import { Health } from '../components/Health';
-import { Enemy } from './Enemy';
-import { SpecialEnemy } from './SpecialEnemy'; // Import SpecialEnemy
+import {GameObject} from '../core/GameObject';
+import {Health} from '../components/Health';
+import {Enemy} from './Enemy';
+import {SpecialEnemy} from './SpecialEnemy'; // Import SpecialEnemy
 import * as Phaser from 'phaser';
-import { GAME_HEIGHT, GAME_WIDTH } from '../scripts/Util.ts';
+import {GAME_HEIGHT, GAME_WIDTH} from '../scripts/Util.ts';
 import {AppColors, phaserColor} from "../scripts/Colors.ts";
 
 /**
@@ -44,7 +44,8 @@ export class Bomb extends GameObject {
     }
 
     public explode(): void {
-        const graphics = this.scene.add.graphics({ fillStyle: { color: phaserColor(AppColors.BULLET_BOMB), alpha: 0.1 } });
+        this.level.audioManager.playSfx('HitBombTower');
+        const graphics = this.scene.add.graphics({fillStyle: {color: phaserColor(AppColors.BULLET_BOMB), alpha: 0.1}});
         graphics.fillCircle(this.x, this.y, this.explosionRadius);
         this.scene.time.delayedCall(250, () => graphics.destroy());
 

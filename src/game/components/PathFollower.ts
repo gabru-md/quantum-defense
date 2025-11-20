@@ -2,23 +2,36 @@ import { Component } from '../core/Component';
 import * as Phaser from 'phaser';
 import { WaveManager } from '../scenes/lib/manager/WaveManager.ts';
 import { Level } from '../scenes/lib/Level.ts';
+import {Enemy} from "../entities/Enemy.ts";
 
 export class PathFollower extends Component {
     private path: Phaser.Curves.Path;
     private baseSpeed: number;
     private pathPosition: number = 0;
     private speedModifiers: Map<number, number> = new Map();
+    private playSoundAtRandomInterval: number;
+    private lastSoundPlayed: number = 0;
+
 
     constructor(path: Phaser.Curves.Path, speed: number) {
         super();
         this.path = path;
         this.baseSpeed = speed;
+        this.playSoundAtRandomInterval = Phaser.Math.Between(200, 3000);
     }
 
     public update(_time: number, deltaTime: number): void {
         if (this.isWaveManagerStopped()) {
             return;
         }
+
+        if(_time - this.lastSoundPlayed > this.playSoundAtRandomInterval) {
+            let enemy = this.gameObject as Enemy;
+            let soundFxName = enemy.type === 'enemy1' ? 'Enemy1' : enemy.type === 'enemy2' ? 'Enemy2' : 'Enemy3';
+            this.lastSoundPlayed = _time;
+            this.gameObject.level.audioManager.playEnemySound(soundFxName)
+        }
+
 
         const currentSpeed = this.calculateCurrentSpeed();
         const pathLength = this.path.getLength();

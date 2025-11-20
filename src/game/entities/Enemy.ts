@@ -14,11 +14,12 @@ export interface EnemyConfig {
 export class Enemy extends GameObject {
     public energyValue: number; // Renamed: moneyValue to energyValue
     private healthComponent!: Health; // Reference to the health component
+    public type: string;
 
     constructor(config: EnemyConfig, enemyConfigData: EnemyConfigType) {
         const startPoint = config.path.getStartPoint();
         super(config.scene, startPoint.x, startPoint.y, enemyConfigData.texture);
-
+        this.type = config.type;
         config.scene.physics.world.enable(this);
 
         this.energyValue = enemyConfigData.energyValue; // Updated to energyValue

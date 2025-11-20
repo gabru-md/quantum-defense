@@ -52,6 +52,7 @@ export class BombAttack extends Component {
             }
         }
         if (target && target.active && time > this.lastFired + this.fireRate) {
+            this.gameObject.level.audioManager.playSfx('ShootBombTower');
             this.fireAt(target);
             this.lastFired = time;
         }

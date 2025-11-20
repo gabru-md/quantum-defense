@@ -22,6 +22,7 @@ export class Tower extends GameObject {
     private visualPulseComponent!: VisualPulse;
     private originalPulseColor: number;
     private towerConfigType: TowerConfigType;
+    public isSoundPlaying: boolean = false; // only relevant for the slow tower
 
     constructor(config: TowerConfig) {
         super(config.scene, config.x, config.y, config.texture);

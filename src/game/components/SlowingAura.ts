@@ -1,8 +1,9 @@
-import { Component } from '../core/Component';
-import { Level } from '../scenes/lib/Level';
-import { Enemy } from '../entities/Enemy';
-import { PathFollower } from './PathFollower';
+import {Component} from '../core/Component';
+import {Level} from '../scenes/lib/Level';
+import {Enemy} from '../entities/Enemy';
+import {PathFollower} from './PathFollower';
 import * as Phaser from 'phaser';
+import {Tower} from "../entities/Tower.ts";
 
 export class SlowingAura extends Component {
     private range: number;
@@ -21,9 +22,9 @@ export class SlowingAura extends Component {
             ...currentScene.waveManager.enemies.getChildren(),
             ...currentScene.waveManager.specialEnemies.getChildren(),
         ];
-
         const newlyAffected: Set<PathFollower> = new Set();
 
+        let tower = this.gameObject as Tower;
         for (const enemy of allEnemies as Enemy[]) {
             if (!enemy.active) continue;
 
@@ -34,6 +35,15 @@ export class SlowingAura extends Component {
 
             if (distance <= this.range) {
                 // Enemy is in range, apply slow
+                if (!tower.isSoundPlaying) {
+                    tower.isSoundPlaying = true;
+                    console.log('playing slow sound')
+                    tower.level.audioManager.playSound('ShootSlowTower', {
+                        volume: 1, onComplete: () => {
+                            tower.isSoundPlaying = false;
+                        }
+                    });
+                }
                 pathFollower.applySpeedModifier(this.slowFactor, this.gameObject.id);
                 newlyAffected.add(pathFollower);
             }
