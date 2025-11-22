@@ -77,6 +77,15 @@ export class CollisionManager extends Manager {
             undefined,
             this
         );
+
+        // New collision for enemies and towers
+        this.level.physics.add.overlap(
+            this.level.waveManager.enemies,
+            this.level.towerManager.towers,
+            this.handleEnemyTowerCollision as Phaser.Types.Physics.Arcade.ArcadePhysicsCallback,
+            undefined,
+            this
+        );
     }
 
     protected handleBulletEnemyCollision(bullet: Bullet, enemyObject: Phaser.GameObjects.GameObject): void {
@@ -138,6 +147,14 @@ export class CollisionManager extends Manager {
                 // player.takeDamage(10);
             }
         }
+    }
+
+    protected handleEnemyTowerCollision(enemy: Enemy, tower: Tower): void {
+        if (tower.lastDamageTime && this.level.time.now < tower.lastDamageTime + 1000) {
+            return;
+        }
+        tower.lastDamageTime = this.level.time.now;
+        tower.takeDamage(10);
     }
 
     destroy() {

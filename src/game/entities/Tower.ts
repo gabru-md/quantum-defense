@@ -24,6 +24,7 @@ export class Tower extends GameObject {
     private originalPulseColor: number;
     public towerType: string;
     public isSoundPlaying: boolean = false; // only relevant for the slow tower
+    public lastDamageTime: number = 0;
 
     constructor(config: TowerConfig) {
         super(config.scene, config.x, config.y, config.texture);
@@ -58,6 +59,13 @@ export class Tower extends GameObject {
         this.on('healthChanged', this.handleHealthChanged, this);
 
         this.enableVisualPulse();
+    }
+
+    public takeDamage(damage: number) {
+        if (!this.healthComponent) {
+            this.healthComponent = this.getComponent(Health) as Health;
+        }
+        this.healthComponent.takeDamage(damage);
     }
 
     private handleHealthChanged(currentHealth: number): void {
