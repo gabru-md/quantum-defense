@@ -1,11 +1,14 @@
-import { GameObject } from '../core/GameObject';
-import { Health } from '../components/Health';
+import {GameObject} from '../core/GameObject';
+import {Health} from '../components/Health';
 import * as Phaser from 'phaser';
-import { GAME_HEIGHT, GAME_WIDTH } from '../scripts/Util.ts';
+import {GAME_HEIGHT, GAME_WIDTH} from '../scripts/Util.ts';
+import {Enemy} from './Enemy';
 
 export class Bullet extends GameObject {
     public damage: number = 0;
     public source?: GameObject;
+    private ricochetTargets: number = 0;
+    private ricochetDamage: number = 0;
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, source?: GameObject) {
         super(scene, x, y, texture);
@@ -33,7 +36,37 @@ export class Bullet extends GameObject {
         if (healthComponent) {
             healthComponent.takeDamage(this.damage);
         }
-        this.destroyBullet();
+
+        if (this.ricochetTargets > 0) {
+            this.ricochetTargets--;
+            this.damage *= this.ricochetDamage;
+            const newTarget = this.findNextTarget(target);
+            if (newTarget) {
+                this.fire(this.x, this.y, newTarget.x, newTarget.y, (this.body as Phaser.Physics.Arcade.Body).velocity.x, this.damage);
+            } else {
+                this.destroyBullet();
+            }
+        } else {
+            this.destroyBullet();
+        }
+    }
+
+    private findNextTarget(exclude: GameObject): GameObject | null {
+        let closestEnemy: GameObject | null = null;
+        let minDistance = Infinity;
+
+        this.level.waveManager.enemies.getChildren().forEach((enemyObject: Phaser.GameObjects.GameObject) => {
+            const enemy = enemyObject as Enemy;
+            if (enemy !== exclude && enemy.active) {
+                const distance = Phaser.Math.Distance.Between(this.x, this.y, enemy.x, enemy.y);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestEnemy = enemy;
+                }
+            }
+        });
+
+        return closestEnemy;
     }
 
     public destroyBullet(): void {

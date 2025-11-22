@@ -4,7 +4,7 @@ import { FindNearestTower } from '../../../components/FindNearestTower.ts';
 import { ResonanceWave } from '../../../components/ResonanceWave.ts';
 import { VisualPulse } from '../../../components/VisualPulse.ts';
 import { Manager } from '../Manager.ts';
-import { GAME_HEIGHT, GAME_WIDTH } from '../../../scripts/Util.ts';
+import {GAME_HEIGHT, GAME_WIDTH, TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT} from '../../../scripts/Util.ts';
 import { PlayerConfig } from '../../../config/PlayerConfig.ts';
 
 export class PlayerManager extends Manager {
@@ -38,6 +38,40 @@ export class PlayerManager extends Manager {
         this.player.on('pointerout', () => this.level.hud.setHelpText(''));
         this.player.info("Hey, Guardian!");
         return this.player;
+    }
+
+    collectQuantumEcho() {
+        const availableUpgrades = [];
+        if (!this.level.state.tower1Upgraded) availableUpgrades.push('tower1');
+        if (!this.level.state.tower2Upgraded) availableUpgrades.push('tower2');
+        if (!this.level.state.tower3Upgraded) availableUpgrades.push('tower3');
+
+        if (availableUpgrades.length > 0) {
+            const randomUpgrade = availableUpgrades[Math.floor(Math.random() * availableUpgrades.length)];
+            switch (randomUpgrade) {
+                case 'tower1':
+                    this.level.state.tower1UpgradeProgress++;
+                    if (this.level.state.tower1UpgradeProgress >= TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT) {
+                        this.level.state.tower1Upgraded = true;
+                        this.level.events.emit('tower1Upgraded');
+                    }
+                    break;
+                case 'tower2':
+                    this.level.state.tower2UpgradeProgress++;
+                    if (this.level.state.tower2UpgradeProgress >= TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT) {
+                        this.level.state.tower2Upgraded = true;
+                        this.level.events.emit('tower2Upgraded');
+                    }
+                    break;
+                case 'tower3':
+                    this.level.state.tower3UpgradeProgress++;
+                    if (this.level.state.tower3UpgradeProgress >= TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT) {
+                        this.level.state.tower3Upgraded = true;
+                        this.level.events.emit('tower3Upgraded');
+                    }
+                    break;
+            }
+        }
     }
 
     update(time: number, delta: number) {

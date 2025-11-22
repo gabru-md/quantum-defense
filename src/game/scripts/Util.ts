@@ -9,3 +9,5 @@ export const EXIT_TO_MENU = true;
 export const capitalize = (str: string): string => {
     return str.charAt(0).toUpperCase() + str.slice(1);
 };
+
+export const TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT= 5;

@@ -13,6 +13,9 @@ import {Health} from '../../../components/Health.ts';
 import {AppColors} from '../../../scripts/Colors.ts';
 import {SlowingAura} from '../../../components/SlowingAura.ts';
 import {TowerConfigs, TowerConfigType} from '../../../config/TowerConfigs.ts';
+import {ChainPulseAttack} from "../../../components/ChainPulseAttack.ts";
+import {QuantumFissureAttack} from "../../../components/QuantumFissureAttack.ts";
+import {DestabilizationAura} from "../../../components/DestabilizationAura.ts";
 
 export class TowerManager extends Manager {
     towers!: Phaser.GameObjects.Group;
@@ -29,6 +32,11 @@ export class TowerManager extends Manager {
         this.bullets = this.level.add.group({classType: Bullet, runChildUpdate: false});
         this.bombs = this.level.add.group({classType: Bomb, runChildUpdate: false});
         this.setupInputEventListeners();
+
+        this.level.events.on('tower1Upgraded', () => this.upgradeTowers('tower1'), this);
+        this.level.events.on('tower2Upgraded', () => this.upgradeTowers('tower2'), this);
+        this.level.events.on('tower3Upgraded', () => this.upgradeTowers('tower3'), this);
+
         return {towers: this.towers, bullets: this.bullets, bombs: this.bombs};
     }
 
@@ -113,22 +121,15 @@ export class TowerManager extends Manager {
             throw new Error(`Tower configuration not found for type: ${towerType}`);
         }
 
-        const tower = new Tower({scene: this.level, x, y, texture: config.texture, energyCost: energyCost});
+        const isUpgraded = this.isTowerUpgraded(towerType);
+        const texture = isUpgraded ? config.upgradedTexture : config.texture;
+
+        const tower = new Tower({scene: this.level, x, y, texture: texture, energyCost: energyCost, towerType: towerType});
         this.towers.add(tower, true);
         tower.addComponent(new Health(config.health));
         tower.addComponent(new Targeting(config.range, [this.level.waveManager.enemies]));
 
-        if (config.attack) {
-            if (towerType === 'tower1') {
-                tower.addComponent(new LaserAttack(config.attack.fireRate, config.attack.damage, config.attack.bulletSpeed!, this.bullets));
-            } else if (towerType === 'tower2') {
-                tower.addComponent(new BombAttack(config.attack.fireRate, config.attack.damage, config.range, config.attack.aoeRadius!, this.bombs, [this.level.waveManager.enemies]));
-            }
-        }
-
-        if (config.slowing) {
-            tower.addComponent(new SlowingAura(config.range, config.slowing.slowFactor));
-        }
+        this.applyAttackAndSlowing(tower, towerType, isUpgraded);
 
         tower.on('died', () => tower.deactivateTower());
         tower.on('deactivate', () => this.deactivateTower(tower));
@@ -137,16 +138,64 @@ export class TowerManager extends Manager {
         return tower;
     }
 
+    private upgradeTowers(towerType: string) {
+        const config: TowerConfigType = TowerConfigs[towerType];
+        if (!config) return;
+
+        this.towers.getChildren().forEach(towerObject => {
+            const tower = towerObject as Tower;
+            if (tower.towerType === towerType) {
+                tower.setTexture(config.upgradedTexture);
+                this.applyAttackAndSlowing(tower, towerType, true);
+            }
+        });
+    }
+
+    private applyAttackAndSlowing(tower: Tower, towerType: string, isUpgraded: boolean) {
+        const config: TowerConfigType = TowerConfigs[towerType];
+
+        if (isUpgraded) {
+            if (towerType === 'tower1' && config.upgradedAttack) {
+                tower.addComponentOverriding(new ChainPulseAttack(config.upgradedAttack.fireRate, config.upgradedAttack.damage, config.upgradedAttack.bulletSpeed!, this.bullets, config.upgradedAttack.ricochetTargets!, config.upgradedAttack.ricochetDamage!));
+            } else if (towerType === 'tower2' && config.upgradedAttack) {
+                tower.addComponentOverriding(new QuantumFissureAttack(config.upgradedAttack.fireRate, config.upgradedAttack.damage, config.range, config.upgradedAttack.aoeRadius!, this.bombs, [this.level.waveManager.enemies], config.upgradedAttack.fissureDamage!, config.upgradedAttack.fissureDuration!));
+            } else if (towerType === 'tower3' && config.upgradedSlowing) {
+                tower.addComponentOverriding(new DestabilizationAura(config.range, config.upgradedSlowing.slowFactor, config.upgradedSlowing.damageAmplification));
+            }
+        } else {
+            if (towerType === 'tower1' && config.attack) {
+                tower.addComponentOverriding(new LaserAttack(config.attack.fireRate, config.attack.damage, config.attack.bulletSpeed!, this.bullets));
+            } else if (towerType === 'tower2' && config.attack) {
+                tower.addComponentOverriding(new BombAttack(config.attack.fireRate, config.attack.damage, config.range, config.attack.aoeRadius!, this.bombs, [this.level.waveManager.enemies]));
+            } else if (towerType === 'tower3' && config.slowing) {
+                tower.addComponentOverriding(new SlowingAura(config.range, config.slowing.slowFactor));
+            }
+        }
+    }
+
+    private isTowerUpgraded(towerType: string): boolean {
+        if (towerType === 'tower1') return this.level.state.tower1Upgraded;
+        if (towerType === 'tower2') return this.level.state.tower2Upgraded;
+        if (towerType === 'tower3') return this.level.state.tower3Upgraded;
+        return false;
+    }
+
     public getTowerRange(towerType: string): number {
-        return TowerConfigs[towerType]?.range || 0;
+        const config = TowerConfigs[towerType];
+        if (!config) return 0;
+        return this.isTowerUpgraded(towerType) ? config.range : config.range; // Can be different if you want
     }
 
     getTowerEnergyCost(towerType: string): number {
-        return TowerConfigs[towerType]?.energyCost || -1;
+        const config = TowerConfigs[towerType];
+        if (!config) return -1;
+        return this.isTowerUpgraded(towerType) ? config.upgradedEnergyCost : config.energyCost;
     }
 
     public getTowerDescription(towerType: string): string {
-        return TowerConfigs[towerType]?.description || '';
+        const config = TowerConfigs[towerType];
+        if (!config) return '';
+        return this.isTowerUpgraded(towerType) ? config.upgradedDescription : config.description;
     }
 
     private deactivateTower(tower: Tower) {

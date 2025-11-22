@@ -83,7 +83,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         createSpecialEnemyTexture(this, 'specialEnemy', 32, AppColors.SPECIAL_ENEMY);
         createEnemyTexture(this, 'upgradedEnemy', 40, AppColors.ENEMY_FAST_TANK);
         // Preload new textures
-        createQuantumEchoTexture(this, 'quantum_echo_texture', 18, AppColors.PLAYER, AppColors.SPECIAL_ENEMY); // There is a gradient
+        createQuantumEchoTexture(this, 'quantum_echo_texture', 18); // There is a gradient
         createPlayerTexture(this, 'genie_texture', 3, AppColors.PLAYER); // Placeholder color
         createPlayerTexture(this, 'static_genie_texture', 3, AppColors.SPECIAL_ENEMY); // Placeholder color
         createPlayerTexture(this, 'phantom_genie_texture', 3, AppColors.SPECIAL_ENEMY); // Placeholder color

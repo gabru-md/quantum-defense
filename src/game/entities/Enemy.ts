@@ -15,6 +15,7 @@ export class Enemy extends GameObject {
     public energyValue: number; // Renamed: moneyValue to energyValue
     private healthComponent!: Health; // Reference to the health component
     public type: string;
+    private damageAmplification: number = 1;
 
     constructor(config: EnemyConfig, enemyConfigData: EnemyConfigType) {
         const startPoint = config.path.getStartPoint();
@@ -44,6 +45,18 @@ export class Enemy extends GameObject {
         this.on('pointerout', () => this.level.hud.setHelpText(''));
 
         this.level.onHover(this, enemyConfigData.name);
+    }
+
+    public takeDamage(damage: number) {
+        this.healthComponent.takeDamage(damage * this.damageAmplification);
+    }
+
+    public applyDamageAmplification(amount: number) {
+        this.damageAmplification = 1 + amount;
+    }
+
+    public removeDamageAmplification() {
+        this.damageAmplification = 1;
     }
 
     private handleHealthChanged(currentHealth: number): void {

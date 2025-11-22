@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import {phaserColor} from './Colors';
+import {AppColors, phaserColor} from './Colors';
 
 export function createEnemyTexture(scene: Phaser.Scene, key: string, size: number, color: string): string {
     if (scene.textures.exists(key)) {
@@ -105,7 +105,7 @@ export function createPlayerTexture(scene: Phaser.Scene, key: string, size: numb
 }
 
 
-export function createQuantumEchoTexture(scene: Phaser.Scene, key: string, size: number, color: string, color2: string) {
+export function createQuantumEchoTexture(scene: Phaser.Scene, key: string, size: number) {
     if (scene.textures.exists(key)) {
         scene.textures.remove(key);
     }
@@ -122,7 +122,7 @@ export function createQuantumEchoTexture(scene: Phaser.Scene, key: string, size:
         let x, y;
         let currentBounds: any;
         let attempts = 0;
-        let selectedColor = Phaser.Math.RND.pick([color2, color, color2]);
+        let selectedColor = Phaser.Math.RND.pick([AppColors.TOWER_LASER, AppColors.TOWER_BOMB, AppColors.TOWER_SLOW]);
         let colorNumber = phaserColor(selectedColor);
         graphics.fillStyle(colorNumber);
 
@@ -146,7 +146,7 @@ export function createQuantumEchoTexture(scene: Phaser.Scene, key: string, size:
                     graphics.fillRect(x, y, elementSize, elementSize);
                     break;
                 case 'line':
-                    graphics.lineStyle(2, phaserColor(color), 1);
+                    graphics.lineStyle(2, phaserColor(selectedColor), 1);
                     graphics.lineBetween(x, y, x + elementSize, y + elementSize);
                     break;
             }

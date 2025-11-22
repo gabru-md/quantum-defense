@@ -107,7 +107,7 @@ export class CollisionManager extends Manager {
     }
 
     protected handlePlayerEchoCollision(_player: Player, echo: QuantumEcho): void {
-        // For now, just destroy the echo. In the future, you can add to a player's resource count.
+        this.level.playerManager.collectQuantumEcho();
         echo.destroy();
     }
 

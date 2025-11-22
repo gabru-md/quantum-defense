@@ -3,7 +3,7 @@ import {Level} from '../Level.ts';
 import {Manager} from '../Manager.ts';
 import {
     GAME_HEIGHT,
-    GAME_WIDTH, HEIGHT,
+    GAME_WIDTH, HEIGHT, TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT,
     WIDTH
 } from '../../../scripts/Util.ts';
 import {AppColors, phaserColor} from '../../../scripts/Colors.ts';
@@ -41,6 +41,11 @@ export class HudManager extends Manager {
     private helpElements: Phaser.GameObjects.GameObject[] = [];
     private gameSeparators: Phaser.GameObjects.Graphics[] = [];
     private hudSeparators: Phaser.GameObjects.Graphics[] = [];
+
+    // Upgrade progress text elements
+    private tower1UpgradeText!: Phaser.GameObjects.Text;
+    private tower2UpgradeText!: Phaser.GameObjects.Text;
+    private tower3UpgradeText!: Phaser.GameObjects.Text;
 
     constructor(public scene: Level) {
         super(scene);
@@ -93,6 +98,10 @@ export class HudManager extends Manager {
         this.spacebarPrompt.destroy();
         this.speedButton.destroy();
 
+        this.tower1UpgradeText.destroy();
+        this.tower2UpgradeText.destroy();
+        this.tower3UpgradeText.destroy();
+
         for (const key in this.towerSelectionButtons) {
             this.towerSelectionButtons[key].button.destroy();
             this.towerSelectionButtons[key].panel.destroy();
@@ -119,6 +128,7 @@ export class HudManager extends Manager {
         this.updateTowerSelectionUI();
         this.updateRangePreview();
         this.updateSelectionIndicator(this.scene.state.selectedTowerType);
+        this.updateUpgradeProgress();
     }
 
     public persistedInfo(message: string, color: string, centre: boolean = true) {
@@ -286,6 +296,7 @@ export class HudManager extends Manager {
         }).setDepth(100);
 
         let currentTowerY = startY + 50;
+        let towerIndex = 1;
         for (const towerKey in TowerConfigs) {
             const config: TowerConfigType = TowerConfigs[towerKey];
             if (towerKey === 'specialTower') {
@@ -300,7 +311,15 @@ export class HudManager extends Manager {
                 statsString = `Slow: ${config.slowing.slowFactor * 100}% | R: ${config.range}`;
             }
             this.createTowerButton(hudX + 15, currentTowerY, towerKey, config.energyCost, statsString, config.description.split('\n')[0].split(':')[0]);
+
+            // Add upgrade progress text
+            const upgradeText = this.scene.add.text(hudX + 200, currentTowerY + 35, '', { font: '16px', color: AppColors.UI_ACCENT }).setDepth(100);
+            if (towerIndex === 1) this.tower1UpgradeText = upgradeText;
+            if (towerIndex === 2) this.tower2UpgradeText = upgradeText;
+            if (towerIndex === 3) this.tower3UpgradeText = upgradeText;
+
             currentTowerY += 100;
+            towerIndex++;
         }
 
         this.deselectButton = this.scene.add.text(hudX + 50, currentTowerY + 25, 'CLEAR TOWER SELECTION', {
@@ -344,7 +363,7 @@ export class HudManager extends Manager {
 
         this.rangePreview = this.scene.add.graphics().setDepth(0);
 
-        const elements: Phaser.GameObjects.GameObject[] = [panel, title, this.selectionIndicator, this.helpTextPanel];
+        const elements: Phaser.GameObjects.GameObject[] = [panel, title, this.selectionIndicator, this.helpTextPanel, this.tower1UpgradeText, this.tower2UpgradeText, this.tower3UpgradeText];
         for (const key in this.towerSelectionButtons) {
             elements.push(this.towerSelectionButtons[key].button, this.towerSelectionButtons[key].panel, ...this.towerSelectionButtons[key].textObjects);
         }
@@ -454,10 +473,41 @@ export class HudManager extends Manager {
         this.waveProgressText.setText(`Enemies: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`);
     }
 
+    private updateUpgradeProgress() {
+        if (this.scene.state.tower1Upgraded) {
+            this.tower1UpgradeText.setText('Upgraded!');
+        } else {
+            this.tower1UpgradeText.setText(`${this.scene.state.tower1UpgradeProgress}/${TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT}`);
+        }
+
+        if (this.scene.state.tower2Upgraded) {
+            this.tower2UpgradeText.setText('Upgraded!');
+        } else {
+            this.tower2UpgradeText.setText(`${this.scene.state.tower2UpgradeProgress}/${TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT}`);
+        }
+
+        if (this.scene.state.tower3Upgraded) {
+            this.tower3UpgradeText.setText('Upgraded!');
+        } else {
+            this.tower3UpgradeText.setText(`${this.scene.state.tower3UpgradeProgress}/${TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT}`);
+        }
+    }
+
     private updateTowerSelectionUI() {
         for (const key in this.towerSelectionButtons) {
+            const config = TowerConfigs[key];
+            const { button, panel, textObjects } = this.towerSelectionButtons[key];
+
+            // Update texture if upgraded
+            if (key === 'tower1' && this.scene.state.tower1Upgraded) {
+                button.setTexture(config.upgradedTexture);
+            } else if (key === 'tower2' && this.scene.state.tower2Upgraded) {
+                button.setTexture(config.upgradedTexture);
+            } else if (key === 'tower3' && this.scene.state.tower3Upgraded) {
+                button.setTexture(config.upgradedTexture);
+            }
+
             const energyCost = this.scene.towerManager.getTowerEnergyCost(key);
-            const {button, panel, textObjects} = this.towerSelectionButtons[key];
             if (this.scene.state.energy < energyCost) {
                 button.setAlpha(0.5);
                 panel.setAlpha(0.5);

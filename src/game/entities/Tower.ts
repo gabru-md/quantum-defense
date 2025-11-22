@@ -5,34 +5,35 @@ import {VisualPulse} from '../components/VisualPulse.ts';
 import {AppColors, phaserColor} from '../scripts/Colors.ts';
 import {LaserAttack} from '../components/LaserAttack.ts';
 import {BombAttack} from '../components/BombAttack.ts';
-import {TowerConfigs, TowerConfigType} from '../config/TowerConfigs.ts'; // Import TowerConfigs
+import {TowerConfigs} from '../config/TowerConfigs.ts';
 
 export interface TowerConfig {
     scene: Phaser.Scene;
     x: number;
     y: number;
     texture: string;
-    energyCost: number; // Renamed: cost to energyCost
+    energyCost: number;
+    towerType: string;
 }
 
 export class Tower extends GameObject {
     public reviveProgress: number = 0;
-    public energyCost: number; // Renamed: cost to energyCost
+    public energyCost: number;
     private healthComponent!: Health;
     private visualPulseComponent!: VisualPulse;
     private originalPulseColor: number;
-    private towerConfigType: TowerConfigType;
+    public towerType: string;
     public isSoundPlaying: boolean = false; // only relevant for the slow tower
 
     constructor(config: TowerConfig) {
         super(config.scene, config.x, config.y, config.texture);
         config.scene.physics.world.enable(this);
 
-        this.energyCost = config.energyCost; // Assign the energyCost
+        this.energyCost = config.energyCost;
+        this.towerType = config.towerType;
 
-        // Store original color for revival using TowerConfigs
-        this.towerConfigType = TowerConfigs[config.texture];
-        this.originalPulseColor = this.towerConfigType ? this.towerConfigType.pulse.color : phaserColor(AppColors.UI_TEXT); // Fallback color
+        const towerConfigType = TowerConfigs[this.towerType];
+        this.originalPulseColor = towerConfigType ? towerConfigType.pulse.color : phaserColor(AppColors.UI_TEXT); // Fallback color
 
         this.setInteractive();
 
@@ -105,13 +106,14 @@ export class Tower extends GameObject {
     }
 
     public enableVisualPulse(): void {
+        const towerConfigType = TowerConfigs[this.towerType];
         this.addComponentOverriding(new VisualPulse(
-            this.towerConfigType.pulse.color,
-            this.towerConfigType.pulse.pulseDelay,
-            this.towerConfigType.pulse.pulseDuration,
-            this.towerConfigType.range,
-            this.towerConfigType.pulse.pulseTotalPulses,
-            this.towerConfigType.pulse.pulseLineWidth
+            towerConfigType.pulse.color,
+            towerConfigType.pulse.pulseDelay,
+            towerConfigType.pulse.pulseDuration,
+            towerConfigType.range,
+            towerConfigType.pulse.pulseTotalPulses,
+            towerConfigType.pulse.pulseLineWidth
         ))
     }
 
