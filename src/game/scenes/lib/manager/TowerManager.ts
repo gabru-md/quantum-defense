@@ -33,10 +33,6 @@ export class TowerManager extends Manager {
         this.bombs = this.level.add.group({classType: Bomb, runChildUpdate: false});
         this.setupInputEventListeners();
 
-        this.level.events.on('tower1Upgraded', () => this.upgradeTowers('tower1'), this);
-        this.level.events.on('tower2Upgraded', () => this.upgradeTowers('tower2'), this);
-        this.level.events.on('tower3Upgraded', () => this.upgradeTowers('tower3'), this);
-
         return {towers: this.towers, bullets: this.bullets, bombs: this.bombs};
     }
 
@@ -136,19 +132,6 @@ export class TowerManager extends Manager {
         tower.on('pointerover', () => this.level.hud.setHelpText(this.getTowerDescription(towerType)));
         tower.on('pointerout', () => this.level.hud.setHelpText(''));
         return tower;
-    }
-
-    private upgradeTowers(towerType: string) {
-        const config: TowerConfigType = TowerConfigs[towerType];
-        if (!config) return;
-
-        this.towers.getChildren().forEach(towerObject => {
-            const tower = towerObject as Tower;
-            if (tower.towerType === towerType) {
-                tower.setTexture(config.upgradedTexture);
-                this.applyAttackAndSlowing(tower, towerType, true);
-            }
-        });
     }
 
     private applyAttackAndSlowing(tower: Tower, towerType: string, isUpgraded: boolean) {

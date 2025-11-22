@@ -11,7 +11,7 @@ export class BombAttack extends Component {
     private targetingComponent!: Targeting;
     private readonly fireRate: number; // in milliseconds
     private lastFired: number = 0;
-    private bombs: Phaser.GameObjects.Group;
+    protected bombs: Phaser.GameObjects.Group;
     private readonly damage: number;
     private readonly bombSpeed: number;
     private readonly explosionRadius: number;
@@ -58,7 +58,7 @@ export class BombAttack extends Component {
         }
     }
 
-    private fireAt(target: Phaser.GameObjects.Sprite): void {
+    protected fireAt(target: Phaser.GameObjects.Sprite): void {
         // Manually create the bomb instance, ensuring the scene context is correct.
         const bomb = new Bomb(this.gameObject.scene, this.gameObject.x, this.gameObject.y, 'bomb');
         this.bombs.add(bomb, true);

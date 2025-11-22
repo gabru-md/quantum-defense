@@ -19,7 +19,7 @@ export class QuantumFissure extends Phaser.GameObjects.Zone {
     }
 
     update() {
-        this.scene.physics.overlap(this, this.enemies, (fissure, enemy) => {
+        this.scene.physics.overlap(this, this.enemies, (_fissure, enemy) => {
             (enemy as Enemy).takeDamage(this.fissureDamage);
         });
     }

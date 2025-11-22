@@ -497,17 +497,16 @@ export class HudManager extends Manager {
         for (const key in this.towerSelectionButtons) {
             const config = TowerConfigs[key];
             const { button, panel, textObjects } = this.towerSelectionButtons[key];
+            const isUpgraded = this.scene.towerManager.isTowerUpgraded(key);
 
-            // Update texture if upgraded
-            if (key === 'tower1' && this.scene.state.tower1Upgraded) {
-                button.setTexture(config.upgradedTexture);
-            } else if (key === 'tower2' && this.scene.state.tower2Upgraded) {
-                button.setTexture(config.upgradedTexture);
-            } else if (key === 'tower3' && this.scene.state.tower3Upgraded) {
-                button.setTexture(config.upgradedTexture);
-            }
-
+            const name = isUpgraded ? config.upgradedName : config.name;
             const energyCost = this.scene.towerManager.getTowerEnergyCost(key);
+            const texture = isUpgraded ? config.upgradedTexture : config.texture;
+
+            button.setTexture(texture);
+            textObjects[0].setText(name);
+            textObjects[1].setText(`Energy: ${energyCost}`);
+
             if (this.scene.state.energy < energyCost) {
                 button.setAlpha(0.5);
                 panel.setAlpha(0.5);
