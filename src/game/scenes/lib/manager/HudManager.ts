@@ -474,22 +474,22 @@ export class HudManager extends Manager {
     }
 
     private updateUpgradeProgress() {
-        if (this.scene.state.tower1Upgraded) {
+        if (this.scene.playerManager.tower1Upgraded) {
             this.tower1UpgradeText.setText('Upgraded!');
         } else {
-            this.tower1UpgradeText.setText(`${this.scene.state.tower1UpgradeProgress}/${TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT}`);
+            this.tower1UpgradeText.setText(`${this.scene.playerManager.tower1UpgradeProgress}/${TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT}`);
         }
 
-        if (this.scene.state.tower2Upgraded) {
+        if (this.scene.playerManager.tower2Upgraded) {
             this.tower2UpgradeText.setText('Upgraded!');
         } else {
-            this.tower2UpgradeText.setText(`${this.scene.state.tower2UpgradeProgress}/${TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT}`);
+            this.tower2UpgradeText.setText(`${this.scene.playerManager.tower2UpgradeProgress}/${TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT}`);
         }
 
-        if (this.scene.state.tower3Upgraded) {
+        if (this.scene.playerManager.tower3Upgraded) {
             this.tower3UpgradeText.setText('Upgraded!');
         } else {
-            this.tower3UpgradeText.setText(`${this.scene.state.tower3UpgradeProgress}/${TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT}`);
+            this.tower3UpgradeText.setText(`${this.scene.playerManager.tower3UpgradeProgress}/${TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT}`);
         }
     }
 

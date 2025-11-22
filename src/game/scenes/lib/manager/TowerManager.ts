@@ -156,7 +156,7 @@ export class TowerManager extends Manager {
         }
     }
 
-    private isTowerUpgraded(towerType: string): boolean {
+    isTowerUpgraded(towerType: string): boolean {
         if (towerType === 'tower1') return this.level.state.tower1Upgraded;
         if (towerType === 'tower2') return this.level.state.tower2Upgraded;
         if (towerType === 'tower3') return this.level.state.tower3Upgraded;
