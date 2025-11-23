@@ -1,15 +1,12 @@
 import {GameObject} from '../core/GameObject.ts';
 import * as Phaser from 'phaser';
+import {Hoverable} from "../components/Hoverable.ts";
 
 export class QuantumEcho extends GameObject {
     public color: number;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, color?: number) {
+    constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, 'quantum_echo_texture');
-        if(color) {
-            this.color = color;
-            this.setTint(this.color);
-        }
         this.setScale(Phaser.Math.FloatBetween(0.5, 1));
         this.setBlendMode(Phaser.BlendModes.ADD);
 
@@ -18,11 +15,12 @@ export class QuantumEcho extends GameObject {
         body.setCircle(12); // Small circular body for collection
         body.setAllowGravity(false); // Ensure it doesn't fall
         scene.add.existing(this);
+        this.setAlpha(0.85);
 
         // // Drift away and fade out over time
         const driftDuration = Phaser.Math.Between(5000, 8000);
         const driftAngle = Phaser.Math.FloatBetween(0, Math.PI * 2);
-        const driftDistance = Phaser.Math.Between(30, 100);
+        const driftDistance = Phaser.Math.Between(50, 300);
 
         scene.tweens.add({
             targets: this,
@@ -35,5 +33,7 @@ export class QuantumEcho extends GameObject {
                 this.destroy();
             },
         });
+
+        this.addComponentOverriding(new Hoverable('Quantum Echoes'))
     }
 }

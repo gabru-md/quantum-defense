@@ -195,6 +195,8 @@ export class ResonanceWave extends Component {
         }
 
         // Damage special enemies within range (for other levels)
+
+        this.specialEnemiesGroup = this.gameObject.level.waveManager.specialEnemies;
         // @ts-ignore
         this.specialEnemiesGroup.children.each((specialEnemyObject: Phaser.GameObjects.GameObject) => {
             if (specialEnemyObject instanceof SpecialEnemy) {

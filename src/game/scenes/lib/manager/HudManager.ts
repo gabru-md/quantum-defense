@@ -14,8 +14,6 @@ import Graphics = Phaser.GameObjects.Graphics;
 export class HudManager extends Manager {
     protected gameName!: Phaser.GameObjects.Text;
     protected levelText!: Phaser.GameObjects.Text;
-    protected baseHealthText!: Phaser.GameObjects.Text;
-    protected energyText!: Phaser.GameObjects.Text;
     protected waveNumberText!: Phaser.GameObjects.Text;
     protected waveProgressText!: Phaser.GameObjects.Text;
     protected messageText!: Phaser.GameObjects.Text;
@@ -46,6 +44,15 @@ export class HudManager extends Manager {
     private tower1UpgradeText!: Phaser.GameObjects.Text;
     private tower2UpgradeText!: Phaser.GameObjects.Text;
     private tower3UpgradeText!: Phaser.GameObjects.Text;
+
+    private healthBar!: Phaser.GameObjects.Graphics;
+    private energyBar!: Phaser.GameObjects.Graphics;
+    private healthBarText!: Phaser.GameObjects.Text;
+    private energyBarText!: Phaser.GameObjects.Text;
+    private maxHealth!: number;
+    private maxEnergy!: number;
+    private healthBarBg!: Phaser.GameObjects.Graphics;
+    private energyBarBg!: Phaser.GameObjects.Graphics;
 
     constructor(public scene: Level) {
         super(scene);
@@ -84,8 +91,12 @@ export class HudManager extends Manager {
     destroy(): void {
         this.gameName.destroy();
         this.levelText.destroy();
-        this.baseHealthText.destroy();
-        this.energyText.destroy();
+        this.healthBar.destroy();
+        this.energyBar.destroy();
+        this.healthBarText.destroy();
+        this.energyBarText.destroy();
+        this.healthBarBg.destroy();
+        this.energyBarBg.destroy();
         this.waveNumberText.destroy();
         this.waveProgressText.destroy();
         this.messageText.destroy();
@@ -239,7 +250,9 @@ export class HudManager extends Manager {
 
         let currentY = startY + 10;
         const textX = hudX + 15;
-        const textSpacing = 25;
+        const barX = textX + 80;
+        const barWidth = panelWidth - 100;
+        const textSpacing = 30;
 
         this.gameName = this.scene.add.text(textX, currentY, 'QUANTUM DEFENSE', {
             font: '28px',
@@ -253,30 +266,36 @@ export class HudManager extends Manager {
         }).setDepth(100).setName('levelText');
         currentY += textSpacing;
 
-        this.baseHealthText = this.scene.add.text(textX, currentY, `Health: ${this.scene.state.baseHealth}`, {
-            font: '20px',
-            color: AppColors.UI_TEXT
-        }).setDepth(100).setName('baseHealthText');
+        // Health Bar
+        this.maxHealth = this.scene.state.baseHealth;
+        this.healthBarText = this.scene.add.text(textX, currentY, 'Health', { font: '20px', color: AppColors.UI_TEXT }).setDepth(100);
+        this.healthBarBg = this.scene.add.graphics({ x: barX, y: currentY });
+        this.healthBarBg.fillStyle(phaserColor(AppColors.UI_DISABLED), 0.5);
+        this.healthBarBg.fillRect(0, 0, barWidth, 15);
+        this.healthBar = this.scene.add.graphics({ x: barX, y: currentY }).setDepth(100);
         currentY += textSpacing;
 
-        this.energyText = this.scene.add.text(textX, currentY, `Energy: ${this.scene.state.energy}`, {
-            font: '20px',
-            color: AppColors.UI_TEXT
-        }).setDepth(100).setName('energyText');
+        // Energy Bar
+        this.maxEnergy = this.scene.state.maxEnergy;
+        this.energyBarText = this.scene.add.text(textX, currentY, 'Energy', { font: '20px', color: AppColors.UI_TEXT }).setDepth(100);
+        this.energyBarBg = this.scene.add.graphics({ x: barX, y: currentY });
+        this.energyBarBg.fillStyle(phaserColor(AppColors.UI_DISABLED), 0.5);
+        this.energyBarBg.fillRect(0, 0, barWidth, 15);
+        this.energyBar = this.scene.add.graphics({ x: barX, y: currentY }).setDepth(100);
         currentY += textSpacing;
 
         this.waveNumberText = this.scene.add.text(textX, currentY, `Wave: ${this.scene.waveManager.currentWave}/${this.scene.waveManager.totalWaves}`, {
             font: '20px',
-            color: AppColors.UI_TEXT
+            color: AppColors.SPECIAL_ENEMY
         }).setDepth(100).setName('waveNumberText');
-        currentY += textSpacing;
+        // currentY += textSpacing;
 
-        this.waveProgressText = this.scene.add.text(textX, currentY, `Enemies: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`, {
+        this.waveProgressText = this.scene.add.text(textX + 150, currentY, `Enemies: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`, {
             font: '20px',
-            color: AppColors.UI_TEXT
+            color: AppColors.SPECIAL_ENEMY
         }).setDepth(100).setName('waveProgressText');
 
-        return [panel, this.gameName, this.levelText, this.baseHealthText, this.energyText, this.waveNumberText, this.waveProgressText];
+        return [panel, this.gameName, this.levelText, this.healthBarText, this.healthBarBg, this.healthBar, this.energyBarText, this.energyBarBg, this.energyBar, this.waveNumberText, this.waveProgressText];
     }
 
     private createTowerSelectionPanel(): Phaser.GameObjects.GameObject[] {
@@ -467,8 +486,18 @@ export class HudManager extends Manager {
 
     private updateMainStats() {
         this.levelText.setText(`Level: ${this.getLevelName()}`);
-        this.baseHealthText.setText(`Health: ${this.scene.state.baseHealth}`);
-        this.energyText.setText(`Energy: ${this.scene.state.energy}`);
+
+        const healthPercentage = Math.max(0, this.scene.state.baseHealth / this.maxHealth);
+        const fullBarWidth = (WIDTH - GAME_WIDTH - 30) - 100;
+        this.healthBar.clear();
+        this.healthBar.fillStyle(phaserColor(AppColors.UI_MESSAGE_ERROR));
+        this.healthBar.fillRect(0, 0, fullBarWidth * healthPercentage, 20);
+
+        const energyPercentage = this.scene.state.energy / this.maxEnergy;
+        this.energyBar.clear();
+        this.energyBar.fillStyle(phaserColor(AppColors.PLAYER)); // Electric Blue
+        this.energyBar.fillRect(0, 0, fullBarWidth * energyPercentage, 20);
+
         this.waveNumberText.setText(`Wave: ${this.scene.waveManager.currentWave}/${this.scene.waveManager.totalWaves}`);
         this.waveProgressText.setText(`Enemies: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`);
     }

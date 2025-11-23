@@ -4,6 +4,7 @@ export class State {
     public soundEnabled: boolean = true; // Sound enabled by default
     public musicVolume: number = 1;
     public sfxVolume: number = 1;
+    public maxEnergy: number = 2000;
 
     constructor(
         public baseHealth: number,

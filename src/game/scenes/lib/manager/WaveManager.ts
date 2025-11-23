@@ -128,6 +128,9 @@ export class WaveManager extends Manager {
 
     protected handleEnemyDied(energyValue: number): void { // Renamed moneyValue to energyValue
         this.level.state.energy += energyValue; // Updated state.money to state.energy
+        if(this.level.state.energy > this.level.state.maxEnergy) {
+            this.level.state.energy = this.level.state.maxEnergy;
+        }
         this.enemiesRemaining--;
         this.level.hud.update();
         this.checkWaveCompletion();
@@ -135,6 +138,9 @@ export class WaveManager extends Manager {
 
     protected handleSpecialEnemyKilledByPlayer(energyValue: number): void { // Renamed moneyValue to energyValue
         this.level.state.energy += energyValue; // Updated state.money to state.energy
+        if(this.level.state.energy > this.level.state.maxEnergy) {
+            this.level.state.energy = this.level.state.maxEnergy;
+        }
         this.enemiesRemaining--;
         this.level.hud.update();
         this.checkWaveCompletion();
