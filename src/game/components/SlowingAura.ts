@@ -8,7 +8,7 @@ import {Tower} from "../entities/Tower.ts";
 export class SlowingAura extends Component {
     private range: number;
     private slowFactor: number;
-    private affectedEnemies: Set<PathFollower> = new Set();
+    private affectedEnemies: Set<Enemy> = new Set();
 
     constructor(range: number, slowFactor: number) {
         super();
@@ -22,47 +22,56 @@ export class SlowingAura extends Component {
             ...currentScene.waveManager.enemies.getChildren(),
             ...currentScene.waveManager.specialEnemies.getChildren(),
         ];
-        const newlyAffected: Set<PathFollower> = new Set();
+        const newlyAffected: Set<Enemy> = new Set();
 
-        let tower = this.gameObject as Tower;
         for (const enemy of allEnemies as Enemy[]) {
             if (!enemy.active) continue;
 
             const distance = Phaser.Math.Distance.Between(this.gameObject.x, this.gameObject.y, enemy.x, enemy.y);
 
-            const pathFollower = enemy.getComponent(PathFollower);
-            if (!pathFollower) continue;
-
             if (distance <= this.range) {
-                // Enemy is in range, apply slow
-                if (!tower.isSoundPlaying) {
-                    tower.isSoundPlaying = true;
-                    console.log('playing slow sound')
-                    tower.level.audioManager.playSound('ShootSlowTower', {
-                        volume: 1, onComplete: () => {
-                            tower.isSoundPlaying = false;
-                        }
-                    });
+                if (!this.affectedEnemies.has(enemy)) {
+                    this.applyEffect(enemy);
                 }
-                pathFollower.applySpeedModifier(this.slowFactor, this.gameObject.id);
-                newlyAffected.add(pathFollower);
+                newlyAffected.add(enemy);
             }
         }
 
-        // Remove slow effect from enemies that are no longer in range
-        this.affectedEnemies.forEach((follower) => {
-            if (!newlyAffected.has(follower)) {
-                follower.removeSpeedModifier(this.gameObject.id);
+        this.affectedEnemies.forEach((enemy) => {
+            if (!newlyAffected.has(enemy)) {
+                this.removeEffect(enemy);
             }
         });
 
         this.affectedEnemies = newlyAffected;
     }
 
+    protected applyEffect(enemy: Enemy): void {
+        const pathFollower = enemy.getComponent(PathFollower);
+        if (pathFollower) {
+            pathFollower.applySpeedModifier(this.slowFactor, this.gameObject.id);
+            const tower = this.gameObject as Tower;
+            if (!tower.isSoundPlaying) {
+                tower.isSoundPlaying = true;
+                tower.level.audioManager.playSound('ShootSlowTower', {
+                    volume: 1, onComplete: () => {
+                        tower.isSoundPlaying = false;
+                    }
+                });
+            }
+        }
+    }
+
+    protected removeEffect(enemy: Enemy): void {
+        const pathFollower = enemy.getComponent(PathFollower);
+        if (pathFollower) {
+            pathFollower.removeSpeedModifier(this.gameObject.id);
+        }
+    }
+
     destroy(): void {
-        // When the tower is destroyed, remove its slow effect from all affected enemies
-        this.affectedEnemies.forEach((follower) => {
-            follower.removeSpeedModifier(this.gameObject.id);
+        this.affectedEnemies.forEach((enemy) => {
+            this.removeEffect(enemy);
         });
         this.affectedEnemies.clear();
     }
