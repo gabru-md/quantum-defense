@@ -67,8 +67,8 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         this.steps = this.getStoryConfig().steps;
         this.audioManager.setup();
         // Preload common textures for all story scenes
-        createPlayerTexture(this, 'nexus', 128, AppColors.NEXUS_OUTER);
-        createPlayerTexture(this, 'static', 128, AppColors.STATIC_OUTER);
+        createPlayerTexture(this, 'nexus', 65, AppColors.NEXUS_OUTER);
+        createPlayerTexture(this, 'static', 25, AppColors.STATIC_INNER);
         createPlayerTexture(this, 'player', 24, AppColors.PLAYER);
         createEnemyTexture(this, 'enemy1', 32, AppColors.ENEMY_NORMAL);
         createEnemyTexture(this, 'enemy2', 32, AppColors.ENEMY_FAST);

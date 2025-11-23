@@ -322,7 +322,8 @@ export abstract class Level extends Phaser.Scene {
         createPlaceholderTexture(this, 'towerSlot', 32, 32, AppColors.UI_DISABLED);
         createRangePreviewTexture(this, 'rangePreview', 300, 'rgba(255, 255, 255, 0.05)');
         createPlayerTexture(this, 'genie_texture', 3, AppColors.PLAYER);
+        createPlayerTexture(this, 'static_genie_texture', 3, AppColors.SPECIAL_ENEMY); // Placeholder color
         createQuantumEchoTexture(this, 'quantum_echo_texture', 24);
-        createPlayerTexture(this, 'static', 128, AppColors.STATIC_OUTER);
+        createPlayerTexture(this, 'static', 25, AppColors.STATIC_INNER);
     }
 }

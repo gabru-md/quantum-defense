@@ -3,9 +3,10 @@ import {CircularMovement} from '../components/CircularMovement.ts';
 import {PlayerConfig} from '../config/PlayerConfig.ts';
 
 export class Genie extends GameObject {
+    parentObject: GameObject;
     constructor(scene: Phaser.Scene, player: GameObject, texture: string = 'genie_texture') {
         super(scene, player.x, player.y, texture);
-
+        this.parentObject = player;
         this.addComponent(
             new CircularMovement(
                 player,

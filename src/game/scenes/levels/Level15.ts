@@ -32,7 +32,7 @@ export class Gameplay_TheCore extends Level {
             texture: 'static', // Use a specific texture for the core (assuming 'static' is loaded)
             health: 5000, // Very high health for the boss
             name: "Static's Core"
-        });
+        }).setScale(2, 2);
         this.add.existing(this.staticCore);
 
         // Listen for core destruction to trigger win condition

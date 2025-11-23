@@ -88,8 +88,9 @@ export class ChapterSelectScene extends Phaser.Scene {
             const isUnlocked = index <= lastCompletedStoryIndex + 1; // Unlock current + next chapter
 
             const chapterButton = new TextButton(this, 0, yOffset, `${index + 1}. ${displayName}`, () => {
+                this.scene.start(storyLevelName);
                 if (isUnlocked) {
-                    this.scene.start(storyLevelName);
+                    //
                 } else {
                     // chapter is locked
                     // this.scene.start(storyLevelName);
@@ -98,7 +99,7 @@ export class ChapterSelectScene extends Phaser.Scene {
             });
 
             if (!isUnlocked) {
-                chapterButton.setAlpha(0.5).disableInteractive();
+                // chapterButton.setAlpha(0.5).disableInteractive();
                 chapterButton.setColor(AppColors.UI_DISABLED);
             }
 
