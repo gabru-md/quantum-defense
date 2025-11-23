@@ -31,7 +31,7 @@ export class Story_VolatileInterference extends BaseStoryScene {
                 {
                     text: 'Genie: Our towers are malfunctioning near the active rift! But... wait. My sensors are picking up something else. The rift\'s chaotic energy is condensing into fragments... "Quantum Echoes." They are unstable, but potent.',
                     action: scene => {
-                        const quantumEcho = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 100, 'quantum_echo_texture').setAlpha(0.8);
+                        const quantumEcho = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 100, 'quantum_echo_texture').setAlpha(0.8).setScale(1.25);
                         scene.add.existing(quantumEcho);
                         scene.animateIn(quantumEcho);
                         this.onHover(quantumEcho, "Quantum Echo");

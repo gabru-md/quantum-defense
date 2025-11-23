@@ -35,13 +35,13 @@ export class Story_TheFinalAssault extends BaseStoryScene {
                             yoyo: true,
                             repeat: -1,
                         });
-                        const enemy1 = new GameObject(scene, WIDTH / 2 - 75, HEIGHT / 2 + 100, EnemyConfigs.enemy1.texture).setScale(0.1);
+                        const enemy1 = new GameObject(scene, WIDTH / 2 - 75, HEIGHT / 2 + 100, EnemyConfigs.enemy1.texture);
                         scene.add.existing(enemy1);
                         this.onHover(enemy1, EnemyConfigs.enemy1.name);
-                        const enemy2 = new GameObject(scene, WIDTH / 2 - 25, HEIGHT / 2 + 100, EnemyConfigs.enemy2.texture).setScale(0.1);
+                        const enemy2 = new GameObject(scene, WIDTH / 2 - 25, HEIGHT / 2 + 100, EnemyConfigs.enemy2.texture);
                         scene.add.existing(enemy2);
                         this.onHover(enemy2, EnemyConfigs.enemy2.name);
-                        const enemy3 = new GameObject(scene, WIDTH / 2 + 25, HEIGHT / 2 + 100, EnemyConfigs.enemy3.texture).setScale(0.1);
+                        const enemy3 = new GameObject(scene, WIDTH / 2 + 25, HEIGHT / 2 + 100, EnemyConfigs.enemy3.texture);
                         scene.add.existing(enemy3);
                         this.onHover(enemy3, EnemyConfigs.enemy3.name);
                         [enemy1, enemy2, enemy3].forEach(t => scene.animateIn(t));

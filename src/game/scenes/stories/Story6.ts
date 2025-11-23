@@ -41,7 +41,7 @@ export class Story_StaticNewGlitches extends BaseStoryScene {
                 {
                     text: 'Genie: My scans indicate it\'s slower, but incredibly durable. A "Brute."',
                     action: scene => {
-                        const brute = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 150, EnemyConfigs.enemy3.texture).setScale(0.1);
+                        const brute = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 150, EnemyConfigs.enemy3.texture);
                         scene.add.existing(brute);
                         this.onHover(brute, EnemyConfigs.enemy3.name);
                         scene.animateIn(brute);

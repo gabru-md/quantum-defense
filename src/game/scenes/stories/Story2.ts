@@ -37,11 +37,11 @@ export class Story_TheFirstStand extends BaseStoryScene {
                 {
                     text: 'Genie: You must defend the Nexus! Your energy can manifest defensive towers. Do not let them through!',
                     action: scene => {
-                        const enemy1 = new GameObject(scene, WIDTH / 2 - 100, HEIGHT / 2 + 250, 'enemy1').setScale(0.1);
+                        const enemy1 = new GameObject(scene, WIDTH / 2 - 100, HEIGHT / 2 + 250, 'enemy1');
                         scene.add.existing(enemy1);
                         this.onHover(enemy1, "Stutters");
 
-                        const enemy2 = new GameObject(scene, WIDTH / 2 + 100, HEIGHT / 2 + 250, 'enemy2').setScale(0.1);
+                        const enemy2 = new GameObject(scene, WIDTH / 2 + 100, HEIGHT / 2 + 250, 'enemy2');
                         scene.add.existing(enemy2);
                         this.onHover(enemy2, "Surges");
 
@@ -55,7 +55,7 @@ export class Story_TheFirstStand extends BaseStoryScene {
                         let towers: any = [];
                         let xPadding = -100;
                         for (let tower of [TowerConfigs.tower1, TowerConfigs.tower2]) { // Only show basic towers
-                            const towerSprite = new GameObject(scene, WIDTH / 2 + xPadding, HEIGHT / 2 + 200, tower.texture).setScale(0.1).setAlpha(0.8);
+                            const towerSprite = new GameObject(scene, WIDTH / 2 + xPadding, HEIGHT / 2 + 200, tower.texture).setAlpha(0.8);
                             scene.add.existing(towerSprite);
                             scene.animateIn(towerSprite);
                             towers.push(towerSprite);

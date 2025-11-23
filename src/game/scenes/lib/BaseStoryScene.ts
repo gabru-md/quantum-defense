@@ -247,13 +247,13 @@ export abstract class BaseStoryScene extends Phaser.Scene {
             const step = this.steps[this.currentStep];
 
             // Create instruction text with alpha 0 and empty text (temporary, not added to storyElements)
-            this.instructionText = this.add.text(WIDTH / 2, HEIGHT / 2, '', {
+            this.instructionText = this.add.text(50, HEIGHT / 2, '', {
                 font: '32px',
                 color: AppColors.UI_TEXT,
                 padding: {x: 20, y: 10},
-                align: 'center',
+                align: 'left',
                 wordWrap: {width: WIDTH - 100}
-            }).setOrigin(0.5).setDepth(200).setAlpha(0);
+            }).setOrigin(0, 0.5).setDepth(200).setAlpha(0);
 
             // Hide continue text while typing
             this.continueText.setAlpha(0);

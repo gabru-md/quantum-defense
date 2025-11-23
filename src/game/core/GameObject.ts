@@ -58,7 +58,9 @@ export class GameObject extends Phaser.GameObjects.Sprite {
      * @param component The component to delete.
      */
     public deleteComponent(component: Component): void {
-        const index = this.components.indexOf(component);
+        const existingComponent = this.components.find((c) => c instanceof component.constructor);
+        if (!existingComponent) return;
+        const index = this.components.indexOf(existingComponent);
         if (index !== -1) {
             this.components.splice(index, 1);
         }
@@ -88,5 +90,12 @@ export class GameObject extends Phaser.GameObjects.Sprite {
 
     setVisible(value: boolean): this {
         return super.setVisible(value);
+    }
+
+    public disableComponent(componentType: new (...args: any[]) => Component) {
+        const component = this.getComponent(componentType);
+        if (component) {
+            component.enabled = false;
+        }
     }
 }

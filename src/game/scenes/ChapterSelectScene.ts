@@ -92,13 +92,13 @@ export class ChapterSelectScene extends Phaser.Scene {
                     this.scene.start(storyLevelName);
                 } else {
                     // chapter is locked
-                    this.scene.start(storyLevelName);
+                    // this.scene.start(storyLevelName);
                     // this.scene.get('MainMenu').hud.alert('Chapter Locked!', AppColors.UI_MESSAGE_WARN, 1000); // Assuming MainMenu has a hud
                 }
             });
 
             if (!isUnlocked) {
-                // chapterButton.setAlpha(0.5).disableInteractive();
+                chapterButton.setAlpha(0.5).disableInteractive();
                 chapterButton.setColor(AppColors.UI_DISABLED);
             }
 

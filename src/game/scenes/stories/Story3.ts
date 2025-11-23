@@ -35,8 +35,8 @@ export class Story_TheDormantScars extends BaseStoryScene {
                 {
                     text: 'Genie: These dormant fields are too unstable to build on. Their residual energy disrupts construction. We\'ll have to work around them.',
                     action: scene => {
-                        const dormantRift1 = drawRift(scene, WIDTH / 4, HEIGHT / 2, phaserColor(AppColors.UI_DISABLED));
-                        const dormantRift2 = drawRift(scene, WIDTH * 3 / 4, HEIGHT / 2, phaserColor(AppColors.UI_DISABLED));
+                        const dormantRift1 = drawRift(scene, WIDTH / 4, HEIGHT / 4, phaserColor(AppColors.UI_DISABLED));
+                        const dormantRift2 = drawRift(scene, WIDTH * 3 / 4, HEIGHT * 3 / 4, phaserColor(AppColors.UI_DISABLED));
                         return [...dormantRift1, ...dormantRift2];
                     },
                 },

@@ -29,7 +29,7 @@ export class Story_DesigningTheBane extends BaseStoryScene {
                 {
                     text: 'Genie: It\'s a resonance cannon that should be able to lock onto the Phantom\'s unique frequency. The Phantom Killer tower!',
                     action: scene => {
-                        const phantomKiller = new GameObject(scene, WIDTH / 2, HEIGHT / 2, TowerConfigs.specialTower.texture).setScale(0.1);
+                        const phantomKiller = new GameObject(scene, WIDTH / 2, HEIGHT / 2, TowerConfigs.specialTower.texture);
                         scene.add.existing(phantomKiller);
                         this.onHover(phantomKiller, TowerConfigs.specialTower.name);
                         scene.animateIn(phantomKiller);

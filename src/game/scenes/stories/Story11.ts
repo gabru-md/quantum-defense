@@ -43,7 +43,7 @@ export class Story_TheResonanceWave extends BaseStoryScene {
                 {
                     text: 'Genie: It\'s invulnerable to Phantom Killer towers. They were for its extensions, not the source!',
                     action: scene => {
-                        const phantomKiller = new GameObject(scene, WIDTH / 2, HEIGHT * 3 / 4 - 100, 'specialTower').setScale(0.1);
+                        const phantomKiller = new GameObject(scene, WIDTH / 2, HEIGHT * 3 / 4 - 100, 'specialTower');
                         scene.add.existing(phantomKiller);
                         this.onHover(phantomKiller, TowerConfigs.specialTower.name);
                         scene.animateIn(phantomKiller);
