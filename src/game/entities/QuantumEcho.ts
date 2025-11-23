@@ -4,10 +4,12 @@ import * as Phaser from 'phaser';
 export class QuantumEcho extends GameObject {
     public color: number;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, color: number) {
+    constructor(scene: Phaser.Scene, x: number, y: number, color?: number) {
         super(scene, x, y, 'quantum_echo_texture');
-        this.color = color;
-        this.setTint(this.color);
+        if(color) {
+            this.color = color;
+            this.setTint(this.color);
+        }
         this.setScale(Phaser.Math.FloatBetween(0.5, 1));
         this.setBlendMode(Phaser.BlendModes.ADD);
 

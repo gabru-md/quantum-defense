@@ -22,6 +22,15 @@ export class PathsManager extends Manager {
         end: Phaser.GameObjects.Graphics[];
     } {
         this.paths = this.level.definePaths();
+        this.pathGraphics = [];
+        this.startZoneGraphics = [];
+        this.endZoneGraphics = [];
+
+        if (!this.paths) return ({
+            path: this.pathGraphics,
+            start: this.startZoneGraphics,
+            end: this.endZoneGraphics,
+        });
 
         for (const pathsKey in this.paths) {
             const pathGraphic = this.level.add.graphics();

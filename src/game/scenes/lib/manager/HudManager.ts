@@ -220,7 +220,7 @@ export class HudManager extends Manager {
 
     private createHudBackground(): Phaser.GameObjects.Graphics {
         const panel = this.scene.add.graphics();
-        panel.fillStyle(phaserColor(AppColors.GAME_BACKGROUND));
+        panel.fillStyle(phaserColor(AppColors.HUD_BACKGROUND));
         panel.fillRect(GAME_WIDTH, 0, WIDTH - GAME_WIDTH, GAME_HEIGHT);
         panel.setDepth(80);
         return panel;

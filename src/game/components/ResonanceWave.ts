@@ -1,3 +1,4 @@
+// src/game/components/ResonanceWave.ts
 import { Component } from '../core/Component';
 import * as Phaser from 'phaser';
 import { FindNearestTower } from './FindNearestTower.ts';
@@ -9,6 +10,8 @@ import { createWaveEffect } from '../utils/WaveEffectHelper.ts';
 import { getResonanceWaveConfig } from '../config/WaveConfig.ts';
 import { PlayerConfig } from '../config/PlayerConfig.ts';
 import {Player} from "../entities/Player.ts";
+import { StaticEnemy } from '../entities/StaticEnemy.ts';
+import { LevelNames } from '../scenes/lib/LevelNames.ts'; // Import LevelNames
 
 /**
  * A component that allows the player to activate a wave to revive deactivated towers or damage special enemies.
@@ -58,23 +61,30 @@ export class ResonanceWave extends Component {
                 return;
             }
 
-            // Check for base activation energy
-            if (this.gameObject.level.state.energy < this.baseActivationEnergy) {
-                console.log(`[ResonanceWave] Insufficient energy. Current: ${this.gameObject.level.state.energy}, Needed: ${this.baseActivationEnergy}`);
-                (this.gameObject as Player).warn(`Need ${this.baseActivationEnergy} energy to activate Resonance Wave!`);
-                this.gameObject.level.hud.alert(
-                    `INSUFFICIENT ENERGY:\nNeed ${this.baseActivationEnergy} energy to activate Resonance Wave!`,
-                    AppColors.UI_MESSAGE_WARN,
-                    1000
-                );
-                return;
-            }
+            // --- START MODIFICATION ---
+            // Bypass energy cost check for the final boss level
+            const isFinalBossLevel = this.gameObject.level.scene.key === LevelNames.Gameplay_TheCore;
+            if (!isFinalBossLevel) {
+                // Check for base activation energy
+                if (this.gameObject.level.state.energy < this.baseActivationEnergy) {
+                    console.log(`[ResonanceWave] Insufficient energy. Current: ${this.gameObject.level.state.energy}, Needed: ${this.baseActivationEnergy}`);
+                    (this.gameObject as Player).warn(`Need ${this.baseActivationEnergy} energy to activate Resonance Wave!`);
+                    this.gameObject.level.hud.alert(
+                        `INSUFFICIENT ENERGY:\nNeed ${this.baseActivationEnergy} energy to activate Resonance Wave!`,
+                        AppColors.UI_MESSAGE_WARN,
+                        1000
+                    );
+                    return;
+                }
 
-            // Deduct base activation energy
-            this.gameObject.level.state.energy -= this.baseActivationEnergy;
-            this.gameObject.level.hud.update();
+                // Deduct base activation energy only if not in final boss level
+                this.gameObject.level.state.energy -= this.baseActivationEnergy;
+                this.gameObject.level.hud.update();
+            }
+            // --- END MODIFICATION ---
+
             this.lastActivated = time; // Set lastActivated here after energy check
-            console.log(`[ResonanceWave] Activated. Energy deducted: ${this.baseActivationEnergy}, New energy: ${this.gameObject.level.state.energy}`);
+            console.log(`[ResonanceWave] Activated. Energy deducted: ${isFinalBossLevel ? 0 : this.baseActivationEnergy}, New energy: ${this.gameObject.level.state.energy}`);
 
 
             if (nearestTower && (nearestTower.isNotFullHealth() || nearestTower.isTowerDeactivated())) {
@@ -123,44 +133,68 @@ export class ResonanceWave extends Component {
         if (tower && (tower.isNotFullHealth() || tower.isTowerDeactivated())) {
             const reviveEnergyCost = tower.energyCost; // This is the additional cost for reviving
             console.log(`[ResonanceWave] Attempting to revive tower. Revive cost: ${reviveEnergyCost}, Current energy: ${this.gameObject.level.state.energy}`);
-            if (this.gameObject.level.state.energy >= reviveEnergyCost) { // Updated state.money to state.energy
-                this.gameObject.level.state.energy -= reviveEnergyCost; // Updated state.money to state.energy
-                this.gameObject.level.hud.update();
-                console.log(`[ResonanceWave] Revive energy deducted. New energy: ${this.gameObject.level.state.energy}`);
-
-
-                tower.scene.physics.world.enable(tower);
-                tower.reviveProgress = (tower.reviveProgress || 0) + 1;
-                const healthComponent = tower.getComponent(Health);
-                if (healthComponent) {
-                    const newAlpha = 0.5 + (tower.reviveProgress / 3) * 0.5;
-                    tower.setAlpha(newAlpha);
-
-                    if (tower.reviveProgress >= 3) {
-                        tower.revive();
-                        this.gameObject.scene.events.emit('towerRevived'); // Emit event for tutorial
-                        console.log(`[ResonanceWave] Tower fully revived: ${tower.texture.key}`);
-                    } else {
-                        console.log(`[ResonanceWave] Tower partially revived. Progress: ${tower.reviveProgress}`);
-                    }
-                }
-            } else {
-                const energyNeededToRevive = reviveEnergyCost - this.gameObject.level.state.energy; // Renamed
+            // --- START MODIFICATION ---
+            // Only deduct revive energy if not in final boss level
+            const isFinalBossLevel = this.gameObject.level.scene.key === LevelNames.Gameplay_TheCore;
+            if (!isFinalBossLevel && this.gameObject.level.state.energy < reviveEnergyCost) {
+                const energyNeededToRevive = reviveEnergyCost - this.gameObject.level.state.energy;
                 (this.gameObject as Player).warn(`Need ${this.gameObject.level.state.energy}/${reviveEnergyCost} energy to fully revive tower!`);
                 this.gameObject.level.hud.alert(
-                    `INSUFFICIENT ENERGY:\nNeed ${energyNeededToRevive} energy to fully revive tower!`, // Updated message
+                    `INSUFFICIENT ENERGY:\nNeed ${energyNeededToRevive} energy to fully revive tower!`,
                     AppColors.UI_MESSAGE_WARN,
                     1000
                 );
                 // If not enough energy for full revive, refund base activation energy
-                this.gameObject.level.state.energy += this.baseActivationEnergy;
+                this.gameObject.level.state.energy += this.baseActivationEnergy; // Refund only if not final boss level
                 this.gameObject.level.hud.update();
                 console.log(`[ResonanceWave] Insufficient energy for full revive. Refunded base activation energy. New energy: ${this.gameObject.level.state.energy}`);
+                return; // Exit if not enough energy for revive
+            }
+            // --- END MODIFICATION ---
+
+            if (!isFinalBossLevel) { // Deduct energy only if not final boss level
+                this.gameObject.level.state.energy -= reviveEnergyCost;
+                this.gameObject.level.hud.update();
+                console.log(`[ResonanceWave] Revive energy deducted. New energy: ${this.gameObject.level.state.energy}`);
+            }
+
+
+            tower.scene.physics.world.enable(tower);
+            tower.reviveProgress = (tower.reviveProgress || 0) + 1;
+            const healthComponent = tower.getComponent(Health);
+            if (healthComponent) {
+                const newAlpha = 0.5 + (tower.reviveProgress / 3) * 0.5;
+                tower.setAlpha(newAlpha);
+
+                if (tower.reviveProgress >= 3) {
+                    tower.revive();
+                    this.gameObject.scene.events.emit('towerRevived'); // Emit event for tutorial
+                    console.log(`[ResonanceWave] Tower fully revived: ${tower.texture.key}`);
+                } else {
+                    console.log(`[ResonanceWave] Tower partially revived. Progress: ${tower.reviveProgress}`);
+                }
             }
         }
 
-        this.specialEnemiesGroup = this.gameObject.level.waveManager.specialEnemies;
-        // Damage special enemies within range
+        // Damage StaticEnemy if present (Level 15 specific)
+        if (this.gameObject.level.scene.key === LevelNames.Gameplay_TheCore) {
+            const core = (this.gameObject.level as any).staticCore; // Access the core directly from the level
+            if (core && core instanceof StaticEnemy) {
+                const distance = Phaser.Math.Distance.Between(
+                    this.gameObject.x,
+                    this.gameObject.y,
+                    core.x,
+                    core.y
+                );
+                if (distance <= this.activationRange) {
+                    console.log(`[ResonanceWave] Applying ${this.waveDamage} damage to Static's Core.`);
+                    core.takeDamage(this.waveDamage);
+                    return; // Core is the primary target in this level
+                }
+            }
+        }
+
+        // Damage special enemies within range (for other levels)
         // @ts-ignore
         this.specialEnemiesGroup.children.each((specialEnemyObject: Phaser.GameObjects.GameObject) => {
             if (specialEnemyObject instanceof SpecialEnemy) {

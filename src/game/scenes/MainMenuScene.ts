@@ -1,65 +1,55 @@
+// src/game/scenes/MainMenuScene.ts
 import Phaser from 'phaser';
-import {LevelNames, STORY_LEVEL_ORDER} from './lib/LevelNames';
-import {WIDTH, HEIGHT} from '../scripts/Util';
-import {AppColors, phaserColor} from '../scripts/Colors';
-import {State} from "./lib/State.ts";
-import {AudioManager} from "./lib/manager/AudioManager.ts";
+import { LevelNames } from './lib/LevelNames';
+import { WIDTH, HEIGHT } from '../scripts/Util';
+import { AppColors, phaserColor } from '../scripts/Colors';
+import { State } from "./lib/State.ts";
+import { AudioManager } from "./lib/manager/AudioManager.ts";
+import { BackgroundEffectsManager } from "../effects/BackgroundEffectsManager.ts";
+import { TextButton } from "../utils/TextButton.ts"
 
 enum MenuSection {
-    Main = 'Menu',
-    Settings = 'Settings',
+    Main = 'Main',
+    Options = 'Options',
 }
 
 export class MainMenuScene extends Phaser.Scene {
-    private soundButton!: Phaser.GameObjects.Text;
-    private sfxVolumeText!: Phaser.GameObjects.Text;
-    private musicVolumeText!: Phaser.GameObjects.Text;
-    private difficultyText!: Phaser.GameObjects.Text;
     private gameState!: State;
-    private currentStoryLevelIndex: number = 0;
-    private storyLevelDisplayText!: Phaser.GameObjects.Text;
-    private sectionUnderlineGraphics!: Phaser.GameObjects.Graphics; // New property for the underline
+    private audioManager: AudioManager;
+    private backgroundEffectsManager: BackgroundEffectsManager;
 
     // Section containers
     private mainSectionContainer!: Phaser.GameObjects.Container;
-    private settingsSectionContainer!: Phaser.GameObjects.Container;
+    private optionsSectionContainer!: Phaser.GameObjects.Container;
 
     // Section navigation buttons
-    private mainSectionButton!: Phaser.GameObjects.Text;
-    private settingsSectionButton!: Phaser.GameObjects.Text;
-    private audioManager: AudioManager;
+    private mainSectionButton!: TextButton;
+    private optionsSectionButton!: TextButton;
+    private sectionUnderlineGraphics!: Phaser.GameObjects.Graphics;
+
+    // Options elements
+    private soundButton!: TextButton;
+    private sfxVolumeText!: Phaser.GameObjects.Text;
+    private musicVolumeText!: Phaser.GameObjects.Text;
+    private difficultyText!: TextButton;
 
     // Constants for layout
     private readonly BORDER_THICKNESS = 8;
     private readonly TITLE_Y_POS = HEIGHT * 0.075;
-    private readonly CONTENT_AREA_START_Y = HEIGHT * 0.30; // Adjusted for title separator
-    private readonly CONTENT_AREA_END_Y = HEIGHT * 0.70;
+    private readonly SECTION_NAV_Y_POS = HEIGHT * 0.20;
+    private readonly CONTENT_AREA_START_Y = HEIGHT * 0.30;
+    private readonly CONTENT_AREA_END_Y = HEIGHT * 0.85;
     private readonly CONTENT_AREA_HEIGHT = this.CONTENT_AREA_END_Y - this.CONTENT_AREA_START_Y;
-    private readonly CONTENT_AREA_X_PADDING = WIDTH * 0.30;
-    private readonly CONTENT_AREA_WIDTH = WIDTH - (2 * this.CONTENT_AREA_X_PADDING);
-    private readonly SECTION_BUTTON_Y_POS = this.CONTENT_AREA_START_Y + 30; // Position for section buttons
+
 
     constructor() {
         super(LevelNames.MainMenu);
         this.audioManager = new AudioManager(this);
+        this.backgroundEffectsManager = new BackgroundEffectsManager(this);
     }
 
     preload() {
-        // Preload any assets specific to the main menu, if any
-        // Preload textures for animated elements
-        this.load.image('enemy1_menu', this.createEnemyTexture('enemy1_menu', 32, AppColors.ENEMY_NORMAL));
-        this.load.image('enemy2_menu', this.createEnemyTexture('enemy2_menu', 32, AppColors.ENEMY_FAST));
-        this.load.image('enemy3_menu', this.createEnemyTexture('enemy3_menu', 32, AppColors.ENEMY_TANK));
-        this.load.image(
-            'special_enemy_menu',
-            this.createEnemyTexture('special_enemy_menu', 32, AppColors.SPECIAL_ENEMY)
-        );
-        this.load.image('tower1_menu', this.createTowerTexture('tower1_menu', 32, AppColors.TOWER_LASER));
-        this.load.image('tower2_menu', this.createTowerTexture('tower2_menu', 32, AppColors.TOWER_BOMB));
-        this.load.image('tower3_menu', this.createTowerTexture('tower3_menu', 32, AppColors.TOWER_SLOW));
-        this.load.image('player_menu', this.createPlayerTexture('player_menu', 24, AppColors.PLAYER));
-
-        this.audioManager.setup()
+        this.audioManager.setup();
     }
 
     init(): void {
@@ -68,167 +58,127 @@ export class MainMenuScene extends Phaser.Scene {
             this.gameState = new State(100, 350, LevelNames.MainMenu);
             this.sys.registry.set('gameState', this.gameState);
         }
-
     }
 
     create() {
-        this.audioManager.playMusic('MainMenuMusic')
+        this.audioManager.playMusic('MainMenuMusic');
         this.cameras.main.setBackgroundColor(AppColors.GAME_BACKGROUND);
 
-        this.createAnimatedGridBackground();
-        this.createVisualElements();
+        // Use dynamic background effect
+        this.backgroundEffectsManager.enableDataStreamEffect(this);
+        this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(this, 1250); // Subtle glitch for menu atmosphere
+        this.backgroundEffectsManager.enableGhostlyClashEffect(this);
+
         this.drawFullScreenBorder();
 
         // --- Title ---
         this.add.text(WIDTH / 2, this.TITLE_Y_POS, 'Quantum Defense', {
-            fontSize: '48px',
+            fontFamily: 'Pixel',
+            fontSize: '64px',
             color: AppColors.UI_ACCENT,
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setDepth(10);
 
         // --- Title Separator ---
         this.add
             .graphics()
             .lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1)
             .beginPath()
-            .moveTo(0, this.TITLE_Y_POS + 40)
-            .lineTo(WIDTH, this.TITLE_Y_POS + 40)
+            .moveTo(0, this.TITLE_Y_POS + 70)
+            .lineTo(WIDTH, this.TITLE_Y_POS + 70)
             .closePath()
-            .stroke();
-
-        // --- Menu Content Panel ---
-        const panelGraphics = this.add.graphics();
-        panelGraphics.fillStyle(phaserColor(AppColors.GAME_BACKGROUND), 0.6); // Semi-transparent background
-        panelGraphics.fillRect(
-            this.CONTENT_AREA_X_PADDING,
-            this.CONTENT_AREA_START_Y,
-            this.CONTENT_AREA_WIDTH,
-            this.CONTENT_AREA_HEIGHT
-        );
-        panelGraphics.lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1); // Thicker border for content
-        panelGraphics.strokeRect(
-            this.CONTENT_AREA_X_PADDING,
-            this.CONTENT_AREA_START_Y,
-            this.CONTENT_AREA_WIDTH,
-            this.CONTENT_AREA_HEIGHT
-        );
+            .stroke()
+            .setDepth(10);
 
         // --- Section Navigation Buttons ---
-        const buttonSpacing = 150;
-        const startX = WIDTH / 2 - buttonSpacing;
+        const sectionButtonX = WIDTH / 2;
+        const sectionButtonY = this.SECTION_NAV_Y_POS;
+        const sectionButtonSpacing = 200;
 
-        this.mainSectionButton = this.createSectionButton(startX, this.SECTION_BUTTON_Y_POS, MenuSection.Main, () => this.showSection(MenuSection.Main));
-        this.settingsSectionButton = this.createSectionButton(startX + 2 * buttonSpacing, this.SECTION_BUTTON_Y_POS, MenuSection.Settings, () => this.showSection(MenuSection.Settings));
+        this.mainSectionButton = new TextButton(this, sectionButtonX - sectionButtonSpacing / 2, sectionButtonY, MenuSection.Main, () => this.showSection(MenuSection.Main));
+        this.add.existing(this.mainSectionButton).setDepth(10);
 
-        this.sectionUnderlineGraphics = this.add.graphics(); // Initialize the underline graphics
+        this.optionsSectionButton = new TextButton(this, sectionButtonX + sectionButtonSpacing / 2, sectionButtonY, MenuSection.Options, () => this.showSection(MenuSection.Options));
+        this.add.existing(this.optionsSectionButton).setDepth(10);
+
+        this.sectionUnderlineGraphics = this.add.graphics().setDepth(10);
 
         // --- Create Section Containers ---
-        this.mainSectionContainer = this.add.container(this.CONTENT_AREA_X_PADDING, this.CONTENT_AREA_START_Y + 70);
-        this.settingsSectionContainer = this.add.container(this.CONTENT_AREA_X_PADDING, this.CONTENT_AREA_START_Y + 70);
+        this.mainSectionContainer = this.add.container(WIDTH / 2, this.CONTENT_AREA_START_Y + this.CONTENT_AREA_HEIGHT / 2);
+        this.optionsSectionContainer = this.add.container(WIDTH / 2, this.CONTENT_AREA_START_Y + this.CONTENT_AREA_HEIGHT / 2);
 
         // Populate Main Menu Section
-        let yOffsetMain = 100;
-
-
-        this.createMenuButton('Introduction', this.CONTENT_AREA_WIDTH / 2, yOffsetMain, () => {
-            this.scene.start(LevelNames.Tutorial);
+        let yOffsetMain = -100; // Relative to container center
+        this.createMenuButton('Play Game', yOffsetMain, () => {
+            this.scene.start('ChapterSelectScene'); // Navigate to new Chapter Select Scene
         }, this.mainSectionContainer);
-        yOffsetMain += 50;
-        // Populate Select Levels Section
-        this.storyLevelDisplayText = this.add.text(this.CONTENT_AREA_WIDTH / 2, yOffsetMain, '', {
-            fontSize: '32px',
-            color: AppColors.UI_TEXT
-        }).setOrigin(0.5);
-        this.mainSectionContainer.add(this.storyLevelDisplayText);
-        // Position buttons relative to the center of the content area, with fixed offsets
-        const buttonOffset = 300; // Adjust this value as needed for spacing
-        this.createMenuButton('<', this.CONTENT_AREA_WIDTH / 2 - buttonOffset, yOffsetMain, () => this.navigateStoryLevel(-1), this.mainSectionContainer);
-        this.createMenuButton('>', this.CONTENT_AREA_WIDTH / 2 + buttonOffset, yOffsetMain, () => this.navigateStoryLevel(1), this.mainSectionContainer);
-
-        yOffsetMain += 50;
-        this.createMenuButton('Watch Full Story', this.CONTENT_AREA_WIDTH / 2, yOffsetMain, () => {
+        yOffsetMain += 60;
+        this.createMenuButton('Watch Full Story', yOffsetMain, () => {
             this.scene.start(LevelNames.FullStoryPlayback);
         }, this.mainSectionContainer);
-        yOffsetMain += 50;
-        this.createMenuButton('Credits', this.CONTENT_AREA_WIDTH / 2, yOffsetMain, () => {
+        yOffsetMain += 60;
+        this.createMenuButton('Credits', yOffsetMain, () => {
             this.scene.start('CreditsScene');
         }, this.mainSectionContainer);
+        yOffsetMain += 60;
+        this.createMenuButton('Exit', yOffsetMain, () => {
+            this.game.destroy(true);
+        }, this.mainSectionContainer);
 
-
-        // Make the displayed level itself clickable
-        this.storyLevelDisplayText.setInteractive({useHandCursor: true});
-        this.storyLevelDisplayText.on('pointerover', () => {
-            this.storyLevelDisplayText.setColor(AppColors.UI_ACCENT);
-        });
-        this.storyLevelDisplayText.on('pointerout', () => {
-            this.storyLevelDisplayText.setColor(AppColors.UI_TEXT);
-        });
-        this.storyLevelDisplayText.on('pointerdown', () => {
-            this.storyLevelDisplayText.setColor(AppColors.PLAYER);
-        });
-        this.storyLevelDisplayText.on('pointerup', () => {
-            this.storyLevelDisplayText.setColor(AppColors.UI_ACCENT);
-            this.scene.start(STORY_LEVEL_ORDER[this.currentStoryLevelIndex]);
-        });
-
-        this.updateStoryLevelDisplay(); // Initial display
-
-        // Populate Settings Section
-        let yOffsetSettings = 75;
+        // Populate Options Section
+        let yOffsetOptions = -100; // Relative to container center
         this.soundButton = this.createMenuButton(
             `Sound: ${this.gameState.soundEnabled ? 'On' : 'Off'}`,
-            this.CONTENT_AREA_WIDTH / 2,
-            yOffsetSettings,
+            yOffsetOptions,
             () => this.toggleSound(),
-            this.settingsSectionContainer
+            this.optionsSectionContainer
         );
-        yOffsetSettings += 50;
+        yOffsetOptions += 60;
 
         // SFX Volume Controls
-        const sfxLabel = this.add.text(this.CONTENT_AREA_WIDTH / 2 - 50, yOffsetSettings, 'SFX Volume:', {
+        const sfxLabel = this.add.text(-100, yOffsetOptions, 'SFX Volume:', {
+            fontFamily: 'Pixel',
             fontSize: '24px',
             color: AppColors.UI_TEXT,
         }).setOrigin(0.5, 0.5);
-        this.settingsSectionContainer.add(sfxLabel);
-
-        this.createMenuButton('-', this.CONTENT_AREA_WIDTH / 2 + 70, yOffsetSettings, () => this.adjustSfxVolume(-0.1), this.settingsSectionContainer);
-        this.sfxVolumeText = this.add.text(this.CONTENT_AREA_WIDTH / 2 + 110, yOffsetSettings, '', {
+        this.optionsSectionContainer.add(sfxLabel);
+        this.createMenuButton('-', yOffsetOptions, () => this.adjustSfxVolume(-0.1), this.optionsSectionContainer).setX(sfxLabel.x + 100);
+        this.sfxVolumeText = this.add.text(sfxLabel.x + 140, yOffsetOptions, '', {
+            fontFamily: 'Pixel',
             fontSize: '24px',
             color: AppColors.UI_TEXT,
         }).setOrigin(0.5, 0.5);
-        this.settingsSectionContainer.add(this.sfxVolumeText);
-        this.createMenuButton('+', this.CONTENT_AREA_WIDTH / 2 + 150, yOffsetSettings, () => this.adjustSfxVolume(0.1), this.settingsSectionContainer);
+        this.optionsSectionContainer.add(this.sfxVolumeText);
+        this.createMenuButton('+', yOffsetOptions, () => this.adjustSfxVolume(0.1), this.optionsSectionContainer).setX(sfxLabel.x + 180);
         this.updateSfxVolumeDisplay();
-        yOffsetSettings += 50;
+        yOffsetOptions += 60;
 
         // Music Volume Controls
-        const musicLabel = this.add.text(this.CONTENT_AREA_WIDTH / 2 - 50, yOffsetSettings, 'Music Volume:', {
+        const musicLabel = this.add.text(-100, yOffsetOptions, 'Music Volume:', {
+            fontFamily: 'Pixel',
             fontSize: '24px',
             color: AppColors.UI_TEXT,
         }).setOrigin(0.5, 0.5);
-        this.settingsSectionContainer.add(musicLabel);
-
-        this.createMenuButton('-', this.CONTENT_AREA_WIDTH / 2 + 70, yOffsetSettings, () => this.adjustMusicVolume(-0.1), this.settingsSectionContainer);
-        this.musicVolumeText = this.add.text(this.CONTENT_AREA_WIDTH / 2 + 110, yOffsetSettings, '', {
+        this.optionsSectionContainer.add(musicLabel);
+        this.createMenuButton('-', yOffsetOptions, () => this.adjustMusicVolume(-0.1), this.optionsSectionContainer).setX(musicLabel.x + 100);
+        this.musicVolumeText = this.add.text(musicLabel.x + 140, yOffsetOptions, '', {
+            fontFamily: 'Pixel',
             fontSize: '24px',
             color: AppColors.UI_TEXT,
         }).setOrigin(0.5, 0.5);
-        this.settingsSectionContainer.add(this.musicVolumeText);
-        this.createMenuButton('+', this.CONTENT_AREA_WIDTH / 2 + 150, yOffsetSettings, () => this.adjustMusicVolume(0.1), this.settingsSectionContainer);
+        this.optionsSectionContainer.add(this.musicVolumeText);
+        this.createMenuButton('+', yOffsetOptions, () => this.adjustMusicVolume(0.1), this.optionsSectionContainer).setX(musicLabel.x + 180);
         this.updateMusicVolumeDisplay();
-        yOffsetSettings += 50;
-
+        yOffsetOptions += 60;
 
         this.difficultyText = this.createMenuButton(
             `Difficulty: ${this.gameState.difficulty.toUpperCase()}`,
-            this.CONTENT_AREA_WIDTH / 2,
-            yOffsetSettings,
+            yOffsetOptions,
             () => this.cycleDifficulty(),
-            this.settingsSectionContainer
+            this.optionsSectionContainer
         );
 
         // Show initial section
         this.showSection(MenuSection.Main);
-
 
         this.events.on('shutdown', this.shutdown, this);
     }
@@ -242,273 +192,45 @@ export class MainMenuScene extends Phaser.Scene {
             WIDTH - this.BORDER_THICKNESS,
             HEIGHT - this.BORDER_THICKNESS
         );
+        border.setDepth(10);
     }
 
-    private createAnimatedGridBackground(): void {
-        const gridGraphics = this.add.graphics({
-            lineStyle: {
-                width: 1,
-                color: phaserColor(AppColors.UI_SEPARATOR),
-                alpha: 0.1,
-            },
-        });
-        const gridSize = 5;
-
-        for (let x = 0; x < WIDTH; x += gridSize) {
-            gridGraphics.lineBetween(x, 0, x, HEIGHT);
-        }
-        for (let y = 0; y < HEIGHT; y += gridSize) {
-            gridGraphics.lineBetween(0, y, WIDTH, y);
-        }
-
-        // Simple scroll animation
-        this.tweens.add({
-            targets: gridGraphics,
-            x: {from: 0, to: -gridSize},
-            y: {from: 0, to: -gridSize},
-            duration: 5000,
-            ease: 'Linear',
-            repeat: -1,
-            yoyo: true,
-        });
-    }
-
-    private createVisualElements() {
-        // --- Animated Game Elements ---
-        const gameAreaLeft = 0;
-        const gameAreaRight = WIDTH;
-        const gameAreaTop = 0;
-        const gameAreaBottom = HEIGHT;
-
-        for (let i = 0; i < 2; i++) {
-            // Randomize coordinates for enemies
-            this.addAnimatedElement(
-                'enemy1_menu',
-                Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50),
-                Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100),
-                0.8,
-                2000
-            );
-            this.addAnimatedElement(
-                'enemy2_menu',
-                Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50),
-                Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100),
-                0.7,
-                1800
-            );
-            this.addAnimatedElement(
-                'enemy3_menu',
-                Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50),
-                Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100),
-                0.9,
-                2200
-            );
-            this.addAnimatedElement(
-                'special_enemy_menu',
-                Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50),
-                Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100),
-                0.85,
-                1900
-            );
-            // Randomize coordinates for towers
-            this.addAnimatedElement(
-                'tower1_menu',
-                Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50),
-                Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100),
-                0.9,
-                1800
-            );
-            this.addAnimatedElement(
-                'tower2_menu',
-                Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50),
-                Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100),
-                0.8,
-                2100
-            );
-            this.addAnimatedElement(
-                'tower3_menu',
-                Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50),
-                Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100),
-                0.75,
-                1700
-            );
-            // Player
-            this.addAnimatedElement(
-                'player_menu',
-                Phaser.Math.Between(gameAreaLeft + 50, gameAreaRight - 50),
-                Phaser.Math.Between(gameAreaTop + 200, gameAreaBottom - 100),
-                0.7,
-                2200
-            );
-        }
-    }
-
-    // Helper functions to create textures for menu elements
-    private createEnemyTexture(key: string, size: number, color: string): string {
-        const graphics = this.make.graphics({x: 0, y: 0});
-        graphics.fillStyle(phaserColor(color));
-        graphics.fillRect(0, 0, size, size); // Simple square for menu preview
-        graphics.generateTexture(key, size, size);
-        graphics.destroy();
-        return key;
-    }
-
-    private createTowerTexture(key: string, size: number, color: string): string {
-        const graphics = this.make.graphics({x: 0, y: 0});
-        graphics.fillStyle(phaserColor(color));
-        graphics.fillCircle(size / 2, size / 2, size / 2);
-        graphics.fillStyle(phaserColor('0x000000'), 0.5);
-        graphics.fillCircle(size / 2, size / 2, size / 4);
-        graphics.generateTexture(key, size, size);
-        graphics.destroy();
-        return key;
-    }
-
-    private createPlayerTexture(key: string, size: number, color: string): string {
-        const graphics = this.make.graphics({x: 0, y: 0});
-        graphics.fillStyle(phaserColor(color));
-        graphics.fillCircle(size / 2, size / 2, size / 2);
-        graphics.generateTexture(key, size, size);
-        graphics.destroy();
-        return key;
-    }
-
-    private addAnimatedElement(key: string, x: number, y: number, scale: number, duration: number): void {
-        const randomOffsetX = Phaser.Math.Between(-20, 20);
-        const randomOffsetY = Phaser.Math.Between(-20, 20);
-
-        const targetX = x + randomOffsetX;
-        const targetY = y + randomOffsetY;
-
-        const element = this.add.image(x, y, key).setScale(scale).setAlpha(0.7).setDepth(-1);
-
-        // Create the Tween
-        this.tweens.add({
-            targets: element,
-            x: targetX,
-            y: targetY,
-            duration: duration,
-            ease: 'Sine.easeInOut',
-            yoyo: true,
-            repeat: -1,
-        });
-    }
-
-    // Modified createMenuButton to accept an optional container
-    createMenuButton(text: string, x: number, y: number, callback: () => void, container?: Phaser.GameObjects.Container): Phaser.GameObjects.Text {
-        const button = this.add.text(x, y, text, {
-            fontSize: '32px',
-            color: AppColors.UI_TEXT,
-        })
-            .setOrigin(0.5)
-            .setInteractive({useHandCursor: true});
-
-        button.on('pointerover', () => {
-            button.setColor(AppColors.UI_ACCENT);
-        });
-
-        button.on('pointerout', () => {
-            button.setColor(AppColors.UI_TEXT);
-        });
-
-        button.on('pointerdown', () => {
-            button.setColor(AppColors.PLAYER);
-        });
-
-        button.on('pointerup', () => {
-            button.setColor(AppColors.UI_ACCENT);
-            callback();
-        });
-
+    createMenuButton(text: string, y: number, callback: () => void, container?: Phaser.GameObjects.Container): TextButton {
+        const button = new TextButton(this, 0, y, text, callback);
         if (container) {
             container.add(button);
+        } else {
+            this.add.existing(button);
         }
-        return button;
-    }
-
-    // New method for section navigation buttons
-    private createSectionButton(x: number, y: number, text: string, callback: () => void): Phaser.GameObjects.Text {
-        const button = this.add.text(x, y, text, {
-            fontSize: '24px',
-            color: AppColors.UI_TEXT,
-        })
-            .setOrigin(0.75)
-            .setInteractive({useHandCursor: true});
-
-        button.on('pointerover', () => {
-            button.setColor(AppColors.UI_ACCENT);
-        });
-
-        button.on('pointerout', () => {
-            // Only revert color if not the active section
-            if (button.getData('active') !== true) {
-                button.setColor(AppColors.UI_TEXT);
-            }
-        });
-
-        button.on('pointerdown', () => {
-            button.setColor(AppColors.PLAYER);
-        });
-
-        button.on('pointerup', () => {
-            callback();
-        });
         return button;
     }
 
     private showSection(section: MenuSection): void {
-        // Hide all containers
         this.mainSectionContainer.setVisible(false);
-        this.settingsSectionContainer.setVisible(false);
+        this.optionsSectionContainer.setVisible(false);
 
-        // Reset all section buttons to inactive state
-        this.mainSectionButton.setColor(AppColors.UI_TEXT).setData('active', false);
-        this.settingsSectionButton.setColor(AppColors.UI_TEXT).setData('active', false);
+        this.mainSectionButton.setActive(false).setColor(AppColors.UI_TEXT);
+        this.optionsSectionButton.setActive(false).setColor(AppColors.UI_TEXT);
 
-        // Show the selected container and set its button to active state
+        let activeSectionButton: TextButton;
         switch (section) {
             case MenuSection.Main:
                 this.mainSectionContainer.setVisible(true);
-                this.mainSectionButton.setColor(AppColors.UI_ACCENT).setData('active', true);
+                activeSectionButton = this.mainSectionButton;
                 break;
-            case MenuSection.Settings:
-                this.settingsSectionContainer.setVisible(true);
-                this.settingsSectionButton.setColor(AppColors.UI_ACCENT).setData('active', true);
+            case MenuSection.Options:
+                this.optionsSectionContainer.setVisible(true);
+                activeSectionButton = this.optionsSectionButton;
                 break;
         }
+        activeSectionButton.setActive(true).setColor(AppColors.UI_ACCENT);
 
-        // Draw the underline
         this.sectionUnderlineGraphics.clear();
-        this.sectionUnderlineGraphics.lineStyle(2, phaserColor(AppColors.UI_SEPARATOR), 1);
+        this.sectionUnderlineGraphics.lineStyle(4, phaserColor(AppColors.UI_ACCENT), 1);
         this.sectionUnderlineGraphics.beginPath();
-        this.sectionUnderlineGraphics.moveTo(this.CONTENT_AREA_X_PADDING, this.CONTENT_AREA_START_Y + 50);
-        this.sectionUnderlineGraphics.lineTo(this.CONTENT_AREA_X_PADDING + this.CONTENT_AREA_WIDTH, this.CONTENT_AREA_START_Y + 50)
-        this.sectionUnderlineGraphics.closePath();
-        this.sectionUnderlineGraphics.stroke();
-    }
-
-    private navigateStoryLevel(direction: number): void {
-        this.currentStoryLevelIndex += direction;
-
-        // do circular loop
-        if (this.currentStoryLevelIndex < 0) {
-            this.currentStoryLevelIndex = STORY_LEVEL_ORDER.length - 1;
-        } else if (this.currentStoryLevelIndex >= STORY_LEVEL_ORDER.length) {
-            this.currentStoryLevelIndex = 0;
-        }
-        // Clamp the index to valid range
-        this.currentStoryLevelIndex = Phaser.Math.Clamp(
-            this.currentStoryLevelIndex,
-            0,
-            STORY_LEVEL_ORDER.length - 1
-        );
-        this.updateStoryLevelDisplay();
-    }
-
-    private updateStoryLevelDisplay(): void {
-        const levelName = STORY_LEVEL_ORDER[this.currentStoryLevelIndex];
-        const displayName = levelName.replace('Story_', '');
-        this.storyLevelDisplayText.setText(`${this.currentStoryLevelIndex + 1}: ${displayName}`);
+        this.sectionUnderlineGraphics.moveTo(activeSectionButton.x - activeSectionButton.width / 2, activeSectionButton.y + activeSectionButton.height / 2 + 5);
+        this.sectionUnderlineGraphics.lineTo(activeSectionButton.x + activeSectionButton.width / 2, activeSectionButton.y + activeSectionButton.height / 2 + 5);
+        this.sectionUnderlineGraphics.strokePath();
     }
 
     private toggleSound(): void {
@@ -553,5 +275,6 @@ export class MainMenuScene extends Phaser.Scene {
 
     private shutdown() {
         this.audioManager.destroy();
+        this.backgroundEffectsManager.stop();
     }
 }

@@ -1,4 +1,4 @@
-import {LevelNames, STORY_TO_GAMEPLAY_MAP} from '../lib/LevelNames.ts';
+import {LevelNames} from '../lib/LevelNames.ts';
 import {HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
 import {EnemyConfigs} from "../../config/EnemyConfigs.ts";
@@ -7,7 +7,7 @@ import {GameObject} from "../../core/GameObject.ts";
 
 export class Story_StaticNewGlitches extends BaseStoryScene {
     constructor() {
-        super(LevelNames.Story_StaticNewGlitches); // Corrected: Use LevelNames.Story_StaticNewGlitches directly
+        super(LevelNames.Story_StaticNewGlitches);
     }
 
     preload() {
@@ -18,13 +18,13 @@ export class Story_StaticNewGlitches extends BaseStoryScene {
     getStoryConfig(): { title?: string; steps: StoryStep[]; nextScene: LevelNames } {
         return {
             title: 'Static\'s New Glitches',
-            nextScene: STORY_TO_GAMEPLAY_MAP[LevelNames.Story_StaticNewGlitches],
+            nextScene: LevelNames.Gameplay_BruteForce, // Next scene is Level 8
             steps: [
                 {
-                    text: 'Genie: Static senses your growing strength, Guardian.\nIt has unleashed a new Glitch!',
+                    text: 'Genie: (alarmed) Static is adapting to our new strength! It\'s reinforcing its Glitches, creating a new variant.',
                     action: scene => {
                         this.backgroundEffectsManager.enableGlitchAnnihilationEffect(scene);
-                        const [staticEnemy, ...genies] = createStatic(scene,WIDTH / 2, HEIGHT / 4);
+                        const [staticEnemy, ...genies] = createStatic(scene, WIDTH / 2, HEIGHT / 4);
                         scene.animateIn(staticEnemy);
                         this.onHover(staticEnemy, "Static");
                         scene.tweens.add({
@@ -35,22 +35,21 @@ export class Story_StaticNewGlitches extends BaseStoryScene {
                             yoyo: true,
                             repeat: -1,
                         });
-
                         return [staticEnemy, ...genies];
                     },
                 },
                 {
-                    text: 'This one is tanky and faster than the others!',
+                    text: 'Genie: My scans indicate it\'s slower, but incredibly durable. A "Brute."',
                     action: scene => {
-                        const newGlitch = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 150, EnemyConfigs.upgradedEnemy.texture).setAlpha(0.65);
-                        scene.add.existing(newGlitch);
-                        this.onHover(newGlitch, EnemyConfigs.upgradedEnemy.name);
-                        scene.animateIn(newGlitch);
-                        return [newGlitch];
+                        const brute = new GameObject(scene, WIDTH / 2, HEIGHT / 2 + 150, EnemyConfigs.enemy3.texture).setScale(0.1);
+                        scene.add.existing(brute);
+                        this.onHover(brute, EnemyConfigs.enemy3.name);
+                        scene.animateIn(brute);
+                        return [brute];
                     }
                 },
                 {
-                    text: 'Beware of them, Guardian!\nRemember, I am with you!',
+                    text: 'Genie: Our base towers are struggling against its armor! We need to focus fire. And we *definitely* need more upgrades.',
                 },
             ],
         };

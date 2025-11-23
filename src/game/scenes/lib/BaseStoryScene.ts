@@ -312,7 +312,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
                     this.tweens.add({
                         targets: this.continueText,
                         alpha: 1,
-                        ease: 'Power1',
+                        ease: 'Sine.easeInOut',
                         duration: 400
                     });
                 }

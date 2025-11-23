@@ -323,5 +323,6 @@ export abstract class Level extends Phaser.Scene {
         createRangePreviewTexture(this, 'rangePreview', 300, 'rgba(255, 255, 255, 0.05)');
         createPlayerTexture(this, 'genie_texture', 3, AppColors.PLAYER);
         createQuantumEchoTexture(this, 'quantum_echo_texture', 24);
+        createPlayerTexture(this, 'static', 128, AppColors.STATIC_OUTER);
     }
 }

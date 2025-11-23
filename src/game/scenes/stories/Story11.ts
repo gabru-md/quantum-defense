@@ -4,14 +4,12 @@ import {VisualPulse} from '../../components/VisualPulse.ts';
 import {HEIGHT, WIDTH} from '../../scripts/Util.ts';
 import {BaseStoryScene, StoryStep} from "../lib/BaseStoryScene.ts";
 import {PlayerConfig} from "../../config/PlayerConfig.ts";
-import {SpecialEnemyConfig} from "../../config/EnemyConfigs.ts";
-import {drawRift} from "../lib/StoryUtils.ts";
 import {createPlayer, createStatic} from "../../scripts/EntityMaker.ts";
 import {TowerConfigs} from "../../config/TowerConfigs.ts";
 
 export class Story_TheResonanceWave extends BaseStoryScene {
     constructor() {
-        super(LevelNames.Story_TheResonanceWave); // Corrected: Use LevelNames.Story_TheResonanceWave directly
+        super(LevelNames.Story_TheResonanceWave);
     }
 
     preload() {
@@ -22,10 +20,10 @@ export class Story_TheResonanceWave extends BaseStoryScene {
     getStoryConfig(): { title?: string; steps: StoryStep[]; nextScene: LevelNames } {
         return {
             title: 'The Resonance Wave',
-            nextScene: LevelNames.Gameplay_ResonanceWave, // Return to menu after final story
+            nextScene: LevelNames.Gameplay_TheCore, // Next scene is Level 15
             steps: [
                 {
-                    text: 'Genie: The last Phantom falls!\nStatic\'s core is exposed – a raw, pulsating mass!',
+                    text: 'Genie: The last Phantom falls! Static\'s core is exposed – a raw, pulsating mass!',
                     action: scene => {
                         this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(scene, 550);
                         const [staticCore, ...genies] = createStatic(scene, WIDTH / 2, HEIGHT / 4);
@@ -43,16 +41,16 @@ export class Story_TheResonanceWave extends BaseStoryScene {
                     },
                 },
                 {
-                    text: 'It\'s invulnerable to Phantom Killer towers.\nThey were for its extensions, not the source!',
+                    text: 'Genie: It\'s invulnerable to Phantom Killer towers. They were for its extensions, not the source!',
                     action: scene => {
-                        const phantomKiller = new GameObject(scene, WIDTH / 2, HEIGHT * 3 / 4 - 100, 'specialTower').setAlpha(0.8);
+                        const phantomKiller = new GameObject(scene, WIDTH / 2, HEIGHT * 3 / 4 - 100, 'specialTower').setScale(0.1);
                         scene.add.existing(phantomKiller);
                         this.onHover(phantomKiller, TowerConfigs.specialTower.name);
                         scene.animateIn(phantomKiller);
                         scene.tweens.add({
                             targets: phantomKiller,
                             alpha: 0.6,
-                            scale: 1.2,
+                            scale: 1.2 * 0.1,
                             duration: 500,
                             yoyo: true,
                             repeat: -1,
@@ -61,7 +59,7 @@ export class Story_TheResonanceWave extends BaseStoryScene {
                     },
                 },
                 {
-                    text: 'Only your pure Resonance Wave,\namplified by a final surge of Quantum Echoes, can destroy it!',
+                    text: 'Genie: It\'s invulnerable... We can\'t stop it. Wait... the energy readings... The Core is unstable, exposed. It\'s not immune to everything. It\'s vulnerable to a pure, focused wave of the very energy it opposes. It\'s vulnerable to *you*.',
                     action: scene => {
                         const [player, genie] = createPlayer(scene, WIDTH / 2, HEIGHT * 3 / 4);
                         scene.animateIn(player);
@@ -70,16 +68,7 @@ export class Story_TheResonanceWave extends BaseStoryScene {
                     },
                 },
                 {
-                    text: 'Collect any remaining Echoes from the now-exposed,\nhighly volatile rifts!',
-                    action: scene => {
-                        const volatileRift1 = drawRift(scene, WIDTH / 2 - 400, HEIGHT / 4, PlayerConfig.resonanceWave.pulseColor, null, 0.9);
-                        const volatileRift2 = drawRift(scene, WIDTH / 2, HEIGHT * 7 / 8, PlayerConfig.resonanceWave.pulseColor, SpecialEnemyConfig.pulseColor, 0.9);
-                        const volatileRift3 = drawRift(scene, WIDTH / 2 + 400, HEIGHT / 4, SpecialEnemyConfig.pulseColor, null, 0.9);
-                        return [...volatileRift1, ...volatileRift2, ...volatileRift3];
-                    },
-                },
-                {
-                    text: 'Unleash the most powerful Resonance Wave of your life, Guardian!',
+                    text: 'Genie: Guardian, focus all your power. Your Resonance Wave... if you can amplify it with the residual energy from this final battle... you can wipe it out in one blow! This is our last chance!',
                     action: scene => {
                         // find player from visuals
                         for (const visual of scene.visuals) {
