@@ -6,6 +6,7 @@ import { VisualPulse } from '../../../components/VisualPulse.ts';
 import { Manager } from '../Manager.ts';
 import {GAME_HEIGHT, GAME_WIDTH, TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT} from '../../../scripts/Util.ts';
 import { PlayerConfig } from '../../../config/PlayerConfig.ts';
+import {QuantumEcho} from "../../../entities/QuantumEcho.ts";
 
 export class PlayerManager extends Manager {
     player!: Player;
@@ -47,7 +48,7 @@ export class PlayerManager extends Manager {
         return this.player;
     }
 
-    collectQuantumEcho() {
+    collectQuantumEcho(echo: QuantumEcho) {
         const availableUpgrades = [];
         if (!this.tower1Upgraded) availableUpgrades.push('tower1');
         if (!this.tower2Upgraded) availableUpgrades.push('tower2');
@@ -78,6 +79,11 @@ export class PlayerManager extends Manager {
                     }
                     break;
             }
+        }
+
+        this.level.state.energy += echo.energyValue; // Updated state.money to state.energy
+        if(this.level.state.energy > this.level.state.maxEnergy) {
+            this.level.state.energy = this.level.state.maxEnergy;
         }
     }
 

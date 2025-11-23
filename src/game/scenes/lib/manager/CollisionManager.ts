@@ -116,7 +116,7 @@ export class CollisionManager extends Manager {
     }
 
     protected handlePlayerEchoCollision(_player: Player, echo: QuantumEcho): void {
-        this.level.playerManager.collectQuantumEcho();
+        this.level.playerManager.collectQuantumEcho(echo);
         echo.destroy();
     }
 
@@ -149,7 +149,7 @@ export class CollisionManager extends Manager {
         }
     }
 
-    protected handleEnemyTowerCollision(enemy: Enemy, tower: Tower): void {
+    protected handleEnemyTowerCollision(_enemy: Enemy, tower: Tower): void {
         if (tower.lastDamageTime && this.level.time.now < tower.lastDamageTime + 1000) {
             return;
         }

@@ -67,7 +67,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         this.steps = this.getStoryConfig().steps;
         this.audioManager.setup();
         // Preload common textures for all story scenes
-        createPlayerTexture(this, 'nexus', 65, AppColors.NEXUS_OUTER);
+        createPlayerTexture(this, 'nexus', 25, AppColors.NEXUS_INNER);
         createPlayerTexture(this, 'static', 25, AppColors.STATIC_INNER);
         createPlayerTexture(this, 'player', 24, AppColors.PLAYER);
         createEnemyTexture(this, 'enemy1', 32, AppColors.ENEMY_NORMAL);
@@ -86,6 +86,9 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         createQuantumEchoTexture(this, 'quantum_echo_texture', 18); // There is a gradient
         createPlayerTexture(this, 'genie_texture', 3, AppColors.PLAYER); // Placeholder color
         createPlayerTexture(this, 'static_genie_texture', 3, AppColors.SPECIAL_ENEMY); // Placeholder color
+        createPlayerTexture(this, 'stutter_genie_texture', 3, AppColors.ENEMY_NORMAL); // Placeholder color
+        createPlayerTexture(this, 'surge_genie_texture', 3, AppColors.ENEMY_FAST_TANK); // Placeholder color
+        createPlayerTexture(this, 'brutes_genie_texture', 3, AppColors.ENEMY_TANK); // Placeholder color
         createPlayerTexture(this, 'phantom_genie_texture', 3, AppColors.SPECIAL_ENEMY); // Placeholder color
         createTowerTexture(this, 'phantom_killer_tower_texture', 64, AppColors.ENEMY_FAST); // Placeholder color
         createPlayerTexture(this, 'upgrade_icon_texture', 24, AppColors.ENEMY_TANK); // Placeholder color

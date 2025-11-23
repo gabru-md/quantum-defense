@@ -4,6 +4,7 @@ import {Hoverable} from "../components/Hoverable.ts";
 
 export class QuantumEcho extends GameObject {
     public color: number;
+    public energyValue: number;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, 'quantum_echo_texture');
@@ -35,5 +36,7 @@ export class QuantumEcho extends GameObject {
         });
 
         this.addComponentOverriding(new Hoverable('Quantum Echoes'))
+
+        this.energyValue = Phaser.Math.Between(10, 25);
     }
 }

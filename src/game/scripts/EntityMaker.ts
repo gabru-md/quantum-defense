@@ -10,27 +10,67 @@ export function createNexusObject(scene: Phaser.Scene, x: number, y: number): Ga
     const nexus = new GameObject(scene, x, y, 'nexus').setAlpha(0.8);
     scene.add.existing(nexus);
     let genies = [];
-
-    // Create many harmonious revolving genies
-    const totalGenies = 350;
+// Create spiral arms configuration
+    const numArms = 3; // Number of spiral arms
+    const geniesPerArm = 300; // Genies per arm
+    const totalGenies = numArms * geniesPerArm;
 
     for (let i = 0; i < totalGenies; i++) {
-        const genie = new Genie(scene, nexus);
+        const armIndex = Math.floor(i / geniesPerArm);
+        const positionInArm = i % geniesPerArm;
 
-        // Random orbit radius for organic cloud effect
-        const orbitRadius = Phaser.Math.Between(50, 125);
+        // Calculate spiral parameters
+        const normalizedPosition = positionInArm / geniesPerArm; // 0 to 1
+        const maxRadius = 100; // Maximum distance from center
+        const minRadius = 15;
+        // const minRadius = Phaser.Math.Between(0, 10); // Minimum distance (near the center)
 
-        // Slow, harmonious orbit speeds with slight variation
-        const orbitSpeed = Phaser.Math.FloatBetween(0.2, 0.4);
+        // Spiral equation: radius decreases as we go inward
+        const radius = maxRadius - (normalizedPosition * (maxRadius - minRadius));
 
-        // Random direction for visual complexity (mostly same direction)
-        const direction = Math.random() > 0.25 ? 1 : -1;
+        // Create spiral angle: each arm offset by 2π/numArms, plus spiral rotation
+        const armAngleOffset = (armIndex * 2 * Math.PI) / numArms;
+        const spiralTightness = 3; // How many rotations the spiral makes
+        const spiralAngle = normalizedPosition * spiralTightness * 2 * Math.PI;
+        const angle = armAngleOffset - spiralAngle; // Negative for inward spiral
 
-        genie.setOrbitStats(orbitRadius, orbitSpeed * direction);
+        // Calculate fall speed based on distance (farther = slower start)
+        const baseFallSpeed = 30;
+        const fallSpeed = baseFallSpeed * (1 + normalizedPosition * 2); // Outer genies fall slower initially
 
-        // Visual variety
-        genie.setAlpha(Phaser.Math.FloatBetween(0.3, 0.85));
-        genie.setScale(Phaser.Math.FloatBetween(0.7, 1.0));
+        // Calculate orbit speed (inner genies orbit faster)
+        const baseOrbitSpeed = 0.16;
+        const orbitSpeed = baseOrbitSpeed * (1 + (1 - normalizedPosition) * 2);
+
+        // Create the genie
+        // randomly change texture to genie_texture
+        const genie = new Genie(scene, nexus, Phaser.Math.RND.pick(['genie_texture']));
+
+        // Add the circular movement with fall effect
+        genie.addComponentOverriding(
+            new CircularMovement(
+                nexus,
+                radius,
+                orbitSpeed,
+                true, // Enable falling
+                fallSpeed,
+                minRadius // Stop at minimum radius
+            )
+        );
+
+        // Set initial angle for spiral positioning
+        const circularMovement = genie.getComponent(CircularMovement);
+        if (circularMovement) {
+            circularMovement.setAngle(angle);
+        }
+
+        // Visual properties based on distance
+        const alphaValue = Phaser.Math.FloatBetween(0.2, 0.8) * (1 - normalizedPosition * 0.5);
+        genie.setAlpha(alphaValue);
+
+        // Optional: scale based on distance for depth effect
+        const scale = 0.5 + (1 - normalizedPosition) * 0.5; // Smaller when far, bigger when close
+        genie.setScale(scale);
 
         scene.add.existing(genie);
         genies.push(genie);
@@ -122,7 +162,10 @@ export function createStatic(scene: Phaser.Scene, x: number, y: number): GameObj
 
         // Create the genie
         // randomly change texture to genie_texture
-        const genie = new Genie(scene, staticEnemy, Phaser.Math.RND.pick(['genie_texture','static_genie_texture']));
+        let genie = new Genie(scene, staticEnemy, Phaser.Math.RND.pick(['genie_texture','static_genie_texture']));
+        if(i % 20 === 0) {
+            genie = new Genie(scene, staticEnemy, Phaser.Math.RND.pick(['stutter_genie_texture','surge_genie_texture', 'brutes_genie_texture']));
+        }
 
         // Add the circular movement with fall effect
         genie.addComponentOverriding(

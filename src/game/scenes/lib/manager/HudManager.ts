@@ -286,13 +286,11 @@ export class HudManager extends Manager {
 
         this.waveNumberText = this.scene.add.text(textX, currentY, `Wave: ${this.scene.waveManager.currentWave}/${this.scene.waveManager.totalWaves}`, {
             font: '20px',
-            color: AppColors.SPECIAL_ENEMY
         }).setDepth(100).setName('waveNumberText');
         // currentY += textSpacing;
 
         this.waveProgressText = this.scene.add.text(textX + 150, currentY, `Enemies: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`, {
             font: '20px',
-            color: AppColors.SPECIAL_ENEMY
         }).setDepth(100).setName('waveProgressText');
 
         return [panel, this.gameName, this.levelText, this.healthBarText, this.healthBarBg, this.healthBar, this.energyBarText, this.energyBarBg, this.energyBar, this.waveNumberText, this.waveProgressText];
