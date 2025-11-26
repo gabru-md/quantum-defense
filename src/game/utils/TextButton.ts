@@ -1,6 +1,7 @@
 // src/game/core/TextButton.ts
 import Phaser from 'phaser';
 import { AppColors } from '../scripts/Colors';
+import {Level} from "../scenes/lib/Level.ts";
 
 export class TextButton extends Phaser.GameObjects.Text {
     constructor(scene: Phaser.Scene, x: number, y: number, text: string, callback: () => void) {
@@ -25,6 +26,7 @@ export class TextButton extends Phaser.GameObjects.Text {
 
     private enterButtonHoverState() {
         this.setStyle({ fill: AppColors.UI_ACCENT });
+        (this.scene as Level).audioManager.playSfx('navigating_fx');
     }
 
     private enterButtonRestState() {

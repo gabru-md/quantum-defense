@@ -16,6 +16,7 @@ export class Deactivator extends Component {
 
     public update(time: number, _deltaTime: number): void {
         if (this.isReady(time)) {
+            this.gameObject.level.audioManager.playSfx('phantom_shoot')
             this.deactivateNearbyTowers();
             this.lastDeactivation = time;
             // Create the visual pulse when deactivating

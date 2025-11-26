@@ -24,14 +24,35 @@ export class AudioManager extends Manager {
     }
 
     private loadAllSfx(): void {
-        this.level.load.audio('HitLaserTower', 'assets/sfx/hit_laser_tower.mp3');
-        this.level.load.audio('HitBombTower', 'assets/sfx/hit_bomb_tower.mp3');
-        this.level.load.audio('ShootLaserTower', 'assets/sfx/shoot_laser_tower.mp3');
-        this.level.load.audio('ShootBombTower', 'assets/sfx/shoot_bomb_tower.mp3');
-        this.level.load.audio('ShootSlowTower', 'assets/sfx/shoot_slow_tower.mp3');
-        this.level.load.audio('Enemy1', 'assets/sfx/stutter_1.mp3');
-        this.level.load.audio('Enemy2', 'assets/sfx/stutter_2.mp3');
-        this.level.load.audio('Enemy3', 'assets/sfx/stutter_3.mp3');
+        // Assuming 'this.level' is the context and the base path is 'assets/sfx/'
+
+        this.level.load.audio('bomb_hit', 'assets/sfx/bomb_hit.mp3');
+        this.level.load.audio('bomb_plot', 'assets/sfx/bomb_plot.mp3');
+        this.level.load.audio('bomb_shoot', 'assets/sfx/bomb_shoot.mp3');
+        this.level.load.audio('brute', 'assets/sfx/brute.mp3');
+        this.level.load.audio('error_fx', 'assets/sfx/error_fx.mp3');
+        this.level.load.audio('guardian_shoot', 'assets/sfx/guardian_shoot.mp3');
+        this.level.load.audio('laser_hit', 'assets/sfx/laser_hit.mp3');
+        this.level.load.audio('laser_plot', 'assets/sfx/laser_plot.mp3');
+        this.level.load.audio('laser_shoot', 'assets/sfx/laser_shoot.mp3');
+        this.level.load.audio('navigating_fx', 'assets/sfx/navigating_fx.mp3');
+        this.level.load.audio('phantom_shoot', 'assets/sfx/phantom_shoot.mp3');
+        this.level.load.audio('rift_blue_shoot', 'assets/sfx/rift_blue_shoot.mp3');
+        this.level.load.audio('rift_purple_shoot', 'assets/sfx/rift_purple_shoot.mp3');
+        this.level.load.audio('slow_plot', 'assets/sfx/slow_plot.mp3');
+        this.level.load.audio('slow_shoot', 'assets/sfx/slow_shoot.mp3');
+        this.level.load.audio('stutter_1', 'assets/sfx/stutter_1.mp3');
+        this.level.load.audio('stutter_2', 'assets/sfx/stutter_2.mp3');
+        this.level.load.audio('stutter_3', 'assets/sfx/stutter_3.mp3');
+        this.level.load.audio('stutter_4', 'assets/sfx/stutter_4.mp3');
+        this.level.load.audio('stutter_slowed_1', 'assets/sfx/stutter_slowed_1.mp3');
+        this.level.load.audio('stutter_slowed_2', 'assets/sfx/stutter_slowed_2.mp3');
+        this.level.load.audio('stutter_slowed_3', 'assets/sfx/stutter_slowed_3.mp3');
+        this.level.load.audio('stutter_slowed_4', 'assets/sfx/stutter_slowed_4.mp3');
+        this.level.load.audio('surge_1', 'assets/sfx/surge_1.mp3');
+        this.level.load.audio('surge_2', 'assets/sfx/surge_2.mp3');
+        this.level.load.audio('surge_slowed_1', 'assets/sfx/surge_slowed_1.mp3');
+        this.level.load.audio('surge_slowed_2', 'assets/sfx/surge_slowed_2.mp3');
     }
 
     public get sfxVolume(): number {

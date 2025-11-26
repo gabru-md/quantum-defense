@@ -52,7 +52,7 @@ export class BombAttack extends Component {
             }
         }
         if (target && target.active && time > this.lastFired + this.fireRate) {
-            this.gameObject.level.audioManager.playSfx('ShootBombTower');
+            this.gameObject.level.audioManager.playSfx('bomb_shoot');
             this.fireAt(target);
             this.lastFired = time;
         }

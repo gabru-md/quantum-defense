@@ -24,7 +24,8 @@ export const AppColors = {
 
     // Game Background
     // GAME_BACKGROUND: '#2d2d2d',
-    HUD_BACKGROUND: '#2a3a4a',
+    // HUD_BACKGROUND: '#2a3a4a',
+    HUD_BACKGROUND: '#000000',
     GAME_BACKGROUND: '#000000',
 
     // Path Colors

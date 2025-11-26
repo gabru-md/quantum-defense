@@ -1,6 +1,6 @@
-import { GameObject } from '../core/GameObject.ts';
+import {GameObject} from '../core/GameObject.ts';
 import * as Phaser from 'phaser';
-import { RiftType } from './Rift.ts';
+import {RiftType} from './Rift.ts';
 
 export class RiftWave extends GameObject {
     public riftType: RiftType;
@@ -13,7 +13,7 @@ export class RiftWave extends GameObject {
         this.riftType = riftType;
         this.waveColor = color;
 
-        this.graphics = this.scene.add.graphics({ x: this.x, y: this.y });
+        this.graphics = this.scene.add.graphics({x: this.x, y: this.y});
         this.graphics.setBlendMode(Phaser.BlendModes.ADD);
         this.graphics.setAlpha(0); // Start fully transparent
 
@@ -40,10 +40,10 @@ export class RiftWave extends GameObject {
                 this.destroy(); // Destroy the object once the radius tween completes
             }
         });
-
+        this.playSfx(riftType);
         this.scene.tweens.add({
             targets: this.graphics,
-            alpha: { from: 0.1, to: 0.25 },
+            alpha: {from: 0.1, to: 0.25},
             duration: totalDuration / 2, // Peak at half duration
             ease: 'Sine.easeIn',
             yoyo: true, // Go back to 0
@@ -61,5 +61,20 @@ export class RiftWave extends GameObject {
     destroy(fromScene?: boolean) {
         this.graphics.destroy();
         super.destroy(fromScene);
+    }
+
+    private playSfx(riftType: RiftType) {
+        switch (riftType) {
+            case 'static':
+                this.scene.sound.play('rift_purple_shoot');
+                break;
+            case 'guardian':
+                this.scene.sound.play('rift_blue_shoot');
+                break;
+            case 'gradient':
+            default:
+                break;
+
+        }
     }
 }

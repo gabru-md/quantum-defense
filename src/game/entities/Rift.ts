@@ -92,7 +92,7 @@ export class Rift extends GameObject {
         for (let i = 0; i < Phaser.Math.Between(3, 5); i++) {
             let offsetX = Phaser.Math.Between(-15, 15);
             let offsetY = Phaser.Math.Between(-15, 15);
-            const echo = new QuantumEcho(this.scene, this.x + offsetX, this.y + offsetY, waveColor);
+            const echo = new QuantumEcho(this.scene, this.x + offsetX, this.y + offsetY);
             (this.scene as Level).quantumEchoes.add(echo);
         }
     }

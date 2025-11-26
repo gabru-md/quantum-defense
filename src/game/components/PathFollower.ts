@@ -27,7 +27,7 @@ export class PathFollower extends Component {
 
         if (_time - this.lastSoundPlayed > this.playSoundAtRandomInterval) {
             let enemy = this.gameObject as Enemy;
-            let soundFxName = enemy.type === 'enemy1' ? 'Enemy1' : enemy.type === 'enemy2' ? 'Enemy2' : 'Enemy3';
+            let soundFxName = this.getSoundFx(enemy);
             this.lastSoundPlayed = _time;
             this.gameObject.level.audioManager.playEnemySound(soundFxName)
         }
@@ -75,5 +75,17 @@ export class PathFollower extends Component {
             return waveManager && !waveManager.enabled;
         }
         return false;
+    }
+
+    private getSoundFx(enemy: Enemy) {
+        switch (enemy.type) {
+            case 'enemy1':
+                return Phaser.Math.RND.pick(['stutter_1', 'stutter_2', 'stutter_3', 'stutter_4'])
+            case 'enemy2':
+                return Phaser.Math.RND.pick(['surge_1', 'surge_2'])
+            case 'enemy3':
+                return Phaser.Math.RND.pick(['brute'])
+        }
+        return '';
     }
 }

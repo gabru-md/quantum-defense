@@ -6,10 +6,12 @@ import { AppColors, phaserColor } from '../scripts/Colors';
 import { TextButton } from '../utils/TextButton';
 import { BackgroundEffectsManager } from '../effects/BackgroundEffectsManager.ts';
 import { State } from './lib/State.ts';
+import {AudioManager} from "./lib/manager/AudioManager.ts";
 
 export class ChapterSelectScene extends Phaser.Scene {
     private backgroundEffectsManager!: BackgroundEffectsManager;
     private gameState!: State;
+    private audioManager: AudioManager;
 
     private readonly BORDER_THICKNESS = 8;
     private readonly TITLE_Y_POS = HEIGHT * 0.075;
@@ -24,6 +26,7 @@ export class ChapterSelectScene extends Phaser.Scene {
 
     init(): void {
         this.backgroundEffectsManager = new BackgroundEffectsManager(this);
+        this.audioManager = new AudioManager(this);
         this.gameState = this.sys.registry.get('gameState');
         if (!this.gameState) {
             // This should ideally not happen if MainMenuScene always runs first
@@ -33,6 +36,7 @@ export class ChapterSelectScene extends Phaser.Scene {
     }
 
     create() {
+        this.audioManager.playMusic('MainMenuMusic');
         this.cameras.main.setBackgroundColor(AppColors.GAME_BACKGROUND);
         this.backgroundEffectsManager.enableDataStreamEffect(this);
         this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(this, 1250);
@@ -90,7 +94,6 @@ export class ChapterSelectScene extends Phaser.Scene {
             const chapterButton = new TextButton(this, 0, yOffset, `${index + 1}. ${displayName}`, () => {
                 this.scene.start(storyLevelName);
                 if (isUnlocked) {
-                    //
                 } else {
                     // chapter is locked
                     // this.scene.start(storyLevelName);
@@ -128,18 +131,8 @@ export class ChapterSelectScene extends Phaser.Scene {
         border.setDepth(10);
     }
 
-    // @ts-ignore
-    private createMenuButton(text: string, y: number, callback: () => void, container?: Phaser.GameObjects.Container): TextButton {
-        const button = new TextButton(this, 0, y, text, callback);
-        if (container) {
-            container.add(button);
-        } else {
-            this.add.existing(button);
-        }
-        return button;
-    }
-
     private shutdown() {
         this.backgroundEffectsManager.stop();
+        this.audioManager.destroy();
     }
 }

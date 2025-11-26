@@ -41,6 +41,11 @@ export interface TowerConfigType {
         slowFactor: number;
         damageAmplification: number;
     };
+    sfx?: {
+       plot?: string;
+       shoot?: string;
+       hit?: string;
+    }
 }
 
 export const TowerConfigs: { [key: string]: TowerConfigType } = {
@@ -74,6 +79,11 @@ export const TowerConfigs: { [key: string]: TowerConfigType } = {
             ricochetTargets: 1,
             ricochetDamage: 0.5,
         },
+        sfx: {
+            plot: 'laser_plot',
+            hit: 'laser_hit',
+            shoot: 'laser_shoot',
+        }
     },
     tower2: {
         name: 'Bomb Tower',
@@ -105,6 +115,11 @@ export const TowerConfigs: { [key: string]: TowerConfigType } = {
             fissureDamage: 10,
             fissureDuration: 2000,
         },
+        sfx: {
+            plot: 'bomb_plot',
+            hit: 'bomb_hit',
+            shoot: 'bomb_shoot',
+        }
     },
     tower3: {
         name: 'Slow Tower',
@@ -131,6 +146,10 @@ export const TowerConfigs: { [key: string]: TowerConfigType } = {
             slowFactor: 0.6,
             damageAmplification: 0.15,
         },
+        sfx: {
+            plot: 'slow_plot',
+            shoot: 'slow_shoot',
+        }
     },
     specialTower: {
         name: 'Phantom Killer',

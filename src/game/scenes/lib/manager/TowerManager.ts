@@ -120,7 +120,14 @@ export class TowerManager extends Manager {
         const isUpgraded = this.isTowerUpgraded(towerType);
         const texture = isUpgraded ? config.upgradedTexture : config.texture;
 
-        const tower = new Tower({scene: this.level, x, y, texture: texture, energyCost: energyCost, towerType: towerType});
+        const tower = new Tower({
+            scene: this.level,
+            x,
+            y,
+            texture: texture,
+            energyCost: energyCost,
+            towerType: towerType
+        });
         this.towers.add(tower, true);
         tower.addComponent(new Health(config.health));
         tower.addComponent(new Targeting(config.range, [this.level.waveManager.enemies]));
@@ -131,6 +138,7 @@ export class TowerManager extends Manager {
         tower.on('deactivate', () => this.deactivateTower(tower));
         tower.on('pointerover', () => this.level.hud.setHelpText(this.getTowerDescription(towerType)));
         tower.on('pointerout', () => this.level.hud.setHelpText(''));
+        this.playAudioOnTowerPlacement(config.sfx);
         return tower;
     }
 
@@ -187,5 +195,11 @@ export class TowerManager extends Manager {
         this.level.hud.alert('TOWER DEACTIVATED:\nA Tower has been deactivated!');
         this.level.playerManager.player.danger('A Tower has been deactivated!');
         this.level.events.emit('towerDeactivated', tower);
+    }
+
+    private playAudioOnTowerPlacement(sfx: { plot?: string; shoot?: string; hit?: string } | undefined) {
+        if (sfx && sfx.plot) {
+            (this.scene as Level).audioManager.playSfx(sfx.plot);
+        }
     }
 }

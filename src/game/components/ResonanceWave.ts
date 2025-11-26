@@ -58,8 +58,10 @@ export class ResonanceWave extends Component {
                     'ABILITY COOLDOWN:\nResonance Wave is on cooldown!', // Updated message
                     AppColors.UI_MESSAGE_WARN
                 );
+                this.gameObject.level.audioManager.playSfx('error_fx')
                 return;
             }
+            this.gameObject.level.audioManager.playSfx('guardian_shoot')
 
             // --- START MODIFICATION ---
             // Bypass energy cost check for the final boss level

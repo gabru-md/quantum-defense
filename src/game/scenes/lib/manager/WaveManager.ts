@@ -153,6 +153,7 @@ export class WaveManager extends Manager {
         this.enemiesRemaining--;
         this.level.events.emit('nexusHit', enemy.x, enemy.y);
         this.level.hud.update();
+        this.level.audioManager.playSfx('error_fx');
     
         if (this.level.state.baseHealth <= 0) {
             // this.level.playerManager.player.danger();
