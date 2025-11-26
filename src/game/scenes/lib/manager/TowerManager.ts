@@ -138,7 +138,7 @@ export class TowerManager extends Manager {
         tower.on('deactivate', () => this.deactivateTower(tower));
         tower.on('pointerover', () => this.level.hud.setHelpText(this.getTowerDescription(towerType)));
         tower.on('pointerout', () => this.level.hud.setHelpText(''));
-        this.playAudioOnTowerPlacement(config.sfx);
+        this.playAudioOnTowerPlacement(config.sfx, tower);
         return tower;
     }
 
@@ -197,9 +197,9 @@ export class TowerManager extends Manager {
         this.level.events.emit('towerDeactivated', tower);
     }
 
-    private playAudioOnTowerPlacement(sfx: { plot?: string; shoot?: string; hit?: string } | undefined) {
+    private playAudioOnTowerPlacement(sfx: { plot?: string; shoot?: string; hit?: string } | undefined, tower: Tower) {
         if (sfx && sfx.plot) {
-            (this.scene as Level).audioManager.playSfx(sfx.plot);
+            (this.scene as Level).audioManager.playSfx(sfx.plot, false, tower);
         }
     }
 }

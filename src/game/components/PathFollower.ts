@@ -29,7 +29,7 @@ export class PathFollower extends Component {
             let enemy = this.gameObject as Enemy;
             let soundFxName = this.getSoundFx(enemy);
             this.lastSoundPlayed = _time;
-            this.gameObject.level.audioManager.playEnemySound(soundFxName)
+            this.gameObject.level.audioManager.playEnemySound(soundFxName, enemy)
         }
 
 

@@ -1,6 +1,7 @@
 import {GameObject} from '../core/GameObject.ts';
 import * as Phaser from 'phaser';
 import {RiftType} from './Rift.ts';
+import {Level} from "../scenes/lib/Level.ts";
 
 export class RiftWave extends GameObject {
     public riftType: RiftType;
@@ -66,10 +67,10 @@ export class RiftWave extends GameObject {
     private playSfx(riftType: RiftType) {
         switch (riftType) {
             case 'static':
-                this.scene.sound.play('rift_purple_shoot');
+                (this.scene as Level).audioManager.playSfx('rift_purple_shoot', false, this);
                 break;
             case 'guardian':
-                this.scene.sound.play('rift_blue_shoot');
+                (this.scene as Level).audioManager.playSfx('rift_blue_shoot', false, this);
                 break;
             case 'gradient':
             default:

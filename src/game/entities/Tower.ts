@@ -88,6 +88,8 @@ export class Tower extends GameObject {
             this.visualPulseComponent.setColor(this.originalPulseColor); // Original color from config
         }
 
+        this.level.audioManager.playTowerSfx('error_fx', false, this);
+
         // Show "Tower under attack!" message if health decreased
         this.level.hud.alert(
             'UNDER ATTACK:\nA tower is under attack from another tower!',

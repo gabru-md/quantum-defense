@@ -45,7 +45,7 @@ export class Bomb extends GameObject {
     }
 
     public explode(): void {
-        this.level.audioManager.playSfx('bomb_hit');
+        this.level.audioManager.playSfx('bomb_hit', false, this);
         const graphics = this.scene.add.graphics({fillStyle: {color: phaserColor(AppColors.BULLET_BOMB), alpha: 0.1}});
         graphics.fillCircle(this.x, this.y, this.explosionRadius);
         this.scene.time.delayedCall(250, () => graphics.destroy());

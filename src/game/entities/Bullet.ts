@@ -32,7 +32,7 @@ export class Bullet extends GameObject {
 
     public applyDamage(target: GameObject): void {
         const healthComponent = target.getComponent(Health);
-        this.level.audioManager.playSfx('laser_hit');
+        this.level.audioManager.playTowerSfx('laser_hit', false, this);
         if (healthComponent) {
             healthComponent.takeDamage(this.damage);
         }
