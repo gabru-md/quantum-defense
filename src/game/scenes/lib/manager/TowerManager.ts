@@ -100,6 +100,7 @@ export class TowerManager extends Manager {
             if (placementCheck.reason) {
                 this.level.hud.alert(placementCheck.reason, AppColors.UI_MESSAGE_WARN, 1000);
                 this.level.playerManager.player.warn(placementCheck.reason);
+                this.level.audioManager.playSfx('error_fx')
             }
             return;
         }

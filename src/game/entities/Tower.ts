@@ -113,6 +113,7 @@ export class Tower extends GameObject {
             if (c) c.enabled = false;
         });
         this.level.playerManager.player.danger('A Tower has been deactivated!');
+        this.level.audioManager.playSfx('error_fx')
     }
 
     public enableVisualPulse(): void {

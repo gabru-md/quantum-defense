@@ -76,6 +76,7 @@ export class ResonanceWave extends Component {
                         AppColors.UI_MESSAGE_WARN,
                         1000
                     );
+                    this.gameObject.level.audioManager.playSfx('error_fx', false, this.gameObject)
                     return;
                 }
 
@@ -146,6 +147,7 @@ export class ResonanceWave extends Component {
                     AppColors.UI_MESSAGE_WARN,
                     1000
                 );
+                this.gameObject.level.audioManager.playSfx('error_fx', false, this.gameObject)
                 // If not enough energy for full revive, refund base activation energy
                 this.gameObject.level.state.energy += this.baseActivationEnergy; // Refund only if not final boss level
                 this.gameObject.level.hud.update();

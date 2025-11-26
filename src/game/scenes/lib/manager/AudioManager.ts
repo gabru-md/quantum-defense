@@ -6,8 +6,8 @@ import {GameObject} from "../../../core/GameObject.ts";
 export class AudioManager extends Manager {
     private backgroundMusic: Phaser.Sound.BaseSound | null = null;
     private musicQueue: string[] = [];
-    private _sfxVolume: number = 1; // Default SFX volume
-    private _musicVolume: number = 1; // Default Music volume
+    private _sfxVolume: number = 0.3; // Default SFX volume
+    private _musicVolume: number = 0.2; // Default Music volume
     private maxDistance: number = 500; // Max distance for spatial sound
     private level?: Level;
 

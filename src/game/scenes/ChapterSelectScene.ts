@@ -28,11 +28,6 @@ export class ChapterSelectScene extends Phaser.Scene {
         this.backgroundEffectsManager = new BackgroundEffectsManager(this);
         this.audioManager = new AudioManager(this);
         this.gameState = this.sys.registry.get('gameState');
-        if (!this.gameState) {
-            // This should ideally not happen if MainMenuScene always runs first
-            this.gameState = new State(100, 350, LevelNames.MainMenu);
-            this.sys.registry.set('gameState', this.gameState);
-        }
     }
 
     create() {
@@ -69,6 +64,7 @@ export class ChapterSelectScene extends Phaser.Scene {
         // Determine the highest completed story level to unlock chapters
         // For simplicity, let's assume the last completed level is stored in gameState.level
         // You might need a more robust save system for actual progression
+        this.gameState = this.sys.registry.get('gameState');
         const lastCompletedLevelKey = this.gameState.level; // e.g., "Gameplay_TheDormantScars"
         let lastCompletedStoryIndex = -1;
         for(let i = 0; i < STORY_LEVEL_ORDER.length; i++) {

@@ -16,7 +16,6 @@ export class Deactivator extends Component {
 
     public update(time: number, _deltaTime: number): void {
         if (this.isReady(time)) {
-            this.gameObject.level.audioManager.playSfx('phantom_shoot', false, this.gameObject)
             this.deactivateNearbyTowers();
             this.lastDeactivation = time;
             // Create the visual pulse when deactivating
@@ -35,21 +34,23 @@ export class Deactivator extends Component {
     }
 
     private deactivateNearbyTowers(): void {
+        this.gameObject.level.audioManager.playSfx('phantom_shoot', false, this.gameObject)
         const towers = (this.gameObject.scene as Level).towerManager.towers;
         if (!towers) {
             return;
-        }
 
+        }
         for (const tower of towers.getChildren() as Tower[]) {
             if (tower.active) {
-                const distance = Phaser.Math.Distance.Between(this.gameObject.x, this.gameObject.y, tower.x, tower.y);
 
+                const distance = Phaser.Math.Distance.Between(this.gameObject.x, this.gameObject.y, tower.x, tower.y);
                 if (distance <= this.deactivationRadius) {
                     // Emit an event from the tower to be deactivated
                     tower.deactivateTower();
                     this.gameObject.scene.events.emit('towerDeactivated');
                 }
             }
+
         }
     }
 }
