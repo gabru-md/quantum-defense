@@ -53,7 +53,7 @@ export class SlowingAura extends Component {
             const tower = this.gameObject as Tower;
             if (!tower.isSoundPlaying) {
                 tower.isSoundPlaying = true;
-                tower.level.audioManager.playSound('ShootSlowTower', {
+                tower.level.audioManager.playSound('slow_shoot', {
                     volume: 1, onComplete: () => {
                         tower.isSoundPlaying = false;
                     }
