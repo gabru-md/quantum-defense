@@ -85,25 +85,25 @@ export class ChapterSelectScene extends Phaser.Scene {
 
         STORY_LEVEL_ORDER.forEach((storyLevelName, index) => {
             const displayName = storyLevelName.replace('Story_', '').replace(/_/g, ' ');
-            const isUnlocked = index <= lastCompletedStoryIndex + 1; // Unlock current + next chapter
+            // const isUnlocked = index <= lastCompletedStoryIndex + 1; // Unlock current + next chapter
 
             const chapterButton = new TextButton(this, 0, yOffset, `${index + 1}. ${displayName}`, () => {
                 this.scene.start(storyLevelName);
-                if (isUnlocked) {
-                } else {
+                // if (isUnlocked) {
+                // } else {
                     // chapter is locked
                     // this.scene.start(storyLevelName);
                     // this.scene.get('MainMenu').hud.alert('Chapter Locked!', AppColors.UI_MESSAGE_WARN, 1000); // Assuming MainMenu has a hud
-                }
+                // }
             });
 
-            if (!isUnlocked) {
+            // if (!isUnlocked) {
                 // chapterButton.setAlpha(0.5).disableInteractive();
-                chapterButton.setColor(AppColors.UI_DISABLED);
-            }
+                // chapterButton.setColor(AppColors.UI_DISABLED);
+            // }
 
             chapterListContainer.add(chapterButton);
-            yOffset += 40; // Spacing between chapter buttons
+            yOffset += 50; // Spacing between chapter buttons
         });
 
         // --- Back Button ---
