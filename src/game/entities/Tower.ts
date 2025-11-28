@@ -6,6 +6,7 @@ import {AppColors, phaserColor} from '../scripts/Colors.ts';
 import {LaserAttack} from '../components/LaserAttack.ts';
 import {BombAttack} from '../components/BombAttack.ts';
 import {TowerConfigs} from '../config/TowerConfigs.ts';
+import {ShakeComponent} from "../components/ShakeComponent.ts";
 
 export interface TowerConfig {
     scene: Phaser.Scene;
@@ -114,6 +115,7 @@ export class Tower extends GameObject {
         });
         this.level.playerManager.player.danger('A Tower has been deactivated!');
         this.level.audioManager.playSfx('error_fx')
+        this.shake();
     }
 
     public enableVisualPulse(): void {
@@ -163,5 +165,15 @@ export class Tower extends GameObject {
         this.reviveProgress = 0;
         this.enableVisualPulse()
         this.setOriginalPulseColor();
+    }
+
+    private shake() {
+        let shakeComponent = this.getComponent(ShakeComponent);
+        if(shakeComponent) {
+            shakeComponent.enabled = true;
+            this.scene.time.delayedCall(1000, () => {
+                shakeComponent.enabled = false;
+            })
+        }
     }
 }

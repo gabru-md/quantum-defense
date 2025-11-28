@@ -8,7 +8,7 @@ import {Level} from "../scenes/lib/Level.ts";
 import {capitalize} from "../scripts/Util.ts";
 import {Hoverable} from "../components/Hoverable.ts";
 
-export type RiftType = 'static' | 'guardian' | 'gradient' | 'dormant';
+export type RiftType = 'static' | 'nexus' | 'gradient' | 'dormant';
 
 export class Rift extends GameObject {
     public riftType: RiftType;
@@ -30,7 +30,7 @@ export class Rift extends GameObject {
             case 'static':
                 this.riftColor = phaserColor(AppColors.SPECIAL_ENEMY);
                 break;
-            case 'guardian':
+            case 'nexus':
                 this.riftColor = phaserColor(AppColors.PLAYER);
                 break;
             case 'gradient':
@@ -76,7 +76,7 @@ export class Rift extends GameObject {
                 waveType = 'static';
                 waveColor = phaserColor(AppColors.SPECIAL_ENEMY);
             } else {
-                waveType = 'guardian';
+                waveType = 'nexus';
                 waveColor = phaserColor(AppColors.PLAYER);
             }
         }
@@ -110,7 +110,7 @@ export class Rift extends GameObject {
         switch (this.riftType) {
             case 'static':
                 return 'Emits static energy wave that disables towers\nDrops quantum echoes on every wave.';
-            case 'guardian':
+            case 'nexus':
                 return 'Emits nexus energy wave that revives towers\nPhantoms hit by the wave die instantly\nDrops quantum echoes on every wave.';
             case 'gradient':
                 return 'Emits nexus and static energy randomly\nDrops quantum echoes on every wave.';

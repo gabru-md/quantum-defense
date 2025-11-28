@@ -28,7 +28,7 @@ export class Story_ThePhantomArrival extends BaseStoryScene {
                 {
                     text: 'Genie: No! Our weapons... they\'re phasing right through it! It\'s ignoring our defenses completely! It\'s... a phantom. We have no way to stop it!',
                     action: scene => {
-                        const phantom = createPhantom(scene, WIDTH / 2, HEIGHT / 2);
+                        const phantom = createPhantom(scene, WIDTH / 2, HEIGHT / 4);
                         scene.animateIn(phantom);
                         this.onHover(phantom, "Phantom");
                         return [phantom];

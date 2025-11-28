@@ -211,13 +211,13 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         this.underline.setDepth(200);
 
         // Create Continue Text (reused throughout the scene, part of storyElements for final fade-out)
-        this.continueText = this.add.text(WIDTH - 250, HEIGHT - 50, 'Press [SPACE] to continue, [ESC] to quit.', {
+        this.continueText = this.add.text(WIDTH - 250, HEIGHT - 50, 'Press [SPACE] to continue, [ESC] to quit, [HOVER] to learn more.', {
             font: '16px',
             color: AppColors.UI_TEXT,
             padding: {x: 20, y: 10},
             align: 'center',
             wordWrap: {width: WIDTH - 100}
-        }).setOrigin(0.5).setDepth(200).setAlpha(0);
+        }).setOrigin(0.65).setDepth(200).setAlpha(0);
         this.storyElements.push(this.continueText);
 
         // Create Game Visual Separators (part of storyElements for final fade-out)

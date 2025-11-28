@@ -69,7 +69,7 @@ export class RiftWave extends GameObject {
             case 'static':
                 (this.scene as Level).audioManager.playSfx('rift_purple_shoot', false, this);
                 break;
-            case 'guardian':
+            case 'nexus':
                 (this.scene as Level).audioManager.playSfx('rift_blue_shoot', false, this);
                 break;
             case 'gradient':

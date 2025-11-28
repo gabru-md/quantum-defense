@@ -23,7 +23,7 @@ export class Gameplay_TheInvestigation_2 extends Level {
 
     create() {
         super.create();
-        this.createRift(1300, 850, 'guardian'); // Guardian rift for narrative
+        this.createRift(1300, 850, 'nexus'); // Guardian rift for narrative
         this.createRift(350, 550, 'gradient'); // Keep gradient rift
         this.createRift(900, 375, 'static'); // Keep static rift
         this.createMiniRift(275, 990, 'dormant'); // Keep dormant rift

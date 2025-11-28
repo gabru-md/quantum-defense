@@ -50,7 +50,7 @@ export class Gameplay_ThePrototype extends Level {
         super.create();
         this.createRift(600, 675, 'gradient'); // Keep gradient rift
         this.createRift(1155, 35, 'dormant'); // Keep dormant rift
-        this.createRift(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'guardian'); // Ensure guardian rift is present
+        this.createRift(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'nexus'); // Ensure guardian rift is present
     }
 
     getWaveConfig(wave: number): {

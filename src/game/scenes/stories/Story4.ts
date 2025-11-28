@@ -24,7 +24,7 @@ export class Story_VolatileInterference extends BaseStoryScene {
                     text: 'Genie: A new threat! Some of the Rifts are no longer dormant. Their chaotic energy is interfering with our towers!',
                     action: scene => {
                         this.backgroundEffectsManager.enableGlitchAnnihilationEffect(scene);
-                        const staticRift = drawRift(scene, WIDTH / 2, HEIGHT / 2, SpecialEnemyConfig.pulseColor);
+                        const staticRift = drawRift(scene, WIDTH / 2, HEIGHT / 4, SpecialEnemyConfig.pulseColor);
                         return [...staticRift];
                     },
                 },

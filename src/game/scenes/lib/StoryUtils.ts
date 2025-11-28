@@ -32,9 +32,9 @@ export function drawRift(scene: BaseStoryScene, x: number, y: number, color: num
     if (secondaryColor !== null) {
         hoverText = "Volatile Rift";
     } else if (color === PlayerConfig.resonanceWave.pulseColor) {
-        hoverText = "Player Rift";
+        hoverText = "Nexus Rift";
     } else if (color === SpecialEnemyConfig.pulseColor) {
-        hoverText = "Phantom Rift";
+        hoverText = "Static Rift";
     } else if (color === phaserColor(AppColors.UI_DISABLED)) {
         hoverText = "Dormant Rift";
     }

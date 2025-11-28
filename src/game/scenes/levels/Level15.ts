@@ -22,7 +22,7 @@ export class Gameplay_TheCore extends Level {
         // Place rifts strategically for the final battle aesthetic
         this.createRift(GAME_WIDTH / 2 - 400, GAME_HEIGHT / 4, 'static');
         this.createRift(GAME_WIDTH / 2 + 400, GAME_HEIGHT / 4, 'static');
-        this.createRift(GAME_WIDTH / 2, GAME_HEIGHT * 3 / 4, 'guardian');
+        this.createRift(GAME_WIDTH / 2, GAME_HEIGHT * 3 / 4, 'nexus');
 
         // Create Static's Core using the new StaticEnemy class
         this.staticCore = new StaticEnemy({

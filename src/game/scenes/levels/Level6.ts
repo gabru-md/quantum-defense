@@ -36,7 +36,7 @@ export class Gameplay_TheEchoHunt_1 extends Level {
     create() {
         super.create();
         this.createRift(950, 850, 'gradient'); // Keep gradient rift
-        this.createRift(375, 150, 'guardian'); // Keep guardian rift
+        this.createRift(375, 150, 'nexus'); // Keep guardian rift
         this.createMiniRift(GAME_WIDTH - 75, 235, 'dormant'); // Keep dormant rift
 
         // Introduce Quantum Echoes

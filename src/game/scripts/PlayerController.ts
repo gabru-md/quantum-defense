@@ -67,6 +67,7 @@ export class PlayerController extends Component {
             if (this.inactivityTimer >= this.inactivityThreshold) {
                 let player = this.gameObject as Player;
                 player.warn("Hey, Guardian! Are you there?")
+                player.shake();
                 this.inactivityTimer = 0; // Reset timer to avoid continuous alerts
             }
         }

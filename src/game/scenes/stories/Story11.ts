@@ -76,7 +76,7 @@ export class Story_TheResonanceWave extends BaseStoryScene {
                                 if (visual.texture.key === PlayerConfig.texture) {
                                     visual.addComponentOverriding(new VisualPulse(
                                         PlayerConfig.resonanceWave.pulseColor,
-                                        100, // Faster pulse for final wave
+                                        150, // Faster pulse for final wave
                                         500, // Shorter duration
                                         PlayerConfig.resonanceWave.activationRange * 2, // Larger range
                                         5, // More pulses

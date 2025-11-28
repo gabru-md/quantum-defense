@@ -18,6 +18,7 @@ import {QuantumFissureAttack} from "../../../components/QuantumFissureAttack.ts"
 import {DestabilizationAura} from "../../../components/DestabilizationAura.ts";
 import {PhantomKillerAttack} from "../../../components/PhantomKillerAttack.ts";
 import {SpecialBullet} from "../../../entities/SpecialBullet.ts";
+import {ShakeComponent} from "../../../components/ShakeComponent.ts";
 
 export class TowerManager extends Manager {
     towers!: Phaser.GameObjects.Group;
@@ -141,6 +142,7 @@ export class TowerManager extends Manager {
         this.towers.add(tower, true);
         tower.addComponent(new Health(config.health));
         tower.addComponent(new Targeting(config.range, [this.level.waveManager.enemies]));
+        tower.addComponent(new ShakeComponent());
 
         this.applyAttackAndSlowing(tower, towerType, isUpgraded);
 

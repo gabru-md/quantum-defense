@@ -37,11 +37,11 @@ export class Story_TheFirstStand extends BaseStoryScene {
                 {
                     text: 'Genie: You must defend the Nexus! Your energy can manifest defensive towers. Do not let them through!',
                     action: scene => {
-                        const enemy1 = new GameObject(scene, WIDTH / 2 - 100, HEIGHT / 2 + 250, 'enemy1');
+                        const enemy1 = new GameObject(scene, WIDTH / 2 - 50, HEIGHT / 2 + 275, 'enemy1');
                         scene.add.existing(enemy1);
                         this.onHover(enemy1, "Stutters");
 
-                        const enemy2 = new GameObject(scene, WIDTH / 2 + 100, HEIGHT / 2 + 250, 'enemy2');
+                        const enemy2 = new GameObject(scene, WIDTH / 2 + 50, HEIGHT / 2 + 275, 'enemy2');
                         scene.add.existing(enemy2);
                         this.onHover(enemy2, "Surges");
 
@@ -54,7 +54,7 @@ export class Story_TheFirstStand extends BaseStoryScene {
                     action: scene => {
                         let towers: any = [];
                         let xPadding = -100;
-                        for (let tower of [TowerConfigs.tower1, TowerConfigs.tower2]) { // Only show basic towers
+                        for (let tower of [TowerConfigs.tower1, TowerConfigs.tower2, TowerConfigs.tower3]) { // Only show basic towers
                             const towerSprite = new GameObject(scene, WIDTH / 2 + xPadding, HEIGHT / 2 + 200, tower.texture).setAlpha(0.8);
                             scene.add.existing(towerSprite);
                             scene.animateIn(towerSprite);
@@ -66,7 +66,7 @@ export class Story_TheFirstStand extends BaseStoryScene {
                     },
                 },
                 {
-                    text: 'Genie: You did it! Your connection to the Nexus is strong. But this is just the beginning. Static knows you are here now.',
+                    text: 'Genie: Your connection to the Nexus is strong. But this is just the beginning. Static knows you are here now.',
                 },
             ],
         };

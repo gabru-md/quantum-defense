@@ -30,8 +30,8 @@ export class Story_EchoesOfAncientLore extends BaseStoryScene {
                 {
                     text: 'Genie: I have it... The data is fragmented, but it\'s clear. Phantoms aren\'t just Glitches. They are direct, raw manifestations of Static\'s core essence. Mini-Statics. That\'s why they\'re immune.',
                     action: scene => {
-                        const guardianRift = drawRift(scene, WIDTH / 2, HEIGHT / 2, PlayerConfig.resonanceWave.pulseColor);
-                        const phantom = createPhantom(scene, WIDTH / 2 + 200, HEIGHT / 2 + 100);
+                        const guardianRift = drawRift(scene, WIDTH / 2, HEIGHT / 4, PlayerConfig.resonanceWave.pulseColor);
+                        const phantom = createPhantom(scene, WIDTH / 2, HEIGHT * 3 / 4);
                         scene.animateIn(phantom);
                         this.onHover(phantom, "Phantom");
                         return [...guardianRift, phantom];

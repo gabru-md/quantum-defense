@@ -6,6 +6,7 @@ import {VisualPulse} from "../components/VisualPulse.ts";
 import {Genie} from "./Genie.ts";
 import {Health} from "../components/Health.ts";
 import {AppColors} from "../scripts/Colors.ts";
+import {ShakeComponent} from "../components/ShakeComponent.ts";
 
 export interface PlayerConfig {
     scene: Phaser.Scene;
@@ -35,6 +36,7 @@ export class Player extends GameObject {
         // Add components
         this.addComponent(new PlayerController());
         this.addComponent(new BreatheOnHover(1.2, 1000));
+        this.addComponent(new ShakeComponent());
         this.healthComponent = new Health(100);
         this.addComponent(this.healthComponent);
 
@@ -158,7 +160,6 @@ export class Player extends GameObject {
 
         this.notificationText.setY(this.y - 30);
         this.genieTextObject.setY(this.y + 30);
-
     }
 
     public setVisible(value: boolean): this {
@@ -175,6 +176,16 @@ export class Player extends GameObject {
     public takeDamage(amount: number): void {
         this.healthComponent.takeDamage(amount);
         this.scene.cameras.main.flash(250, 255, 0, 0);
+    }
+
+    public shake(): void {
+        let shakeComponent = this.getComponent(ShakeComponent);
+        if(shakeComponent) {
+            shakeComponent.enabled = true;
+            this.scene.time.delayedCall(1000, () => {
+                shakeComponent.enabled = false;
+            })
+        }
     }
 
     destroy(fromScene?: boolean) {

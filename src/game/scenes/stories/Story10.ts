@@ -35,13 +35,13 @@ export class Story_TheFinalAssault extends BaseStoryScene {
                             yoyo: true,
                             repeat: -1,
                         });
-                        const enemy1 = new GameObject(scene, WIDTH / 2 - 75, HEIGHT / 2 + 100, EnemyConfigs.enemy1.texture);
+                        const enemy1 = new GameObject(scene, WIDTH / 2 - 45, HEIGHT / 2 + 100, EnemyConfigs.enemy1.texture);
                         scene.add.existing(enemy1);
                         this.onHover(enemy1, EnemyConfigs.enemy1.name);
-                        const enemy2 = new GameObject(scene, WIDTH / 2 - 25, HEIGHT / 2 + 100, EnemyConfigs.enemy2.texture);
+                        const enemy2 = new GameObject(scene, WIDTH / 2 , HEIGHT / 2 + 100, EnemyConfigs.enemy2.texture);
                         scene.add.existing(enemy2);
                         this.onHover(enemy2, EnemyConfigs.enemy2.name);
-                        const enemy3 = new GameObject(scene, WIDTH / 2 + 25, HEIGHT / 2 + 100, EnemyConfigs.enemy3.texture);
+                        const enemy3 = new GameObject(scene, WIDTH / 2 + 45, HEIGHT / 2 + 100, EnemyConfigs.enemy3.texture);
                         scene.add.existing(enemy3);
                         this.onHover(enemy3, EnemyConfigs.enemy3.name);
                         [enemy1, enemy2, enemy3].forEach(t => scene.animateIn(t));
@@ -51,10 +51,10 @@ export class Story_TheFinalAssault extends BaseStoryScene {
                 {
                     text: 'Genie: A colossal wave of every Glitch type, including unprecedented numbers of Phantoms!',
                     action: scene => {
-                        const phantom1 = createPhantom(scene, WIDTH / 2 - 150, HEIGHT / 2 + 150);
+                        const phantom1 = createPhantom(scene, WIDTH / 2 - 90, HEIGHT / 2 + 100);
                         scene.animateIn(phantom1);
                         this.onHover(phantom1, "Phantom");
-                        const phantom2 = createPhantom(scene, WIDTH / 2 + 150, HEIGHT / 2 + 150);
+                        const phantom2 = createPhantom(scene, WIDTH / 2 + 90, HEIGHT / 2 + 100);
                         scene.animateIn(phantom2);
                         this.onHover(phantom2, "Phantom");
                         return [phantom1, phantom2];

@@ -142,7 +142,7 @@ export class CollisionManager extends Manager {
     protected handleRiftWaveTowerCollision(wave: RiftWave, tower: Tower): void {
         if (wave.riftType === 'static') {
             tower.deactivateTower();
-        } else if (wave.riftType === 'guardian') {
+        } else if (wave.riftType === 'nexus') {
             tower.revive();
         } else {
             console.log(3);
@@ -150,7 +150,7 @@ export class CollisionManager extends Manager {
     }
 
     protected handleRiftWaveSpecialEnemyCollision(wave: RiftWave, specialEnemy: SpecialEnemy): void {
-        if (wave.riftType === 'guardian') {
+        if (wave.riftType === 'nexus') {
             specialEnemy.takeDamage(9999); // Insta-kill
         }
     }
