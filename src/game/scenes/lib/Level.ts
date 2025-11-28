@@ -26,8 +26,8 @@ import {Rift, RiftType} from "../../entities/Rift.ts";
 import {RiftWave} from "../../entities/RiftWave.ts";
 import {QuantumEcho} from "../../entities/QuantumEcho.ts";
 import {GlitchAnnihilationEffect} from "../../effects/GlitchAnnihilationEffect.ts";
-import { GameObject } from '../../core/GameObject.ts';
-import { Hoverable } from '../../components/Hoverable.ts';
+import {GameObject} from '../../core/GameObject.ts';
+import {Hoverable} from '../../components/Hoverable.ts';
 
 export abstract class Level extends Phaser.Scene {
     hud: HudManager;
@@ -260,7 +260,7 @@ export abstract class Level extends Phaser.Scene {
         if (this.waveManager.gameOver) return;
         this.waveManager.gameOver = true;
         this.physics.pause();
-        this.easeOutAndStartNextScene(LevelNames.EndScene, { win: false });
+        this.easeOutAndStartNextScene(LevelNames.EndScene, {win: false});
     }
 
     public setGameSpeed(speed: number): void {
@@ -294,6 +294,11 @@ export abstract class Level extends Phaser.Scene {
         });
     }
 
+    protected populateQuantumEchoes() {
+        for (let i = 0; i < Phaser.Math.Between(5, 10); i++) {
+            this.quantumEchoes.add(new QuantumEcho(this, Phaser.Math.Between(0, GAME_WIDTH), Phaser.Math.Between(0, GAME_HEIGHT)));
+        }
+    }
 
     protected shutdown(): void {
         this.waveManager.destroy();

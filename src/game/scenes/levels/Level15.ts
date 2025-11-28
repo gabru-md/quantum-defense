@@ -24,11 +24,13 @@ export class Gameplay_TheCore extends Level {
         this.createRift(GAME_WIDTH / 2 + 400, GAME_HEIGHT / 4, 'static');
         this.createRift(GAME_WIDTH / 2, GAME_HEIGHT * 3 / 4, 'nexus');
 
+        this.populateQuantumEchoes();
+
         // Create Static's Core using the new StaticEnemy class
         this.staticCore = new StaticEnemy({
             scene: this,
-            x: GAME_WIDTH / 2,
-            y: GAME_HEIGHT / 2,
+            x: GAME_WIDTH / 3,
+            y: GAME_HEIGHT / 3,
             texture: 'static', // Use a specific texture for the core (assuming 'static' is loaded)
             health: 5000, // Very high health for the boss
             name: "Static's Core"

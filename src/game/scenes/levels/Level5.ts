@@ -3,7 +3,6 @@ import {Level} from '../lib/Level.ts';
 import {GAME_HEIGHT, GAME_WIDTH} from '../../scripts/Util.ts';
 import {LevelNames} from '../lib/LevelNames.ts';
 import {PathMaker} from "../lib/PathMaker.ts";
-import {QuantumEcho} from "../../entities/QuantumEcho.ts";
 
 export class Gameplay_TheFirstEcho extends Level {
     constructor() {
@@ -43,10 +42,7 @@ export class Gameplay_TheFirstEcho extends Level {
         this.createRift(400, GAME_HEIGHT / 2, 'dormant'); // Keep dormant rift
         this.createMiniRift(925, GAME_HEIGHT / 2 - 225, 'dormant'); // Keep dormant rift
 
-        // Introduce Quantum Echoes
-        this.quantumEchoes.add(new QuantumEcho(this, 200, 200));
-        this.quantumEchoes.add(new QuantumEcho(this, GAME_WIDTH - 200, 200));
-        this.quantumEchoes.add(new QuantumEcho(this, GAME_WIDTH / 2, GAME_HEIGHT / 2));
+        this.populateQuantumEchoes();
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {

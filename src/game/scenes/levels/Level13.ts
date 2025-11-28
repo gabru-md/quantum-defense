@@ -42,6 +42,7 @@ export class Gameplay_TheAllOutWar_1 extends Level {
         this.createRift(600, 675, 'gradient'); // Keep gradient rift
         this.createRift(1050, 350, 'static'); // Keep static rift
         this.createRift(GAME_WIDTH - 65, GAME_HEIGHT - 65, 'dormant'); // Keep dormant rift
+        this.populateQuantumEchoes();
     }
 
     getWaveConfig(wave: number): {

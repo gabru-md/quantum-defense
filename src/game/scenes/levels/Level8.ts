@@ -26,6 +26,8 @@ export class Gameplay_BruteForce extends Level {
         this.createRift(950, 200, 'gradient'); // Keep gradient rift
         this.createMiniRift(75, GAME_HEIGHT - 50, 'dormant'); // Keep dormant rift
         this.createMiniRift(530, 530, 'dormant'); // Keep dormant rift
+
+        this.populateQuantumEchoes();
     }
 
     getWaveConfig(wave: number): {

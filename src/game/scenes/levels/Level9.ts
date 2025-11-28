@@ -25,6 +25,7 @@ export class Gameplay_AFutileDefense extends Level {
         this.createRift(1250, 350, 'gradient'); // Keep gradient rift
         this.createMiniRift(555, 550, 'static'); // Keep static rift
         this.createMiniRift(GAME_WIDTH/2, GAME_HEIGHT - 15, 'dormant'); // Keep dormant rift
+        this.populateQuantumEchoes();
     }
 
     getWaveConfig(wave: number): {
