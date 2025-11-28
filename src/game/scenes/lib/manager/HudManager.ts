@@ -10,6 +10,7 @@ import {AppColors, phaserColor} from '../../../scripts/Colors.ts';
 import {TowerConfigs, TowerConfigType} from '../../../config/TowerConfigs.ts';
 import {GameObject} from "../../../core/GameObject.ts";
 import Graphics = Phaser.GameObjects.Graphics;
+import {LevelNames} from "../LevelNames.ts";
 
 export class HudManager extends Manager {
     protected gameName!: Phaser.GameObjects.Text;
@@ -316,7 +317,7 @@ export class HudManager extends Manager {
         let towerIndex = 1;
         for (const towerKey in TowerConfigs) {
             const config: TowerConfigType = TowerConfigs[towerKey];
-            if (towerKey === 'specialTower') {
+            if (!this.canPutSpecialTower(towerKey)) {
                 // we will allow special tower after a certain level only
                 // and this will require collecting the quantum echoes
                 continue;
@@ -604,5 +605,18 @@ export class HudManager extends Manager {
 
     private getLevelName(): string {
         return this.scene.scene.key.replace('Gameplay_', '');
+    }
+
+    private canPutSpecialTower(towerKey: string) {
+        if(towerKey === 'specialTower') {
+            switch(this.scene.scene.key) {
+                case LevelNames.Gameplay_ThePrototype:
+                case LevelNames.Gameplay_TheAllOutWar_1:
+                case LevelNames.Gameplay_TheAllOutWar_2:
+                    return true;
+            }
+            return false;
+        }
+        return true;
     }
 }

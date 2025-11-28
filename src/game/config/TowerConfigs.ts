@@ -156,21 +156,23 @@ export const TowerConfigs: { [key: string]: TowerConfigType } = {
         upgradedName: 'Phantom Killer',
         texture: 'specialTower',
         upgradedTexture: 'specialTower',
-        energyCost: 350,
-        upgradedEnergyCost: 350,
+        energyCost: 500,
+        upgradedEnergyCost: 800,
         health: 200,
         range: 150,
         description: 'Special Tower:\nFinds and nukes the Phantoms',
         upgradedDescription: 'Special Tower:\nFinds and nukes the Phantoms',
         pulse: {
-            color: phaserColor(AppColors.TOWER_SLOW),
+            color: phaserColor(AppColors.TOWER_SPECIAL),
             pulseDelay: 300,
             pulseDuration: 1500,
             pulseTotalPulses: 10,
             pulseLineWidth: 0.5,
         },
-        slowing: {
-            slowFactor: 0.5,
+        attack: {
+            damage: 1000,
+            fireRate: 1000, // ms
+            bulletSpeed: 250
         },
     }
 }

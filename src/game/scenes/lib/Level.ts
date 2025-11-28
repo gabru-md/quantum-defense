@@ -314,8 +314,9 @@ export abstract class Level extends Phaser.Scene {
         createBigTowerTexture(this, 'tower2_upgraded', 32, AppColors.TOWER_BOMB);
         createTowerTexture(this, 'tower3', 32, AppColors.TOWER_SLOW);
         createBigTowerTexture(this, 'tower3_upgraded', 32, AppColors.TOWER_SLOW);
-        createTowerTexture(this, 'specialTower', 64, AppColors.TOWER_SPECIAL);
+        createTowerTexture(this, 'specialTower', 32, AppColors.TOWER_SPECIAL);
         createBulletTexture(this, 'bullet', 10, AppColors.BULLET_LASER);
+        createBulletTexture(this, 'specialBullet', 10, AppColors.SPECIAL_ENEMY);
         createBombTexture(this, 'bomb', 16, AppColors.BULLET_BOMB);
         createPlayerTexture(this, 'player', 24, AppColors.PLAYER);
         createSpecialEnemyTexture(this, 'specialEnemy', 24, AppColors.SPECIAL_ENEMY);

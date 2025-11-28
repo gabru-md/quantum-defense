@@ -11,6 +11,7 @@ import {QuantumEcho} from "../../../entities/QuantumEcho.ts";
 import {RiftWave} from "../../../entities/RiftWave.ts";
 import {SpecialEnemy} from "../../../entities/SpecialEnemy.ts";
 import {VisualPulse} from "../../../components/VisualPulse.ts";
+import {SpecialBullet} from "../../../entities/SpecialBullet.ts";
 
 export class CollisionManager extends Manager {
     constructor(protected level: Level) {
@@ -86,6 +87,24 @@ export class CollisionManager extends Manager {
             undefined,
             this
         );
+
+        // Collision for phantom killer bullet and phantom
+        this.level.physics.add.overlap(
+            this.level.towerManager.specialBullets,
+            this.level.waveManager.specialEnemies,
+            this.handleSpecialEnemySpecialBulletCollision as Phaser.Types.Physics.Arcade.ArcadePhysicsCallback,
+            undefined,
+            this
+        );
+    }
+
+    protected handleSpecialEnemySpecialBulletCollision(bullet: SpecialBullet, specialEnemyObject: Phaser.GameObjects.GameObject): void {
+        if (specialEnemyObject instanceof GameObject) {
+            const enemy = specialEnemyObject as SpecialEnemy;
+            bullet.applyDamage(enemy);
+        } else {
+            console.warn('Collision detected with an object not recognized as a custom GameObject:', specialEnemyObject);
+        }
     }
 
     protected handleBulletEnemyCollision(bullet: Bullet, enemyObject: Phaser.GameObjects.GameObject): void {

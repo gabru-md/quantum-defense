@@ -16,11 +16,14 @@ import {TowerConfigs, TowerConfigType} from '../../../config/TowerConfigs.ts';
 import {ChainPulseAttack} from "../../../components/ChainPulseAttack.ts";
 import {QuantumFissureAttack} from "../../../components/QuantumFissureAttack.ts";
 import {DestabilizationAura} from "../../../components/DestabilizationAura.ts";
+import {PhantomKillerAttack} from "../../../components/PhantomKillerAttack.ts";
+import {SpecialBullet} from "../../../entities/SpecialBullet.ts";
 
 export class TowerManager extends Manager {
     towers!: Phaser.GameObjects.Group;
     bullets!: Phaser.GameObjects.Group;
     bombs!: Phaser.GameObjects.Group;
+    specialBullets!: Phaser.GameObjects.Group;
     private canPlaceTowers: boolean = true;
 
     constructor(protected level: Level) {
@@ -31,6 +34,7 @@ export class TowerManager extends Manager {
         this.towers = this.level.add.group({classType: Tower, runChildUpdate: false});
         this.bullets = this.level.add.group({classType: Bullet, runChildUpdate: false});
         this.bombs = this.level.add.group({classType: Bomb, runChildUpdate: false});
+        this.specialBullets = this.level.add.group({classType: SpecialBullet, runChildUpdate: false});
         this.setupInputEventListeners();
 
         return {towers: this.towers, bullets: this.bullets, bombs: this.bombs};
@@ -40,6 +44,7 @@ export class TowerManager extends Manager {
         this.towers.destroy(true);
         this.bullets.destroy(true);
         this.bombs.destroy(true);
+        this.specialBullets.destroy(true);
         this.level.input.off('pointerdown');
     }
 
@@ -73,6 +78,10 @@ export class TowerManager extends Manager {
         // @ts-ignore
         this.bombs.children.each((bomb: Phaser.GameObjects.GameObject) => {
             if (bomb instanceof GameObject) bomb.update(time, delta);
+        });
+        // @ts-ignore
+        this.specialBullets.children.each((specialBullet: Phaser.GameObjects.GameObject) => {
+            if (specialBullet instanceof GameObject) specialBullet.update(time, delta);
         });
     }
 
@@ -161,6 +170,10 @@ export class TowerManager extends Manager {
                 tower.addComponentOverriding(new BombAttack(config.attack.fireRate, config.attack.damage, config.range, config.attack.aoeRadius!, this.bombs, [this.level.waveManager.enemies]));
             } else if (towerType === 'tower3' && config.slowing) {
                 tower.addComponentOverriding(new SlowingAura(config.range, config.slowing.slowFactor));
+            } else if (towerType === 'specialTower') {
+                tower.addComponentOverriding(new Targeting(config.range, [this.level.waveManager.specialEnemies]));
+                // @ts-ignore
+                tower.addComponentOverriding(new PhantomKillerAttack(config.attack.fireRate, config.attack.damage, config.attack.bulletSpeed, this.specialBullets))
             }
         }
     }

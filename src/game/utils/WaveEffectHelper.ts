@@ -1,26 +1,28 @@
 import * as Phaser from 'phaser';
-import { WaveEffectConfig } from '../config/WaveConfig.ts';
+import {WaveEffectConfig} from '../config/WaveConfig.ts';
+import {GameObject} from "../core/GameObject.ts";
 
 export function createWaveEffect(
     scene: Phaser.Scene,
     x: number,
     y: number,
     gameObjectWidth: number,
-    config: WaveEffectConfig
+    config: WaveEffectConfig,
+    gameObject?: GameObject
 ): void {
-    const { totalPulses, pulseDelay, duration, lineWidth, color, targetRadius } = config;
+    const {totalPulses, pulseDelay, duration, lineWidth, color, targetRadius} = config;
     const initialRadius = gameObjectWidth / 2;
 
     for (let i = 0; i < totalPulses; i++) {
         scene.time.delayedCall(i * pulseDelay, () => {
             const graphics = scene.add.graphics({
-                fillStyle: { color: color, alpha: 0.3 },
-                lineStyle: { width: lineWidth, color: color, alpha: 0.8 },
+                fillStyle: {color: color, alpha: 0.3},
+                lineStyle: {width: lineWidth, color: color, alpha: 0.8},
             });
 
             graphics.setDepth(10); // Adjust depth as needed
-            graphics.x = x;
-            graphics.y = y;
+            graphics.x = gameObject ? gameObject.x : x;
+            graphics.y = gameObject ? gameObject.y : y;
 
             scene.tweens.add({
                 targets: graphics,

@@ -8,7 +8,7 @@ export class LaserAttack extends Component {
     private targetingComponent!: Targeting;
     private readonly fireRate: number; // in milliseconds
     private lastFired: number = 0;
-    private bullets: Phaser.GameObjects.Group;
+    protected bullets: Phaser.GameObjects.Group;
     private readonly damage: number;
     private readonly bulletSpeed: number;
 
@@ -43,7 +43,7 @@ export class LaserAttack extends Component {
         }
     }
 
-    private fireAt(target: Phaser.GameObjects.Sprite): void {
+    protected fireAt(target: Phaser.GameObjects.Sprite): void {
         this.gameObject.level.audioManager.playTowerSfx('laser_shoot', false, this.gameObject);
         console.log('Shooting laser tower')
         const bullet = new Bullet(
