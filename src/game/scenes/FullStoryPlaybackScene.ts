@@ -25,9 +25,8 @@ export class FullStoryPlaybackScene extends Phaser.Scene {
         graphics.strokePath();
 
         this.playbackText = this.add.text(WIDTH / 2, GAME_HEIGHT / 2, 'Full Story Playback', {
-            fontSize: '48px',
+            fontSize: '52px',
             color: AppColors.UI_ACCENT,
-            fontFamily: 'PixelFont',
         }).setOrigin(0.5).setAlpha(0);
 
         this.tweens.add({
