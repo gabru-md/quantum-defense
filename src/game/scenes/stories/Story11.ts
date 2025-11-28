@@ -50,7 +50,7 @@ export class Story_TheResonanceWave extends BaseStoryScene {
                         scene.tweens.add({
                             targets: phantomKiller,
                             alpha: 0.6,
-                            scale: 1.2 * 0.1,
+                            scale: 1.2,
                             duration: 500,
                             yoyo: true,
                             repeat: -1,
