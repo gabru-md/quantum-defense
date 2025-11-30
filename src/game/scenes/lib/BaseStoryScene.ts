@@ -36,6 +36,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
     backgroundEffectsManager: BackgroundEffectsManager;
     riftManager: GlitchAnnihilationEffect;
     protected isPlaybackMode: boolean = false; // New property for full story playback
+    private spacePressDisabled: boolean = true;
 
     constructor(key: string) {
         super(key);
@@ -162,6 +163,9 @@ export abstract class BaseStoryScene extends Phaser.Scene {
     }
 
     protected handleSpacePress(): void {
+        if(this.spacePressDisabled) {
+            return;
+        }
         if (this.isTyping) {
             // If currently typing, complete the text immediately
             if (this.typingTimer) {
@@ -229,6 +233,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         graphics.lineBetween(WIDTH, 0, WIDTH, HEIGHT);
         graphics.strokePath();
         this.storyElements.push(graphics);
+        this.spacePressDisabled = false;
     }
 
     protected showNextStep(): void {
@@ -247,6 +252,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         }
 
         if (this.currentStep < this.steps.length) {
+            this.spacePressDisabled = true;
             const step = this.steps[this.currentStep];
 
             // Create instruction text with alpha 0 and empty text (temporary, not added to storyElements)
@@ -287,6 +293,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
             }
 
             this.currentStep++;
+            this.spacePressDisabled = false;
         } else {
             // All steps shown, fade out all elements and then complete story
             // skip animation for Introduction scene as it is handled differently
@@ -305,6 +312,9 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         this.typingTimer = this.time.addEvent({
             delay: delay,
             callback: () => {
+                if(textObject === null || textObject === undefined) {
+                    return;
+                }
                 textObject.setText(fullText.substring(0, i));
                 i++;
                 if (i > fullText.length) { // Changed condition to allow one extra iteration to set full text
