@@ -151,6 +151,8 @@ export class TowerManager extends Manager {
         tower.on('pointerover', () => this.level.hud.setHelpText(this.getTowerDescription(towerType)));
         tower.on('pointerout', () => this.level.hud.setHelpText(''));
         this.playAudioOnTowerPlacement(config.sfx, tower);
+        this.level.hud.rangePreview.clear();
+        this.level.state.selectedTowerType = 'none';
         return tower;
     }
 

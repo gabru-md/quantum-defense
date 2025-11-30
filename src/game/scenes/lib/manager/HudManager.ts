@@ -18,7 +18,7 @@ export class HudManager extends Manager {
     protected waveNumberText!: Phaser.GameObjects.Text;
     protected waveProgressText!: Phaser.GameObjects.Text;
     protected messageText!: Phaser.GameObjects.Text;
-    private rangePreview!: Phaser.GameObjects.Graphics;
+    rangePreview!: Phaser.GameObjects.Graphics;
     private selectionIndicator!: Phaser.GameObjects.Graphics;
     private towerSelectionButtons: {
         [key: string]: {
