@@ -27,6 +27,7 @@ export class AudioManager extends Manager {
 
         this.scene.load.audio('MainMenuMusic', 'assets/music/MainMenuMusic.mp3');
         this.scene.load.audio('LevelMusic', 'assets/music/LevelMusic.mp3');
+        this.scene.load.audio('GameOver', 'assets/music/GameOver.mp3');
         this.loadAllSfx();
     }
 
