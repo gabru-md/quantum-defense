@@ -331,7 +331,7 @@ export class HudManager extends Manager {
             this.createTowerButton(hudX + 15, currentTowerY, towerKey, config.energyCost, statsString, config.description.split('\n')[0].split(':')[0]);
 
             // Add upgrade progress text
-            const upgradeText = this.scene.add.text(hudX + 200, currentTowerY + 35, '', { font: '16px', color: AppColors.UI_ACCENT }).setDepth(100);
+            const upgradeText = this.scene.add.text(hudX + 215, currentTowerY + 35, '', { font: '16px', color: AppColors.UI_ACCENT }).setDepth(100);
             if (towerIndex === 1) this.tower1UpgradeText = upgradeText;
             if (towerIndex === 2) this.tower2UpgradeText = upgradeText;
             if (towerIndex === 3) this.tower3UpgradeText = upgradeText;
@@ -505,19 +505,19 @@ export class HudManager extends Manager {
         if (this.scene.playerManager.tower1Upgraded) {
             this.tower1UpgradeText.setText('Upgraded!');
         } else {
-            this.tower1UpgradeText.setText(`${this.scene.playerManager.tower1UpgradeProgress}/${TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT}`);
+            this.tower1UpgradeText.setText(`Upgrade: ${this.scene.playerManager.tower1UpgradeProgress}/${TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT}`);
         }
 
         if (this.scene.playerManager.tower2Upgraded) {
             this.tower2UpgradeText.setText('Upgraded!');
         } else {
-            this.tower2UpgradeText.setText(`${this.scene.playerManager.tower2UpgradeProgress}/${TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT}`);
+            this.tower2UpgradeText.setText(`Upgrade: ${this.scene.playerManager.tower2UpgradeProgress}/${TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT}`);
         }
 
         if (this.scene.playerManager.tower3Upgraded) {
             this.tower3UpgradeText.setText('Upgraded!');
         } else {
-            this.tower3UpgradeText.setText(`${this.scene.playerManager.tower3UpgradeProgress}/${TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT}`);
+            this.tower3UpgradeText.setText(`Upgrade: ${this.scene.playerManager.tower3UpgradeProgress}/${TOWER_UPGRADE_QUANTUM_ECHO_REQUIREMENT}`);
         }
     }
 
