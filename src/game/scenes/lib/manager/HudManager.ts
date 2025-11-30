@@ -51,7 +51,7 @@ export class HudManager extends Manager {
     private healthBarText!: Phaser.GameObjects.Text;
     private energyBarText!: Phaser.GameObjects.Text;
     private maxHealth!: number;
-    private maxEnergy!: number;
+    maxEnergy!: number;
     private healthBarBg!: Phaser.GameObjects.Graphics;
     private energyBarBg!: Phaser.GameObjects.Graphics;
 

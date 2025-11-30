@@ -70,6 +70,7 @@ export class TutorialManager {
         this.player = this.level.playerManager.player; // Get player instance
 
         this.level.state.energy = 9999; // Infinite energy for tutorial
+        this.level.hud.maxEnergy = 9999;
         this.level.hud.disableTowerSelection();
         this.level.towerManager.disablePlacement();
         this.level.physics.pause(); // Pause physics initially
