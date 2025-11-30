@@ -125,7 +125,7 @@ export class TutorialManager {
 
             case TutorialStep.ExplainLevel:
                 this.level.hud.persistedInfo('This is your current level.\nAs you progress, the glitches become more formidable.', AppColors.UI_MESSAGE_INFO);
-                this.level.hud.showMarker(hudX + 5, 58, hudX + hudPanelWidth - 5, 83, "Level");
+                this.level.hud.showMarker(hudX + 10, 58, hudX + hudPanelWidth - 10, 85, "");
                 await this.waitForSpacePress();
                 this.currentStep = TutorialStep.ExplainNexusHealth;
                 await this.executeStep();
@@ -133,7 +133,7 @@ export class TutorialManager {
 
             case TutorialStep.ExplainNexusHealth:
                 this.level.hud.persistedInfo('This is your Nexus\'s health, representing its structural integrity.\nIf it reaches zero, the Nexus collapses, and the game is over.', AppColors.UI_MESSAGE_INFO);
-                this.level.hud.showMarker(hudX + 5, 83, hudX + hudPanelWidth - 5, 108, "Nexus Health");
+                this.level.hud.showMarker(hudX + 10, 85, hudX + hudPanelWidth - 5, 115, "");
                 await this.waitForSpacePress();
                 this.currentStep = TutorialStep.ExplainEnergy;
                 await this.executeStep();
@@ -141,7 +141,7 @@ export class TutorialManager {
 
             case TutorialStep.ExplainEnergy:
                 this.level.hud.persistedInfo('This is your Energy: The lifeblood of your defense.\nGain Energy by eliminating Glitches. Use it to construct and repair your towers.', AppColors.UI_MESSAGE_INFO);
-                this.level.hud.showMarker(hudX + 5, 108, hudX + hudPanelWidth - 5, 133, "Energy");
+                this.level.hud.showMarker(hudX + 10, 115, hudX + hudPanelWidth - 5, 145, "");
                 await this.waitForSpacePress();
                 this.currentStep = TutorialStep.ExplainWave;
                 await this.executeStep();
@@ -149,9 +149,9 @@ export class TutorialManager {
 
             case TutorialStep.ExplainWave:
                 this.level.hud.persistedInfo('This displays the current wave of Glitches.\nEach wave brings new challenges. Prepare accordingly!', AppColors.UI_MESSAGE_INFO);
-                this.level.hud.showMarker(hudX + 5, 133, hudX + hudPanelWidth - 5, 158, "Wave");
+                this.level.hud.showMarker(hudX + 10, 145, hudX + 150, 175, "");
                 await this.waitForSpacePress();
-                this.level.hud.showMarker(hudX + 5, 158, hudX + hudPanelWidth - 5, 183, "Enemies Spawned");
+                this.level.hud.showMarker(hudX + 150, 145, hudX + hudPanelWidth - 5, 175, "");
                 await this.waitForSpacePress();
                 this.level.hud.showTowers(true); // Show towers section
                 this.currentStep = TutorialStep.ExplainTowerArsenal;
@@ -167,8 +167,8 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.ExplainLaserTower:
-                this.level.hud.persistedInfo('The Laser Tower projects concentrated particle beams.\nThese beams travel in a straight line, dealing precise damage.', AppColors.UI_MESSAGE_INFO);
-                this.level.hud.showMarker(hudX + 15, 250, hudX + hudPanelWidth - 15, 340, "Laser Tower");
+                this.level.hud.persistedInfo('The Pulse Tower projects concentrated particle beams.\nThese beams travel in a straight line, dealing precise damage.', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.showMarker(hudX + 15, 250, hudX + hudPanelWidth - 15, 340, "");
                 await this.waitForSpacePress();
                 this.currentStep = TutorialStep.ExplainBombTower;
                 await this.executeStep();
@@ -176,7 +176,7 @@ export class TutorialManager {
 
             case TutorialStep.ExplainBombTower:
                 this.level.hud.persistedInfo('The Bomb Tower charges and releases a volatile\nparticle explosion. Effective against groups of Glitches.', AppColors.UI_MESSAGE_INFO);
-                this.level.hud.showMarker(hudX + 15, 350, hudX + hudPanelWidth - 15, 440, "Bomb Tower");
+                this.level.hud.showMarker(hudX + 15, 350, hudX + hudPanelWidth - 15, 440, "");
                 await this.waitForSpacePress();
                 this.currentStep = TutorialStep.ExplainSlowTower;
                 await this.executeStep();
@@ -184,7 +184,7 @@ export class TutorialManager {
 
             case TutorialStep.ExplainSlowTower:
                 this.level.hud.persistedInfo('The Slow Tower emits a continuous, disruptive wave\nthat significantly reduces the speed of Glitches within its radius.', AppColors.UI_MESSAGE_INFO);
-                this.level.hud.showMarker(hudX + 15, 450, hudX + hudPanelWidth - 15, 540, "Slow Tower");
+                this.level.hud.showMarker(hudX + 15, 450, hudX + hudPanelWidth - 15, 540, "");
                 await this.waitForSpacePress();
                 this.currentStep = TutorialStep.ExplainDeselect;
                 await this.executeStep();
@@ -227,7 +227,7 @@ export class TutorialManager {
 
             case TutorialStep.ExplainStaticDen:
                 this.level.hud.persistedInfo('This is Static\'s Den, the source of\nthe Glitch incursions. All Glitches spawn from here.', AppColors.UI_MESSAGE_INFO);
-                this.level.hud.showMarker(5, GAME_HEIGHT / 2 - 48, 95, GAME_HEIGHT / 2 + 48, "Static's Den");
+                this.level.hud.showMarker(50, GAME_HEIGHT / 2 - 48, 150, GAME_HEIGHT / 2 + 48, "Static's Den");
                 await this.waitForSpacePress();
                 this.level.pathsManager.showEnd(true);
                 this.currentStep = TutorialStep.ExplainNexus;
@@ -236,7 +236,7 @@ export class TutorialManager {
 
             case TutorialStep.ExplainNexus:
                 this.level.hud.persistedInfo('This is the Nexus, the heart of the Quantum Realm.\nProtect it at all costs!', AppColors.UI_MESSAGE_INFO);
-                this.level.hud.showMarker(GAME_WIDTH - 95, GAME_HEIGHT / 2 - 48, GAME_WIDTH - 5, GAME_HEIGHT / 2 + 48, "The Nexus");
+                this.level.hud.showMarker(GAME_WIDTH - 150, GAME_HEIGHT / 2 - 48, GAME_WIDTH - 50, GAME_HEIGHT / 2 + 48, "The Nexus");
                 await this.waitForSpacePress();
                 this.level.pathsManager.showPath(true);
                 this.currentStep = TutorialStep.ExplainPath;

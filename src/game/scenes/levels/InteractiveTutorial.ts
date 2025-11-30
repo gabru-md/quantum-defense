@@ -14,8 +14,8 @@ export class InteractiveTutorial extends Level {
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {
-        const path = new PathMaker(50, GAME_HEIGHT / 2)
-            .right(GAME_WIDTH - 100)
+        const path = new PathMaker(100, GAME_HEIGHT / 2)
+            .right(GAME_WIDTH - 200)
             .create(this);
         return { path1: path };
     }
