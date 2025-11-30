@@ -219,7 +219,6 @@ export class TutorialManager {
                 this.level.hud.persistedInfo('Navigate the battlefield using the WASD keys.', AppColors.UI_MESSAGE_INFO);
                 this.level.physics.resume(); // Allow player movement
                 await this.waitForEvent('playerMoved');
-                this.level.physics.pause();
                 this.level.pathsManager.showStart(true);
                 this.currentStep = TutorialStep.ExplainStaticDen;
                 await this.executeStep();
