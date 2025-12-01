@@ -27,8 +27,11 @@ export class AudioManager extends Manager {
 
         this.scene.load.audio('MainMenuMusic', 'assets/music/MainMenuMusic.mp3');
         this.scene.load.audio('LevelMusic', 'assets/music/LevelMusic.mp3');
+        this.scene.load.audio('LevelComplete', 'assets/music/LevelComplete.mp3');
         this.scene.load.audio('GameOver', 'assets/music/GameOver.mp3');
+        this.scene.load.audio('WinGame', 'assets/music/WinGame.mp3');
         this.loadAllSfx();
+        // this.loadAllNarration();
     }
 
     private loadAllSfx(): void {
@@ -61,6 +64,13 @@ export class AudioManager extends Manager {
         this.scene.load.audio('surge_2', 'assets/sfx/surge_2.mp3');
         this.scene.load.audio('surge_slowed_1', 'assets/sfx/surge_slowed_1.mp3');
         this.scene.load.audio('surge_slowed_2', 'assets/sfx/surge_slowed_2.mp3');
+        this.scene.load.audio('laser_deactivate', 'assets/sfx/laser_deact.mp3');
+        this.scene.load.audio('bomb_deactivate', 'assets/sfx/bomb_deact.mp3');
+        this.scene.load.audio('slow_deactivate', 'assets/sfx/slow_deact.mp3');
+        this.scene.load.audio('laser_reactivate', 'assets/sfx/laser_react.mp3');
+        this.scene.load.audio('bomb_reactivate', 'assets/sfx/bomb_react.mp3');
+        this.scene.load.audio('slow_reactivate', 'assets/sfx/slow_react.mp3');
+
     }
 
     public get sfxVolume(): number {

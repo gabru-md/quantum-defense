@@ -35,7 +35,12 @@ export class EndScene extends Phaser.Scene {
         this.createVisualSepartors();
 
         this.cameras.main.setBackgroundColor(AppColors.GAME_BACKGROUND);
-        this.audioManager.playMusic('GameOver');
+        this.audioManager.playMusic('LevelComplete');
+        if(this.win) {
+            this.audioManager.playMusic('WinGame')
+        } else {
+            this.audioManager.playMusic('GameOver');
+        }
 
         const centerX = this.cameras.main.width / 2;
         const centerY = this.cameras.main.height / 2;

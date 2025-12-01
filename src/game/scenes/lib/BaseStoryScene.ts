@@ -435,7 +435,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
 
     private getCurrentStepAudio(): string {
         const levelNameKey: string = getLevelNameKey(this.scene.key);
-        return `Story_${levelNameKey}_${this.currentStep + 1}`;
+        return `${levelNameKey}_${this.currentStep + 1}`;
     }
 
     onHover(gameObject: GameObject, helpText: string): void {

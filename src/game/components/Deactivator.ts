@@ -47,6 +47,20 @@ export class Deactivator extends Component {
                 if (distance <= this.deactivationRadius) {
                     // Emit an event from the tower to be deactivated
                     tower.deactivateTower();
+                    switch (tower.towerType) {
+                        case 'tower1':
+                            this.gameObject.level.audioManager.playSfx('laser_deactivate');
+                            break;
+                        case 'tower2':
+                            this.gameObject.level.audioManager.playSfx('bomb_deactivate');
+                            break;
+                        case 'tower3':
+                            this.gameObject.level.audioManager.playSfx('slow_deactivate');
+                            break;
+                        default:
+                            this.gameObject.level.audioManager.playSfx('laser_deactivate');
+                            break;
+                    }
                     this.gameObject.scene.events.emit('towerDeactivated');
                 }
             }

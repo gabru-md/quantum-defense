@@ -165,6 +165,20 @@ export class Tower extends GameObject {
         this.reviveProgress = 0;
         this.enableVisualPulse()
         this.setOriginalPulseColor();
+        switch (this.towerType) {
+            case 'tower1':
+                this.level.audioManager.playSfx('laser_deactivate');
+                break;
+            case 'tower2':
+                this.level.audioManager.playSfx('bomb_deactivate');
+                break;
+            case 'tower3':
+                this.level.audioManager.playSfx('slow_deactivate');
+                break;
+            default:
+                this.level.audioManager.playSfx('laser_deactivate');
+                break;
+        }
     }
 
     private shake() {
