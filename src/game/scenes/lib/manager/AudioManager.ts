@@ -207,15 +207,64 @@ export class AudioManager extends Manager {
     }
 
     public playEnemySound(key: string, source?: GameObject) {
-        return this.playSound(key, {volume: 0.4}, source);
+        return this.playSfxSound(key, {volume: 0.4}, source);
     }
 
     public playSfx(key: string, loop: boolean = false, source?: GameObject) {
-        return this.playSound(key, {volume: 0.7, loop}, source);
+        return this.playSfxSound(key, {volume: 0.7, loop}, source);
     }
 
     public playTowerSfx(key: string, loop: boolean = false, source?: GameObject) {
-        return this.playSound(key, {volume: 0.5, loop}, source);
+        return this.playSfxSound(key, {volume: 0.5, loop}, source);
+    }
+
+    public playSfxSound(key: string, config?: {
+        volume?: number;
+        detune?: number;
+        rate?: number,
+        loop?: boolean,
+        onComplete?: () => void
+    }, source?: GameObject): void {
+        const gameState = this.scene.sys.registry.get('gameState');
+
+        if ((gameState as State).soundEnabled) {
+            if (!this.scene.cache.audio.exists(key)) {
+                console.warn(`Could not find ${key} in AudioManager.`);
+                return;
+            }
+
+            let finalVolume = (config?.volume ?? 1) * this._sfxVolume;
+            if (this.level) {
+                let player = this.level.playerManager.player;
+                if (source && player) {
+                    const distance = Phaser.Math.Distance.Between(
+                        source.x,
+                        source.y,
+                        player.x,
+                        player.y
+                    );
+
+                    const volumeFalloff = 1 - Phaser.Math.Clamp(distance / this.maxDistance, 0, 1);
+                    finalVolume *= volumeFalloff;
+                }
+            }
+
+            if (finalVolume <= 0) {
+                return; // Don't play sounds that are too far away
+            }
+            const sound = this.scene.sound.add(key, {
+                volume: finalVolume,
+                detune: config?.detune ?? -600,
+                rate: config?.rate ?? 1,
+                loop: config?.loop ?? false,
+            });
+            sound.play();
+            sound.once(Phaser.Sound.Events.COMPLETE, () => {
+                if (config?.onComplete) {
+                    config.onComplete();
+                }
+            });
+        }
     }
 
     public playSound(key: string, config?: {
