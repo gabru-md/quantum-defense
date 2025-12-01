@@ -251,8 +251,8 @@ export class HudManager extends Manager {
 
         let currentY = startY + 10;
         const textX = hudX + 15;
-        const barX = textX + 80;
-        const barWidth = panelWidth - 100;
+        const barX = textX + 85;
+        const barWidth = panelWidth - 105;
         const textSpacing = 30;
 
         this.gameName = this.scene.add.text(textX, currentY, 'QUANTUM DEFENSE', {
@@ -268,11 +268,11 @@ export class HudManager extends Manager {
         currentY += textSpacing;
 
         // Health Bar
-        this.maxHealth = this.scene.state.baseHealth;
-        this.healthBarText = this.scene.add.text(textX, currentY, 'Health', {
+        this.maxHealth = 100;
+        this.healthBarText = this.scene.add.text(textX, currentY, `Health: ${this.scene.state.baseHealth}/${this.maxHealth}`, {
             font: '20px',
             color: AppColors.UI_TEXT
-        }).setDepth(100);
+        }).setDepth(101);
         this.healthBarBg = this.scene.add.graphics({x: barX, y: currentY});
         this.healthBarBg.fillStyle(phaserColor(AppColors.UI_DISABLED), 0.5);
         this.healthBarBg.fillRect(0, 0, barWidth, 15);
@@ -281,10 +281,10 @@ export class HudManager extends Manager {
 
         // Energy Bar
         this.maxEnergy = this.scene.state.maxEnergy;
-        this.energyBarText = this.scene.add.text(textX, currentY, 'Energy', {
+        this.energyBarText = this.scene.add.text(textX, currentY, `Energy: ${this.scene.state.energy}/${this.maxEnergy}`, {
             font: '20px',
             color: AppColors.UI_TEXT
-        }).setDepth(100);
+        }).setDepth(101);
         this.energyBarBg = this.scene.add.graphics({x: barX, y: currentY});
         this.energyBarBg.fillStyle(phaserColor(AppColors.UI_DISABLED), 0.5);
         this.energyBarBg.fillRect(0, 0, barWidth, 15);
@@ -507,11 +507,14 @@ export class HudManager extends Manager {
 
         const energyPercentage = this.scene.state.energy / this.maxEnergy;
         this.energyBar.clear();
-        this.energyBar.fillStyle(phaserColor(AppColors.PLAYER)); // Electric Blue
+        this.energyBar.fillStyle(phaserColor(AppColors.ENEMY_NORMAL)); // Electric Blue
         this.energyBar.fillRect(0, 0, fullBarWidth * energyPercentage, 20);
 
         this.waveNumberText.setText(`Wave: ${this.scene.waveManager.currentWave}/${this.scene.waveManager.totalWaves}`);
         this.waveProgressText.setText(`Enemies: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`);
+
+        this.healthBarText.setText(`Health: ${this.scene.state.baseHealth}/${this.maxHealth}`);
+        this.energyBarText.setText(`Energy: ${this.scene.state.energy}/${this.maxEnergy}`);
     }
 
     private updateUpgradeProgress() {
