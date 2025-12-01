@@ -145,7 +145,7 @@ export class TutorialManager {
                 break;
 
             case TutorialStep.ExplainEnergy:
-                this.level.hud.persistedInfo('This is your Energy: The lifeblood of your defense.\nGain Energy by eliminating Glitches. Use it to construct and repair your towers.', AppColors.UI_MESSAGE_INFO);
+                this.level.hud.persistedInfo('This is your Energy: The lifeblood of your defense.\nGain Energy by eliminating Glitches.\nUse it to construct and repair your towers.', AppColors.UI_MESSAGE_INFO);
                 this.level.audioManager.playLightSound('Tutorial_6');
                 this.level.hud.showMarker(hudX + 10, 115, hudX + hudPanelWidth - 5, 145, "");
                 await this.waitForSpacePress();

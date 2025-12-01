@@ -268,11 +268,11 @@ export class AudioManager extends Manager {
     }
 
     public playHeavySound(key: string, source?: GameObject) {
-        return this.playSound(key, {volume: 0.8, detune: -600, rate: 1.4}, source);
+        return this.playSound(key, {volume: 1, detune: -600, rate: 1.4}, source);
     }
 
     public playLightSound(key: string, source?: GameObject) {
-        return this.playSound(key, {volume: 0.65, detune: 0, rate: 1.1}, source);
+        return this.playSound(key, {volume: 1, detune: 0, rate: 1.1}, source);
     }
 
     public playMusic(key: string, loop: boolean = true): void {
