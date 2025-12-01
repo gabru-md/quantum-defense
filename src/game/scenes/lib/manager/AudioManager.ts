@@ -278,5 +278,8 @@ export class AudioManager extends Manager {
     public destroy(): void {
         this.stopMusic();
         this.musicQueue = [];
+        if(this.playingSound) {
+            this.playingSound.stop();
+        }
     }
 }

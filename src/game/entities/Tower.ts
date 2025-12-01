@@ -167,16 +167,16 @@ export class Tower extends GameObject {
         this.setOriginalPulseColor();
         switch (this.towerType) {
             case 'tower1':
-                this.level.audioManager.playSfx('laser_deactivate');
+                this.level.audioManager.playSfx('laser_reactivate');
                 break;
             case 'tower2':
-                this.level.audioManager.playSfx('bomb_deactivate');
+                this.level.audioManager.playSfx('bomb_reactivate');
                 break;
             case 'tower3':
-                this.level.audioManager.playSfx('slow_deactivate');
+                this.level.audioManager.playSfx('slow_reactivate');
                 break;
             default:
-                this.level.audioManager.playSfx('laser_deactivate');
+                this.level.audioManager.playSfx('laser_reactivate');
                 break;
         }
     }

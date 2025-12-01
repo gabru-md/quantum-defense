@@ -12,6 +12,7 @@ export interface SpecialEnemyConfig {
 export class SpecialEnemy extends GameObject {
     private energyValue: number; // Renamed: moneyValue to energyValue
     private healthComponent!: Health;
+    private killable: boolean = true;
 
     constructor(config: SpecialEnemyConfig, specialEnemyConfigData: SpecialEnemyConfigType) {
         const startPoint = config.path.getStartPoint();
@@ -51,6 +52,10 @@ export class SpecialEnemy extends GameObject {
     }
 
     public takeDamage(amount: number): void {
+        if(!this.killable) {
+            console.log('Special Enemy is not Killable!')
+            return;
+        }
         this.healthComponent.takeDamage(amount);
     }
 
@@ -63,5 +68,9 @@ export class SpecialEnemy extends GameObject {
     private handleHealthChanged(currentHealth: number): void {
         const healthPercentage = currentHealth / this.healthComponent.maxHealth;
         this.setAlpha(0.2 + 0.8 * healthPercentage);
+    }
+
+    setKillable(value: boolean) {
+        this.killable = value;
     }
 }

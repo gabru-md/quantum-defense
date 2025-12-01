@@ -1,17 +1,18 @@
-import { Enemy } from '../../../entities/Enemy.ts';
-import { SpecialEnemy } from '../../../entities/SpecialEnemy.ts';
-import { Level } from '../Level.ts';
+import {Enemy} from '../../../entities/Enemy.ts';
+import {SpecialEnemy} from '../../../entities/SpecialEnemy.ts';
+import {Level} from '../Level.ts';
 import Phaser from 'phaser';
-import { GameObject } from '../../../core/GameObject.ts';
-import { Manager } from '../Manager.ts';
-import { AppColors } from '../../../scripts/Colors.ts';
-import { LevelNames } from '../LevelNames.ts';
-import { EnemyConfigs, SpecialEnemyConfig } from '../../../config/EnemyConfigs.ts'; // Import EnemyConfigs
+import {GameObject} from '../../../core/GameObject.ts';
+import {Manager} from '../Manager.ts';
+import {AppColors} from '../../../scripts/Colors.ts';
+import {LevelNames} from '../LevelNames.ts';
+import {EnemyConfigs, SpecialEnemyConfig} from '../../../config/EnemyConfigs.ts'; // Import EnemyConfigs
 
 export class WaveManager extends Manager {
     enemies!: Phaser.GameObjects.Group;
     specialEnemies!: Phaser.GameObjects.Group;
     enabled: boolean = true;
+    specialEnemyKillable: boolean = false;
 
     constructor(
         protected level: Level,
@@ -26,12 +27,12 @@ export class WaveManager extends Manager {
     }
 
     setup(): { enemies: Phaser.GameObjects.Group; specialEnemies: Phaser.GameObjects.Group } {
-        this.enemies = this.level.add.group({ classType: Enemy, runChildUpdate: false });
-        this.specialEnemies = this.level.add.group({ classType: SpecialEnemy, runChildUpdate: false });
+        this.enemies = this.level.add.group({classType: Enemy, runChildUpdate: false});
+        this.specialEnemies = this.level.add.group({classType: SpecialEnemy, runChildUpdate: false});
         this.level.events.on('enemyDied', this.handleEnemyDied, this);
         this.level.events.on('specialEnemyKilledByPlayer', this.handleSpecialEnemyKilledByPlayer, this);
         this.calculateTotalWaves(); // Calculate total waves during setup
-        return { enemies: this.enemies, specialEnemies: this.specialEnemies };
+        return {enemies: this.enemies, specialEnemies: this.specialEnemies};
     }
 
     destroy(): void {
@@ -39,6 +40,15 @@ export class WaveManager extends Manager {
         this.specialEnemies.destroy(true);
         this.level.events.off('enemyDied', this.handleEnemyDied, this);
         this.level.events.off('specialEnemyKilledByPlayer', this.handleSpecialEnemyKilledByPlayer, this);
+    }
+
+    public setSpecialEnemyKillable(value: boolean) {
+        this.specialEnemyKillable = value;
+
+        this.specialEnemies.getChildren().forEach((specialEnemy) => {
+            (specialEnemy as SpecialEnemy).setKillable(value);
+        })
+
     }
 
     startWave(waveNumber: number): void {
@@ -53,7 +63,7 @@ export class WaveManager extends Manager {
         this.enemiesRemaining = this.maxEnemiesInWave;
         this.enemiesSpawnedInWave = 0;
 
-        const { healthMultiplier, speedMultiplier } = this.getDifficultyMultiplier();
+        const {healthMultiplier, speedMultiplier} = this.getDifficultyMultiplier();
 
         waveConfig.forEach((config) => {
             let spawnDelay = 0;
@@ -117,18 +127,18 @@ export class WaveManager extends Manager {
     private getDifficultyMultiplier(): { healthMultiplier: number; speedMultiplier: number } {
         switch (this.level.state.difficulty) {
             case 'easy':
-                return { healthMultiplier: 0.75, speedMultiplier: 0.9 };
+                return {healthMultiplier: 0.75, speedMultiplier: 0.9};
             case 'hard':
-                return { healthMultiplier: 1.5, speedMultiplier: 1.2 };
+                return {healthMultiplier: 1.5, speedMultiplier: 1.2};
             case 'normal':
             default:
-                return { healthMultiplier: 1, speedMultiplier: 1 };
+                return {healthMultiplier: 1, speedMultiplier: 1};
         }
     }
 
     protected handleEnemyDied(energyValue: number): void { // Renamed moneyValue to energyValue
         this.level.state.energy += energyValue; // Updated state.money to state.energy
-        if(this.level.state.energy > this.level.state.maxEnergy) {
+        if (this.level.state.energy > this.level.state.maxEnergy) {
             this.level.state.energy = this.level.state.maxEnergy;
         }
         this.enemiesRemaining--;
@@ -138,7 +148,7 @@ export class WaveManager extends Manager {
 
     protected handleSpecialEnemyKilledByPlayer(energyValue: number): void { // Renamed moneyValue to energyValue
         this.level.state.energy += energyValue; // Updated state.money to state.energy
-        if(this.level.state.energy > this.level.state.maxEnergy) {
+        if (this.level.state.energy > this.level.state.maxEnergy) {
             this.level.state.energy = this.level.state.maxEnergy;
         }
         this.enemiesRemaining--;
@@ -154,7 +164,7 @@ export class WaveManager extends Manager {
         this.level.events.emit('nexusHit', enemy.x, enemy.y);
         this.level.hud.update();
         this.level.audioManager.playSfx('error_fx', false, enemy);
-    
+
         if (this.level.state.baseHealth <= 0) {
             // this.level.playerManager.player.danger();
             this.level.events.emit('gameOver');
@@ -165,15 +175,15 @@ export class WaveManager extends Manager {
 
     protected checkWaveCompletion(): void {
         if (this.gameOver || this.level.scene.key === LevelNames.Tutorial) return;
-    
+
         if (this.enemiesSpawnedInWave >= this.maxEnemiesInWave && this.enemiesRemaining <= 0) {
             this.level.events.emit('waveCompleted');
-    
+
             if (this.currentWave >= this.totalWaves) { // Changed condition to use totalWaves
                 this.level.physics.pause();
-                this.level.easeOutAndStartNextScene(LevelNames.EndScene, { win: true });
+                this.level.easeOutAndStartNextScene(LevelNames.EndScene, {win: true});
             } else {
-                if(this.level.scene.key !== LevelNames.Gameplay_Tutorial) {
+                if (this.level.scene.key !== LevelNames.Gameplay_Tutorial) {
                     this.level.hud.info('NEXT WAVE INCOMING!', AppColors.UI_MESSAGE_SUCCESS, () => {
                         this.level.playerManager.player.info("Incoming Next Wave!");
                         this.currentWave++;
@@ -183,6 +193,7 @@ export class WaveManager extends Manager {
             }
         }
     }
+
     public update(time: number, delta: number) {
         if (!this.enabled) return;
         // @ts-ignore

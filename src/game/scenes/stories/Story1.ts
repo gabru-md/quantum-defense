@@ -25,14 +25,14 @@ export class Story_TheGlitchAnnihilation extends BaseStoryScene {
             nextScene: LevelNames.Gameplay_Tutorial, // Next scene is the Tutorial level
             steps: [
                 {
-                    text: 'NARRATOR (V.O.): In the boundless expanse of the digital cosmos lies the Quantum Realm, a domain of pure data and harmonious flow, watched over by the Nexus.',
+                    text: 'In the boundless expanse of the digital cosmos lies the Quantum Realm, a domain of pure data and harmonious flow, watched over by the Nexus.',
                     action: scene => {
                         this.backgroundEffectsManager.enableDataStreamEffect(scene); // Serene System background
                         return [];
                     },
                 },
                 {
-                    text: 'NARRATOR (V.O.): But from the deepest void, a corruption emerged. A sentient entropy named Static. It consumed all it touched, twisting perfect code into mindless, aggressive Glitches.',
+                    text: 'But from the deepest void, a corruption emerged. A sentient entropy named Static. It consumed all it touched, twisting perfect code into mindless, aggressive Glitches.',
                     action: scene => {
                         this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(scene, 2000); // Corrupted Frontier background
                         const [staticEnemy, ...genies] = createStatic(scene, WIDTH / 2, HEIGHT / 4);
@@ -53,7 +53,7 @@ export class Story_TheGlitchAnnihilation extends BaseStoryScene {
                     },
                 },
                 {
-                    text: 'NARRATOR (V.O.): In its darkest hour, the Nexus awakened its last defense. A single fragment of its own perfect code, forged into a weapon of order. The Guardian.',
+                    text: 'In its darkest hour, the Nexus awakened its last defense. A single fragment of its own perfect code, forged into a weapon of order. The Guardian.',
                     action: scene => {
                         const [player, genie] = createPlayer(scene, WIDTH / 2, HEIGHT * 3 / 4);
                         scene.animateIn(player);
