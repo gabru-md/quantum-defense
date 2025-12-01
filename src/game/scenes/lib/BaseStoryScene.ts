@@ -274,7 +274,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
                 ease: 'Power1',
                 duration: 200,
                 onComplete: () => {
-                    this.typeText(this.instructionText, step.text, 30);
+                    this.typeText(this.instructionText, step.text, 50);
                 }
             });
 
@@ -332,7 +332,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
             },
             repeat: fullText.length // Repeat for each character
         });
-        if (this.scene.key === getStoryName(LevelNames.Tutorial)) { // Changed from Introduction to Tutorial
+        if (this.scene.key === LevelNames.Story_TheGlitchAnnihilation) { // Changed from Introduction to Tutorial
             this.audioManager.playHeavySound(this.getCurrentStepAudio());
         } else {
             // Play light sound during narration always

@@ -2,6 +2,9 @@ import {Manager} from '../Manager';
 import {State} from '../State.ts';
 import {Level} from "../Level.ts";
 import {GameObject} from "../../../core/GameObject.ts";
+import NoAudioSound = Phaser.Sound.NoAudioSound;
+import HTML5AudioSound = Phaser.Sound.HTML5AudioSound;
+import WebAudioSound = Phaser.Sound.WebAudioSound;
 
 export class AudioManager extends Manager {
     private backgroundMusic: Phaser.Sound.BaseSound | null = null;
@@ -10,6 +13,7 @@ export class AudioManager extends Manager {
     private _musicVolume: number = 0.2; // Default Music volume
     private maxDistance: number = 500; // Max distance for spatial sound
     private level?: Level;
+    private playingSound!: NoAudioSound | HTML5AudioSound | WebAudioSound;
 
     constructor(public scene: Phaser.Scene) {
         super(scene);
@@ -31,7 +35,45 @@ export class AudioManager extends Manager {
         this.scene.load.audio('GameOver', 'assets/music/GameOver.mp3');
         this.scene.load.audio('WinGame', 'assets/music/WinGame.mp3');
         this.loadAllSfx();
-        // this.loadAllNarration();
+        this.loadAllNarration();
+    }
+
+    private loadAllNarration() {
+        this.scene.load.audio('Story_TheGlitchAnnihilation_2', 'assets/narration/Story_TheGlitchAnnihilation_1.mp3');
+        this.scene.load.audio('Story_TheGlitchAnnihilation_3', 'assets/narration/Story_TheGlitchAnnihilation_2.mp3');
+        this.scene.load.audio('Story_TheGlitchAnnihilation_4', 'assets/narration/Story_TheGlitchAnnihilation_3.mp3');
+        this.scene.load.audio('Story_TheFirstStand_2', 'assets/narration/Story_TheFirstStand_1.mp3');
+        this.scene.load.audio('Story_TheFirstStand_3', 'assets/narration/Story_TheFirstStand_2.mp3');
+        this.scene.load.audio('Story_TheFirstStand_4', 'assets/narration/Story_TheFirstStand_3.mp3');
+        this.scene.load.audio('Story_TheFirstStand_5', 'assets/narration/Story_TheFirstStand_4.mp3');
+        this.scene.load.audio('Story_TheDormantScars_2', 'assets/narration/Story_TheDormantScars_1.mp3');
+        this.scene.load.audio('Story_TheDormantScars_3', 'assets/narration/Story_TheDormantScars_2.mp3');
+        this.scene.load.audio('Story_TheDormantScars_4', 'assets/narration/Story_TheDormantScars_3.mp3');
+        this.scene.load.audio('Story_VolatileInterference_2', 'assets/narration/Story_VolatileInterference_1.mp3');
+        this.scene.load.audio('Story_VolatileInterference_3', 'assets/narration/Story_VolatileInterference_2.mp3');
+        this.scene.load.audio('Story_VolatileInterference_4', 'assets/narration/Story_VolatileInterference_3.mp3');
+        this.scene.load.audio('Story_InitialBreakthrough_2', 'assets/narration/Story_InitialBreakthrough_1.mp3');
+        this.scene.load.audio('Story_InitialBreakthrough_3', 'assets/narration/Story_InitialBreakthrough_2.mp3');
+        this.scene.load.audio('Story_InitialBreakthrough_4', 'assets/narration/Story_InitialBreakthrough_3.mp3');
+        this.scene.load.audio('Story_StaticNewGlitches_2', 'assets/narration/Story_StaticNewGlitches_1.mp3');
+        this.scene.load.audio('Story_StaticNewGlitches_3', 'assets/narration/Story_StaticNewGlitches_2.mp3');
+        this.scene.load.audio('Story_StaticNewGlitches_4', 'assets/narration/Story_StaticNewGlitches_3.mp3');
+        this.scene.load.audio('Story_ThePhantomArrival_2', 'assets/narration/Story_ThePhantomArrival_1.mp3');
+        this.scene.load.audio('Story_ThePhantomArrival_3', 'assets/narration/Story_ThePhantomArrival_2.mp3');
+        this.scene.load.audio('Story_ThePhantomArrival_4', 'assets/narration/Story_ThePhantomArrival_3.mp3');
+        this.scene.load.audio('Story_EchoesOfAncientLore_2', 'assets/narration/Story_EchoesOfAncientLore_1.mp3');
+        this.scene.load.audio('Story_EchoesOfAncientLore_3', 'assets/narration/Story_EchoesOfAncientLore_2.mp3');
+        this.scene.load.audio('Story_EchoesOfAncientLore_4', 'assets/narration/Story_EchoesOfAncientLore_3.mp3');
+        this.scene.load.audio('Story_DesigningTheBane_2', 'assets/narration/Story_DesigningTheBane_1.mp3');
+        this.scene.load.audio('Story_DesigningTheBane_3', 'assets/narration/Story_DesigningTheBane_2.mp3');
+        this.scene.load.audio('Story_DesigningTheBane_4', 'assets/narration/Story_DesigningTheBane_3.mp3');
+        this.scene.load.audio('Story_TheFinalAssault_2', 'assets/narration/Story_TheFinalAssault_1.mp3');
+        this.scene.load.audio('Story_TheFinalAssault_3', 'assets/narration/Story_TheFinalAssault_2.mp3');
+        this.scene.load.audio('Story_TheFinalAssault_4', 'assets/narration/Story_TheFinalAssault_3.mp3');
+        this.scene.load.audio('Story_TheResonanceWave_2', 'assets/narration/Story_TheResonanceWave_1.mp3');
+        this.scene.load.audio('Story_TheResonanceWave_3', 'assets/narration/Story_TheResonanceWave_2.mp3');
+        this.scene.load.audio('Story_TheResonanceWave_4', 'assets/narration/Story_TheResonanceWave_3.mp3');
+        this.scene.load.audio('Story_TheResonanceWave_5', 'assets/narration/Story_TheResonanceWave_4.mp3');
     }
 
     private loadAllSfx(): void {
@@ -171,15 +213,17 @@ export class AudioManager extends Manager {
             if (finalVolume <= 0) {
                 return; // Don't play sounds that are too far away
             }
-
-            const sound = this.scene.sound.add(key, {
+            if (this.playingSound) {
+                this.playingSound.stop();
+            }
+            this.playingSound = this.scene.sound.add(key, {
                 volume: finalVolume,
                 detune: config?.detune ?? -600,
                 rate: config?.rate ?? 1,
                 loop: config?.loop ?? false,
             });
-            sound.play();
-            sound.once(Phaser.Sound.Events.COMPLETE, () => {
+            this.playingSound.play();
+            this.playingSound.once(Phaser.Sound.Events.COMPLETE, () => {
                 if (config?.onComplete) {
                     config.onComplete();
                 }
