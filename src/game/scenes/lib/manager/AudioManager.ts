@@ -36,6 +36,42 @@ export class AudioManager extends Manager {
         this.scene.load.audio('WinGame', 'assets/music/WinGame.mp3');
         this.loadAllSfx();
         this.loadAllNarration();
+        this.loadAllTutorialSounds();
+    }
+
+    private loadAllTutorialSounds() {
+        this.scene.load.audio('Tutorial_1', 'assets/narration/Tutorial_1.mp3'); // "Welcome, commander. Our base is under attack."
+        this.scene.load.audio('Tutorial_2', 'assets/narration/Tutorial_2.mp3'); // "These are Glitches, hostile entities from another dimension."
+        this.scene.load.audio('Tutorial_3', 'assets/narration/Tutorial_3.mp3'); // "Your mission is to defend our core at all costs."
+        this.scene.load.audio('Tutorial_4', 'assets/narration/Tutorial_4.mp3'); // "To do that, you'll deploy defense towers."
+        this.scene.load.audio('Tutorial_5', 'assets/narration/Tutorial_5.mp3'); // "Click on an empty plot to open the build menu."
+        this.scene.load.audio('Tutorial_6', 'assets/narration/Tutorial_6.mp3'); // "This is the Laser Tower. It fires rapid, low-damage shots."
+        this.scene.load.audio('Tutorial_7', 'assets/narration/Tutorial_7.mp3'); // "This is the Bomb Tower. It deals high splash damage."
+        this.scene.load.audio('Tutorial_8', 'assets/narration/Tutorial_8.mp3'); // "And this is the Slow Tower. It slows down enemies."
+        this.scene.load.audio('Tutorial_9', 'assets/narration/Tutorial_9.mp3'); // "Let's start by building a Laser Tower. Click its icon."
+        this.scene.load.audio('Tutorial_10', 'assets/narration/Tutorial_10.mp3'); // "Excellent. The tower will automatically target nearby Glitches."
+        this.scene.load.audio('Tutorial_11', 'assets/narration/Tutorial_11.mp3'); // "You earn energy by defeating Glitches. Use it to build more towers."
+        this.scene.load.audio('Tutorial_12', 'assets/narration/Tutorial_12.mp3'); // "Now, let's try upgrading a tower. Click on the Laser Tower you just built."
+        this.scene.load.audio('Tutorial_13', 'assets/narration/Tutorial_13.mp3'); // "This menu shows the tower's stats and upgrade options."
+        this.scene.load.audio('Tutorial_14', 'assets/narration/Tutorial_14.mp3'); // "Click the 'Upgrade' button to improve its damage and range."
+        this.scene.load.audio('Tutorial_15', 'assets/narration/Tutorial_15.mp3'); // "Well done. Upgraded towers are much more effective."
+        this.scene.load.audio('Tutorial_16', 'assets/narration/Tutorial_16.mp3'); // "You can also sell towers if you need to re-strategize. Click 'Sell'."
+        this.scene.load.audio('Tutorial_17', 'assets/narration/Tutorial_17.mp3'); // "The tower is gone, and you've recovered some energy."
+        this.scene.load.audio('Tutorial_18', 'assets/narration/Tutorial_18.mp3'); // "Now, let's build a Bomb Tower. Click an empty plot and select the Bomb Tower."
+        this.scene.load.audio('Tutorial_19', 'assets/narration/Tutorial_19.mp3'); // "Good. Notice how it damages multiple enemies at once."
+        this.scene.load.audio('Tutorial_20', 'assets/narration/Tutorial_20.mp3'); // "Next, a Slow Tower. Place it near the path."
+        this.scene.load.audio('Tutorial_21', 'assets/narration/Tutorial_21.mp3'); // "Perfect. Slowed enemies are easier targets for your other towers."
+        this.scene.load.audio('Tutorial_22', 'assets/narration/Tutorial_22.mp3'); // "Keep an eye on your core's health. If it reaches zero, the mission fails."
+        this.scene.load.audio('Tutorial_23', 'assets/narration/Tutorial_23.mp3'); // "You can pause the game at any time by pressing 'P' or clicking the pause button."
+        this.scene.load.audio('Tutorial_24', 'assets/narration/Tutorial_24.mp3'); // "The minimap in the corner shows the entire level and enemy paths."
+        this.scene.load.audio('Tutorial_25', 'assets/narration/Tutorial_25.mp3'); // "Different Glitches have different resistances and abilities."
+        this.scene.load.audio('Tutorial_26', 'assets/narration/Tutorial_26.mp3'); // "Adapt your defenses to counter them effectively."
+        this.scene.load.audio('Tutorial_27', 'assets/narration/Tutorial_27.mp3'); // "Remember to use your energy wisely. Every tower counts."
+        this.scene.load.audio('Tutorial_28', 'assets/narration/Tutorial_28.mp3'); // "You're doing great, commander. Keep defending the core."
+        this.scene.load.audio('Tutorial_29', 'assets/narration/Tutorial_29.mp3'); // "The Glitches are relentless. Stay vigilant."
+        this.scene.load.audio('Tutorial_30', 'assets/narration/Tutorial_30.mp3'); // "Good luck, commander. The fate of our base is in your hands."
+        this.scene.load.audio('Tutorial_31', 'assets/narration/Tutorial_31.mp3'); // "Tutorial complete. Now, prepare for the real challenge!"
+
     }
 
     private loadAllNarration() {
@@ -232,11 +268,11 @@ export class AudioManager extends Manager {
     }
 
     public playHeavySound(key: string, source?: GameObject) {
-        return this.playSound(key, {volume: 0.5, detune: -600, rate: 1.4}, source);
+        return this.playSound(key, {volume: 0.8, detune: -600, rate: 1.4}, source);
     }
 
     public playLightSound(key: string, source?: GameObject) {
-        return this.playSound(key, {volume: 0.4, detune: 200, rate: 1}, source);
+        return this.playSound(key, {volume: 0.65, detune: 0, rate: 1.1}, source);
     }
 
     public playMusic(key: string, loop: boolean = true): void {
