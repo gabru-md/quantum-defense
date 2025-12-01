@@ -16,7 +16,6 @@ export class Story_TheDormantScars extends BaseStoryScene {
 
     create() {
         super.create();
-        this.audioManager.playMusic('MainMenuMusic')
     }
 
     getStoryConfig(): { title?: string; steps: StoryStep[]; nextScene: LevelNames } {

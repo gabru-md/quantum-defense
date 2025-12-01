@@ -142,6 +142,7 @@ export abstract class Level extends Phaser.Scene {
         this.events.on('shutdown', this.shutdown, this);
 
         this.audioManager.playMusic('LevelMusic');
+        this.audioManager.playAmbience('ambience')
     }
 
     onHover(gameObject: GameObject, helpText: string): void {

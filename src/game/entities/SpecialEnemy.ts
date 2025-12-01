@@ -30,7 +30,7 @@ export class SpecialEnemy extends GameObject {
             'reachedEnd',
             () => {
                 console.log(`[SpecialEnemy] ${this.texture.key} reached end.`);
-                this.level.audioManager.playSfx('error_fx', false, this);
+                this.level.audioManager.playSfx('nexus_hit', false, this);
                 this.scene.events.emit('gameOver');
                 this.destroy();
             },

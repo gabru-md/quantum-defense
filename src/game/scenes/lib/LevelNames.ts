@@ -23,7 +23,7 @@ export enum LevelNames {
     Story_TheResonanceWave = 'Story_The Resonance Wave', // Chapter 11
 
     // Actual Gameplay Levels (15 levels)
-    Gameplay_TheGlitchAnnihilation = 'Gameplay_The Glitch Annihilation', // Level 1 (Original Level1.ts)
+    Gameplay_TheGlitchAnnihilation = 'Gameplay_Glitch Annihilation', // Level 1 (Original Level1.ts)
     Gameplay_HelloGenie = 'Gameplay_Hello, Genie!', // Level 2 (Original Level2.ts)
     Gameplay_TheDormantScars = 'Gameplay_The Dormant Scars', // Level 3 (Original Level3.ts)
     Gameplay_ExpandingFront_4 = 'Gameplay_Expanding Front 4', // Level 4 (Original Level4.ts)

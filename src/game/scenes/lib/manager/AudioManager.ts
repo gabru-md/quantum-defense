@@ -8,6 +8,7 @@ import WebAudioSound = Phaser.Sound.WebAudioSound;
 
 export class AudioManager extends Manager {
     private backgroundMusic: Phaser.Sound.BaseSound | null = null;
+    private ambience: Phaser.Sound.BaseSound | null = null;
     private musicQueue: string[] = [];
     private _sfxVolume: number = 0.3; // Default SFX volume
     private _musicVolume: number = 0.2; // Default Music volume
@@ -115,6 +116,8 @@ export class AudioManager extends Manager {
     private loadAllSfx(): void {
         // Assuming 'this.level' is the context and the base path is 'assets/sfx/'
 
+        this.scene.load.audio('ambience', 'assets/sfx/ambience.mp3');
+        this.scene.load.audio('nexus_hit', 'assets/sfx/nexus_hit.mp3');
         this.scene.load.audio('bomb_hit', 'assets/sfx/bomb_hit.mp3');
         this.scene.load.audio('bomb_plot', 'assets/sfx/bomb_plot.mp3');
         this.scene.load.audio('bomb_shoot', 'assets/sfx/bomb_shoot.mp3');
@@ -212,7 +215,7 @@ export class AudioManager extends Manager {
     }
 
     public playTowerSfx(key: string, loop: boolean = false, source?: GameObject) {
-        return this.playSound(key, {volume: 0.3, loop}, source);
+        return this.playSound(key, {volume: 0.5, loop}, source);
     }
 
     public playSound(key: string, config?: {
@@ -231,7 +234,7 @@ export class AudioManager extends Manager {
             }
 
             let finalVolume = (config?.volume ?? 1) * this._sfxVolume;
-            if(this.level) {
+            if (this.level) {
                 let player = this.level.playerManager.player;
                 if (source && player) {
                     const distance = Phaser.Math.Distance.Between(
@@ -288,6 +291,19 @@ export class AudioManager extends Manager {
         }
     }
 
+    public playAmbience(key: string, loop: boolean = true): void {
+        const gameState = this.scene.sys.registry.get('gameState');
+        if ((gameState as State).soundEnabled) {
+            if (this.backgroundMusic) {
+                this.backgroundMusic.stop();
+            }
+            console.log(`Playing music: ${key} at volume: ${this._musicVolume}`)
+            console.log(gameState)
+            this.ambience = this.scene.sound.add(key, {loop});
+            this.ambience.play({volume: this._musicVolume});
+        }
+    }
+
     public queueMusic(key: string): void {
         this.musicQueue.push(key);
         if (!this.backgroundMusic || !this.backgroundMusic.isPlaying) {
@@ -314,7 +330,7 @@ export class AudioManager extends Manager {
     public destroy(): void {
         this.stopMusic();
         this.musicQueue = [];
-        if(this.playingSound) {
+        if (this.playingSound) {
             this.playingSound.stop();
         }
     }

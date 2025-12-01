@@ -31,6 +31,7 @@ export class ChapterSelectScene extends Phaser.Scene {
     }
 
     create() {
+        this.audioManager.playAmbience('ambience')
         this.audioManager.playMusic('MainMenuMusic');
         this.cameras.main.setBackgroundColor(AppColors.GAME_BACKGROUND);
         this.backgroundEffectsManager.enableDataStreamEffect(this);

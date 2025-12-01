@@ -202,6 +202,7 @@ export abstract class BaseStoryScene extends Phaser.Scene {
         }).setOrigin(0.5).setDepth(200).setAlpha(0);
         // These are the title sounds
         this.audioManager.playMusic('MainMenuMusic')
+        this.audioManager.playAmbience('ambience')
         this.audioManager.playHeavySound(this.getCurrentStepAudio());
 
 
