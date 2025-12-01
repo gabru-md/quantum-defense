@@ -61,6 +61,7 @@ export class MainMenuScene extends Phaser.Scene {
     }
 
     create() {
+        this.audioManager.playAmbience('ambience')
         this.audioManager.playMusic('MainMenuMusic');
         this.cameras.main.setBackgroundColor(AppColors.GAME_BACKGROUND);
 
@@ -139,16 +140,16 @@ export class MainMenuScene extends Phaser.Scene {
             fontFamily: 'Pixel',
             fontSize: '24px',
             color: AppColors.UI_TEXT,
-        }).setOrigin(0.5, 0.5);
+        }).setOrigin(0.25, 0.5);
         this.optionsSectionContainer.add(sfxLabel);
-        this.createMenuButton('-', yOffsetOptions, () => this.adjustSfxVolume(-0.1), this.optionsSectionContainer).setX(sfxLabel.x + 100);
+        this.createMenuButton('-', yOffsetOptions, () => this.adjustSfxVolume(-0.1), this.optionsSectionContainer).setX(sfxLabel.x + 100).setOrigin(-0.5, 0.5);
         this.sfxVolumeText = this.add.text(sfxLabel.x + 140, yOffsetOptions, '', {
             fontFamily: 'Pixel',
             fontSize: '24px',
             color: AppColors.UI_TEXT,
-        }).setOrigin(0.5, 0.5);
+        }).setOrigin(-0.5, 0.5);
         this.optionsSectionContainer.add(this.sfxVolumeText);
-        this.createMenuButton('+', yOffsetOptions, () => this.adjustSfxVolume(0.1), this.optionsSectionContainer).setX(sfxLabel.x + 180);
+        this.createMenuButton('+', yOffsetOptions, () => this.adjustSfxVolume(0.1), this.optionsSectionContainer).setX(sfxLabel.x + 180).setOrigin(-0.5, 0.5);;
         this.updateSfxVolumeDisplay();
         yOffsetOptions += 60;
 
@@ -157,16 +158,16 @@ export class MainMenuScene extends Phaser.Scene {
             fontFamily: 'Pixel',
             fontSize: '24px',
             color: AppColors.UI_TEXT,
-        }).setOrigin(0.5, 0.5);
+        }).setOrigin(0.25, 0.5);
         this.optionsSectionContainer.add(musicLabel);
-        this.createMenuButton('-', yOffsetOptions, () => this.adjustMusicVolume(-0.1), this.optionsSectionContainer).setX(musicLabel.x + 100);
+        this.createMenuButton('-', yOffsetOptions, () => this.adjustMusicVolume(-0.1), this.optionsSectionContainer).setX(musicLabel.x + 100).setOrigin(-0.5, 0.5);
         this.musicVolumeText = this.add.text(musicLabel.x + 140, yOffsetOptions, '', {
             fontFamily: 'Pixel',
             fontSize: '24px',
             color: AppColors.UI_TEXT,
-        }).setOrigin(0.5, 0.5);
+        }).setOrigin(-0.5, 0.5);
         this.optionsSectionContainer.add(this.musicVolumeText);
-        this.createMenuButton('+', yOffsetOptions, () => this.adjustMusicVolume(0.1), this.optionsSectionContainer).setX(musicLabel.x + 180);
+        this.createMenuButton('+', yOffsetOptions, () => this.adjustMusicVolume(0.1), this.optionsSectionContainer).setX(musicLabel.x + 180).setOrigin(-0.5, 0.5);
         this.updateMusicVolumeDisplay();
         yOffsetOptions += 60;
 

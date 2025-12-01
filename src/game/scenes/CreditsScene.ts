@@ -3,12 +3,16 @@ import {AppColors, phaserColor} from '../scripts/Colors';
 import {GAME_HEIGHT, WIDTH} from '../scripts/Util';
 import {LevelNames} from "./lib/LevelNames.ts";
 import {BackgroundEffectsManager} from "../effects/BackgroundEffectsManager.ts";
+import {AudioManager} from "./lib/manager/AudioManager.ts";
 
 export class CreditsScene extends Phaser.Scene {
 
     private backgroundEffectsManager: BackgroundEffectsManager;
+    private audioManager: AudioManager;
+
     constructor() {
         super({key: 'CreditsScene'});
+        this.audioManager = new AudioManager(this);
         this.backgroundEffectsManager = new BackgroundEffectsManager(this);
     }
 
@@ -25,10 +29,15 @@ export class CreditsScene extends Phaser.Scene {
         this.load.image('tower2_menu', this.createTowerTexture('tower2_menu', 32, AppColors.TOWER_BOMB));
         this.load.image('tower3_menu', this.createTowerTexture('tower3_menu', 32, AppColors.TOWER_SLOW));
         this.load.image('player_menu', this.createPlayerTexture('player_menu', 24, AppColors.PLAYER));
+
+        this.audioManager.setup();
     }
 
     create(): void {
         // this.createAnimatedGridBackground();
+
+        this.audioManager.playAmbience('ambience')
+        this.audioManager.playMusic('MainMenuMusic');
 
         // Use dynamic background effect
         this.backgroundEffectsManager.enableDataStreamEffect(this);
@@ -73,7 +82,7 @@ export class CreditsScene extends Phaser.Scene {
         panelGraphics.lineStyle(2, phaserColor(AppColors.UI_ACCENT), 1);
         panelGraphics.strokeRect(panelX - panelWidth / 2, panelY - panelHeight / 2, panelWidth, panelHeight);
 
-        const creditsText = 'Game Design & Development:\nManish Devgan\nhttps://github.com/gabru-md\n\nMusic & Sound Design:\nPedro Coutinho\nhttps://soundcloud.com/l1r4music' ;
+        const creditsText = 'Game Design & Development:\nManish Devgan\nhttps://github.com/gabru-md\n\nMusic & Sound Design:\nPedro Coutinho\nhttps://soundcloud.com/l1r4music\n\nThe game is still in development, might have bugs!' ;
 
         this.add
             .text(panelX, panelY - panelHeight / 2 + 250, creditsText, {
@@ -82,6 +91,7 @@ export class CreditsScene extends Phaser.Scene {
                 align: 'center',
                 lineSpacing: 15,
                 wordWrap: {width: panelWidth - 40},
+                fontFamily: 'Press Start 2P',
             })
             .setOrigin(0.5);
 
@@ -89,6 +99,8 @@ export class CreditsScene extends Phaser.Scene {
         this.createButton(WIDTH / 2, GAME_HEIGHT - 100, 'BACK TO MENU', () => {
             this.scene.start(LevelNames.MainMenu);
         });
+
+        this.events.on('shutdown', this.shutdown, this);
     }
 
     private createButton(x: number, y: number, text: string, callback: () => void): Phaser.GameObjects.Text {
@@ -257,5 +269,10 @@ export class CreditsScene extends Phaser.Scene {
             yoyo: true,
             repeat: -1,
         });
+    }
+
+    private shutdown() {
+        this.audioManager.destroy();
+        this.backgroundEffectsManager.stop();
     }
 }
