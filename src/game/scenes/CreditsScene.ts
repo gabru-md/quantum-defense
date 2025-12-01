@@ -2,10 +2,14 @@ import * as Phaser from 'phaser';
 import {AppColors, phaserColor} from '../scripts/Colors';
 import {GAME_HEIGHT, WIDTH} from '../scripts/Util';
 import {LevelNames} from "./lib/LevelNames.ts";
+import {BackgroundEffectsManager} from "../effects/BackgroundEffectsManager.ts";
 
 export class CreditsScene extends Phaser.Scene {
+
+    private backgroundEffectsManager: BackgroundEffectsManager;
     constructor() {
         super({key: 'CreditsScene'});
+        this.backgroundEffectsManager = new BackgroundEffectsManager(this);
     }
 
     preload(): void {
@@ -24,8 +28,14 @@ export class CreditsScene extends Phaser.Scene {
     }
 
     create(): void {
-        this.createAnimatedGridBackground();
-        this.createVisualElements();
+        // this.createAnimatedGridBackground();
+
+        // Use dynamic background effect
+        this.backgroundEffectsManager.enableDataStreamEffect(this);
+        this.backgroundEffectsManager.configureAndStartGlitchAnnihilationEffect(this, 1250); // Subtle glitch for menu atmosphere
+        this.backgroundEffectsManager.enableGhostlyClashEffect(this);
+
+        // this.createVisualElements();
         this.cameras.main.setBackgroundColor(AppColors.GAME_BACKGROUND);
 
         // --- Full-screen Stroke Panel ---
@@ -97,6 +107,7 @@ export class CreditsScene extends Phaser.Scene {
         return button;
     }
 
+    // @ts-ignore
     private createVisualElements() {
         // --- Animated Game Elements ---
         const gameAreaLeft = 0;
@@ -167,6 +178,7 @@ export class CreditsScene extends Phaser.Scene {
         }
     }
 
+    // @ts-ignore
     private createAnimatedGridBackground(): void {
         const gridGraphics = this.add.graphics({
             lineStyle: {
