@@ -269,20 +269,26 @@ export class HudManager extends Manager {
 
         // Health Bar
         this.maxHealth = this.scene.state.baseHealth;
-        this.healthBarText = this.scene.add.text(textX, currentY, 'Health', { font: '20px', color: AppColors.UI_TEXT }).setDepth(100);
-        this.healthBarBg = this.scene.add.graphics({ x: barX, y: currentY });
+        this.healthBarText = this.scene.add.text(textX, currentY, 'Health', {
+            font: '20px',
+            color: AppColors.UI_TEXT
+        }).setDepth(100);
+        this.healthBarBg = this.scene.add.graphics({x: barX, y: currentY});
         this.healthBarBg.fillStyle(phaserColor(AppColors.UI_DISABLED), 0.5);
         this.healthBarBg.fillRect(0, 0, barWidth, 15);
-        this.healthBar = this.scene.add.graphics({ x: barX, y: currentY }).setDepth(100);
+        this.healthBar = this.scene.add.graphics({x: barX, y: currentY}).setDepth(100);
         currentY += textSpacing;
 
         // Energy Bar
         this.maxEnergy = this.scene.state.maxEnergy;
-        this.energyBarText = this.scene.add.text(textX, currentY, 'Energy', { font: '20px', color: AppColors.UI_TEXT }).setDepth(100);
-        this.energyBarBg = this.scene.add.graphics({ x: barX, y: currentY });
+        this.energyBarText = this.scene.add.text(textX, currentY, 'Energy', {
+            font: '20px',
+            color: AppColors.UI_TEXT
+        }).setDepth(100);
+        this.energyBarBg = this.scene.add.graphics({x: barX, y: currentY});
         this.energyBarBg.fillStyle(phaserColor(AppColors.UI_DISABLED), 0.5);
         this.energyBarBg.fillRect(0, 0, barWidth, 15);
-        this.energyBar = this.scene.add.graphics({ x: barX, y: currentY }).setDepth(100);
+        this.energyBar = this.scene.add.graphics({x: barX, y: currentY}).setDepth(100);
         currentY += textSpacing;
 
         this.waveNumberText = this.scene.add.text(textX, currentY, `Wave: ${this.scene.waveManager.currentWave}/${this.scene.waveManager.totalWaves}`, {
@@ -331,10 +337,17 @@ export class HudManager extends Manager {
             this.createTowerButton(hudX + 15, currentTowerY, towerKey, config.energyCost, statsString, config.description.split('\n')[0].split(':')[0]);
 
             // Add upgrade progress text
-            const upgradeText = this.scene.add.text(hudX + 215, currentTowerY + 35, '', { font: '16px', color: AppColors.UI_ACCENT }).setDepth(100);
+            const upgradeText = this.scene.add.text(hudX + 215, currentTowerY + 35, '', {
+                font: '16px',
+                color: AppColors.UI_ACCENT
+            }).setDepth(100);
             if (towerIndex === 1) this.tower1UpgradeText = upgradeText;
             if (towerIndex === 2) this.tower2UpgradeText = upgradeText;
             if (towerIndex === 3) this.tower3UpgradeText = upgradeText;
+
+            if (!this.upgradeAllowedLevel()) {
+                upgradeText.setVisible(false);
+            }
 
             currentTowerY += 100;
             towerIndex++;
@@ -524,7 +537,7 @@ export class HudManager extends Manager {
     private updateTowerSelectionUI() {
         for (const key in this.towerSelectionButtons) {
             const config = TowerConfigs[key];
-            const { button, panel, textObjects } = this.towerSelectionButtons[key];
+            const {button, panel, textObjects} = this.towerSelectionButtons[key];
             const isUpgraded = this.scene.towerManager.isTowerUpgraded(key);
 
             const name = isUpgraded ? config.upgradedName : config.name;
@@ -608,8 +621,8 @@ export class HudManager extends Manager {
     }
 
     private canPutSpecialTower(towerKey: string) {
-        if(towerKey === 'specialTower') {
-            switch(this.scene.scene.key) {
+        if (towerKey === 'specialTower') {
+            switch (this.scene.scene.key) {
                 case LevelNames.Gameplay_ThePrototype:
                 case LevelNames.Gameplay_TheAllOutWar_1:
                 case LevelNames.Gameplay_TheAllOutWar_2:
@@ -618,5 +631,18 @@ export class HudManager extends Manager {
             return false;
         }
         return true;
+    }
+
+    private upgradeAllowedLevel() {
+        switch (this.scene.scene.key) {
+            case LevelNames.Gameplay_Tutorial:
+            case LevelNames.Gameplay_TheGlitchAnnihilation:
+            case LevelNames.Gameplay_HelloGenie:
+            case LevelNames.Gameplay_TheDormantScars:
+            case LevelNames.Gameplay_ExpandingFront_4:
+                return false;
+            default:
+                return true;
+        }
     }
 }

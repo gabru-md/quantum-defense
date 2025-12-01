@@ -49,7 +49,7 @@ export class Story_StaticNewGlitches extends BaseStoryScene {
                     }
                 },
                 {
-                    text: 'Genie: Our base towers are struggling against its armor! We need to focus fire. And we *definitely* need more upgrades.',
+                    text: 'Genie: Our base towers are struggling against its armor! We need to focus fire. And we definitely need more upgrades.',
                 },
             ],
         };
