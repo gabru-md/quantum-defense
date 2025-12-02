@@ -343,8 +343,8 @@ export class AudioManager extends Manager {
     public playAmbience(key: string, loop: boolean = true): void {
         const gameState = this.scene.sys.registry.get('gameState');
         if ((gameState as State).soundEnabled) {
-            if (this.backgroundMusic) {
-                this.backgroundMusic.stop();
+            if (this.ambience) {
+                this.ambience.stop();
             }
             console.log(`Playing music: ${key} at volume: ${this._musicVolume}`)
             console.log(gameState)
