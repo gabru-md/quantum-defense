@@ -7,6 +7,10 @@ import {LaserAttack} from '../components/LaserAttack.ts';
 import {BombAttack} from '../components/BombAttack.ts';
 import {TowerConfigs} from '../config/TowerConfigs.ts';
 import {ShakeComponent} from "../components/ShakeComponent.ts";
+import {SlowingAura} from "../components/SlowingAura.ts";
+import {DestabilizationAura} from "../components/DestabilizationAura.ts";
+import {ChainPulseAttack} from "../components/ChainPulseAttack.ts";
+import {QuantumFissureAttack} from "../components/QuantumFissureAttack.ts";
 
 export interface TowerConfig {
     scene: Phaser.Scene;
@@ -109,7 +113,14 @@ export class Tower extends GameObject {
         this.setActive(false);
         this.setAlpha(0.5);
         this.getComponent(VisualPulse)?.destroy();
-        const attackComponents = [this.getComponent(LaserAttack), this.getComponent(BombAttack)];
+        const attackComponents = [
+            this.getComponent(LaserAttack),
+            this.getComponent(BombAttack),
+            this.getComponent(SlowingAura),
+            this.getComponent(DestabilizationAura),
+            this.getComponent(ChainPulseAttack),
+            this.getComponent(QuantumFissureAttack)
+        ];
         attackComponents.forEach((c) => {
             if (c) c.enabled = false;
         });
@@ -158,6 +169,10 @@ export class Tower extends GameObject {
         const attackComponents = [
             this.getComponent(LaserAttack),
             this.getComponent(BombAttack),
+            this.getComponent(SlowingAura),
+            this.getComponent(DestabilizationAura),
+            this.getComponent(ChainPulseAttack),
+            this.getComponent(QuantumFissureAttack),
         ];
         attackComponents.forEach((c) => {
             if (c) c.enabled = true;
@@ -183,7 +198,7 @@ export class Tower extends GameObject {
 
     private shake() {
         let shakeComponent = this.getComponent(ShakeComponent);
-        if(shakeComponent) {
+        if (shakeComponent) {
             shakeComponent.enabled = true;
             this.scene.time.delayedCall(1000, () => {
                 shakeComponent.enabled = false;

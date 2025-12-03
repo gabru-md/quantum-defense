@@ -26,6 +26,7 @@ export class CircularMovement extends Component {
         if (this.fall) {
             this.radius -= this.fallSpeed * (delta / 1000);
             if (this.radius < this.maxFallRadius) {
+                // one fallen restart from the beginning
                 let scale = (this.gameObject as Genie).parentObject.scaleY
                 this.radius = this.originalRadius * (scale + 0.05);
             }
