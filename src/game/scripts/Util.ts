@@ -4,7 +4,7 @@ export const HEIGHT = 1080;
 export const GAME_WIDTH = WIDTH - 400;
 export const GAME_HEIGHT = HEIGHT; // Full height of the game
 
-export const EXIT_TO_MENU = true;
+export const EXIT_TO_MENU = false;
 
 export const capitalize = (str: string): string => {
     return str.charAt(0).toUpperCase() + str.slice(1);

@@ -11,6 +11,7 @@ export class EndScene extends Phaser.Scene {
     riftManager: GlitchAnnihilationEffect;
     audioManager: AudioManager
     backgroundEffectsManager: BackgroundEffectsManager;
+    nextScene: LevelNames;
 
     constructor() {
         super({key: LevelNames.EndScene});
@@ -26,8 +27,9 @@ export class EndScene extends Phaser.Scene {
         this.audioManager.setup();
     }
 
-    init(data: { win: boolean }) {
+    init(data: { win: boolean, nextScene: LevelNames}) {
         this.win = data.win;
+        this.nextScene = data.nextScene;
     }
 
     create() {
@@ -99,7 +101,11 @@ export class EndScene extends Phaser.Scene {
 
                         this.input.on('pointerdown', () => {
                             this.scene.stop(this.scene.key);
-                            this.scene.start(LevelNames.MainMenu);
+                            if(this.nextScene) {
+                                this.scene.start(this.nextScene);
+                            } else {
+                                this.scene.start(LevelNames.MainMenu);
+                            }
                         });
                         const spaceKeyListener = this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
                         spaceKeyListener?.on('down', () => {
