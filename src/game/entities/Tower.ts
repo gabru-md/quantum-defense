@@ -194,6 +194,7 @@ export class Tower extends GameObject {
                 this.level.audioManager.playSfx('laser_reactivate');
                 break;
         }
+        this.level.levelStatsManager.towersRevived++;
     }
 
     private shake() {

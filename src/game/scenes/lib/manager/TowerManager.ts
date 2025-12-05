@@ -153,7 +153,23 @@ export class TowerManager extends Manager {
         this.playAudioOnTowerPlacement(config.sfx, tower);
         this.level.hud.rangePreview.clear();
         this.level.state.selectedTowerType = 'none';
+        this.updateLevelStats(towerType, energyCost);
         return tower;
+    }
+
+    private updateLevelStats(towerType: string, energyCost: number) {
+        switch (towerType) {
+            case 'tower1':
+                this.level.levelStatsManager.pulseTowerPlaced++;
+                break;
+            case 'tower2':
+                this.level.levelStatsManager.bombTowerPlaced++;
+                break;
+            case 'tower3':
+                this.level.levelStatsManager.slowTowerPlaced++;
+                break;
+        }
+        this.level.levelStatsManager.energySpent += energyCost;
     }
 
     private applyAttackAndSlowing(tower: Tower, towerType: string, isUpgraded: boolean) {
@@ -210,6 +226,7 @@ export class TowerManager extends Manager {
     private deactivateTower(tower: Tower) {
         if (!tower.active) return;
         tower.deactivateTower();
+        this.level.levelStatsManager.towersDeactivated++;
         this.level.hud.alert('TOWER DEACTIVATED:\nA Tower has been deactivated!');
         this.level.playerManager.player.danger('A Tower has been deactivated!');
         this.level.events.emit('towerDeactivated', tower);

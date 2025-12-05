@@ -41,6 +41,7 @@ export class SpecialEnemy extends GameObject {
 
         this.on('died', () => {
             console.log(`[SpecialEnemy] ${this.texture.key} died.`);
+            this.level.levelStatsManager.phantomsEliminated++;
             this.scene.events.emit('specialEnemyKilledByPlayer', this.energyValue); // Updated to energyValue
             this.destroy();
         });

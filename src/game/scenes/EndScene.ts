@@ -5,6 +5,7 @@ import {GAME_HEIGHT, HEIGHT, WIDTH} from "../scripts/Util.ts";
 import {LevelNames} from "./lib/LevelNames.ts";
 import {AudioManager} from "./lib/manager/AudioManager.ts";
 import {BackgroundEffectsManager} from "../effects/BackgroundEffectsManager.ts";
+import {LevelStatsManager} from "./lib/manager/LevelStatsManager.ts";
 
 export class EndScene extends Phaser.Scene {
     private win: boolean = false;
@@ -12,6 +13,7 @@ export class EndScene extends Phaser.Scene {
     audioManager: AudioManager
     backgroundEffectsManager: BackgroundEffectsManager;
     nextScene: LevelNames;
+    private levelStats!: LevelStatsManager;
 
     constructor() {
         super({key: LevelNames.EndScene});
@@ -27,9 +29,11 @@ export class EndScene extends Phaser.Scene {
         this.audioManager.setup();
     }
 
-    init(data: { win: boolean, nextScene: LevelNames}) {
+    init(data: { win: boolean, nextScene: LevelNames, levelStats: LevelStatsManager}) {
         this.win = data.win;
         this.nextScene = data.nextScene;
+        this.levelStats = data.levelStats;
+        console.log(data.levelStats)
     }
 
     create() {
@@ -86,7 +90,8 @@ export class EndScene extends Phaser.Scene {
                     duration: 1000,
                     ease: 'Power2',
                     onComplete: () => {
-                        const continueText = this.add.text(centerX, centerY + 325, 'Click to continue', {
+                        this.displayStats();
+                        const continueText = this.add.text(centerX, centerY + 300, 'Click to continue', {
                             fontSize: '20px',
                             color: '#ffffff',
                             align: 'center'
@@ -116,6 +121,45 @@ export class EndScene extends Phaser.Scene {
                 });
             }
         });
+    }
+
+    private displayStats(): void {
+        if (!this.levelStats) {
+            return;
+        }
+
+        const statsStyle = { fontSize: '18px', color: '#ffffff' };
+        const startY = HEIGHT - 200;
+        const column1X = WIDTH / 2 - 300;
+        const column2X = WIDTH / 2 + 50;
+        let yPos = startY;
+
+        const stats: { [key: string]: number } = {
+            'Pulse Towers Placed': this.levelStats.pulseTowerPlaced,
+            'Bomb Towers Placed': this.levelStats.bombTowerPlaced,
+            'Slow Towers Placed': this.levelStats.slowTowerPlaced,
+            'Enemies Eliminated': this.levelStats.enemiesEliminated,
+            'Phantoms Eliminated': this.levelStats.phantomsEliminated,
+            'Quantum Echoes Collected': this.levelStats.quantumEchoesCollected,
+            'Towers Deactivated': this.levelStats.towersDeactivated,
+            'Towers Revived': this.levelStats.towersRevived,
+            'Resonance Wave Used': this.levelStats.resonanceWaveUsed,
+            'Energy Spent': this.levelStats.energySpent,
+        };
+
+        let i = 0;
+        let padding = 250;
+        for (const [label, value] of Object.entries(stats)) {
+            const xPos = i < 5 ? column1X : column2X;
+            if (i === 5) {
+                yPos = startY;
+                padding = 300;
+            }
+            this.add.text(xPos, yPos, `${label}:`, statsStyle).setOrigin(0, 0.5);
+            this.add.text(xPos + padding, yPos, value.toString(), statsStyle).setOrigin(1, 0.5);
+            yPos += 30;
+            i++;
+        }
     }
 
     shutdown() {

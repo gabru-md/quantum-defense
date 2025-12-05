@@ -158,6 +158,7 @@ export class ResonanceWave extends Component {
 
             if (!isFinalBossLevel) { // Deduct energy only if not final boss level
                 this.gameObject.level.state.energy -= reviveEnergyCost;
+                this.gameObject.level.levelStatsManager.energySpent += reviveEnergyCost;
                 this.gameObject.level.hud.update();
                 console.log(`[ResonanceWave] Revive energy deducted. New energy: ${this.gameObject.level.state.energy}`);
             }

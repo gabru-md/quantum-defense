@@ -35,6 +35,7 @@ export class Enemy extends GameObject {
         this.on('healthChanged', this.handleHealthChanged, this);
 
         this.on('died', () => {
+            this.level.levelStatsManager.enemiesEliminated++;
             this.scene.events.emit('enemyDied', this.energyValue); // Updated to energyValue
             this.destroy();
         });

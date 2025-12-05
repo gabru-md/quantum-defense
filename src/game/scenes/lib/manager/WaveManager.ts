@@ -181,7 +181,7 @@ export class WaveManager extends Manager {
 
             if (this.currentWave >= this.totalWaves) { // Changed condition to use totalWaves
                 this.level.physics.pause();
-                this.level.easeOutAndStartNextScene(LevelNames.EndScene, {win: true, nextScene: this.level.fetchNextScene()});
+                this.level.easeOutAndStartNextScene(LevelNames.EndScene, {win: true, nextScene: this.level.fetchNextScene(), levelStats: this.level.levelStatsManager});
             } else {
                 if (this.level.scene.key !== LevelNames.Gameplay_Tutorial) {
                     this.level.hud.info('NEXT WAVE INCOMING!', AppColors.UI_MESSAGE_SUCCESS, () => {

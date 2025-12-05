@@ -28,6 +28,7 @@ import {QuantumEcho} from "../../entities/QuantumEcho.ts";
 import {GlitchAnnihilationEffect} from "../../effects/GlitchAnnihilationEffect.ts";
 import {GameObject} from '../../core/GameObject.ts';
 import {Hoverable} from '../../components/Hoverable.ts';
+import {LevelStatsManager} from "./manager/LevelStatsManager.ts";
 
 export abstract class Level extends Phaser.Scene {
     hud: HudManager;
@@ -41,6 +42,7 @@ export abstract class Level extends Phaser.Scene {
     backgroundEffectsManager: BackgroundEffectsManager;
     glitchManager: GlitchAnnihilationEffect;
     isLoaded: boolean = false;
+    levelStatsManager: LevelStatsManager;
     protected levelElements: Phaser.GameObjects.GameObject[] = [];
     public rifts!: Phaser.GameObjects.Group;
     public riftWaves!: Phaser.GameObjects.Group;
@@ -102,7 +104,7 @@ export abstract class Level extends Phaser.Scene {
         this.audioManager = new AudioManager(this);
         this.backgroundEffectsManager = new BackgroundEffectsManager(this);
         this.glitchManager = new GlitchAnnihilationEffect(this);
-
+        this.levelStatsManager = new LevelStatsManager(this);
         this.state.level = this.scene.key;
         this.state.baseHealth = 100;
         this.state.energy = 350;
@@ -261,7 +263,7 @@ export abstract class Level extends Phaser.Scene {
         if (this.waveManager.gameOver) return;
         this.waveManager.gameOver = true;
         this.physics.pause();
-        this.easeOutAndStartNextScene(LevelNames.EndScene, {win: false});
+        this.easeOutAndStartNextScene(LevelNames.EndScene, {win: false, levelStats: this.levelStatsManager});
     }
 
     public setGameSpeed(speed: number): void {
