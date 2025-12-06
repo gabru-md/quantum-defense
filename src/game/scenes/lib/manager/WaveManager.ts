@@ -103,6 +103,7 @@ export class WaveManager extends Manager {
                                     speed: SpecialEnemyConfig.speed * speedMultiplier,
                                 }
                             );
+                            specialEnemy.setKillable(this.specialEnemyKillable);
                             this.specialEnemies.add(specialEnemy, true);
                             specialEnemy.on('reachedEnd', () => this.handleEnemyReachedEnd(specialEnemy), this);
                         }

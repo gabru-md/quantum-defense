@@ -358,8 +358,8 @@ export class TutorialManager {
                 this.level.hud.persistedInfo('Watch out! A Phantom is on the move.\nIt disables towers! Destroy it quickly with Resonance Wave (E)!', AppColors.UI_MESSAGE_ERROR);
                 this.level.physics.resume();
                 this.level.waveManager.resume();
-                this.level.waveManager.startWave(4);
                 this.level.waveManager.setSpecialEnemyKillable(false);
+                this.level.waveManager.startWave(4);
                 await this.waitForEvent('towerDeactivated'); // Wait for a tower to be deactivated
                 this.level.waveManager.pause();
                 this.currentStep = TutorialStep.TowerDeactivated;

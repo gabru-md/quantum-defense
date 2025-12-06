@@ -54,7 +54,6 @@ export class SpecialEnemy extends GameObject {
 
     public takeDamage(amount: number): void {
         if(!this.killable) {
-            // console.log('Special Enemy is not Killable!')
             return;
         }
         this.healthComponent.takeDamage(amount);

@@ -209,11 +209,7 @@ export class ResonanceWave extends Component {
                 );
                 // console.log(`[ResonanceWave] Distance to SpecialEnemy: ${distance}, Activation Range: ${this.activationRange}`);
                 if (distance <= this.activationRange) {
-                    const healthComponent = specialEnemy.getComponent(Health);
-                    if (healthComponent) {
-                        // console.log(`[ResonanceWave] Applying ${this.waveDamage} damage to SpecialEnemy. Current health: ${healthComponent.currentHealth}`);
-                        healthComponent.takeDamage(this.waveDamage);
-                    }
+                    specialEnemy.takeDamage(this.waveDamage);
                 } else {
                     // console.log(`[ResonanceWave] SpecialEnemy out of range, skipping damage.`);
                 }
