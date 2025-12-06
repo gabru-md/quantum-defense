@@ -126,6 +126,7 @@ export class Tower extends GameObject {
         });
         this.level.playerManager.player.danger('A Tower has been deactivated!');
         this.level.audioManager.playSfx('error_fx')
+        this.level.levelStatsManager.towersDeactivated++;
         this.shake();
     }
 

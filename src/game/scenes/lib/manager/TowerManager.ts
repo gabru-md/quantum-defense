@@ -226,7 +226,6 @@ export class TowerManager extends Manager {
     private deactivateTower(tower: Tower) {
         if (!tower.active) return;
         tower.deactivateTower();
-        this.level.levelStatsManager.towersDeactivated++;
         this.level.hud.alert('TOWER DEACTIVATED:\nA Tower has been deactivated!');
         this.level.playerManager.player.danger('A Tower has been deactivated!');
         this.level.events.emit('towerDeactivated', tower);
