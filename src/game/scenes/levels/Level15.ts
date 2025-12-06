@@ -109,8 +109,9 @@ export class Gameplay_TheCore extends Level {
         );
     }
 
-    private handleStaticEnemyPlayerCollision(_staticGenie: StaticGenie, _player: Player) {
+    private handleStaticEnemyPlayerCollision(_staticGenie: StaticGenie, player: Player) {
         this.state.baseHealth -= 0.25;
+        player.shake();
         // console.log('Hit')
     }
 }

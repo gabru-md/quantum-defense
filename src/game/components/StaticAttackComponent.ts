@@ -18,8 +18,8 @@ enum StaticAttackState {
 export class StaticAttackComponent extends Component {
     private attackState: StaticAttackState = StaticAttackState.IDLE;
     private attacking: GameObject;
-    private targettingX!: number;
-    private targettingY!: number;
+    private targetingX!: number;
+    private targetingY!: number;
     private attackSpeed: number = 700;
     private chargingInProgress: boolean = false;
     private releaseInProgress: boolean = false;
@@ -72,7 +72,10 @@ export class StaticAttackComponent extends Component {
 
                 // Create the genie
                 // randomly change texture to genie_texture
-                const genie = new StaticGenie(this.gameObject.level, this.gameObject, Phaser.Math.RND.pick(['genie_texture', 'static_genie_texture']));
+                let genie = new StaticGenie(this.gameObject.level, this.gameObject, Phaser.Math.RND.pick(['genie_texture', 'static_genie_texture']));
+                if(i % 10 === 0) {
+                    genie = new StaticGenie(this.gameObject.level, this.gameObject, Phaser.Math.RND.pick(['stutter_genie_texture','surge_genie_texture', 'brutes_genie_texture']));
+                }
 
                 // Add the circular movement with fall effect
                 genie.addComponentOverriding(
@@ -170,11 +173,11 @@ export class StaticAttackComponent extends Component {
                 const genieIndex = this.static.staticGenies.getChildren().indexOf(genie);
                 this.gameObject.scene.time.delayedCall(delayPerGenie * genieIndex, () => {
 
-                    this.targettingX = this.attacking.x;
-                    this.targettingY = this.attacking.y;
+                    this.targetingX = this.attacking.x;
+                    this.targetingY = this.attacking.y;
                     // Calculate the direction vector from genie to target
-                    const dirX = this.targettingX - this.gameObject.x;
-                    const dirY = this.targettingY - this.gameObject.y;
+                    const dirX = this.targetingX - this.gameObject.x;
+                    const dirY = this.targetingY - this.gameObject.y;
 
                     // Normalize the direction vector
                     const length = Math.sqrt(dirX * dirX + dirY * dirY);
@@ -184,8 +187,8 @@ export class StaticAttackComponent extends Component {
 
                     let startX = this.gameObject.x + Phaser.Math.RND.between(-beamThickness, beamThickness);
                     let startY = this.gameObject.y + Phaser.Math.RND.between(-beamThickness, beamThickness);
-                    let targetX = this.targettingX + Phaser.Math.RND.between(-beamThickness, beamThickness);
-                    let targetY = this.targettingY + Phaser.Math.RND.between(-beamThickness, beamThickness);
+                    let targetX = this.targetingX + Phaser.Math.RND.between(-beamThickness, beamThickness);
+                    let targetY = this.targetingY + Phaser.Math.RND.between(-beamThickness, beamThickness);
                     let path = new PathMaker(startX, startY).to(targetX, targetY).to(targetX + normalizedDirX * 1000, targetY + normalizedDirY * 1000); // Extend 1000 pixels out of screen
 
                     genie.deleteComponentByType(CircularMovement); // Remove circular movement
@@ -202,7 +205,7 @@ export class StaticAttackComponent extends Component {
         }
         this.releaseInProgress = false;
         this.collectionInProgress = true;
-        this.gameObject.scene.time.delayedCall(3500, () => {
+        this.gameObject.scene.time.delayedCall(1500, () => {
             for (const genie of this.static.staticGenies.getChildren() as StaticGenie[]) {
                 genie.destroy();
             }
