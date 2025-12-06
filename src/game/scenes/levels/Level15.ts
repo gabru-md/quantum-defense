@@ -53,7 +53,7 @@ export class Gameplay_TheCore extends Level {
         // Inform the player about the core
         this.hud.info("Static's Core is exposed! Only your Resonance Wave can destroy it!", '#FF0000', undefined, false);
 
-        this.hud.info("The finale is still under development!", '#00FF00', () => {
+        this.hud.info("Collect Quantum Echoes and Press [R] to activate Mega Resonance Wave to deal damage to Static", '#00FF00', () => {
             this.easeOutAndStartNextScene(LevelNames.MainMenu, { win: true }); // Or an Epilogue scene
         }, false);
 

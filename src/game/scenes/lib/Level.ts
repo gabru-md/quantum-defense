@@ -234,7 +234,7 @@ export abstract class Level extends Phaser.Scene {
             this.isLoaded = true;
 
             this.time.delayedCall(2000, () => {
-                if (this.scene.key !== LevelNames.Gameplay_Tutorial) {
+                if (this.scene.key !== LevelNames.Gameplay_Tutorial && this.scene.key !== LevelNames.Gameplay_TheCore) {
                     this.hud.info('Incoming First Wave', AppColors.UI_MESSAGE_ERROR, () => {
                         this.waveManager.startWave(1);
                     });
@@ -250,7 +250,7 @@ export abstract class Level extends Phaser.Scene {
 
     public update(time: number, delta: number): void {
         if (!this.isLoaded || this.waveManager.gameOver) return;
-        if (this.scene.key !== LevelNames.Gameplay_Tutorial) {
+        if (this.scene.key !== LevelNames.Gameplay_Tutorial && this.scene.key !== LevelNames.Gameplay_TheCore) {
             this.waveManager.update(time, delta);
         }
         this.towerManager.update(time, delta);

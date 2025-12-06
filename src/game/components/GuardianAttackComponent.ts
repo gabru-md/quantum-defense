@@ -23,7 +23,7 @@ export class GuardianAttackComponent extends Component {
     private collectionInProgress: boolean = false;
     private player: Player;
     private lastAttacked: number = 0;
-    private baseActivationEnergy: number = 500;
+    private baseActivationEnergy: number = 250;
     private targetRange: number = 1000;
     private waveDamage: number = 1000; // Static health is 5k so we need to do this 5 times, this should be challenging
 
