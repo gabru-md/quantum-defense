@@ -5,7 +5,7 @@ import {GameObject} from "../core/GameObject.ts";
 import {PathMaker} from "../scenes/lib/PathMaker.ts";
 import {PathFollower} from "./PathFollower.ts";
 import {StaticGenie} from "../entities/StaticGenie.ts";
-import {StaticEnemy} from "../entities/StaticEnemy.ts";
+import {StaticEnemy, StaticHealthState} from "../entities/StaticEnemy.ts";
 
 enum StaticAttackState {
     IDLE,
@@ -13,7 +13,6 @@ enum StaticAttackState {
     RELEASE,
     COLLECT
 }
-
 
 export class StaticAttackComponent extends Component {
     private attackState: StaticAttackState = StaticAttackState.IDLE;
@@ -25,65 +24,106 @@ export class StaticAttackComponent extends Component {
     private releaseInProgress: boolean = false;
     private collectionInProgress: boolean = false;
     private static: StaticEnemy;
+    private percentageOfGeniesStuck: number = 0;
 
+    // Configuration constants
+    private NUM_ARMS = 5;
+    private MAX_GENIES_PER_ARM = 200;
+    private MAX_TOTAL_GENIES = this.NUM_ARMS * this.MAX_GENIES_PER_ARM;
+    private currentGenieCount = 0;
 
     constructor() {
         super();
     }
 
-    public setupGeniesInArms() {
+    /**
+     * Dynamically adds N genies distributed across the 5 arms
+     * @param numOfGenies Number of genies to add (will be capped at remaining capacity)
+     */
+    public addGeniesToArm(numOfGenies: number = 20) {
         this.static = this.gameObject as StaticEnemy;
-        this.static.staticGenies.clear(true, true);
         this.collectionInProgress = false;
 
-        const numArms = 5; // Number of spiral arms
-        const geniesPerArm = 200; // Genies per arm
-        const totalGenies = numArms * geniesPerArm;
+        // Calculate how many genies we can actually add
+        const remainingCapacity = this.MAX_TOTAL_GENIES - this.currentGenieCount;
+        const geniesToAdd = Math.min(numOfGenies, remainingCapacity);
 
-        // Add a delay for each genie to create a "gathering" effect
-        const delayPerGenie = 5; // milliseconds per genie
-        for (let i = 0; i < totalGenies; i++) {
+        if (geniesToAdd <= 0) {
+            console.log("Maximum genie capacity reached!");
+            return;
+        }
+
+        const delayPerGenie = 5; // milliseconds per genie for gathering effect
+
+        for (let i = 0; i < geniesToAdd; i++) {
             this.gameObject.scene.time.delayedCall(delayPerGenie * i, () => {
-                const armIndex = Math.floor(i / geniesPerArm);
-                const positionInArm = i % geniesPerArm;
+                // Calculate which arm and position this genie belongs to
+                const totalIndex = this.currentGenieCount;
+                const armIndex = Math.floor(totalIndex / this.MAX_GENIES_PER_ARM);
+                const positionInArm = totalIndex % this.MAX_GENIES_PER_ARM;
 
                 // Calculate spiral parameters
-                const normalizedPosition = positionInArm / geniesPerArm; // 0 to 1
-                const maxRadius = 100; // Maximum distance from center
+                const normalizedPosition = positionInArm / this.MAX_GENIES_PER_ARM; // 0 to 1
+                const maxRadius = 100;
                 const minRadius = 15;
-                // const minRadius = Phaser.Math.Between(0, 10); // Minimum distance (near the center)
 
                 // Spiral equation: radius decreases as we go inward
                 const radius = maxRadius - (normalizedPosition * (maxRadius - minRadius));
 
-                // Create spiral angle: each arm offset by 2π/numArms, plus spiral rotation
-                const armAngleOffset = (armIndex * 2 * Math.PI) / numArms;
-                const spiralTightness = 3; // How many rotations the spiral makes
+                // Create spiral angle
+                const armAngleOffset = (armIndex * 2 * Math.PI) / this.NUM_ARMS;
+                const spiralTightness = 3;
                 const spiralAngle = normalizedPosition * spiralTightness * 2 * Math.PI;
-                const angle = armAngleOffset - spiralAngle; // Negative for inward spiral
+                const angle = armAngleOffset - spiralAngle;
 
-                // Calculate fall speed based on distance (farther = slower start)
+                // Calculate speeds
                 const baseFallSpeed = 30;
-                const fallSpeed = baseFallSpeed * (1 + normalizedPosition * 2); // Outer genies fall slower initially
-
-                // Calculate orbit speed (inner genies orbit faster)
+                const fallSpeed = baseFallSpeed * (1 + normalizedPosition * 2);
                 const baseOrbitSpeed = 0.3;
                 const orbitSpeed = baseOrbitSpeed * (1 + (1 - normalizedPosition) * 2);
 
-                // Create the genie
-                // randomly change texture to genie_texture
-                let genie = new StaticGenie(this.gameObject.level, this.gameObject, Phaser.Math.RND.pick(['genie_texture', 'static_genie_texture']));
-                if(i % 3 === 0) {
-                    genie = new StaticGenie(this.gameObject.level, this.gameObject, Phaser.Math.RND.pick(['stutter_genie_texture','surge_genie_texture', 'brutes_genie_texture']));
+                // Create the genie with varied textures
+                let genie = new StaticGenie(
+                    this.gameObject.level,
+                    this.gameObject,
+                    Phaser.Math.RND.pick(['genie_texture', 'static_genie_texture'])
+                );
+
+                // Every 3rd genie gets a special texture
+                if (totalIndex % 3 === 0) {
+                    genie = new StaticGenie(
+                        this.gameObject.level,
+                        this.gameObject,
+                        Phaser.Math.RND.pick(['stutter_genie_texture', 'surge_genie_texture', 'brutes_genie_texture'])
+                    );
                 }
 
-                // Add the circular movement with fall effect
+                this.percentageOfGeniesStuck = 0;
+                switch(this.static.staticHealthState) {
+                    case StaticHealthState.STEADY:
+                        this.percentageOfGeniesStuck = 0;
+                        break;
+                    case StaticHealthState.DISRUPTION:
+                        this.percentageOfGeniesStuck = 0.25
+                        break;
+                    case StaticHealthState.VOLATILE:
+                        this.percentageOfGeniesStuck = 0.5
+                        break;
+                    case StaticHealthState.ERUPTION:
+                        this.percentageOfGeniesStuck = 0.75
+                        break;
+                }
+
+                // fall if random > percentage of stuck
+                let falling = Phaser.Math.RND.frac() > this.percentageOfGeniesStuck;
+
+                // Add circular movement component
                 genie.addComponentOverriding(
                     new CircularMovement(
                         this.gameObject,
                         radius,
                         orbitSpeed,
-                        true, // Enable falling
+                        falling, // Enable falling
                         fallSpeed,
                         minRadius // Stop at minimum radius
                     )
@@ -99,15 +139,39 @@ export class StaticAttackComponent extends Component {
                 const alphaValue = Phaser.Math.FloatBetween(0.2, 0.8) * (1 - normalizedPosition * 0.5);
                 genie.setAlpha(alphaValue);
 
-                // Optional: scale based on distance for depth effect
-                const scale = 0.5 + (1 - normalizedPosition) * 0.5; // Smaller when far, bigger when close
+                // Scale based on distance for depth effect
+                const scale = 0.5 + (1 - normalizedPosition) * 0.5;
                 genie.setScale(scale);
                 genie.setDepth(100);
+
+                // Add to group and scene
                 this.static.staticGenies.add(genie);
                 this.gameObject.scene.add.existing(genie);
+
+                this.currentGenieCount++;
             });
         }
+    }
 
+    /**
+     * Get current number of genies
+     */
+    public getCurrentGenieCount(): number {
+        return this.currentGenieCount;
+    }
+
+    /**
+     * Get remaining capacity
+     */
+    public getRemainingCapacity(): number {
+        return this.MAX_TOTAL_GENIES - this.currentGenieCount;
+    }
+
+    /**
+     * Check if at max capacity
+     */
+    public isAtMaxCapacity(): boolean {
+        return this.currentGenieCount >= this.MAX_TOTAL_GENIES;
     }
 
     public attack(target: GameObject) {
@@ -127,7 +191,6 @@ export class StaticAttackComponent extends Component {
                 this.collectGenies();
                 break;
             case StaticAttackState.IDLE:
-                // set to default state
                 break;
         }
     }
@@ -143,15 +206,18 @@ export class StaticAttackComponent extends Component {
             if (!circularMovementComponent) {
                 return;
             }
+            if(!circularMovementComponent.fall) {
+                // if not falling means stuck, means no need to damage player
+                continue;
+            }
             let newCircularMovementComponent = new CircularMovement(
                 this.gameObject,
-                circularMovementComponent.radius, // Use current radius
+                circularMovementComponent.radius,
                 circularMovementComponent.speed,
-                true, // Enable falling
+                true,
                 circularMovementComponent.fallSpeed,
-                0 // Stop at minimum radius
+                0
             );
-            // fall only once when charging
             newCircularMovementComponent.repeat = false;
             genie.addComponentOverriding(newCircularMovementComponent);
         }
@@ -167,14 +233,13 @@ export class StaticAttackComponent extends Component {
 
         this.gameObject.scene.time.delayedCall(2000, () => {
             for (const genie of this.static.staticGenies.getChildren() as StaticGenie[]) {
-
                 // Calculate a delay for each genie to create a "ray" effect
-                const delayPerGenie = 1; // milliseconds per genie
+                const delayPerGenie = 0.75; // milliseconds per genie
                 const genieIndex = this.static.staticGenies.getChildren().indexOf(genie);
                 this.gameObject.scene.time.delayedCall(delayPerGenie * genieIndex, () => {
-
                     this.targetingX = this.attacking.x;
                     this.targetingY = this.attacking.y;
+
                     // Calculate the direction vector from genie to target
                     const dirX = this.targetingX - this.gameObject.x;
                     const dirY = this.targetingY - this.gameObject.y;
@@ -189,10 +254,12 @@ export class StaticAttackComponent extends Component {
                     let startY = this.gameObject.y + Phaser.Math.RND.between(-beamThickness, beamThickness);
                     let targetX = this.targetingX + Phaser.Math.RND.between(-beamThickness, beamThickness);
                     let targetY = this.targetingY + Phaser.Math.RND.between(-beamThickness, beamThickness);
-                    let path = new PathMaker(startX, startY).to(targetX, targetY).to(targetX + normalizedDirX * 1000, targetY + normalizedDirY * 1000); // Extend 1000 pixels out of screen
+                    let path = new PathMaker(startX, startY)
+                        .to(targetX, targetY)
+                        .to(targetX + normalizedDirX * 1000, targetY + normalizedDirY * 1000);
 
-                    genie.deleteComponentByType(CircularMovement); // Remove circular movement
-                    genie.addComponent(new PathFollower(path.create(this.gameObject.scene), this.attackSpeed)); // Add path follower
+                    genie.deleteComponentByType(CircularMovement);
+                    genie.addComponent(new PathFollower(path.create(this.gameObject.scene), this.attackSpeed));
                 });
             }
             this.attackState = StaticAttackState.COLLECT;
@@ -209,8 +276,10 @@ export class StaticAttackComponent extends Component {
             for (const genie of this.static.staticGenies.getChildren() as StaticGenie[]) {
                 genie.destroy();
             }
-            this.setupGeniesInArms();
             this.attackState = StaticAttackState.IDLE;
+            this.currentGenieCount = 0; // Reset counter
+            this.static.staticGenies.clear(true, true);
+            this.addGeniesToArm(this.MAX_TOTAL_GENIES * (1 - this.percentageOfGeniesStuck/2));
         });
     }
 }

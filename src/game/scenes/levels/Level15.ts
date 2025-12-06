@@ -40,7 +40,9 @@ export class Gameplay_TheCore extends Level {
         });
         this.staticCore.setupPlayerFollowerComponent();
         this.staticCore.setupAttackComponent();
-        this.staticCore.attackComponent.setupGeniesInArms();
+        let arms = 5;
+        let geniesPerArm = 200;
+        this.staticCore.attackComponent.addGeniesToArm(arms * geniesPerArm);
         this.add.existing(this.staticCore);
 
         this.playerManager.player.addComponent(new GuardianAttackComponent());
@@ -57,6 +59,11 @@ export class Gameplay_TheCore extends Level {
 
         this.setupCoreAttackTimer();
         this.setupFinalLevelCollisions();
+    }
+
+    init() {
+        super.init();
+        this.state.energy = 1000;
     }
 
     getWaveConfig(_wave: number): {
@@ -84,7 +91,7 @@ export class Gameplay_TheCore extends Level {
 
     private handleCoreDestroyed(): void {
         this.hud.info("Static's Core has been shattered! The Quantum Realm is safe!", '#00FF00', () => {
-            this.easeOutAndStartNextScene(LevelNames.MainMenu, { win: true }); // Or an Epilogue scene
+            this.easeOutAndStartNextScene(LevelNames.EndScene, { win: true }); // Or an Epilogue scene
         }, false);
     }
 

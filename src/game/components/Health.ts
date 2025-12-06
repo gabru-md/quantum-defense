@@ -36,7 +36,6 @@ export class Health extends Component {
             return;
         }
 
-        const healthBefore = this._currentHealth;
         this._currentHealth -= amount;
         // console.log(`[Health] ${this.gameObject.texture.key} took ${amount} damage. Health: ${healthBefore} -> ${this._currentHealth}`);
 

@@ -24,6 +24,8 @@ export class GuardianAttackComponent extends Component {
     private player: Player;
     private lastAttacked: number = 0;
     private baseActivationEnergy: number = 500;
+    private targetRange: number = 1000;
+    private waveDamage: number = 1000; // Static health is 5k so we need to do this 5 times, this should be challenging
 
     // Configuration constants
     private readonly NUM_ARMS = 5;
@@ -159,7 +161,19 @@ export class GuardianAttackComponent extends Component {
         if (this.playerPressedKey(_time)) {
             if (this.cooldownOver(_time)) {
                 if (this.enoughEnergyPresent()) {
-                    this.attackState = GuardianAttackState.CHARGING;
+                    console.log(this.currentGenieCount);
+                    if(this.currentGenieCount > 0) {
+                        this.attackState = GuardianAttackState.CHARGING;
+                    } else {
+                        this.player.warn(`Collect Quantum Echoes to activate Mega Resonance Wave!`);
+                        this.gameObject.level.hud.alert(
+                            `INSUFFICIENT GENIES:\nCollect Quantum Echoes to activate Mega Resonance Wave!`,
+                            AppColors.UI_MESSAGE_WARN,
+                            1000
+                        );
+                        this.gameObject.level.audioManager.playSfx('error_fx', false, this.gameObject)
+                        return;
+                    }
                 } else {
                     // console.log(`[ResonanceWave] Insufficient energy. Current: ${this.gameObject.level.state.energy}, Needed: ${this.baseActivationEnergy}`);
                     this.player.warn(`Need ${this.baseActivationEnergy} energy to activate Mega Resonance Wave!`);
@@ -187,7 +201,6 @@ export class GuardianAttackComponent extends Component {
                 this.chargeGenies();
                 break;
             case GuardianAttackState.RELEASE:
-                this.lastAttacked = _time;
                 this.releaseGenies();
                 break;
             case GuardianAttackState.COLLECT:
@@ -203,7 +216,6 @@ export class GuardianAttackComponent extends Component {
             return;
         }
         this.chargingInProgress = true;
-
         for (const genie of this.player.guardianGenies?.getChildren() as Genie[]) {
             let circularMovementComponent = genie.getComponent(CircularMovement);
             if (!circularMovementComponent) {
@@ -241,7 +253,7 @@ export class GuardianAttackComponent extends Component {
                     circularMovementComponent.speed,
                     true,
                     circularMovementComponent.fallSpeed,
-                    -1000
+                    -250
                 );
                 newCircularMovementComponent.repeat = false;
                 genie.addComponentOverriding(newCircularMovementComponent);
@@ -251,8 +263,25 @@ export class GuardianAttackComponent extends Component {
                 this.gameObject.x,
                 this.gameObject.y,
                 this.gameObject.width,
-                getResonanceWaveConfig(1000, PlayerConfig.resonanceWave.pulseColor, 0.25)
+                getResonanceWaveConfig(1000, PlayerConfig.resonanceWave.pulseColor, 0.1)
             );
+
+            this.lastAttacked = this.gameObject.scene.time.now;
+
+
+            const core = (this.gameObject.level as any).staticCore; // Access the core directly from the level
+            if (core) {
+                const distance = Phaser.Math.Distance.Between(
+                    this.gameObject.x,
+                    this.gameObject.y,
+                    core.x,
+                    core.y
+                );
+                if (distance <= this.targetRange) {
+                    core.takeDamage(this.waveDamage * (this.currentGenieCount / this.MAX_TOTAL_GENIES));
+                }
+            }
+
             this.gameObject.level.audioManager.playSfx('guardian_shoot')
 
             this.gameObject.level.state.energy -= this.baseActivationEnergy;
@@ -266,6 +295,7 @@ export class GuardianAttackComponent extends Component {
         if (this.collectionInProgress) {
             return;
         }
+        console.log('Collection in progress!')
         this.releaseInProgress = false;
         this.collectionInProgress = true;
         this.gameObject.scene.time.delayedCall(1500, () => {
@@ -288,6 +318,8 @@ export class GuardianAttackComponent extends Component {
     }
 
     private cooldownOver(time: number) {
+        console.log(this.lastAttacked, time);
+        console.log(this.lastAttacked + 5000 < time)
         return this.lastAttacked + 5000 < time;
     }
 }

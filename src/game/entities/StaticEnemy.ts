@@ -7,6 +7,7 @@ import {PlayerConfig} from "../config/PlayerConfig.ts";
 import {StaticAttackComponent} from "../components/StaticAttackComponent.ts";
 import {StaticGenie} from "./StaticGenie.ts";
 import {PlayerFollowerComponent} from "../components/PlayerFollowerComponent.ts";
+import {ShakeComponent} from "../components/ShakeComponent.ts";
 
 export interface StaticEnemyConfig {
     scene: Phaser.Scene;
@@ -17,11 +18,19 @@ export interface StaticEnemyConfig {
     name: string;
 }
 
+export enum StaticHealthState {
+    STEADY,
+    DISRUPTION,
+    VOLATILE,
+    ERUPTION
+}
+
 export class StaticEnemy extends GameObject {
     private healthComponent!: Health;
     staticGenies: Phaser.GameObjects.Group;
     attackComponent: StaticAttackComponent;
     playerFollower: PlayerFollowerComponent;
+    staticHealthState: StaticHealthState = StaticHealthState.STEADY;
 
     constructor(config: StaticEnemyConfig) {
         super(config.scene, config.x, config.y, config.texture);
@@ -37,6 +46,8 @@ export class StaticEnemy extends GameObject {
             this.destroy();
         });
 
+        this.on('healthChanged',this.staticHealthChanged, this);
+
         this.level.onHover(this, config.name);
 
         this.addComponent(
@@ -49,6 +60,8 @@ export class StaticEnemy extends GameObject {
                 PlayerConfig.resonanceWave.pulseLineWidth
             )
         );
+
+        this.addComponent(new ShakeComponent());
         this.setDepth(101);
     }
 
@@ -69,5 +82,28 @@ export class StaticEnemy extends GameObject {
     // Public method to allow external components (like bullets) to deal damage
     public takeDamage(amount: number) {
         this.healthComponent.takeDamage(amount);
+    }
+
+    private staticHealthChanged(currentHealth: number) {
+        if(currentHealth >= 4000) {
+            this.staticHealthState = StaticHealthState.STEADY;
+        } else if(currentHealth >= 3000) {
+            this.staticHealthState = StaticHealthState.DISRUPTION;
+        } else if(currentHealth >= 2000) {
+            this.staticHealthState = StaticHealthState.VOLATILE;
+        } else if(currentHealth >= 1000) {
+            this.staticHealthState = StaticHealthState.ERUPTION;
+        }
+        this.shake();
+    }
+
+    public shake(): void {
+        let shakeComponent = this.getComponent(ShakeComponent);
+        if (shakeComponent) {
+            shakeComponent.enabled = true;
+            this.scene.time.delayedCall(1250, () => {
+                shakeComponent.enabled = false;
+            })
+        }
     }
 }
