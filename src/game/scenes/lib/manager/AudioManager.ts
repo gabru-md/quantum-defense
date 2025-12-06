@@ -188,6 +188,10 @@ export class AudioManager extends Manager {
             // @ts-ignore
             this.backgroundMusic.setVolume(this._musicVolume);
         }
+        if (this.ambience && this.ambience.isPlaying) {
+            // @ts-ignore
+            this.ambience.setVolume(this._musicVolume);
+        }
     }
 
     public increaseMusicVolume(amount: number = 0.1): void {
@@ -346,7 +350,7 @@ export class AudioManager extends Manager {
             if (this.ambience) {
                 this.ambience.stop();
             }
-            // console.log(`Playing music: ${key} at volume: ${this._musicVolume}`)
+            console.log(`Playing music: ${key} at volume: ${this._musicVolume}`)
             // console.log(gameState)
             this.ambience = this.scene.sound.add(key, {loop});
             this.ambience.play({volume: this._musicVolume});

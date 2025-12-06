@@ -53,9 +53,7 @@ export class Gameplay_TheCore extends Level {
         // Inform the player about the core
         this.hud.info("Static's Core is exposed! Only your Resonance Wave can destroy it!", '#FF0000', undefined, false);
 
-        this.hud.info("Collect Quantum Echoes and Press [R] to activate Mega Resonance Wave to deal damage to Static", '#00FF00', () => {
-            this.easeOutAndStartNextScene(LevelNames.MainMenu, { win: true }); // Or an Epilogue scene
-        }, false);
+        this.hud.info("Collect Quantum Echoes and Press [R] to activate Mega Resonance Wave to deal damage to Static", '#00FF00', undefined, true);
 
         this.setupCoreAttackTimer();
         this.setupFinalLevelCollisions();
@@ -91,7 +89,7 @@ export class Gameplay_TheCore extends Level {
 
     private handleCoreDestroyed(): void {
         this.hud.info("Static's Core has been shattered! The Quantum Realm is safe!", '#00FF00', () => {
-            this.easeOutAndStartNextScene(LevelNames.EndScene, { win: true }); // Or an Epilogue scene
+            this.easeOutAndStartNextScene(LevelNames.EndScene, {win: true}); // Or an Epilogue scene
         }, false);
     }
 
@@ -103,7 +101,7 @@ export class Gameplay_TheCore extends Level {
         this.time.addEvent({
             delay: 10000, // 10 seconds
             callback: () => {
-            this.staticCore.attack(this.playerManager.player);
+                this.staticCore.attack(this.playerManager.player);
             },
             loop: true
         });

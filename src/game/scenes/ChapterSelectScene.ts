@@ -21,13 +21,14 @@ export class ChapterSelectScene extends Phaser.Scene {
 
 
     constructor() {
-        super('ChapterSelectScene');
+        super('ChapterSelectScene');this.audioManager = new AudioManager(this);
+
     }
 
     init(): void {
         this.backgroundEffectsManager = new BackgroundEffectsManager(this);
-        this.audioManager = new AudioManager(this);
         this.gameState = this.sys.registry.get('gameState');
+        this.audioManager.setup();
     }
 
     create() {

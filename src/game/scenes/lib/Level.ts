@@ -130,6 +130,7 @@ export abstract class Level extends Phaser.Scene {
         const player = this.playerManager.setup();
         this.towerManager.setup();
         this.waveManager.setup();
+        this.waveManager.setSpecialEnemyKillable(true);
 
         this.collisionManager.setup();
 

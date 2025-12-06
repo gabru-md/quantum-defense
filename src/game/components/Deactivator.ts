@@ -1,10 +1,10 @@
-import { Component } from '../core/Component';
-import { Tower } from '../entities/Tower';
-import { Level } from '../scenes/lib/Level';
+import {Component} from '../core/Component';
+import {Tower} from '../entities/Tower';
+import {Level} from '../scenes/lib/Level';
 import * as Phaser from 'phaser';
-import { getDeactivationWaveConfig } from '../config/WaveConfig.ts';
-import { createWaveEffect } from '../utils/WaveEffectHelper.ts';
-import { SpecialEnemyConfig } from '../config/EnemyConfigs.ts'; // Import SpecialEnemyConfig
+import {getDeactivationWaveConfig} from '../config/WaveConfig.ts';
+import {createWaveEffect} from '../utils/WaveEffectHelper.ts';
+import {SpecialEnemyConfig} from '../config/EnemyConfigs.ts'; // Import SpecialEnemyConfig
 
 /**
  * A component that allows a GameObject to deactivate nearby towers.
@@ -47,20 +47,6 @@ export class Deactivator extends Component {
                 if (distance <= this.deactivationRadius) {
                     // Emit an event from the tower to be deactivated
                     tower.deactivateTower();
-                    switch (tower.towerType) {
-                        case 'tower1':
-                            this.gameObject.level.audioManager.playSfx('laser_deactivate');
-                            break;
-                        case 'tower2':
-                            this.gameObject.level.audioManager.playSfx('bomb_deactivate');
-                            break;
-                        case 'tower3':
-                            this.gameObject.level.audioManager.playSfx('slow_deactivate');
-                            break;
-                        default:
-                            this.gameObject.level.audioManager.playSfx('laser_deactivate');
-                            break;
-                    }
                     this.gameObject.scene.events.emit('towerDeactivated');
                 }
             }

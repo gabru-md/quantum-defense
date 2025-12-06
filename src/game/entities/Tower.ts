@@ -93,7 +93,9 @@ export class Tower extends GameObject {
             this.visualPulseComponent.setColor(this.originalPulseColor); // Original color from config
         }
 
-        this.level.audioManager.playTowerSfx('error_fx', false, this);
+        if(currentHealth !== 0) { // dont play when fully disabled
+            this.level.audioManager.playTowerSfx('error_fx', false, this);
+        }
 
         // Show "Tower under attack!" message if health decreased
         this.level.hud.alert(
@@ -125,9 +127,22 @@ export class Tower extends GameObject {
             if (c) c.enabled = false;
         });
         this.level.playerManager.player.danger('A Tower has been deactivated!');
-        this.level.audioManager.playSfx('error_fx')
         this.level.levelStatsManager.towersDeactivated++;
         this.shake();
+        switch (this.towerType) {
+            case 'tower1':
+                this.level.audioManager.playSfx('laser_deactivate');
+                break;
+            case 'tower2':
+                this.level.audioManager.playSfx('bomb_deactivate');
+                break;
+            case 'tower3':
+                this.level.audioManager.playSfx('slow_deactivate');
+                break;
+            default:
+                this.level.audioManager.playSfx('laser_deactivate');
+                break;
+        }
     }
 
     public enableVisualPulse(): void {
