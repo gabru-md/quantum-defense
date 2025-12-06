@@ -20,4 +20,11 @@ export class Genie extends GameObject {
         this.getComponent(CircularMovement)?.setRadius(orbitRadius);
         this.getComponent(CircularMovement)?.setSpeed(orbitSpeed);
     }
+
+    destroy(fromScene?: boolean) {
+        this.components.forEach(component => {
+            this.deleteComponent(component);
+        })
+        super.destroy(fromScene);
+    }
 }

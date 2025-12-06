@@ -137,6 +137,7 @@ export class CollisionManager extends Manager {
     protected handlePlayerEchoCollision(_player: Player, echo: QuantumEcho): void {
         this.level.playerManager.collectQuantumEcho(echo);
         this.level.levelStatsManager.quantumEchoesCollected++;
+        this.level.playerManager.player.addGeniesToArm(echo.energyValue);
         echo.destroy();
     }
 

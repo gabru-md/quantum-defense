@@ -1,17 +1,17 @@
 // src/game/components/ResonanceWave.ts
-import { Component } from '../core/Component';
+import {Component} from '../core/Component';
 import * as Phaser from 'phaser';
-import { FindNearestTower } from './FindNearestTower.ts';
-import { Tower } from '../entities/Tower.ts';
-import { Health } from './Health.ts';
-import { AppColors } from '../scripts/Colors.ts';
-import { SpecialEnemy } from '../entities/SpecialEnemy.ts';
-import { createWaveEffect } from '../utils/WaveEffectHelper.ts';
-import { getResonanceWaveConfig } from '../config/WaveConfig.ts';
-import { PlayerConfig } from '../config/PlayerConfig.ts';
+import {FindNearestTower} from './FindNearestTower.ts';
+import {Tower} from '../entities/Tower.ts';
+import {Health} from './Health.ts';
+import {AppColors} from '../scripts/Colors.ts';
+import {SpecialEnemy} from '../entities/SpecialEnemy.ts';
+import {createWaveEffect} from '../utils/WaveEffectHelper.ts';
+import {getResonanceWaveConfig} from '../config/WaveConfig.ts';
+import {PlayerConfig} from '../config/PlayerConfig.ts';
 import {Player} from "../entities/Player.ts";
-import { StaticEnemy } from '../entities/StaticEnemy.ts';
-import { LevelNames } from '../scenes/lib/LevelNames.ts'; // Import LevelNames
+import {StaticEnemy} from '../entities/StaticEnemy.ts';
+import {LevelNames} from '../scenes/lib/LevelNames.ts';
 
 /**
  * A component that allows the player to activate a wave to revive deactivated towers or damage special enemies.
@@ -62,29 +62,23 @@ export class ResonanceWave extends Component {
                 return;
             }
             this.gameObject.level.audioManager.playSfx('guardian_shoot')
-
-            // --- START MODIFICATION ---
-            // Bypass energy cost check for the final boss level
-            const isFinalBossLevel = this.gameObject.level.scene.key === LevelNames.Gameplay_TheCore;
-            if (!isFinalBossLevel) {
-                // Check for base activation energy
-                if (this.gameObject.level.state.energy < this.baseActivationEnergy) {
-                    // console.log(`[ResonanceWave] Insufficient energy. Current: ${this.gameObject.level.state.energy}, Needed: ${this.baseActivationEnergy}`);
-                    (this.gameObject as Player).warn(`Need ${this.baseActivationEnergy} energy to activate Resonance Wave!`);
-                    this.gameObject.level.hud.alert(
-                        `INSUFFICIENT ENERGY:\nNeed ${this.baseActivationEnergy} energy to activate Resonance Wave!`,
-                        AppColors.UI_MESSAGE_WARN,
-                        1000
-                    );
-                    this.gameObject.level.audioManager.playSfx('error_fx', false, this.gameObject)
-                    return;
-                }
-
-                // Deduct base activation energy only if not in final boss level
-                this.gameObject.level.state.energy -= this.baseActivationEnergy;
-                this.gameObject.level.hud.update();
+            // Check for base activation energy
+            if (this.gameObject.level.state.energy < this.baseActivationEnergy) {
+                // console.log(`[ResonanceWave] Insufficient energy. Current: ${this.gameObject.level.state.energy}, Needed: ${this.baseActivationEnergy}`);
+                (this.gameObject as Player).warn(`Need ${this.baseActivationEnergy} energy to activate Resonance Wave!`);
+                this.gameObject.level.hud.alert(
+                    `INSUFFICIENT ENERGY:\nNeed ${this.baseActivationEnergy} energy to activate Resonance Wave!`,
+                    AppColors.UI_MESSAGE_WARN,
+                    1000
+                );
+                this.gameObject.level.audioManager.playSfx('error_fx', false, this.gameObject)
+                return;
             }
-            // --- END MODIFICATION ---
+
+            // Deduct base activation energy only if not in final boss level
+            this.gameObject.level.state.energy -= this.baseActivationEnergy;
+            this.gameObject.level.hud.update();
+
 
             this.lastActivated = time; // Set lastActivated here after energy check
             // console.log(`[ResonanceWave] Activated. Energy deducted: ${isFinalBossLevel ? 0 : this.baseActivationEnergy}, New energy: ${this.gameObject.level.state.energy}`);

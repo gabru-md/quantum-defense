@@ -7,6 +7,7 @@ import {Genie} from "./Genie.ts";
 import {Health} from "../components/Health.ts";
 import {AppColors} from "../scripts/Colors.ts";
 import {ShakeComponent} from "../components/ShakeComponent.ts";
+import {GuardianAttackComponent} from "../components/GuardianAttackComponent.ts";
 
 export interface PlayerConfig {
     scene: Phaser.Scene;
@@ -22,6 +23,8 @@ export class Player extends GameObject {
     private genieTextObject: Phaser.GameObjects.Text;
     private notificationTween?: Phaser.Tweens.Tween;
     private genieTextTween?: Phaser.Tweens.Tween;
+
+    guardianGenies?: Phaser.GameObjects.Group;
 
     constructor(config: PlayerConfig) {
         super(config.scene, config.x, config.y, config.texture);
@@ -59,6 +62,8 @@ export class Player extends GameObject {
         }).setOrigin(0.5).setVisible(false);
 
         this.level.onHover(this, "This is you, Guardian!");
+
+        this.guardianGenies = this.level.add.group({classType: Genie, runChildUpdate: true});
     }
 
     public text(text?: string): void {
@@ -180,12 +185,16 @@ export class Player extends GameObject {
 
     public shake(): void {
         let shakeComponent = this.getComponent(ShakeComponent);
-        if(shakeComponent) {
+        if (shakeComponent) {
             shakeComponent.enabled = true;
             this.scene.time.delayedCall(1000, () => {
                 shakeComponent.enabled = false;
             })
         }
+    }
+
+    public addGeniesToArm(numOfGenies: number = 20) {
+        this.getComponent(GuardianAttackComponent)?.addGeniesToArm(2 * numOfGenies);
     }
 
     destroy(fromScene?: boolean) {

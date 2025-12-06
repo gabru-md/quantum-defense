@@ -73,7 +73,7 @@ export class StaticAttackComponent extends Component {
                 // Create the genie
                 // randomly change texture to genie_texture
                 let genie = new StaticGenie(this.gameObject.level, this.gameObject, Phaser.Math.RND.pick(['genie_texture', 'static_genie_texture']));
-                if(i % 10 === 0) {
+                if(i % 3 === 0) {
                     genie = new StaticGenie(this.gameObject.level, this.gameObject, Phaser.Math.RND.pick(['stutter_genie_texture','surge_genie_texture', 'brutes_genie_texture']));
                 }
 

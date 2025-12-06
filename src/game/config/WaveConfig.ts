@@ -1,4 +1,4 @@
-import { AppColors, phaserColor } from '../scripts/Colors.ts';
+import {AppColors, phaserColor} from '../scripts/Colors.ts';
 
 export interface WaveEffectConfig {
     totalPulses: number;
@@ -16,13 +16,14 @@ export const DefaultWaveConfig: Omit<WaveEffectConfig, 'targetRadius' | 'color'>
     lineWidth: 1,
 };
 
-export function getResonanceWaveConfig(targetRadius: number, customColor?: number): WaveEffectConfig {
+export function getResonanceWaveConfig(targetRadius: number, customColor?: number, lineWidth?: number): WaveEffectConfig {
     return {
         ...DefaultWaveConfig,
         totalPulses: 4, // Resonance wave might have more pulses
         duration: 1200, // Slightly longer duration for player
         color: customColor || phaserColor(AppColors.PLAYER_WAVE_PULSE),
         targetRadius: targetRadius,
+        lineWidth: lineWidth || 1,
     };
 }
 

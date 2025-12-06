@@ -6,6 +6,7 @@ import {GAME_WIDTH, GAME_HEIGHT} from "../../scripts/Util.ts";
 import {StaticEnemy} from "../../entities/StaticEnemy.ts";
 import {Player} from "../../entities/Player.ts";
 import {StaticGenie} from "../../entities/StaticGenie.ts";
+import {GuardianAttackComponent} from "../../components/GuardianAttackComponent.ts";
 
 export class Gameplay_TheCore extends Level {
     private staticCore!: StaticEnemy; // Use the new StaticEnemy type
@@ -42,6 +43,8 @@ export class Gameplay_TheCore extends Level {
         this.staticCore.attackComponent.setupGeniesInArms();
         this.add.existing(this.staticCore);
 
+        this.playerManager.player.addComponent(new GuardianAttackComponent());
+
         // Listen for core destruction to trigger win condition
         this.events.on('staticCoreDestroyed', this.handleCoreDestroyed, this);
 
@@ -53,7 +56,7 @@ export class Gameplay_TheCore extends Level {
         }, false);
 
         this.setupCoreAttackTimer();
-        this.setupCollisionWithPlayer();
+        this.setupFinalLevelCollisions();
     }
 
     getWaveConfig(_wave: number): {
@@ -99,7 +102,7 @@ export class Gameplay_TheCore extends Level {
         });
     }
 
-    private setupCollisionWithPlayer() {
+    private setupFinalLevelCollisions() {
         this.physics.add.overlap(
             this.staticCore.staticGenies,
             this.playerManager.player, // Use playerSprite for collision detection
