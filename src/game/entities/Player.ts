@@ -49,7 +49,7 @@ export class Player extends GameObject {
 
         // Create the notification text
         this.notificationText = this.scene.add.text(this.x, this.y - 30, '!', {
-            font: '24px',
+            font: '18px',
             color: '#ffffff',
             align: 'center'
         }).setOrigin(0.5).setVisible(false);
@@ -126,35 +126,38 @@ export class Player extends GameObject {
         });
     }
 
-    // private showNotification(color: string): void {
-    //     // Stop any existing tween
-    //     if (this.notificationTween) {
-    //         this.notificationTween.stop();
-    //         this.notificationTween = undefined;
-    //     }
-    //
-    //     // Reset the notification to its initial state
-    //     this.notificationText.setY(this.y - 30);
-    //     this.notificationText.setAlpha(1);
-    //
-    //     // Set color and make visible
-    //     this.notificationText.setColor(color).setVisible(true);
-    //
-    //     // Create new tween
-    //     this.notificationTween = this.scene.tweens.add({
-    //         targets: this.notificationText,
-    //         y: this.y - 50,
-    //         alpha: 0,
-    //         duration: 1500,
-    //         ease: 'Power2',
-    //         onComplete: () => {
-    //             this.notificationText.setVisible(false);
-    //             this.notificationText.setAlpha(1);
-    //             this.notificationText.setY(this.y - 30);
-    //             this.notificationTween = undefined;
-    //         }
-    //     });
-    // }
+    private showNotification(color: string, text?: string): void {
+        // Stop any existing tween
+        if (this.notificationTween) {
+            this.notificationTween.stop();
+            this.notificationTween = undefined;
+        }
+
+        // Reset the notification to its initial state
+        if(text) {
+            this.notificationText.setText(text);
+        }
+        this.notificationText.setY(this.y - 30);
+        this.notificationText.setAlpha(1);
+
+        // Set color and make visible
+        this.notificationText.setColor(color).setVisible(true);
+
+        // Create new tween
+        this.notificationTween = this.scene.tweens.add({
+            targets: this.notificationText,
+            y: this.y - 50,
+            alpha: 0,
+            duration: 1500,
+            ease: 'Power2',
+            onComplete: () => {
+                this.notificationText.setVisible(false);
+                this.notificationText.setAlpha(1);
+                this.notificationText.setY(this.y - 30);
+                this.notificationTween = undefined;
+            }
+        });
+    }
 
     public update(time: number, delta: number): void {
         super.update(time, delta);
@@ -195,6 +198,7 @@ export class Player extends GameObject {
 
     public addGeniesToArm(numOfGenies: number = 20) {
         this.getComponent(GuardianAttackComponent)?.addGeniesToArm(2 * numOfGenies);
+        this.showNotification(AppColors.PLAYER, `+${2*numOfGenies}`)
     }
 
     destroy(fromScene?: boolean) {

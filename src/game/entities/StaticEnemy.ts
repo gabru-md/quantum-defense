@@ -26,7 +26,7 @@ export enum StaticHealthState {
 }
 
 export class StaticEnemy extends GameObject {
-    private healthComponent!: Health;
+    healthComponent!: Health;
     staticGenies: Phaser.GameObjects.Group;
     attackComponent: StaticAttackComponent;
     playerFollower: PlayerFollowerComponent;

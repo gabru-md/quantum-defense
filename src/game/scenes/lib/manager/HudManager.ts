@@ -55,6 +55,11 @@ export class HudManager extends Manager {
     private healthBarBg!: Phaser.GameObjects.Graphics;
     private energyBarBg!: Phaser.GameObjects.Graphics;
 
+
+    private staticHealthText!: Phaser.GameObjects.Text;
+    private staticHealthBar!: Phaser.GameObjects.Graphics;
+    private staticHealthBarBg!: Phaser.GameObjects.Graphics;
+
     constructor(public scene: Level) {
         super(scene);
     }
@@ -109,6 +114,9 @@ export class HudManager extends Manager {
         this.markerText.destroy();
         this.spacebarPrompt.destroy();
         this.speedButton.destroy();
+        this.staticHealthBarBg.destroy();
+        this.staticHealthText.destroy();
+        this.staticHealthBarBg.destroy();
 
         this.tower1UpgradeText.destroy();
         this.tower2UpgradeText.destroy();
@@ -291,16 +299,29 @@ export class HudManager extends Manager {
         this.energyBar = this.scene.add.graphics({x: barX, y: currentY}).setDepth(100);
         currentY += textSpacing;
 
-        this.waveNumberText = this.scene.add.text(textX, currentY, `Wave: ${this.scene.waveManager.currentWave}/${this.scene.waveManager.totalWaves}`, {
-            font: '20px',
-        }).setDepth(100).setName('waveNumberText');
-        // currentY += textSpacing;
+        if (this.scene.scene.key === LevelNames.Gameplay_TheCore) {
+            // final level we show static's health instead
+            this.staticHealthText = this.scene.add.text(textX, currentY, `Static: ${this.scene.state.energy}/${this.maxEnergy}`, {
+                font: '20px',
+                color: AppColors.UI_TEXT
+            }).setDepth(101);
+            this.staticHealthBarBg = this.scene.add.graphics({x: barX, y: currentY});
+            this.staticHealthBarBg.fillStyle(phaserColor(AppColors.UI_DISABLED), 0.5);
+            this.staticHealthBarBg.fillRect(0, 0, barWidth, 15);
+            this.staticHealthBar = this.scene.add.graphics({x: barX, y: currentY}).setDepth(100);
 
-        this.waveProgressText = this.scene.add.text(textX + 150, currentY, `Enemies: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`, {
-            font: '20px',
-        }).setDepth(100).setName('waveProgressText');
+            return [panel, this.gameName, this.levelText, this.healthBarText, this.healthBarBg, this.healthBar, this.energyBarText, this.energyBarBg, this.energyBar, this.staticHealthText, this.staticHealthBar, this.staticHealthBarBg];
+        } else {
+            this.waveNumberText = this.scene.add.text(textX, currentY, `Wave: ${this.scene.waveManager.currentWave}/${this.scene.waveManager.totalWaves}`, {
+                font: '20px',
+            }).setDepth(100).setName('waveNumberText');
+            // currentY += textSpacing;
 
-        return [panel, this.gameName, this.levelText, this.healthBarText, this.healthBarBg, this.healthBar, this.energyBarText, this.energyBarBg, this.energyBar, this.waveNumberText, this.waveProgressText];
+            this.waveProgressText = this.scene.add.text(textX + 150, currentY, `Enemies: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`, {
+                font: '20px',
+            }).setDepth(100).setName('waveProgressText');
+            return [panel, this.gameName, this.levelText, this.healthBarText, this.healthBarBg, this.healthBar, this.energyBarText, this.energyBarBg, this.energyBar, this.waveNumberText, this.waveProgressText];
+        }
     }
 
     private createTowerSelectionPanel(): Phaser.GameObjects.GameObject[] {
@@ -510,9 +531,19 @@ export class HudManager extends Manager {
         this.energyBar.fillStyle(phaserColor(AppColors.ENEMY_NORMAL)); // Electric Blue
         this.energyBar.fillRect(0, 0, fullBarWidth * energyPercentage, 20);
 
-        this.waveNumberText.setText(`Wave: ${this.scene.waveManager.currentWave}/${this.scene.waveManager.totalWaves}`);
-        this.waveProgressText.setText(`Enemies: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`);
-
+        if (this.scene.scene.key === LevelNames.Gameplay_TheCore) {
+            let staticEnemy = (this.scene as any).staticCore; // Access the core directly from the level
+            if (staticEnemy) {
+                this.staticHealthText.setText(`Static: ${staticEnemy.healthComponent.currentHealth}/${staticEnemy.healthComponent.maxHealth}`)
+                const staticHealthPercentage = staticEnemy.healthComponent.currentHealth / staticEnemy.healthComponent.maxHealth;
+                this.staticHealthBar.clear();
+                this.staticHealthBar.fillStyle(phaserColor(AppColors.SPECIAL_ENEMY));
+                this.staticHealthBar.fillRect(0, 0, fullBarWidth * staticHealthPercentage, 20);
+            }
+        } else {
+            this.waveNumberText.setText(`Wave: ${this.scene.waveManager.currentWave}/${this.scene.waveManager.totalWaves}`);
+            this.waveProgressText.setText(`Enemies: ${this.scene.waveManager.enemiesSpawnedInWave}/${this.scene.waveManager.maxEnemiesInWave}`);
+        }
         this.healthBarText.setText(`Health: ${this.scene.state.baseHealth}/${this.maxHealth}`);
         this.energyBarText.setText(`Energy: ${this.scene.state.energy}/${this.maxEnergy}`);
     }
