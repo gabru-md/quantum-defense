@@ -126,7 +126,7 @@ export class Player extends GameObject {
         });
     }
 
-    private showNotification(color: string, text?: string): void {
+    public showNotification(color: string, text?: string): void {
         // Stop any existing tween
         if (this.notificationTween) {
             this.notificationTween.stop();

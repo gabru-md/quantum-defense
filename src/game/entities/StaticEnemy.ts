@@ -106,4 +106,14 @@ export class StaticEnemy extends GameObject {
             })
         }
     }
+
+    public destroy() {
+        for(const child of this.staticGenies.getChildren() as StaticGenie[]) {
+            child.destroy();
+        }
+        this.components.forEach(component => {
+            this.deleteComponent(component);
+        })
+        super.destroy();
+    }
 }

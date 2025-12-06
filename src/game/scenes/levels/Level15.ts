@@ -90,7 +90,7 @@ export class Gameplay_TheCore extends Level {
     private handleCoreDestroyed(): void {
         this.hud.info("Static's Core has been shattered! The Quantum Realm is safe!", '#00FF00', () => {
             this.easeOutAndStartNextScene(LevelNames.EndScene, {win: true}); // Or an Epilogue scene
-        }, false);
+        }, true);
     }
 
     nextScene(): LevelNames {

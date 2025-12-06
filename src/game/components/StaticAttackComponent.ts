@@ -56,6 +56,10 @@ export class StaticAttackComponent extends Component {
         const delayPerGenie = 5; // milliseconds per genie for gathering effect
 
         for (let i = 0; i < geniesToAdd; i++) {
+            this.static = this.gameObject as StaticEnemy;
+            if(!this.static || !this.gameObject || !this.gameObject.scene) {
+                return;
+            }
             this.gameObject.scene.time.delayedCall(delayPerGenie * i, () => {
                 // Calculate which arm and position this genie belongs to
                 const totalIndex = this.currentGenieCount;
@@ -80,7 +84,12 @@ export class StaticAttackComponent extends Component {
                 const baseFallSpeed = 30;
                 const fallSpeed = baseFallSpeed * (1 + normalizedPosition * 2);
                 const baseOrbitSpeed = 0.3;
-                const orbitSpeed = baseOrbitSpeed * (1 + (1 - normalizedPosition) * 2);
+                let orbitSpeed = baseOrbitSpeed * (1 + (1 - normalizedPosition) * 2);
+
+                if(!this.gameObject || !this.gameObject.level) {
+                    // scene ended?
+                    return;
+                }
 
                 // Create the genie with varied textures
                 let genie = new StaticGenie(
@@ -115,7 +124,9 @@ export class StaticAttackComponent extends Component {
                 }
 
                 // fall if random > percentage of stuck
-                let falling = Phaser.Math.RND.frac() > this.percentageOfGeniesStuck;
+                if(Phaser.Math.RND.frac() > this.percentageOfGeniesStuck) {
+                    orbitSpeed = 0;
+                }
 
                 // Add circular movement component
                 genie.addComponentOverriding(
@@ -123,7 +134,7 @@ export class StaticAttackComponent extends Component {
                         this.gameObject,
                         radius,
                         orbitSpeed,
-                        falling, // Enable falling
+                        true, // Enable falling
                         fallSpeed,
                         minRadius // Stop at minimum radius
                     )
@@ -231,11 +242,20 @@ export class StaticAttackComponent extends Component {
         this.chargingInProgress = false;
         this.releaseInProgress = true;
 
+        this.static = this.gameObject as StaticEnemy;
+        if(!this.static || !this.gameObject || !this.gameObject.scene) {
+            return;
+        }
         this.gameObject.scene.time.delayedCall(2000, () => {
             for (const genie of this.static.staticGenies.getChildren() as StaticGenie[]) {
                 // Calculate a delay for each genie to create a "ray" effect
                 const delayPerGenie = 0.75; // milliseconds per genie
                 const genieIndex = this.static.staticGenies.getChildren().indexOf(genie);
+
+                this.static = this.gameObject as StaticEnemy;
+                if(!this.static || !this.gameObject || !this.gameObject.scene) {
+                    return;
+                }
                 this.gameObject.scene.time.delayedCall(delayPerGenie * genieIndex, () => {
                     this.targetingX = this.attacking.x;
                     this.targetingY = this.attacking.y;
@@ -272,6 +292,11 @@ export class StaticAttackComponent extends Component {
         }
         this.releaseInProgress = false;
         this.collectionInProgress = true;
+
+        this.static = this.gameObject as StaticEnemy;
+        if(!this.static || !this.gameObject || !this.gameObject.scene) {
+            return;
+        }
         this.gameObject.scene.time.delayedCall(1500, () => {
             for (const genie of this.static.staticGenies.getChildren() as StaticGenie[]) {
                 genie.destroy();

@@ -25,7 +25,7 @@ export class GuardianAttackComponent extends Component {
     private lastAttacked: number = 0;
     private baseActivationEnergy: number = 250;
     private targetRange: number = 1000;
-    private waveDamage: number = 1000; // Static health is 5k so we need to do this 5 times, this should be challenging
+    private waveDamage: number = 1000; // Static health is 5k so we need to do this atleast 5 times, this should be challenging
 
     // Configuration constants
     private readonly NUM_ARMS = 5;
@@ -58,7 +58,8 @@ export class GuardianAttackComponent extends Component {
         const geniesToAdd = Math.min(numOfGenies, remainingCapacity);
 
         if (geniesToAdd <= 0) {
-            console.log("Maximum genie capacity reached!");
+            this.player.showNotification(AppColors.UI_MESSAGE_WARN, `!`)
+            this.player.info("Maximum genie capacity reached!")
             return;
         }
 
@@ -242,6 +243,7 @@ export class GuardianAttackComponent extends Component {
         this.chargingInProgress = false;
         this.releaseInProgress = true;
         this.gameObject.scene.time.delayedCall(2000, () => {
+            this.player.showNotification(AppColors.UI_MESSAGE_WARN, `¡`)
             for (const genie of this.player.guardianGenies?.getChildren() as Genie[]) {
                 let circularMovementComponent = genie.getComponent(CircularMovement);
                 if (!circularMovementComponent) {
