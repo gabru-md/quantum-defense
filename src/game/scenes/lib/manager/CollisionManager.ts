@@ -146,7 +146,7 @@ export class CollisionManager extends Manager {
         } else if (wave.riftType === 'nexus') {
             tower.revive();
         } else {
-            console.log(3);
+            // console.log(3);
         }
     }
 

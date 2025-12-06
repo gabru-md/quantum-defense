@@ -52,7 +52,7 @@ export class FullStoryPlaybackScene extends Phaser.Scene {
     private startNextStory(): void {
         if (this.currentStoryIndex < this.storyScenes.length) {
             const nextStoryKey = this.storyScenes[this.currentStoryIndex];
-            console.log(`Starting story scene: ${nextStoryKey}`);
+            // console.log(`Starting story scene: ${nextStoryKey}`);
 
             // Stop the previous scene if it's still running
             if (this.currentStoryIndex > 0) {
@@ -68,14 +68,14 @@ export class FullStoryPlaybackScene extends Phaser.Scene {
             this.currentStoryIndex++;
         } else {
             // All stories played, return to main menu
-            console.log('All stories played. Returning to Main Menu.');
+            // console.log('All stories played. Returning to Main Menu.');
             this.stopAllStoryScenes();
             this.scene.start(LevelNames.MainMenu);
         }
     }
 
     private onStoryCompleteHandler(completedStoryKey: string): void {
-        console.log(`Story scene completed: ${completedStoryKey}`);
+        // console.log(`Story scene completed: ${completedStoryKey}`);
         this.startNextStory();
     }
 

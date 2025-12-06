@@ -33,7 +33,7 @@ export class EndScene extends Phaser.Scene {
         this.win = data.win;
         this.nextScene = data.nextScene;
         this.levelStats = data.levelStats;
-        console.log(data.levelStats)
+        // console.log(data.levelStats)
     }
 
     create() {

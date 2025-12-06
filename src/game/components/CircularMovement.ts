@@ -6,14 +6,15 @@ import {Genie} from "../entities/Genie.ts";
 export class CircularMovement extends Component {
     private angle: number = 0;
     private originalRadius: number = 0;
+    public repeat: boolean = true;
 
     constructor(
         private target: GameObject,
-        private radius: number,
-        private speed: number,
-        private fall: boolean = false,
-        private fallSpeed: number = 0.5,
-        private maxFallRadius: number = radius
+        public radius: number,
+        public speed: number,
+        public fall: boolean = false,
+        public fallSpeed: number = 0.5,
+        public maxFallRadius: number = radius
     ) {
         super();
         this.originalRadius = radius;
@@ -27,8 +28,12 @@ export class CircularMovement extends Component {
             this.radius -= this.fallSpeed * (delta / 1000);
             if (this.radius < this.maxFallRadius) {
                 // one fallen restart from the beginning
-                let scale = (this.gameObject as Genie).parentObject.scaleY
-                this.radius = this.originalRadius * (scale + 0.05);
+                if(this.repeat) {
+                    let scale = (this.gameObject as Genie).parentObject.scaleY
+                    this.radius = this.originalRadius * (scale + 0.05);
+                } else {
+                    this.radius = this.maxFallRadius;
+                }
             }
         }
 

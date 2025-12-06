@@ -50,9 +50,9 @@ export class ResonanceWave extends Component {
         const nearestTower = this.findNearestTowerComponent.nearestTower;
 
         if (this.playerPressedKey(time)) {
-            console.log(`[ResonanceWave] E pressed at time: ${time}`);
+            // console.log(`[ResonanceWave] E pressed at time: ${time}`);
             if (this.isOnCooldown(time)) {
-                console.log(`[ResonanceWave] On cooldown. Last activated: ${this.lastActivated}, Cooldown time: ${this.cooldownTime}`);
+                // console.log(`[ResonanceWave] On cooldown. Last activated: ${this.lastActivated}, Cooldown time: ${this.cooldownTime}`);
                 (this.gameObject as Player).warn(`Resonance Wave is on cooldown!`);
                 this.gameObject.level.hud.alert(
                     'ABILITY COOLDOWN:\nResonance Wave is on cooldown!', // Updated message
@@ -69,7 +69,7 @@ export class ResonanceWave extends Component {
             if (!isFinalBossLevel) {
                 // Check for base activation energy
                 if (this.gameObject.level.state.energy < this.baseActivationEnergy) {
-                    console.log(`[ResonanceWave] Insufficient energy. Current: ${this.gameObject.level.state.energy}, Needed: ${this.baseActivationEnergy}`);
+                    // console.log(`[ResonanceWave] Insufficient energy. Current: ${this.gameObject.level.state.energy}, Needed: ${this.baseActivationEnergy}`);
                     (this.gameObject as Player).warn(`Need ${this.baseActivationEnergy} energy to activate Resonance Wave!`);
                     this.gameObject.level.hud.alert(
                         `INSUFFICIENT ENERGY:\nNeed ${this.baseActivationEnergy} energy to activate Resonance Wave!`,
@@ -87,7 +87,7 @@ export class ResonanceWave extends Component {
             // --- END MODIFICATION ---
 
             this.lastActivated = time; // Set lastActivated here after energy check
-            console.log(`[ResonanceWave] Activated. Energy deducted: ${isFinalBossLevel ? 0 : this.baseActivationEnergy}, New energy: ${this.gameObject.level.state.energy}`);
+            // console.log(`[ResonanceWave] Activated. Energy deducted: ${isFinalBossLevel ? 0 : this.baseActivationEnergy}, New energy: ${this.gameObject.level.state.energy}`);
 
 
             if (nearestTower && (nearestTower.isNotFullHealth() || nearestTower.isTowerDeactivated())) {
@@ -98,15 +98,15 @@ export class ResonanceWave extends Component {
                     nearestTower.y
                 );
                 if (distance <= this.activationRange) {
-                    console.log(`[ResonanceWave] Activating for tower revive/repair. Tower: ${nearestTower.texture.key}`);
+                    // console.log(`[ResonanceWave] Activating for tower revive/repair. Tower: ${nearestTower.texture.key}`);
                     this.activateWave(nearestTower);
                 } else {
-                    console.log(`[ResonanceWave] Activating for special enemy damage (nearest tower out of range).`);
+                    // console.log(`[ResonanceWave] Activating for special enemy damage (nearest tower out of range).`);
                     this.activateWave();
                 }
             } else {
                 // If no deactivated tower is nearby or in range, activate wave to damage special enemies
-                console.log(`[ResonanceWave] Activating for special enemy damage (no eligible tower nearby).`);
+                // console.log(`[ResonanceWave] Activating for special enemy damage (no eligible tower nearby).`);
                 this.activateWave();
             }
         }
@@ -121,7 +121,7 @@ export class ResonanceWave extends Component {
     }
 
     private activateWave(tower?: Tower): void {
-        console.log(`[ResonanceWave] Visual wave effect created.`);
+        // console.log(`[ResonanceWave] Visual wave effect created.`);
         const pulseColor = tower ? tower.tintTopLeft : PlayerConfig.resonanceWave.pulseColor;
 
         createWaveEffect(
@@ -135,7 +135,7 @@ export class ResonanceWave extends Component {
 
         if (tower && (tower.isNotFullHealth() || tower.isTowerDeactivated())) {
             const reviveEnergyCost = tower.energyCost; // This is the additional cost for reviving
-            console.log(`[ResonanceWave] Attempting to revive tower. Revive cost: ${reviveEnergyCost}, Current energy: ${this.gameObject.level.state.energy}`);
+            // console.log(`[ResonanceWave] Attempting to revive tower. Revive cost: ${reviveEnergyCost}, Current energy: ${this.gameObject.level.state.energy}`);
             // --- START MODIFICATION ---
             // Only deduct revive energy if not in final boss level
             const isFinalBossLevel = this.gameObject.level.scene.key === LevelNames.Gameplay_TheCore;
@@ -151,7 +151,7 @@ export class ResonanceWave extends Component {
                 // If not enough energy for full revive, refund base activation energy
                 this.gameObject.level.state.energy += this.baseActivationEnergy; // Refund only if not final boss level
                 this.gameObject.level.hud.update();
-                console.log(`[ResonanceWave] Insufficient energy for full revive. Refunded base activation energy. New energy: ${this.gameObject.level.state.energy}`);
+                // console.log(`[ResonanceWave] Insufficient energy for full revive. Refunded base activation energy. New energy: ${this.gameObject.level.state.energy}`);
                 return; // Exit if not enough energy for revive
             }
             // --- END MODIFICATION ---
@@ -160,7 +160,7 @@ export class ResonanceWave extends Component {
                 this.gameObject.level.state.energy -= reviveEnergyCost;
                 this.gameObject.level.levelStatsManager.energySpent += reviveEnergyCost;
                 this.gameObject.level.hud.update();
-                console.log(`[ResonanceWave] Revive energy deducted. New energy: ${this.gameObject.level.state.energy}`);
+                // console.log(`[ResonanceWave] Revive energy deducted. New energy: ${this.gameObject.level.state.energy}`);
             }
 
 
@@ -174,9 +174,9 @@ export class ResonanceWave extends Component {
                 if (tower.reviveProgress >= 3) {
                     tower.revive();
                     this.gameObject.scene.events.emit('towerRevived'); // Emit event for tutorial
-                    console.log(`[ResonanceWave] Tower fully revived: ${tower.texture.key}`);
+                    // console.log(`[ResonanceWave] Tower fully revived: ${tower.texture.key}`);
                 } else {
-                    console.log(`[ResonanceWave] Tower partially revived. Progress: ${tower.reviveProgress}`);
+                    // console.log(`[ResonanceWave] Tower partially revived. Progress: ${tower.reviveProgress}`);
                 }
             }
         }
@@ -192,7 +192,7 @@ export class ResonanceWave extends Component {
                     core.y
                 );
                 if (distance <= this.activationRange) {
-                    console.log(`[ResonanceWave] Applying ${this.waveDamage} damage to Static's Core.`);
+                    // console.log(`[ResonanceWave] Applying ${this.waveDamage} damage to Static's Core.`);
                     core.takeDamage(this.waveDamage);
                     return; // Core is the primary target in this level
                 }
@@ -206,22 +206,22 @@ export class ResonanceWave extends Component {
         this.specialEnemiesGroup.children.each((specialEnemyObject: Phaser.GameObjects.GameObject) => {
             if (specialEnemyObject instanceof SpecialEnemy) {
                 const specialEnemy = specialEnemyObject as SpecialEnemy;
-                console.log(`[ResonanceWave] Checking SpecialEnemy: ${specialEnemy.texture.key}`);
+                // console.log(`[ResonanceWave] Checking SpecialEnemy: ${specialEnemy.texture.key}`);
                 const distance = Phaser.Math.Distance.Between(
                     this.gameObject.x,
                     this.gameObject.y,
                     specialEnemy.x,
                     specialEnemy.y
                 );
-                console.log(`[ResonanceWave] Distance to SpecialEnemy: ${distance}, Activation Range: ${this.activationRange}`);
+                // console.log(`[ResonanceWave] Distance to SpecialEnemy: ${distance}, Activation Range: ${this.activationRange}`);
                 if (distance <= this.activationRange) {
                     const healthComponent = specialEnemy.getComponent(Health);
                     if (healthComponent) {
-                        console.log(`[ResonanceWave] Applying ${this.waveDamage} damage to SpecialEnemy. Current health: ${healthComponent.currentHealth}`);
+                        // console.log(`[ResonanceWave] Applying ${this.waveDamage} damage to SpecialEnemy. Current health: ${healthComponent.currentHealth}`);
                         healthComponent.takeDamage(this.waveDamage);
                     }
                 } else {
-                    console.log(`[ResonanceWave] SpecialEnemy out of range, skipping damage.`);
+                    // console.log(`[ResonanceWave] SpecialEnemy out of range, skipping damage.`);
                 }
             }
         });

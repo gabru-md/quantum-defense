@@ -45,7 +45,7 @@ export class LaserAttack extends Component {
 
     protected fireAt(target: Phaser.GameObjects.Sprite): void {
         this.gameObject.level.audioManager.playTowerSfx('laser_shoot', false, this.gameObject);
-        console.log('Shooting laser tower')
+        // console.log('Shooting laser tower')
         const bullet = new Bullet(
             this.gameObject.scene,
             this.gameObject.x,

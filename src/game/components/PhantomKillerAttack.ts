@@ -45,7 +45,7 @@ export class PhantomKillerAttack extends Component {
 
     protected fireAt(target: Phaser.GameObjects.Sprite): void {
         this.gameObject.level.audioManager.playTowerSfx('laser_shoot', false, this.gameObject);
-        console.log('Shooting Phantom Attack tower')
+        // console.log('Shooting Phantom Attack tower')
         const bullet = new SpecialBullet(
             this.gameObject.scene,
             this.gameObject.x,

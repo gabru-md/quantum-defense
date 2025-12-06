@@ -3,7 +3,9 @@ import {Level} from '../lib/Level.ts';
 import {LevelNames} from '../lib/LevelNames.ts';
 import * as Phaser from 'phaser';
 import {GAME_WIDTH, GAME_HEIGHT} from "../../scripts/Util.ts";
-import {StaticEnemy} from "../../entities/StaticEnemy.ts"; // Import the new StaticEnemy class
+import {StaticEnemy} from "../../entities/StaticEnemy.ts";
+import {Player} from "../../entities/Player.ts";
+import {StaticGenie} from "../../entities/StaticGenie.ts";
 
 export class Gameplay_TheCore extends Level {
     private staticCore!: StaticEnemy; // Use the new StaticEnemy type
@@ -35,6 +37,9 @@ export class Gameplay_TheCore extends Level {
             health: 5000, // Very high health for the boss
             name: "Static's Core"
         });
+        this.staticCore.setupPlayerFollowerComponent();
+        this.staticCore.setupAttackComponent();
+        this.staticCore.attackComponent.setupGeniesInArms();
         this.add.existing(this.staticCore);
 
         // Listen for core destruction to trigger win condition
@@ -46,6 +51,9 @@ export class Gameplay_TheCore extends Level {
         this.hud.info("The finale is still under development!", '#00FF00', () => {
             this.easeOutAndStartNextScene(LevelNames.MainMenu, { win: true }); // Or an Epilogue scene
         }, false);
+
+        this.setupCoreAttackTimer();
+        this.setupCollisionWithPlayer();
     }
 
     getWaveConfig(_wave: number): {
@@ -79,5 +87,30 @@ export class Gameplay_TheCore extends Level {
 
     nextScene(): LevelNames {
         return LevelNames.MainMenu; // Next scene is the MainMenu after the final level
+    }
+
+    private setupCoreAttackTimer() {
+        this.time.addEvent({
+            delay: 10000, // 10 seconds
+            callback: () => {
+            this.staticCore.attack(this.playerManager.player);
+            },
+            loop: true
+        });
+    }
+
+    private setupCollisionWithPlayer() {
+        this.physics.add.overlap(
+            this.staticCore.staticGenies,
+            this.playerManager.player, // Use playerSprite for collision detection
+            this.handleStaticEnemyPlayerCollision as Phaser.Types.Physics.Arcade.ArcadePhysicsCallback,
+            undefined,
+            this
+        );
+    }
+
+    private handleStaticEnemyPlayerCollision(_staticGenie: StaticGenie, _player: Player) {
+        this.state.baseHealth -= 0.25;
+        // console.log('Hit')
     }
 }

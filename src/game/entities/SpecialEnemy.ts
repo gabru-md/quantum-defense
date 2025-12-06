@@ -29,7 +29,7 @@ export class SpecialEnemy extends GameObject {
         this.on(
             'reachedEnd',
             () => {
-                console.log(`[SpecialEnemy] ${this.texture.key} reached end.`);
+                // console.log(`[SpecialEnemy] ${this.texture.key} reached end.`);
                 this.level.audioManager.playSfx('nexus_hit', false, this);
                 this.scene.events.emit('gameOver');
                 this.destroy();
@@ -40,7 +40,7 @@ export class SpecialEnemy extends GameObject {
         this.on('healthChanged', this.handleHealthChanged, this);
 
         this.on('died', () => {
-            console.log(`[SpecialEnemy] ${this.texture.key} died.`);
+            // console.log(`[SpecialEnemy] ${this.texture.key} died.`);
             this.level.levelStatsManager.phantomsEliminated++;
             this.scene.events.emit('specialEnemyKilledByPlayer', this.energyValue); // Updated to energyValue
             this.destroy();
@@ -54,14 +54,14 @@ export class SpecialEnemy extends GameObject {
 
     public takeDamage(amount: number): void {
         if(!this.killable) {
-            console.log('Special Enemy is not Killable!')
+            // console.log('Special Enemy is not Killable!')
             return;
         }
         this.healthComponent.takeDamage(amount);
     }
 
     destroy(fromScene?: boolean) {
-        console.log(`[SpecialEnemy] ${this.texture.key} destroyed.`);
+        // console.log(`[SpecialEnemy] ${this.texture.key} destroyed.`);
         this.removeListener('healthChanged', this.handleHealthChanged);
         super.destroy(fromScene);
     }

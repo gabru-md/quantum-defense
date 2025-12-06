@@ -229,7 +229,7 @@ export class AudioManager extends Manager {
 
         if ((gameState as State).soundEnabled) {
             if (!this.scene.cache.audio.exists(key)) {
-                console.warn(`Could not find ${key} in AudioManager.`);
+                // console.warn(`Could not find ${key} in AudioManager.`);
                 return;
             }
 
@@ -333,8 +333,8 @@ export class AudioManager extends Manager {
             if (this.backgroundMusic) {
                 this.backgroundMusic.stop();
             }
-            console.log(`Playing music: ${key} at volume: ${this._musicVolume}`)
-            console.log(gameState)
+            // console.log(`Playing music: ${key} at volume: ${this._musicVolume}`)
+            // console.log(gameState)
             this.backgroundMusic = this.scene.sound.add(key, {loop});
             this.backgroundMusic.play({volume: this._musicVolume});
         }
@@ -346,8 +346,8 @@ export class AudioManager extends Manager {
             if (this.ambience) {
                 this.ambience.stop();
             }
-            console.log(`Playing music: ${key} at volume: ${this._musicVolume}`)
-            console.log(gameState)
+            // console.log(`Playing music: ${key} at volume: ${this._musicVolume}`)
+            // console.log(gameState)
             this.ambience = this.scene.sound.add(key, {loop});
             this.ambience.play({volume: this._musicVolume});
         }

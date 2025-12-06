@@ -49,7 +49,7 @@ export class Rift extends GameObject {
         this.setInteractive(new Phaser.Geom.Circle(0, 0, hitAreaRadius), Phaser.Geom.Circle.Contains);
 
         this.on('pointerover', () => {
-            console.log('Pointer on Rift')
+            // console.log('Pointer on Rift')
             this.level.hud.setHelpText(`${capitalize(this.riftType)} Rift:\n${this.getRiftDescription()} `)
         });
         this.on('pointerout', () => this.level.hud.setHelpText(''));
