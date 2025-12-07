@@ -103,8 +103,10 @@ export class HudManager extends Manager {
         this.energyBarText.destroy();
         this.healthBarBg.destroy();
         this.energyBarBg.destroy();
-        this.waveNumberText.destroy();
-        this.waveProgressText.destroy();
+        if(this.waveNumberText) {
+            this.waveNumberText.destroy();
+            this.waveProgressText.destroy();
+        }
         this.messageText.destroy();
         this.rangePreview.destroy();
         this.selectionIndicator.destroy();
@@ -114,9 +116,11 @@ export class HudManager extends Manager {
         this.markerText.destroy();
         this.spacebarPrompt.destroy();
         this.speedButton.destroy();
-        this.staticHealthBarBg.destroy();
-        this.staticHealthText.destroy();
-        this.staticHealthBarBg.destroy();
+        if(this.staticHealthText) {
+            this.staticHealthBarBg.destroy();
+            this.staticHealthText.destroy();
+            this.staticHealthBarBg.destroy();
+        }
 
         this.tower1UpgradeText.destroy();
         this.tower2UpgradeText.destroy();
