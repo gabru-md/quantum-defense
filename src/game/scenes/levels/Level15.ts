@@ -30,9 +30,9 @@ export class Gameplay_TheCore extends Level {
     }
 
     definePaths(): { [key: string]: Phaser.Curves.Path } {
-        const path1 = new PathMaker(0, GAME_HEIGHT / 4).right(GAME_WIDTH).create(this);
-        const path2 = new PathMaker(0, GAME_HEIGHT / 2).right(GAME_WIDTH).create(this);
-        const path3 = new PathMaker(0, GAME_HEIGHT * 3 / 4).right(GAME_WIDTH).create(this);
+        const path1 = new PathMaker(100, GAME_HEIGHT / 4).right(GAME_WIDTH - 150).create(this);
+        const path2 = new PathMaker(100, GAME_HEIGHT / 2).right(GAME_WIDTH - 150).create(this);
+        const path3 = new PathMaker(100, GAME_HEIGHT * 3 / 4).right(GAME_WIDTH - 150).create(this);
 
         return {path1, path2, path3};
     }
@@ -105,7 +105,7 @@ export class Gameplay_TheCore extends Level {
             x: GAME_WIDTH / 3,
             y: GAME_HEIGHT / 3,
             texture: 'static',
-            health: 5000,
+            health: 4100,
             name: "Static's Core"
         });
         this.staticCore.setupPlayerFollowerComponent();
@@ -185,7 +185,27 @@ export class Gameplay_TheCore extends Level {
 
     startTDPhase(waveNumber: number, tdPhase: Level15Phase) {
         this.currentPhase = tdPhase;
-        this.staticCore.disappear();
+        let x = -1000;
+        let y = this.staticCore.y;
+        switch (tdPhase) {
+            case Level15Phase.TD_WAVE_1:
+                x = 100
+                y = GAME_HEIGHT / 4
+                break;
+            case Level15Phase.TD_WAVE_2:
+                x = 100;
+                y = GAME_HEIGHT / 2;
+                break;
+            case Level15Phase.TD_WAVE_3:
+                x = 100;
+                y = GAME_HEIGHT * 3 / 4;
+                break;
+            default:
+                break;
+
+        }
+        this.staticCore.playerFollower.enabled = false;
+        this.staticCore.disappear(x, y);
         let idx = 3 * (waveNumber - 1);
         this.pathVisuals[idx].setVisible(true); // path
         this.pathVisuals[idx + 1].setVisible(true); // start
@@ -207,6 +227,7 @@ export class Gameplay_TheCore extends Level {
         this.pathVisuals.forEach(p => p.setVisible(false));
         this.waveManager.pause();
         this.staticCore.reappear();
+        this.staticCore.playerFollower.enabled = true;
     }
 
     winGame() {

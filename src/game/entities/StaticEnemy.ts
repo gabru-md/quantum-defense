@@ -42,8 +42,8 @@ export class StaticEnemy extends GameObject {
         this.addComponent(this.healthComponent);
 
         this.on('died', () => {
-            this.destroy();
             this.scene.events.emit('staticCoreDestroyed');
+            this.destroy();
         });
 
         this.on('healthChanged', this.onHealthChanged, this);
@@ -65,24 +65,16 @@ export class StaticEnemy extends GameObject {
         this.setDepth(101);
     }
 
-    public disappear(): void {
+    public disappear(x:number, y:number): void {
         this.scene.tweens.add({
             targets: this,
-            x: -1000, // Move off-screen to the left
+            x: x, // Move off-screen to the left
+            y: y,
             duration: 2500,
             ease: 'Sine.easeOut',
             onStart: () => {
                 this.setActive(false);
                 this.staticGenies.setActive(false);
-            },
-            onComplete: () => {
-                for (const genie of this.staticGenies.getChildren() as StaticGenie[]) {
-                    let circularMovementComponent = genie.getComponent(CircularMovement);
-                    if (!circularMovementComponent) {
-                        return;
-                    }
-                    circularMovementComponent.enabled = false;
-                }
             }
         });
     }
