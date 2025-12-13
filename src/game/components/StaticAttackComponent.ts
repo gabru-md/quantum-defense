@@ -49,7 +49,7 @@ export class StaticAttackComponent extends Component {
         const geniesToAdd = Math.min(numOfGenies, remainingCapacity);
 
         if (geniesToAdd <= 0) {
-            console.log("Maximum genie capacity reached!");
+            // console.log("Maximum genie capacity reached!");
             return;
         }
 
@@ -72,7 +72,7 @@ export class StaticAttackComponent extends Component {
                 const minRadius = 15;
 
                 // Spiral equation: radius decreases as we go inward
-                const radius = maxRadius - (normalizedPosition * (maxRadius - minRadius));
+                let radius = maxRadius - (normalizedPosition * (maxRadius - minRadius));
 
                 // Create spiral angle
                 const armAngleOffset = (armIndex * 2 * Math.PI) / this.NUM_ARMS;
@@ -126,6 +126,7 @@ export class StaticAttackComponent extends Component {
                 // fall if random > percentage of stuck
                 if(Phaser.Math.RND.frac() > this.percentageOfGeniesStuck) {
                     orbitSpeed = 0;
+                    radius = radius * Phaser.Math.FloatBetween(0.8, 1.5); // scatter them across
                 }
 
                 // Add circular movement component

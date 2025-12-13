@@ -350,7 +350,7 @@ export class AudioManager extends Manager {
             if (this.ambience) {
                 this.ambience.stop();
             }
-            console.log(`Playing music: ${key} at volume: ${this._musicVolume}`)
+            // console.log(`Playing music: ${key} at volume: ${this._musicVolume}`)
             // console.log(gameState)
             this.ambience = this.scene.sound.add(key, {loop});
             this.ambience.play({volume: this._musicVolume});

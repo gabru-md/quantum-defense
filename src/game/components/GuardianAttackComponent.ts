@@ -162,7 +162,7 @@ export class GuardianAttackComponent extends Component {
         if (this.playerPressedKey(_time)) {
             if (this.cooldownOver(_time)) {
                 if (this.enoughEnergyPresent()) {
-                    console.log(this.currentGenieCount);
+                    // console.log(this.currentGenieCount);
                     if(this.currentGenieCount > 0) {
                         this.attackState = GuardianAttackState.CHARGING;
                     } else {
@@ -298,7 +298,7 @@ export class GuardianAttackComponent extends Component {
         if (this.collectionInProgress) {
             return;
         }
-        console.log('Collection in progress!')
+        // console.log('Collection in progress!')
         this.releaseInProgress = false;
         this.collectionInProgress = true;
         this.gameObject.scene.time.delayedCall(1500, () => {
@@ -321,8 +321,8 @@ export class GuardianAttackComponent extends Component {
     }
 
     private cooldownOver(time: number) {
-        console.log(this.lastAttacked, time);
-        console.log(this.lastAttacked + 5000 < time)
+        // console.log(this.lastAttacked, time);
+        // console.log(this.lastAttacked + 5000 < time)
         return this.lastAttacked + 5000 < time;
     }
 }

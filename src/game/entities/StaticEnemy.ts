@@ -42,8 +42,8 @@ export class StaticEnemy extends GameObject {
         this.addComponent(this.healthComponent);
 
         this.on('died', () => {
-            this.scene.events.emit('staticCoreDestroyed');
             this.destroy();
+            this.scene.events.emit('staticCoreDestroyed');
         });
 
         this.on('healthChanged', this.onHealthChanged, this);

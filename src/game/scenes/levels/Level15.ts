@@ -198,7 +198,7 @@ export class Gameplay_TheCore extends Level {
     }
 
     startBossPhase() {
-        console.log("Transitioning back to Boss Fight");
+        // console.log("Transitioning back to Boss Fight");
 
         if (this.currentPhase === Level15Phase.TD_WAVE_1) this.currentPhase = Level15Phase.FIGHTING_BOSS_DISRUPTION;
         else if (this.currentPhase === Level15Phase.TD_WAVE_2) this.currentPhase = Level15Phase.FIGHTING_BOSS_VOLATILE;

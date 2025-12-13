@@ -74,7 +74,7 @@ export class FullStoryPlaybackScene extends Phaser.Scene {
         }
     }
 
-    private onStoryCompleteHandler(completedStoryKey: string): void {
+    private onStoryCompleteHandler(_completedStoryKey: string): void {
         // console.log(`Story scene completed: ${completedStoryKey}`);
         this.startNextStory();
     }
