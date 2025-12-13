@@ -81,7 +81,7 @@ export class Gameplay_TheCore extends Level {
         super.create();
 
         this.createRift(GAME_WIDTH / 2 - 400, GAME_HEIGHT / 4, 'static');
-        this.createRift(GAME_WIDTH / 2 + 400, GAME_HEIGHT / 4, 'static');
+        this.createRift(GAME_WIDTH / 2 + 400, GAME_HEIGHT / 4, 'gradient');
         this.createRift(GAME_WIDTH / 2, GAME_HEIGHT * 3 / 4, 'nexus');
 
         this.populateQuantumEchoes();
