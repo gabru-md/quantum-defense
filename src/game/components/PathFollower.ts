@@ -3,6 +3,7 @@ import * as Phaser from 'phaser';
 import {WaveManager} from '../scenes/lib/manager/WaveManager.ts';
 import {Level} from '../scenes/lib/Level.ts';
 import {Enemy} from "../entities/Enemy.ts";
+import {StaticGenie} from "../entities/StaticGenie.ts";
 
 export class PathFollower extends Component {
     private path: Phaser.Curves.Path;
@@ -21,8 +22,11 @@ export class PathFollower extends Component {
     }
 
     public update(_time: number, deltaTime: number): void {
-        if (this.isWaveManagerStopped()) {
-            return;
+        // @ts-ignore
+        if (!this.gameObject instanceof StaticGenie) {
+            if (this.isWaveManagerStopped()) {
+                return;
+            }
         }
 
         if (_time - this.lastSoundPlayed > this.playSoundAtRandomInterval) {

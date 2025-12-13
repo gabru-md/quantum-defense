@@ -5,15 +5,15 @@ import {AppColors, phaserColor} from '../../../scripts/Colors.ts';
 
 export class PathsManager extends Manager {
     paths!: { [key: string]: Phaser.Curves.Path };
-    pathGraphics!: Phaser.GameObjects.Graphics[];
-    startZoneGraphics!: Phaser.GameObjects.Graphics[];
-    endZoneGraphics!: Phaser.GameObjects.Graphics[];
+    pathGraphics!: { [key: string]: Phaser.GameObjects.Graphics };
+    startZoneGraphics!: { [key: string]: Phaser.GameObjects.Graphics }; // Changed to a dictionary
+    endZoneGraphics!: { [key: string]: Phaser.GameObjects.Graphics };   // Changed to a dictionary
 
     constructor(protected level: Level) {
         super(level);
-        this.pathGraphics = [];
-        this.startZoneGraphics = [];
-        this.endZoneGraphics = [];
+        this.pathGraphics = {};
+        this.startZoneGraphics = {};
+        this.endZoneGraphics = {};
     }
 
     setup(): {
@@ -22,49 +22,55 @@ export class PathsManager extends Manager {
         end: Phaser.GameObjects.Graphics[];
     } {
         this.paths = this.level.definePaths();
-        this.pathGraphics = [];
-        this.startZoneGraphics = [];
-        this.endZoneGraphics = [];
+        this.pathGraphics = {};
+        this.startZoneGraphics = {};
+        this.endZoneGraphics = {};
 
         if (!this.paths) return ({
-            path: this.pathGraphics,
-            start: this.startZoneGraphics,
-            end: this.endZoneGraphics,
+            path: [],
+            start: [],
+            end: [],
         });
 
         for (const pathsKey in this.paths) {
             const pathGraphic = this.level.add.graphics();
             pathGraphic.lineStyle(1, phaserColor(AppColors.PATH_LINE), 0.5);
             this.paths[pathsKey].draw(pathGraphic);
-            this.pathGraphics.push(pathGraphic);
+            this.pathGraphics[pathsKey] = pathGraphic;
 
             const startPoint = this.paths[pathsKey].getStartPoint();
             const startZone = this.drawZone(startPoint, AppColors.PATH_START);
-            this.startZoneGraphics.push(startZone);
+            this.startZoneGraphics[pathsKey] = startZone; // Store by key
 
             const endPoint = this.paths[pathsKey].getEndPoint();
             const endZone = this.drawZone(endPoint, AppColors.PATH_END);
-            this.endZoneGraphics.push(endZone);
-            // console.log(`For Curve: ${startPoint.x}, ${startPoint.y} and ${endPoint.x}, ${endPoint.y}`)
+            this.endZoneGraphics[pathsKey] = endZone; // Store by key
         }
 
         return {
-            path: this.pathGraphics,
-            start: this.startZoneGraphics,
-            end: this.endZoneGraphics,
+            path: Object.values(this.pathGraphics),
+            start: Object.values(this.startZoneGraphics),
+            end: Object.values(this.endZoneGraphics),
         };
     }
 
+    public getPathGraphics(name: string): Phaser.GameObjects.Graphics {
+        if (!this.pathGraphics[name]) {
+            console.error(`PathsManager: No path graphics found for name "${name}"`);
+        }
+        return this.pathGraphics[name];
+    }
+
     showPath(show: boolean): void {
-        this.pathGraphics.forEach(g => g.setVisible(show));
+        Object.values(this.pathGraphics).forEach(g => g.setVisible(show));
     }
 
     showStart(show: boolean): void {
-        this.startZoneGraphics.forEach(g => g.setVisible(show));
+        Object.values(this.startZoneGraphics).forEach(g => g.setVisible(show));
     }
 
     showEnd(show: boolean): void {
-        this.endZoneGraphics.forEach(g => g.setVisible(show));
+        Object.values(this.endZoneGraphics).forEach(g => g.setVisible(show));
     }
 
     private drawZone(point: Phaser.Math.Vector2, color: string): Phaser.GameObjects.Graphics {
@@ -90,18 +96,18 @@ export class PathsManager extends Manager {
     }
 
     hideAllElements(): void {
-        this.pathGraphics.forEach(g => g.setVisible(false));
-        this.startZoneGraphics.forEach(g => g.setVisible(false));
-        this.endZoneGraphics.forEach(g => g.setVisible(false));
+        Object.values(this.pathGraphics).forEach(g => g.setVisible(false));
+        Object.values(this.startZoneGraphics).forEach(g => g.setVisible(false));
+        Object.values(this.endZoneGraphics).forEach(g => g.setVisible(false));
     }
 
     destroy(): void {
-        this.pathGraphics.forEach(g => g.destroy());
-        this.startZoneGraphics.forEach(g => g.destroy());
-        this.endZoneGraphics.forEach(g => g.destroy());
+        Object.values(this.pathGraphics).forEach(g => g.destroy());
+        Object.values(this.startZoneGraphics).forEach(g => g.destroy());
+        Object.values(this.endZoneGraphics).forEach(g => g.destroy());
         this.paths = {};
-        this.pathGraphics = [];
-        this.startZoneGraphics = [];
-        this.endZoneGraphics = [];
+        this.pathGraphics = {};
+        this.startZoneGraphics = {};
+        this.endZoneGraphics = {};
     }
 }

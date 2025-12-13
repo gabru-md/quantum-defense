@@ -25,7 +25,7 @@ export class GuardianAttackComponent extends Component {
     private lastAttacked: number = 0;
     private baseActivationEnergy: number = 250;
     private targetRange: number = 1000;
-    private waveDamage: number = 1000; // Static health is 5k so we need to do this atleast 5 times, this should be challenging
+    private waveDamage: number = 2000; // Static health is 5k so we need to do this atleast 5 times, this should be challenging
 
     // Configuration constants
     private readonly NUM_ARMS = 5;

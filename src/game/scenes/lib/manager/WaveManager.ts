@@ -13,6 +13,7 @@ export class WaveManager extends Manager {
     specialEnemies!: Phaser.GameObjects.Group;
     enabled: boolean = true;
     specialEnemyKillable: boolean = false;
+    public isWaveActive: boolean = false; // Added for external state checking
 
     constructor(
         protected level: Level,
@@ -55,8 +56,10 @@ export class WaveManager extends Manager {
         const waveConfig = this.level.getWaveConfig(waveNumber);
         if (!waveConfig || waveConfig.length === 0) {
             console.warn(`No wave config found for wave ${waveNumber}`);
+            this.isWaveActive = false; // Ensure it's false if wave is invalid
             return;
         }
+        this.isWaveActive = true; // Set the flag when a wave starts
         this.level.playerManager.player.info("Incoming Wave!");
         this.currentWave = waveNumber;
         this.maxEnemiesInWave = waveConfig.reduce((sum, config) => sum + config.count, 0);
@@ -137,8 +140,8 @@ export class WaveManager extends Manager {
         }
     }
 
-    protected handleEnemyDied(energyValue: number): void { // Renamed moneyValue to energyValue
-        this.level.state.energy += energyValue; // Updated state.money to state.energy
+    protected handleEnemyDied(energyValue: number): void { 
+        this.level.state.energy += energyValue; 
         if (this.level.state.energy > this.level.state.maxEnergy) {
             this.level.state.energy = this.level.state.maxEnergy;
         } else {
@@ -149,8 +152,8 @@ export class WaveManager extends Manager {
         this.checkWaveCompletion();
     }
 
-    protected handleSpecialEnemyKilledByPlayer(energyValue: number): void { // Renamed moneyValue to energyValue
-        this.level.state.energy += energyValue; // Updated state.money to state.energy
+    protected handleSpecialEnemyKilledByPlayer(energyValue: number): void { 
+        this.level.state.energy += energyValue; 
         if (this.level.state.energy > this.level.state.maxEnergy) {
             this.level.state.energy = this.level.state.maxEnergy;
         } else {
@@ -171,7 +174,6 @@ export class WaveManager extends Manager {
         this.level.audioManager.playSfx('nexus_hit', false, enemy);
 
         if (this.level.state.baseHealth <= 0) {
-            // this.level.playerManager.player.danger();
             this.level.events.emit('gameOver');
         } else {
             this.checkWaveCompletion();
@@ -182,15 +184,19 @@ export class WaveManager extends Manager {
         if (this.gameOver || this.level.scene.key === LevelNames.Tutorial) return;
 
         if (this.enemiesSpawnedInWave >= this.maxEnemiesInWave && this.enemiesRemaining <= 0) {
+            this.isWaveActive = false; // Set the flag to false when the wave is completed
+            
+            // In Level15, the level itself handles the next step, so we just emit the event.
+            if (this.level.scene.key === LevelNames.Gameplay_TheCore) {
+                this.level.events.emit('waveCompleted');
+                return;
+            }
+
             this.level.events.emit('waveCompleted');
 
-            if (this.currentWave >= this.totalWaves) { // Changed condition to use totalWaves
+            if (this.currentWave >= this.totalWaves) { 
                 this.level.physics.pause();
-                this.level.easeOutAndStartNextScene(LevelNames.EndScene, {
-                    win: true,
-                    nextScene: this.level.fetchNextScene(),
-                    levelStats: this.level.levelStatsManager
-                });
+                this.level.easeOutAndStartNextScene(LevelNames.EndScene, {win: true, nextScene: this.level.fetchNextScene(), levelStats: this.level.levelStatsManager});
             } else {
                 if (this.level.scene.key !== LevelNames.Gameplay_Tutorial) {
                     this.level.hud.info('NEXT WAVE INCOMING!', AppColors.UI_MESSAGE_SUCCESS, () => {

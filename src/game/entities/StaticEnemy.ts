@@ -8,6 +8,8 @@ import {StaticAttackComponent} from "../components/StaticAttackComponent.ts";
 import {StaticGenie} from "./StaticGenie.ts";
 import {PlayerFollowerComponent} from "../components/PlayerFollowerComponent.ts";
 import {ShakeComponent} from "../components/ShakeComponent.ts";
+import {GAME_WIDTH} from "../scripts/Util.ts";
+import {CircularMovement} from "../components/CircularMovement.ts";
 
 export interface StaticEnemyConfig {
     scene: Phaser.Scene;
@@ -39,14 +41,12 @@ export class StaticEnemy extends GameObject {
         this.healthComponent = new Health(config.health);
         this.addComponent(this.healthComponent);
 
-        // The 'died' event is emitted by the Health component, not the GameObject itself.
-        // The Level scene will listen for 'staticCoreDestroyed' event.
         this.on('died', () => {
             this.scene.events.emit('staticCoreDestroyed');
             this.destroy();
         });
 
-        this.on('healthChanged', this.staticHealthChanged, this);
+        this.on('healthChanged', this.onHealthChanged, this);
 
         this.level.onHover(this, config.name);
 
@@ -65,6 +65,51 @@ export class StaticEnemy extends GameObject {
         this.setDepth(101);
     }
 
+    public disappear(): void {
+        this.scene.tweens.add({
+            targets: this,
+            x: -1000, // Move off-screen to the left
+            duration: 2500,
+            ease: 'Sine.easeOut',
+            onStart: () => {
+                this.setActive(false);
+                this.staticGenies.setActive(false);
+            },
+            onComplete: () => {
+                for (const genie of this.staticGenies.getChildren() as StaticGenie[]) {
+                    let circularMovementComponent = genie.getComponent(CircularMovement);
+                    if (!circularMovementComponent) {
+                        return;
+                    }
+                    circularMovementComponent.enabled = false;
+                }
+            }
+        });
+    }
+
+    public reappear(): void {
+        this.scene.tweens.add({
+            targets: this,
+            x: GAME_WIDTH / 3, // Assuming it reappears in the center
+            duration: 2500,
+            ease: 'Sine.easeOut',
+            onStart: () => {
+                this.setActive(true);
+                this.staticGenies.setActive(true);
+            },
+            onComplete: () => {
+                for (const genie of this.staticGenies.getChildren() as StaticGenie[]) {
+                    let circularMovementComponent = genie.getComponent(CircularMovement);
+                    if (!circularMovementComponent) {
+                        return;
+                    }
+                    circularMovementComponent.enabled = true;
+                }
+            }
+        });
+
+    }
+
     public setupPlayerFollowerComponent() {
         this.playerFollower = new PlayerFollowerComponent();
         this.addComponent(this.playerFollower);
@@ -79,29 +124,43 @@ export class StaticEnemy extends GameObject {
         this.attackComponent.attack(target);
     }
 
-    // Public method to allow external components (like bullets) to deal damage
     public takeDamage(amount: number) {
         this.healthComponent.takeDamage(amount);
     }
 
-    private staticHealthChanged(currentHealth: number) {
+    private onHealthChanged(currentHealth: number) {
+        const previousState = this.staticHealthState;
+        let shakeTime = 1250;
         if (currentHealth >= 4000) {
             this.staticHealthState = StaticHealthState.STEADY;
         } else if (currentHealth >= 3000) {
             this.staticHealthState = StaticHealthState.DISRUPTION;
         } else if (currentHealth >= 2000) {
             this.staticHealthState = StaticHealthState.VOLATILE;
-        } else if (currentHealth >= 1000) {
+            shakeTime = 2500;
+        } else {
             this.staticHealthState = StaticHealthState.ERUPTION;
+            shakeTime = 5000;
+            if (currentHealth <= 500) {
+                // shake permanently when super low health
+                shakeTime = -1;
+            }
         }
-        this.shake();
+
+        if (this.staticHealthState !== previousState) {
+            this.scene.events.emit('staticHealthStateChanged', this.staticHealthState);
+        }
+        this.shake(shakeTime);
     }
 
-    public shake(): void {
+    public shake(time: number = 1250): void {
         let shakeComponent = this.getComponent(ShakeComponent);
         if (shakeComponent) {
             shakeComponent.enabled = true;
-            this.scene.time.delayedCall(1250, () => {
+            if (time === -1) {
+                return;
+            }
+            this.scene.time.delayedCall(time, () => {
                 shakeComponent.enabled = false;
             })
         }

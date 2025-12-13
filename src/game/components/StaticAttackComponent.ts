@@ -279,7 +279,7 @@ export class StaticAttackComponent extends Component {
                         .to(targetX + normalizedDirX * 1000, targetY + normalizedDirY * 1000);
 
                     genie.deleteComponentByType(CircularMovement);
-                    genie.addComponent(new PathFollower(path.create(this.gameObject.scene), this.attackSpeed));
+                    genie.addComponentOverriding(new PathFollower(path.create(this.gameObject.scene), this.attackSpeed));
                 });
             }
             this.attackState = StaticAttackState.COLLECT;

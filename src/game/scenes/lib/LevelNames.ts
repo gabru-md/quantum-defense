@@ -40,7 +40,8 @@ export enum LevelNames {
     Gameplay_TheCore = 'Gameplay_The Core', // Level 15 (Original Level15.ts)
 
     // Special Playback Scene
-    FullStoryPlayback = 'FullStoryPlayback'
+    FullStoryPlayback = 'FullStoryPlayback',
+    Test = 'Test'
 }
 
 export function getStoryName(levelName: LevelNames): string {
