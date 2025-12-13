@@ -72,7 +72,7 @@ export abstract class Level extends Phaser.Scene {
         return nextScene;
     }
 
-    isPositionBuildable(x: number, y: number): { buildable: boolean; reason?: string } {
+    isPositionBuildable(x: number, y: number, towerType: string): { buildable: boolean; reason?: string } {
         if (this.rifts.getLength() > 0) {
             for (const rift of this.rifts.getChildren() as Rift[]) {
                 const distance = Phaser.Math.Distance.Between(x, y, rift.x, rift.y);
@@ -81,6 +81,15 @@ export abstract class Level extends Phaser.Scene {
                 }
             }
         }
+
+        // Check for existing towers of the same type in the vicinity
+        const nearbyTowers = this.towerManager.getTowersInRange(x, y, towerType); // Adjust range as needed
+        for (const tower of nearbyTowers) {
+            if (tower.towerType === towerType) {
+                return {buildable: false, reason: 'Cannot place the same tower type too close to another!'};
+            }
+        }
+
         return {buildable: true};
     }
 

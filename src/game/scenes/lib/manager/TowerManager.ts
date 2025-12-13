@@ -91,7 +91,7 @@ export class TowerManager extends Manager {
             return {valid: false, reason: 'No tower selected.'};
         }
 
-        const buildableCheck = this.level.isPositionBuildable(x, y);
+        const buildableCheck = this.level.isPositionBuildable(x, y, towerType);
         if (!buildableCheck.buildable) {
             return {valid: false, reason: buildableCheck.reason};
         }
@@ -235,5 +235,20 @@ export class TowerManager extends Manager {
         if (sfx && sfx.plot) {
             (this.scene as Level).audioManager.playSfx(sfx.plot, false, tower);
         }
+    }
+
+    public getTowersInRange(x: number, y: number,towerType: string): Tower[] {
+        const towerRange = this.getTowerRange(towerType);
+        const towersInRange: Tower[] = [];
+        this.towers.children.each(tower => {
+            if (tower instanceof Tower) {
+                const distance = Phaser.Math.Distance.Between(x, y, tower.x, tower.y);
+                if (distance <= towerRange) {
+                    towersInRange.push(tower);
+                }
+            }
+            return null;
+        });
+        return towersInRange;
     }
 }
