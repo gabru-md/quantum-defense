@@ -134,7 +134,7 @@ export class Player extends GameObject {
         }
 
         // Reset the notification to its initial state
-        if(text) {
+        if (text) {
             this.notificationText.setText(text);
         }
         this.notificationText.setY(this.y - 30);
@@ -197,8 +197,11 @@ export class Player extends GameObject {
     }
 
     public addGeniesToArm(numOfGenies: number = 20) {
-        this.getComponent(GuardianAttackComponent)?.addGeniesToArm(2 * numOfGenies);
-        this.showNotification(AppColors.PLAYER, `+${2*numOfGenies}`)
+        let guardianAttackComponent = this.getComponent(GuardianAttackComponent);
+        if (guardianAttackComponent) {
+            guardianAttackComponent.addGeniesToArm(2 * numOfGenies);
+            this.showNotification(AppColors.PLAYER, `+${2 * numOfGenies}`)
+        }
     }
 
     destroy(fromScene?: boolean) {

@@ -141,6 +141,8 @@ export class WaveManager extends Manager {
         this.level.state.energy += energyValue; // Updated state.money to state.energy
         if (this.level.state.energy > this.level.state.maxEnergy) {
             this.level.state.energy = this.level.state.maxEnergy;
+        } else {
+            this.level.playerManager.player.warn(`+${energyValue}`)
         }
         this.enemiesRemaining--;
         this.level.hud.update();
@@ -151,6 +153,8 @@ export class WaveManager extends Manager {
         this.level.state.energy += energyValue; // Updated state.money to state.energy
         if (this.level.state.energy > this.level.state.maxEnergy) {
             this.level.state.energy = this.level.state.maxEnergy;
+        } else {
+            this.level.playerManager.player.warn(`+${energyValue}`)
         }
         this.enemiesRemaining--;
         this.level.hud.update();
@@ -182,7 +186,11 @@ export class WaveManager extends Manager {
 
             if (this.currentWave >= this.totalWaves) { // Changed condition to use totalWaves
                 this.level.physics.pause();
-                this.level.easeOutAndStartNextScene(LevelNames.EndScene, {win: true, nextScene: this.level.fetchNextScene(), levelStats: this.level.levelStatsManager});
+                this.level.easeOutAndStartNextScene(LevelNames.EndScene, {
+                    win: true,
+                    nextScene: this.level.fetchNextScene(),
+                    levelStats: this.level.levelStatsManager
+                });
             } else {
                 if (this.level.scene.key !== LevelNames.Gameplay_Tutorial) {
                     this.level.hud.info('NEXT WAVE INCOMING!', AppColors.UI_MESSAGE_SUCCESS, () => {

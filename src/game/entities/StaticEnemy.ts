@@ -46,7 +46,7 @@ export class StaticEnemy extends GameObject {
             this.destroy();
         });
 
-        this.on('healthChanged',this.staticHealthChanged, this);
+        this.on('healthChanged', this.staticHealthChanged, this);
 
         this.level.onHover(this, config.name);
 
@@ -85,13 +85,13 @@ export class StaticEnemy extends GameObject {
     }
 
     private staticHealthChanged(currentHealth: number) {
-        if(currentHealth >= 4000) {
+        if (currentHealth >= 4000) {
             this.staticHealthState = StaticHealthState.STEADY;
-        } else if(currentHealth >= 3000) {
+        } else if (currentHealth >= 3000) {
             this.staticHealthState = StaticHealthState.DISRUPTION;
-        } else if(currentHealth >= 2000) {
+        } else if (currentHealth >= 2000) {
             this.staticHealthState = StaticHealthState.VOLATILE;
-        } else if(currentHealth >= 1000) {
+        } else if (currentHealth >= 1000) {
             this.staticHealthState = StaticHealthState.ERUPTION;
         }
         this.shake();
@@ -108,8 +108,8 @@ export class StaticEnemy extends GameObject {
     }
 
     public destroy() {
-        for(const child of this.staticGenies.getChildren() as StaticGenie[]) {
-            child.destroy();
+        if (this.staticGenies) {
+            this.staticGenies.destroy(true);
         }
         this.components.forEach(component => {
             this.deleteComponent(component);

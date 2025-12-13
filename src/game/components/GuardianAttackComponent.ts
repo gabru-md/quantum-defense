@@ -217,6 +217,7 @@ export class GuardianAttackComponent extends Component {
             return;
         }
         this.chargingInProgress = true;
+        this.player.warn('Charging...');
         for (const genie of this.player.guardianGenies?.getChildren() as Genie[]) {
             let circularMovementComponent = genie.getComponent(CircularMovement);
             if (!circularMovementComponent) {
@@ -243,7 +244,7 @@ export class GuardianAttackComponent extends Component {
         this.chargingInProgress = false;
         this.releaseInProgress = true;
         this.gameObject.scene.time.delayedCall(2000, () => {
-            this.player.showNotification(AppColors.UI_MESSAGE_WARN, `¡`)
+            this.player.warn('Release');
             for (const genie of this.player.guardianGenies?.getChildren() as Genie[]) {
                 let circularMovementComponent = genie.getComponent(CircularMovement);
                 if (!circularMovementComponent) {
