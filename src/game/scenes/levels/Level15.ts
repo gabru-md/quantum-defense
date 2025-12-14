@@ -105,7 +105,7 @@ export class Gameplay_TheCore extends Level {
             x: GAME_WIDTH / 3,
             y: GAME_HEIGHT / 3,
             texture: 'static',
-            health: 4100,
+            health: 5000,
             name: "Static's Core"
         });
         this.staticCore.setupPlayerFollowerComponent();
